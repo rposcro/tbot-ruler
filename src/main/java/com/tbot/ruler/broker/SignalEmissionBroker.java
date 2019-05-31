@@ -40,8 +40,10 @@ public class SignalEmissionBroker {
     }
 
     public void receiveSignalFromEmitter(EmitterSignal signal) {
+        log.debug("Queued: signal {} from emitter {}",
+            signal.getSignalValue().getSignalValueType(),
+            signal.getEmitterId().getValue());
         signalsQueue.add(signal);
-        log.debug("Queued signal {} ", signal);
     }
 
     public Runnable brokerRunnable() {
@@ -50,31 +52,40 @@ public class SignalEmissionBroker {
                 try {
                     EmitterSignal signal = signalsQueue.take();
                     emittSignal(signal);
-                }
-                catch(InterruptedException e) {
-                    log.error("Unexpected exception!", e);
+                } catch(InterruptedException e) {
+                    log.error("Unexpected interruption!", e);
+                } catch(Exception e) {
+                    log.error("Uncaught exception while sending signal!", e);
                 }
             }
         };
     }
 
     private void emittSignal(EmitterSignal signal) {
-        log.debug("Signal from emitter to appliances {} ", signal);
         EmitterId emitterId = signal.getEmitterId();
         Collection<ApplianceId> appliancesIds = Optional.ofNullable(applianceBindingsService.boundToEmitter(emitterId)).orElse(Collections.emptySet());
 
-        appliancesIds.forEach(applianceId -> {
-            Appliance appliance = appliancesService.applianceById(applianceId);
-            if (appliance == null) {
-                log.warn("Wrong emitter binding detected, no appliance with id " + applianceId);
-            }
-            else {
-                try {
-                    appliancesAgentService.distributeSignal(signal, appliance);
-                } catch(SignalException e) {
-                    log.error("Signal emission failed. Type {}, appliance {}", signal.getSignalValue().getSignalValueType(), appliance.getId().getValue());
+        if (appliancesIds.isEmpty()) {
+            log.debug("Skipping: no addressee for signal {} from emitter {}",
+                signal.getSignalValue().getSignalValueType(),
+                signal.getEmitterId().getValue());
+        } else {
+            appliancesIds.forEach(applianceId -> {
+                Appliance appliance = appliancesService.applianceById(applianceId);
+                if (appliance == null) {
+                    log.warn("Wrong emitter binding, no appliance {}", applianceId.getValue());
+                } else {
+                    log.debug("Sending: signal of type {} from emitter {} to appliance {}",
+                        signal.getSignalValue().getSignalValueType(),
+                        signal.getEmitterId().getValue(),
+                        applianceId.getValue());
+                    try {
+                        appliancesAgentService.distributeSignal(signal, appliance);
+                    } catch (SignalException e) {
+                        log.error("Signal emission failed. Type {}, appliance {}", signal.getSignalValue().getSignalValueType(), appliance.getId().getValue());
+                    }
                 }
-            }
-        });
+            });
+        }
     }
 }

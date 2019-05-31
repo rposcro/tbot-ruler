@@ -38,7 +38,7 @@
 
         <resources>
             <resource>
-                <directory>${basedir}/src/main/resources</directory>
+                <directory>src/main/resources</directory>
             </resource>
             <resource>
                 <directory>config/config-dev</directory>

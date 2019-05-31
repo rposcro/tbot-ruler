@@ -31,8 +31,10 @@ public class ActuatorBroker {
     }
 
     public void sendSignalToActuator(ApplianceSignal signal) {
+        log.debug("Queued: signal {} from appliance {}",
+            signal.getSignalValue().getSignalValueType(),
+            signal.getApplianceId().getValue());
         signalsQueue.add(signal);
-        log.debug("Queued signal from appliance: {}", signal);
     }
 
     public Runnable brokerRunnable() {
@@ -41,20 +43,24 @@ public class ActuatorBroker {
                 try {
                     ApplianceSignal signal = signalsQueue.take();
                     sendSignal(signal);
-                }
-                catch(InterruptedException e) {
-                    log.error("Unexpected exception!", e);
+                } catch(InterruptedException e) {
+                    log.error("Unexpected interruption!", e);
+                } catch(Exception e) {
+                    log.error("Uncaught exception while sending signal!", e);
                 }
             }
         };
     }
 
     private void sendSignal(ApplianceSignal signal) {
-        log.debug("Sending signal from appliance: {}", signal);
         ActuatorId actuatorId = applianceBindingsService.boundActuatorId(signal.getApplianceId());
         Actuator actuator = thingsService.actuatorById(actuatorId);
 
         if (actuator != null) {
+            log.debug("Sending: signal from appliance {} to actuator {} of type {}",
+                signal.getApplianceId().getValue(),
+                actuatorId.getValue(),
+                actuator.getClass().getSimpleName());
             try {
                 actuator.changeState(signal.getSignalValue());
             }
@@ -63,7 +69,7 @@ public class ActuatorBroker {
             }
         }
         else {
-            log.warn("Note! Appliance {} has no actuator defined, signal {} skipped!", signal.getApplianceId(), signal);
+            log.warn("Note! Appliance {} has no actuator defined, signal skipped!", signal.getApplianceId().getValue());
         }
     }
 }

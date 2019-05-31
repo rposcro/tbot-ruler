@@ -28,7 +28,10 @@ public class AppliancesAgentService {
     private Map<ApplianceClass, ApplianceAgent> agentsPerApplianceClass;
 
     public void distributeSignal(EmitterSignal signal, Appliance appliance) throws SignalException {
-        log.debug("Received signal {} at for appliance {}", signal, appliance.getId());
+        log.debug("Received signal {} from emitter {} for appliance {}",
+            signal.getSignalValue().getSignalValueType(),
+            signal.getEmitterId().getValue(),
+            appliance.getId().getValue());
         findAgent(appliance).applyToSignal(appliance, signal.getSignalValue());
         ApplianceSignal applianceSignal = new ApplianceSignal(signal.getSignalValue(), appliance.getId());
         actuatorBroker.sendSignalToActuator(applianceSignal);
