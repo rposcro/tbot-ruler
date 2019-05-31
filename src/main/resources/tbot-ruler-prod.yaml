@@ -1,0 +1,42 @@
+server:
+    port: 4040
+
+spring:
+    application:
+        name: ThingBot Ruler
+    http:
+        encoding:
+            charset: UTF-8
+            enabled: true
+            force: true
+    jmx:
+        enabled: false
+    thymeleaf:
+        enabled: true
+        cache: false
+        prefix: classpath:/console/
+        suffix: .html
+        mode: HTML
+        servlet:
+            content-type: text/html
+        encoding: UTF-8
+        enable-spring-el-compiler: true
+
+security:
+    basic:
+        enabled: false
+
+management:
+    security:
+        enabled: false
+
+eureka:
+    client:
+        enabled: false
+
+ruler:
+    thingsConfig:
+        path: /config/config-prod
+    broker:
+        emissionQueueLength: 200
+        collectionQueueLength: 200

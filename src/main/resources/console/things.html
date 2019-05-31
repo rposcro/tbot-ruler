@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/console/css/console.css" />
+    <link rel="stylesheet" type="text/css" href="/console/css/menu.css" />
+    <script language="JavaScript">
+        function switchThing() {
+            var thingIdSel = document.getElementById("value");
+            window.location.href = "/console/things/" + thingIdSel.options[thingIdSel.selectedIndex].value;
+        }
+    </script>
+</head>
+<body>
+<div th:replace="fragments:: header('Things')" />
+<div class="desktop">
+    <th:block th:if="${thingId == null}">
+        <div class="property">Pick a thing from the list:
+            <select th:id="value" onchange="switchThing()">
+                <option></option>
+                <option th:each="thing: ${things}" th:value="${thing.id.value}" th:text="|${thing.name}|"></select>
+            </select>
+        </div>
+    </th:block>
+    <th:block th:if="${thingId != null}">
+        <div class="property">Thing:
+            <select th:field="${thingId.value}" onchange="switchThing()">
+                <option th:each="thing: ${things}" th:value="${thing.id.value}" th:text="|${thing.name}|"></select>
+            </select>
+        </div>
+        <div class="property">UUID: <span class="highlight">[[${thing.id.value}]]</span></div>
+        <div class="property">From plugin: <span class="highlight">[[${thing.pluginAlias}]]</span></div>
+        <div class="property">&nbsp;</div>
+        <div class="section">
+            <div class="section-title">Properties</div>
+            <table class="grid">
+                <tr class="grid-header">
+                    <td>Property</td>
+                    <td>Value</td>
+                </tr>
+                <tr th:each="parameter: ${thing.parameters}" class="grid-row">
+                    <td>[[${parameter.key}]]</td>
+                    <td>[[${parameter.value}]]</td>
+                </tr>
+            </table>
+        </div>
+        <div class="section">
+            <div class="section-title">Emitters</div>
+            <table class="grid">
+                <tr class="grid-header">
+                    <td>Ref</td>
+                    <td>Name</td>
+                    <td>UUID</td>
+                    <td>Appliances</td>
+                    <td>Properties</td>
+                </tr>
+                <tr th:each="emitter: ${thing.emitters}" class="grid-row">
+                    <td>[[${emitter.ref}]]</td>
+                    <td>[[${emitter.name}]]</td>
+                    <td>[[${emitter.id.value}]]</td>
+                    <td><div th:each="appliance: ${appliancesPerEmitter.get(emitter.id)}">[[${appliance.name}]]: [[${appliance.id.value}]]</div></td>
+                    <td><div th:each="parameter: ${emitter.parameters}">[[${parameter.key}]]: [[${parameter.value}]]</div></td>
+                </tr>
+            </table>
+        </div>
+        <div class="section">
+            <div class="section-title">Collectors</div>
+            <table class="grid">
+                <tr class="grid-header">
+                    <td>Ref</td>
+                    <td>Name</td>
+                    <td>UUID</td>
+                    <td>Appliances</td>
+                    <td>Parameters</td>
+                </tr>
+                <tr th:each="collector: ${thing.collectors}" class="grid-row">
+                    <td>[[${collector.ref}]]</td>
+                    <td>[[${collector.name}]]</td>
+                    <td>[[${collector.id.value}]]</td>
+                    <td><div th:each="appliance: ${appliancesPerCollector.get(collector.id)}">[[${appliance.name}]]: [[${appliance.id.value}]]</div></td>
+                    <td><div th:each="parameter: ${collector.parameters}">[[${parameter.key}]]: [[${parameter.value}]]</div></td>
+                </tr>
+            </table>
+        </div>
+        <div class="section">
+            <div class="section-title">Actuators</div>
+            <table class="grid">
+                <tr class="grid-header">
+                    <td>Ref</td>
+                    <td>Name</td>
+                    <td>UUID</td>
+                    <td>Appliances</td>
+                    <td>Parameters</td>
+                </tr>
+                <tr th:each="actuator: ${thing.actuators}" class="grid-row">
+                    <td>[[${actuator.ref}]]</td>
+                    <td>[[${actuator.name}]]</td>
+                    <td>[[${actuator.id.value}]]</td>
+                    <td><div th:each="appliance: ${appliancesPerActuator.get(actuator.id)}">[[${appliance.name}]]: [[${appliance.id.value}]]</div></td>
+                    <td><div th:each="parameter: ${actuator.parameters}">[[${parameter.key}]]: [[${parameter.value}]]</div></td>
+                </tr>
+            </table>
+        </div>
+    </th:block>
+</body>
+</html>

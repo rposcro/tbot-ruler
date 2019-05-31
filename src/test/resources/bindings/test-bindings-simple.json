@@ -1,0 +1,13 @@
+{
+  "bindings" : [
+    {
+      "applianceId": "appliance-simple",
+      "emitterIds": [
+        "emitter-appliance-simple"
+      ],
+      "collectorIds": [
+        "collector-appliance-simple"
+      ]
+    }
+  ]
+}

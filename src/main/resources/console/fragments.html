@@ -1,0 +1,16 @@
+<th:block th:fragment="header(title)">
+    <div class="header-title">[[${title}]]</div>
+    <div class="menu-bar">
+        <table class="menu">
+            <tr>
+                <td><a th:href="|/console|">Home</a></td>
+                <td><a th:href="|/console/things|">Things</a></td>
+                <td><a th:href="|/console/appliances|">Appliances</a></td>
+                <td>&nbsp;</td>
+                <td><a th:href="|/console/state|">State</a></td>
+            </tr>
+        </table>
+    </div>
+</th:block>
+
+<th:block th:fragment="formatOptional(optional)">[[${optional}? ${optional.get()} : '']]</th:block>
