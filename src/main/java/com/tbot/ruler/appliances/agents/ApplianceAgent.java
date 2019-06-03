@@ -3,6 +3,7 @@ package com.tbot.ruler.appliances.agents;
 import com.tbot.ruler.appliances.Appliance;
 import com.tbot.ruler.exceptions.SignalException;
 import com.tbot.ruler.model.state.StateValue;
+import com.tbot.ruler.signals.ApplianceSignal;
 import com.tbot.ruler.signals.SignalValue;
 import com.tbot.ruler.signals.SignalValueType;
 
@@ -22,5 +23,5 @@ public abstract class ApplianceAgent<A extends Appliance, S extends StateValue> 
         return acceptedSignalTypes.contains(valueType);
     }
 
-    public abstract void applyToSignal(A appliance, SignalValue signalValue) throws SignalException;
+    public abstract ApplianceSignal applyToSignal(A appliance, SignalValue signalValue) throws SignalException;
 }

@@ -32,8 +32,7 @@ public class AppliancesAgentService {
             signal.getSignalValue().getSignalValueType(),
             signal.getEmitterId().getValue(),
             appliance.getId().getValue());
-        findAgent(appliance).applyToSignal(appliance, signal.getSignalValue());
-        ApplianceSignal applianceSignal = new ApplianceSignal(signal.getSignalValue(), appliance.getId());
+        ApplianceSignal applianceSignal = findAgent(appliance).applyToSignal(appliance, signal.getSignalValue());
         actuatorBroker.sendSignalToActuator(applianceSignal);
         collectionBroker.distributeSignalToCollectors(applianceSignal);
     }
