@@ -13,15 +13,49 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class JWaveZAgent {
 
+    private static final int DEFAULT_SECONDS_BETWEEN_RETRIES = 5;
+    private static final int DEFAULT_MAX_RETRIES = 36;
+
     private SupportedCommandDispatcher commandDispatcher;
     private GeneralAsynchronousController jwzController;
+    private String device;
 
     private SceneActivationHandler sceneActivationHandler;
     private BasicSetHandler basicSetHandler;
 
+    private final int maxRetries;
+    private final int secondsBetweenRetries;
+
     public JWaveZAgent(String device) {
+        this.maxRetries = DEFAULT_MAX_RETRIES;
+        this.secondsBetweenRetries = DEFAULT_SECONDS_BETWEEN_RETRIES;
+        this.device = device;
         this.commandDispatcher = commandDispatcher();
-        this.jwzController = GeneralAsynchronousController.builder()
+        setupHandlers(commandDispatcher);
+    }
+
+    public void connect() {
+        int retries = 0;
+        while (this.jwzController == null && retries++ < maxRetries) {
+            try {
+                log.info("JWaveZ agent connection, attempt #{}", retries);
+                GeneralAsynchronousController jwzController = jwavezController(device, commandDispatcher);
+                jwzController.connect();
+                this.jwzController = jwzController;
+                log.info("JWaveZ agent successfully connected to dongle device");
+            } catch(SerialPortException e) {
+                log.error("Could not connect to ZWave dongle device, JWaveZ agent not active!", e);
+                try {
+                    Thread.sleep(secondsBetweenRetries * 1000);
+                } catch(InterruptedException itre) {
+                    log.warn("Agent's retry delay sleep interrupted!", itre);
+                }
+            }
+        }
+    }
+
+    private GeneralAsynchronousController jwavezController(String device, SupportedCommandDispatcher commandDispatcher) {
+        return GeneralAsynchronousController.builder()
             .dongleDevice(device)
             .callbackHandler(ApplicationCommandHandler.builder()
                 .supportedCommandDispatcher(commandDispatcher)
@@ -29,16 +63,6 @@ public class JWaveZAgent {
                 .supportMulticasts(false)
                 .build())
             .build();
-        setupHandlers(commandDispatcher);
-    }
-
-    public void connect() {
-        try {
-            jwzController.connect();
-            log.info("JWaveZ agent successfully connected to dongle device");
-        } catch(SerialPortException e) {
-            log.error("Could not connect to ZWave dongle device, JWaveZ agent not active!", e);
-        }
     }
 
     private void setupHandlers(SupportedCommandDispatcher commandDispatcher) {

@@ -4,7 +4,7 @@
 
     <groupId>com.rposcro.tbot</groupId>
     <artifactId>tbot-ruler</artifactId>
-    <version>1.1.0-SNAPSHOT</version>
+    <version>1.1.0</version>
     <packaging>jar</packaging>
 
     <name>tbot-ruler</name>
@@ -14,7 +14,7 @@
         <java.version>1.8</java.version>
         <start-class>com.tbot.ruler.RulerApp</start-class>
 
-        <jwavez.version>1.1.1</jwavez.version>
+        <jwavez.version>1.1.2</jwavez.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spock.version>1.1-groovy-2.4</spock.version>
         <codehouse.groovy.version>2.4.6</codehouse.groovy.version>
@@ -29,6 +29,8 @@
     </parent>
 
     <build>
+        <finalName>tbot-ruler</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
@@ -41,19 +43,19 @@
                 <directory>src/main/resources</directory>
             </resource>
             <resource>
-                <directory>config/config-dev</directory>
+                <directory>ignore/config/config-dev</directory>
                 <targetPath>${basedir}/target/ruler-config/config-dev</targetPath>
             </resource>
             <resource>
-                <directory>config/config-stag</directory>
+                <directory>ignore/config/config-stag</directory>
                 <targetPath>${basedir}/target/ruler-config/config-stag</targetPath>
             </resource>
             <resource>
-                <directory>config/config-prod</directory>
+                <directory>ignore/config/config-prod</directory>
                 <targetPath>${basedir}/target/ruler-config/config-prod</targetPath>
             </resource>
             <resource>
-                <directory>config/common</directory>
+                <directory>ignore/config/common</directory>
                 <targetPath>${basedir}/target/ruler-config/config-dev</targetPath>
             </resource>
             <resource>

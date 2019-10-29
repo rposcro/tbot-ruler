@@ -11,10 +11,6 @@ public abstract class ConfigurableDTO {
 
     private Map<String, String> config = Collections.emptyMap();;
 
-    public Map<String, String> getParameters() {
-        return this.config;
-    }
-
     public String getStringParameter(String paramName) {
         return config.get(paramName);
     }
