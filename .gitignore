@@ -3,8 +3,10 @@
 /logs/
 /config/
 /.idea/
-/*.iml
-/*.log
+*.iml
+
+# Local specific files
+/ignore/
 
 # Compiled class file
 *.class

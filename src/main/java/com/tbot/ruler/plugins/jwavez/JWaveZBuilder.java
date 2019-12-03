@@ -17,8 +17,6 @@ import java.util.List;
 @Slf4j
 public class JWaveZBuilder implements ThingPluginBuilder {
 
-    private static final String GLOBAL_PARAM_DEVICE = "module-device";
-
     private static final String EMITTER_TYPE_SCENE_ACTIVATION = "scene-activation";
     private static final String EMITTER_TYPE_BASIC_SET = "basic-set";
 
@@ -50,8 +48,7 @@ public class JWaveZBuilder implements ThingPluginBuilder {
     }
 
     private JWaveZAgent agent(ThingBuilderContext builderContext) {
-        String deviceName = builderContext.getThingDTO().getStringParameter(GLOBAL_PARAM_DEVICE);
-        return new JWaveZAgent(deviceName);
+        return new JWaveZAgent(builderContext);
     }
 
     private List<Emitter> buildEmitters(ThingBuilderContext builderContext, JWaveZAgent agent) throws PluginException {
