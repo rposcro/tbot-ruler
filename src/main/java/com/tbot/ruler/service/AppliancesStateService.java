@@ -18,11 +18,11 @@ public class AppliancesStateService {
     private AppliancesService appliancesService;
 
     @Autowired
-    private AppliancesAgentService appliancesAgentService;
+    private ApplianceAgentService applianceAgentService;
 
     public void changeStateValue(ApplianceId applianceId, OnOffSignalValue signalValue) throws SignalException {
         Appliance appliance = appliancesService.applianceById(applianceId);
         EmitterSignal signal = new EmitterSignal(signalValue, EMITTER_SERVICE_ID);
-        appliancesAgentService.distributeSignal(signal, appliance);
+        applianceAgentService.distributeSignal(signal, appliance);
     }
 }

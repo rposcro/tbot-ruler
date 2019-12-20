@@ -2,7 +2,7 @@ package com.tbot.ruler.service.admin;
 
 import com.tbot.ruler.configuration.DTOConfiguration;
 import com.tbot.ruler.things.ThingId;
-import com.tbot.ruler.things.dto.ThingDTO;
+import com.tbot.ruler.things.builder.dto.ThingDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

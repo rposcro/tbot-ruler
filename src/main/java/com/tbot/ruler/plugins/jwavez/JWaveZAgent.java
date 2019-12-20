@@ -6,7 +6,9 @@ import com.rposcro.jwavez.core.handlers.SupportedCommandDispatcher;
 import com.rposcro.jwavez.serial.controllers.GeneralAsynchronousController;
 import com.rposcro.jwavez.serial.exceptions.SerialPortException;
 import com.rposcro.jwavez.serial.handlers.ApplicationCommandHandler;
-import com.tbot.ruler.things.ThingBuilderContext;
+import com.tbot.ruler.plugins.jwavez.basicset.BasicSetHandler;
+import com.tbot.ruler.plugins.jwavez.sceneactivation.SceneActivationHandler;
+import com.tbot.ruler.things.builder.ThingBuilderContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 

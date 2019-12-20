@@ -8,7 +8,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.tbot.ruler.broker.SignalEmissionBrokerProxy;
-import com.tbot.ruler.things.ThingBuilderContext;
+import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.exceptions.PluginException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -16,9 +16,9 @@ import org.springframework.context.annotation.Configuration;
 
 import com.tbot.ruler.things.service.ServiceProvider;
 import com.tbot.ruler.things.Thing;
-import com.tbot.ruler.things.ThingPluginBuilder;
-import com.tbot.ruler.things.dto.ThingDTO;
-import com.tbot.ruler.things.dto.ThingPluginDTO;
+import com.tbot.ruler.things.builder.ThingPluginBuilder;
+import com.tbot.ruler.things.builder.dto.ThingDTO;
+import com.tbot.ruler.things.builder.dto.ThingPluginDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -61,7 +61,7 @@ public class ThingsConfiguration {
                 .services(serviceProvider)
                 .thingDTO(thingDTO)
                 .pluginDTO(pluginDTO)
-                .signalConsumer(signalEmissionBrokerProxy)
+                .messagePublisher(signalEmissionBrokerProxy)
                 .build();
         Thing thing = instantiateBuilder(pluginDTO)
                 .buildThing(builderContext);

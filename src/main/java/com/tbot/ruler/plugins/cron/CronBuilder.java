@@ -1,12 +1,12 @@
 package com.tbot.ruler.plugins.cron;
 
 import com.tbot.ruler.things.BasicThing;
+import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.Thing;
-import com.tbot.ruler.things.ThingBuilderContext;
-import com.tbot.ruler.things.ThingMetadata;
-import com.tbot.ruler.things.ThingPluginBuilder;
-import com.tbot.ruler.things.dto.EmitterDTO;
-import com.tbot.ruler.things.dto.ThingDTO;
+import com.tbot.ruler.things.builder.ThingBuilderContext;
+import com.tbot.ruler.things.builder.ThingPluginBuilder;
+import com.tbot.ruler.things.builder.dto.EmitterDTO;
+import com.tbot.ruler.things.builder.dto.ThingDTO;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -27,21 +27,22 @@ public class CronBuilder implements ThingPluginBuilder {
         ThingDTO thingDTO = builderContext.getThingDTO();
         log.debug("Building Cron: " + thingDTO.getName());
 
-        ThingMetadata metadata = ThingMetadata.fromThingMetadata(thingDTO);
-        List<CronSchedulerEmitter> emitters = buildEmitters(builderContext);
+        List<Emitter > emitters = buildEmitters(builderContext);
 
         return BasicThing.builder()
-                .metadata(metadata)
-                .emitters(emitters)
-                .build();
+            .id(thingDTO.getId())
+            .name(thingDTO.getName())
+            .description(thingDTO.getDescription())
+            .emitters(emitters)
+            .build();
     }
 
-    private List<CronSchedulerEmitter> buildEmitters(ThingBuilderContext builderContext) {
+    private List<Emitter> buildEmitters(ThingBuilderContext builderContext) {
         List<EmitterDTO> emitterDTOs = builderContext.getThingDTO().getEmitters();
         TimeZone timeZone = determineTimeZone(builderContext.getThingDTO());
 
         if (emitterDTOs != null) {
-            List<CronSchedulerEmitter> emitters = new ArrayList<>(emitterDTOs.size());
+            List<Emitter> emitters = new ArrayList<>(emitterDTOs.size());
             emitterDTOs.forEach(emitterDTO -> {
                 if (EMITTER_REF_SCHEDULER.equals(emitterDTO.getRef())) {
                     emitters.add(schedulerEmitterBuilder.buildEmitter(builderContext, emitterDTO, timeZone));

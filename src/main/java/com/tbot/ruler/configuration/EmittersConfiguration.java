@@ -5,8 +5,8 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
-import com.tbot.ruler.things.EmissionThread;
-import com.tbot.ruler.things.EmissionTriggerContext;
+import com.tbot.ruler.things.thread.EmissionThread;
+import com.tbot.ruler.things.thread.EmissionTriggerContext;
 import com.tbot.ruler.things.service.impl.ThreadRegistrationServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

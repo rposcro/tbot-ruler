@@ -3,7 +3,7 @@ package com.tbot.ruler.configuration;
 import com.tbot.ruler.appliances.ApplianceId;
 import com.tbot.ruler.appliances.Appliance;
 import com.tbot.ruler.appliances.ApplianceClass;
-import com.tbot.ruler.things.dto.ApplianceDTO;
+import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import com.tbot.ruler.util.PackageScanner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

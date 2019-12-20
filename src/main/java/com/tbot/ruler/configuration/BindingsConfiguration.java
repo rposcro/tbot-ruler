@@ -15,7 +15,7 @@ import com.tbot.ruler.appliances.ApplianceBindings;
 import com.tbot.ruler.appliances.ApplianceId;
 import com.tbot.ruler.things.CollectorId;
 import com.tbot.ruler.things.EmitterId;
-import com.tbot.ruler.things.dto.BindingDTO;
+import com.tbot.ruler.things.builder.dto.BindingDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

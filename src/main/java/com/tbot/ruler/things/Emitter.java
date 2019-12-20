@@ -1,7 +1,4 @@
 package com.tbot.ruler.things;
 
-public interface Emitter {
-
-    public EmitterId getId();
-    public EmitterMetadata getMetadata();
+public interface Emitter extends Item, TaskBased {
 }

@@ -1,7 +1,7 @@
 package com.tbot.ruler.things.service.impl;
 
-import com.tbot.ruler.things.EmissionThread;
-import com.tbot.ruler.things.EmissionTrigger;
+import com.tbot.ruler.things.thread.EmissionThread;
+import com.tbot.ruler.things.thread.TaskTrigger;
 import com.tbot.ruler.things.service.ThreadRegistrationService;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -19,13 +19,13 @@ public class ThreadRegistrationServiceImpl implements ThreadRegistrationService 
 
     private List<EmissionThread> startUpTasks = new LinkedList<>();
     private List<EmissionThread> continuousThreads = new LinkedList<>();
-    private Map<EmissionThread, EmissionTrigger> periodicThreads = new HashMap<>();
+    private Map<EmissionThread, TaskTrigger> periodicThreads = new HashMap<>();
 
     public void registerContinuousEmissionThread(EmissionThread emissionThread) {
         continuousThreads.add(emissionThread);
     }
 
-    public void registerPeriodicEmissionThread(EmissionThread emissionThread, EmissionTrigger trigger) {
+    public void registerPeriodicEmissionThread(EmissionThread emissionThread, TaskTrigger trigger) {
         periodicThreads.put(emissionThread, trigger);
     }
 

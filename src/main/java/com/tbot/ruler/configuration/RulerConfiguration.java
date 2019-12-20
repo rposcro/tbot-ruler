@@ -1,6 +1,7 @@
 package com.tbot.ruler.configuration;
 
 import com.tbot.ruler.broker.ActuatorBroker;
+import com.tbot.ruler.broker.MessageBroker;
 import com.tbot.ruler.broker.SignalCollectionBroker;
 import com.tbot.ruler.broker.SignalEmissionBroker;
 import org.springframework.context.annotation.Bean;
@@ -19,7 +20,7 @@ public class RulerConfiguration {
 
 	@Bean(destroyMethod = "shutdown")
 	public ThreadPoolTaskExecutor rulerTaskExecutor(
-			SignalEmissionBroker emissionBroker, SignalCollectionBroker collectionBroker, ActuatorBroker actuatorBroker) {
+			SignalEmissionBroker emissionBroker, SignalCollectionBroker collectionBroker, ActuatorBroker actuatorBroker, MessageBroker messageBroker) {
 		ThreadPoolTaskExecutor executor = new ThreadPoolTaskExecutor();
 		executor.setCorePoolSize(5);
 		executor.setMaxPoolSize(5);
@@ -30,6 +31,7 @@ public class RulerConfiguration {
 		executor.execute(emissionBroker.brokerRunnable());
 		executor.execute(collectionBroker.brokerRunnable());
 		executor.execute(actuatorBroker.brokerRunnable());
+		executor.execute(messageBroker);
 		return executor;
 	}
 }

@@ -1,14 +1,14 @@
 package com.tbot.ruler.plugins.cron;
 
-import com.tbot.ruler.things.EmissionTrigger;
-import com.tbot.ruler.things.EmissionTriggerContext;
+import com.tbot.ruler.things.thread.TaskTrigger;
+import com.tbot.ruler.things.thread.EmissionTriggerContext;
 import org.springframework.scheduling.support.CronSequenceGenerator;
 
 import java.util.Date;
 import java.util.Optional;
 import java.util.TimeZone;
 
-public class CronEmissionTrigger implements EmissionTrigger {
+public class CronEmissionTrigger implements TaskTrigger {
 
     private CronSequenceGenerator sequenceGenerator;
 

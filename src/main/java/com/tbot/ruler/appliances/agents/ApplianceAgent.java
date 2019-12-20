@@ -6,6 +6,7 @@ import com.tbot.ruler.model.state.StateValue;
 import com.tbot.ruler.signals.ApplianceSignal;
 import com.tbot.ruler.signals.SignalValue;
 import com.tbot.ruler.signals.SignalValueType;
+import com.tbot.ruler.things.model.message.TBotMessage;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,4 +25,6 @@ public abstract class ApplianceAgent<A extends Appliance, S extends StateValue> 
     }
 
     public abstract ApplianceSignal applyToSignal(A appliance, SignalValue signalValue) throws SignalException;
+
+    public abstract void applyMessage(TBotMessage tBotMessage, Appliance appliance);
 }

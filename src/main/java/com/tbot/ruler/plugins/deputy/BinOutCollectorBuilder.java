@@ -1,31 +1,26 @@
 package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.rest.RestPatchCommand;
+import com.tbot.ruler.things.BasicCollector;
 import com.tbot.ruler.things.Collector;
-import com.tbot.ruler.things.CollectorMetadata;
 import com.tbot.ruler.things.service.ServiceProvider;
-import com.tbot.ruler.things.dto.CollectorDTO;
-import com.tbot.ruler.things.dto.ThingDTO;
-import com.tbot.ruler.signals.SignalValueType;
+import com.tbot.ruler.things.builder.dto.CollectorDTO;
+import com.tbot.ruler.things.builder.dto.ThingDTO;
 
-class BinOutCollectorBuilder {
+public class BinOutCollectorBuilder {
 
     private static final String PARAM_PIN = "pin";
     private static final String PATH_BINOUT_TEMPLATE = "binary-outputs/%s";
 
-    Collector buildCollector(ThingDTO thingDTO, CollectorDTO collectorDTO, ServiceProvider serviceProvider) {
-        CollectorMetadata metadata = buildMetadata(collectorDTO);
-        RestPatchCommand command = buildRestPatchCommand(thingDTO, collectorDTO, serviceProvider);
-        return BinOutCollector.builder()
-                .metadata(metadata)
-                .patchCommand(command)
-                .build();
-    }
-
-    private CollectorMetadata buildMetadata(CollectorDTO collectorDTO) {
-        CollectorMetadata metadata = CollectorMetadata.fromCollectorDTO(collectorDTO);
-        metadata.setCollectedSignalType(SignalValueType.OnOff);
-        return metadata;
+    public Collector buildCollector(ThingDTO thingDTO, CollectorDTO collectorDTO, ServiceProvider serviceProvider) {
+        return BasicCollector.builder()
+            .id(collectorDTO.getId())
+            .name(collectorDTO.getName())
+            .description(collectorDTO.getDescription())
+            .messageCollectorConsumer(BinOutCollectorConsumer.builder()
+                .patchCommand(buildRestPatchCommand(thingDTO, collectorDTO, serviceProvider))
+                .build())
+            .build();
     }
 
     private RestPatchCommand buildRestPatchCommand(ThingDTO thingDTO, CollectorDTO collectorDTO, ServiceProvider serviceProvider) {
@@ -37,8 +32,7 @@ class BinOutCollectorBuilder {
     }
 
     private String buildBinOutPath(ThingDTO thingDTO, CollectorDTO collectorDTO) {
-        String basePath = thingDTO.getConfig().get(DeputyBuilder.PARAM_PATH);
-        basePath = (basePath == null) ? "" : basePath.trim();
+        String basePath = thingDTO.getConfig().getOrDefault(DeputyBuilder.PARAM_PATH, "").trim();
 
         if (!basePath.endsWith("/")) {
             basePath = basePath + "/";

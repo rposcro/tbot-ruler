@@ -1,17 +1,14 @@
 package com.tbot.ruler.appliances;
 
+import com.tbot.ruler.things.RecipientId;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.ToString;
 
-@Getter
-@EqualsAndHashCode
 @ToString
-public class ApplianceId {
-
-    private final String value;
+public class ApplianceId extends RecipientId {
 
     public ApplianceId(String value) {
-        this.value = value;
+        super(value);
     }
 }

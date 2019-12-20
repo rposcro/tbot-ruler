@@ -1,5 +1,6 @@
 package com.tbot.ruler.appliances.agents;
 
+import com.tbot.ruler.appliances.Appliance;
 import com.tbot.ruler.exceptions.SignalValueTypeNotMatchingException;
 import com.tbot.ruler.appliances.OnOffAppliance;
 import com.tbot.ruler.model.state.OnOffValue;
@@ -7,6 +8,11 @@ import com.tbot.ruler.signals.ApplianceSignal;
 import com.tbot.ruler.signals.OnOffSignalValue;
 import com.tbot.ruler.signals.SignalValue;
 import com.tbot.ruler.signals.SignalValueType;
+import com.tbot.ruler.message.payloads.BinarySetPayload;
+import com.tbot.ruler.things.model.message.TBotMessage;
+
+import static com.tbot.ruler.model.state.OnOffValue.STATE_OFF;
+import static com.tbot.ruler.model.state.OnOffValue.STATE_ON;
 
 public class OnOffApplianceAgent extends ApplianceAgent<OnOffAppliance, OnOffValue> {
 
@@ -23,9 +29,15 @@ public class OnOffApplianceAgent extends ApplianceAgent<OnOffAppliance, OnOffVal
         }
 
         OnOffValue newValue = SignalValueType.OnOff == valueType ?
-            ((OnOffSignalValue) signalValue).isOnSignal() ? OnOffValue.STATE_ON : OnOffValue.STATE_OFF :
-            appliance.getStateValue().orElseGet(() -> OnOffValue.STATE_OFF).invert();
+            ((OnOffSignalValue) signalValue).isOnSignal() ? STATE_ON : STATE_OFF :
+            appliance.getStateValue().orElseGet(() -> STATE_OFF).invert();
         appliance.setStateValue(newValue);
-        return new ApplianceSignal(newValue == OnOffValue.STATE_ON ? OnOffSignalValue.ON_SIGNAL_VALUE : OnOffSignalValue.OFF_SIGNAL_VALUE, appliance.getId());
+        return new ApplianceSignal(newValue == STATE_ON ? OnOffSignalValue.ON_SIGNAL_VALUE : OnOffSignalValue.OFF_SIGNAL_VALUE, appliance.getId());
+    }
+
+    @Override
+    public void applyMessage(TBotMessage tBotMessage, Appliance appliance) {
+        BinarySetPayload binarySetMessage = tBotMessage.ensureMessageType();
+        appliance.setStateValue(binarySetMessage.isOn() ? STATE_ON : STATE_OFF);
     }
 }
