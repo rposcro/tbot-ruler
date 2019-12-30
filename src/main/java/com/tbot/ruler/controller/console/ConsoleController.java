@@ -1,12 +1,11 @@
 package com.tbot.ruler.controller.console;
 
-import com.tbot.ruler.appliances.ApplianceId;
 import com.tbot.ruler.controller.ControllerConstants;
 import com.tbot.ruler.service.admin.AppliancesAdminService;
 import com.tbot.ruler.service.admin.BindingsAdminService;
 import com.tbot.ruler.service.admin.PluginsAdminService;
 import com.tbot.ruler.service.admin.ThingsAdminService;
-import com.tbot.ruler.things.ThingId;
+import com.tbot.ruler.things.ItemId;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import com.tbot.ruler.things.builder.dto.CollectorDTO;
@@ -56,25 +55,25 @@ public class ConsoleController {
         return mav;
     }
 
-    @GetMapping(path = "things/{thingId}", produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView things(@PathVariable ThingId thingId) {
-        ModelAndView mav = new ModelAndView("things");
-        mav.addObject("things", thingsService.allThings());
-
-        ThingDTO thingDTO = thingsService.thingDTOById(thingId);
-        mav.addObject("thingId", thingId);
-        mav.addObject("thing", thingDTO);
-        mav.addObject("appliancesPerEmitter", thingDTO.getEmitters().stream()
-            .map(EmitterDTO::getId)
-            .collect(Collectors.toMap(emitterId -> emitterId, emitterId -> bindingsService.appliancesByEmitter(emitterId))));
-        mav.addObject("appliancesPerCollector", thingDTO.getCollectors().stream()
-            .map(CollectorDTO::getId)
-            .collect(Collectors.toMap(collectorId -> collectorId, collectorId -> bindingsService.appliancesByCollector(collectorId))));
-        mav.addObject("appliancesPerActuator", thingDTO.getActuators().stream()
-            .map(ActuatorDTO::getId)
-            .collect(Collectors.toMap(actuatorId -> actuatorId, actuatorId -> bindingsService.appliancesByActuator(actuatorId))));
-        return mav;
-    }
+//    @GetMapping(path = "things/{thingId}", produces = MediaType.TEXT_HTML_VALUE)
+//    public ModelAndView things(@PathVariable ItemId thingId) {
+//        ModelAndView mav = new ModelAndView("things");
+//        mav.addObject("things", thingsService.allThings());
+//
+//        ThingDTO thingDTO = thingsService.thingDTOById(thingId);
+//        mav.addObject("thingId", thingId);
+//        mav.addObject("thing", thingDTO);
+//        mav.addObject("appliancesPerEmitter", thingDTO.getEmitters().stream()
+//            .map(EmitterDTO::getId)
+//            .collect(Collectors.toMap(emitterId -> emitterId, emitterId -> bindingsService.appliancesByEmitter(emitterId))));
+//        mav.addObject("appliancesPerCollector", thingDTO.getCollectors().stream()
+//            .map(CollectorDTO::getId)
+//            .collect(Collectors.toMap(collectorId -> collectorId, collectorId -> bindingsService.appliancesByCollector(collectorId))));
+//        mav.addObject("appliancesPerActuator", thingDTO.getActuators().stream()
+//            .map(ActuatorDTO::getId)
+//            .collect(Collectors.toMap(actuatorId -> actuatorId, actuatorId -> bindingsService.appliancesByActuator(actuatorId))));
+//        return mav;
+//    }
 
     @GetMapping(path = "appliances", produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView appliances() {
@@ -83,17 +82,17 @@ public class ConsoleController {
         return mav;
     }
 
-    @GetMapping(path = "appliances/{applianceId}", produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView appliances(@PathVariable ApplianceId applianceId) {
-        ModelAndView mav = new ModelAndView("appliances");
-        mav.addObject("appliances", appliancesService.allAppliances());
-
-        ApplianceDTO applianceDTO = appliancesService.applianceDTOById(applianceId);
-        mav.addObject("applianceId", applianceId);
-        mav.addObject("appliance", applianceDTO);
-        mav.addObject("bindedEmitters", bindingsService.bindedEmittersByAppliance(applianceId));
-        mav.addObject("bindedCollectors", bindingsService.bindedCollectorsByAppliance(applianceId));
-        mav.addObject("bindedActuator", bindingsService.bindedActuatorByAppliance(applianceId));
-        return mav;
-    }
+//    @GetMapping(path = "appliances/{applianceId}", produces = MediaType.TEXT_HTML_VALUE)
+//    public ModelAndView appliances(@PathVariable ItemId applianceId) {
+//        ModelAndView mav = new ModelAndView("appliances");
+//        mav.addObject("appliances", appliancesService.allAppliances());
+//
+//        ApplianceDTO applianceDTO = appliancesService.applianceDTOById(applianceId);
+//        mav.addObject("applianceId", applianceId);
+//        mav.addObject("appliance", applianceDTO);
+//        mav.addObject("bindedEmitters", bindingsService.bindedEmittersByAppliance(applianceId));
+//        mav.addObject("bindedCollectors", bindingsService.bindedCollectorsByAppliance(applianceId));
+//        mav.addObject("bindedActuators", bindingsService.bindedActuatorsByAppliance(applianceId));
+//        return mav;
+//    }
 }

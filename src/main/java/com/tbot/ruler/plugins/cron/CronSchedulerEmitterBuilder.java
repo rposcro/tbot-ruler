@@ -18,11 +18,11 @@ public class CronSchedulerEmitterBuilder {
 
     public Emitter buildEmitter(ThingBuilderContext builderContext, EmitterDTO emitterDTO, TimeZone timeZone) {
         return BasicEmitter.builder()
-            .emitterId(emitterDTO.getId())
+            .id(emitterDTO.getId())
             .name(emitterDTO.getName())
             .description(emitterDTO.getDescription())
-            .emissionTask(emissionTask(emitterDTO, builderContext.getMessagePublisher()))
-            .emissionTrigger(emissionTrigger(emitterDTO, timeZone))
+            .triggerableTask(emissionTask(emitterDTO, builderContext.getMessagePublisher()))
+            .taskTrigger(emissionTrigger(emitterDTO, timeZone))
             .build();
     }
 

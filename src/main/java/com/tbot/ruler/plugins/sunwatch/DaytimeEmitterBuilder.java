@@ -23,8 +23,8 @@ public class DaytimeEmitterBuilder extends AbstractEmitterBuilder {
             .id(emitterDTO.getId())
             .name(emitterDTO.getName())
             .description(emitterDTO.getDescription())
-            .emissionTrigger(emissionTrigger)
-            .emissionTask(emissionTask(emitterDTO, emissionTrigger))
+            .triggerableTask(emissionTask(emitterDTO, emissionTrigger))
+            .taskTrigger(emissionTrigger)
             .build();
     }
 

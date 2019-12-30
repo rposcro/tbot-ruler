@@ -1,8 +1,7 @@
 package com.tbot.ruler.configuration;
 
-import com.tbot.ruler.appliances.ApplianceId;
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.appliances.ApplianceClass;
+import com.tbot.ruler.things.ApplianceId;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import com.tbot.ruler.util.PackageScanner;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,7 +27,7 @@ public class AppliancesConfiguration {
     @Bean
     public Map<String, Class<? extends Appliance>> applianceClassesMap() {
         PackageScanner scanner = new PackageScanner();
-        Set<Class<? extends Appliance>> classes = scanner.findAllClassifiedClasses(ApplianceClass.class, Appliance.class, "com.tbot.ruler.appliances");
+        Set<Class<? extends Appliance>> classes = scanner.findAllClassesOfType(Appliance.class, "com.tbot.ruler.appliances");
         return classes.stream().collect(Collectors.toMap(clazz -> clazz.getSimpleName(), clazz -> clazz));
     }
 
@@ -43,16 +43,14 @@ public class AppliancesConfiguration {
     @Bean
     public Map<ApplianceId, Appliance> appliancesPerId() {
         return appliances().stream()
-            .collect(Collectors.toMap(Appliance::getId, app -> app));
+            .collect(Collectors.toMap(appliance -> appliance.getId(), Function.identity()));
     }
 
     private Optional<Appliance> fromDTO(ApplianceDTO dto) {
         try {
             Class<? extends Appliance> clazz = applianceClassesMap().get(dto.getType());
-            Constructor<? extends Appliance> constructor = clazz.getConstructor(ApplianceId.class);
-            Appliance appliance = constructor.newInstance(dto.getId());
-            appliance.setName(dto.getName());
-            appliance.setDescription(dto.getDescription());
+            Constructor<? extends Appliance> constructor = clazz.getConstructor(ApplianceId.class, String.class, String.class);
+            Appliance appliance = constructor.newInstance(dto.getId(), dto.getName(), dto.getDescription());
             return Optional.of(appliance);
         } catch(ReflectiveOperationException | SecurityException e) {
             log.error("Incorrect appliance class type: " + dto.getType() + ", skipping appliance: " + dto.getId());

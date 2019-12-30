@@ -3,6 +3,7 @@ package com.tbot.ruler.controller.entity;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonRootName;
 import com.tbot.ruler.appliances.Appliance;
+import com.tbot.ruler.appliances.state.State;
 
 import java.util.Map;
 
@@ -30,8 +31,8 @@ public class ApplianceEntity {
 		return appliance.getDescription();
 	}
 
-	public Object getStateValue() {
-		return appliance.getStateValue().orElse(null);
+	public State getStateValue() {
+		return (State) appliance.getState().orElse(null);
 	}
 
 	@JsonProperty(value = "_links")

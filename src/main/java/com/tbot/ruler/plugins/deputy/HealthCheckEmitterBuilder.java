@@ -18,8 +18,8 @@ class HealthCheckEmitterBuilder {
             .id(emitterDTO.getId())
             .name(emitterDTO.getName())
             .description(emitterDTO.getDescription())
-            .emissionTask(emissionTask(builderContext, emitterDTO))
-            .emissionTrigger(emissionTrigger(emitterDTO))
+            .triggerableTask(emissionTask(builderContext, emitterDTO))
+            .taskTrigger(emissionTrigger(emitterDTO))
             .build();
     }
 

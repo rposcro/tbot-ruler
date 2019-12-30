@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.jwavez.sceneactivation;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.payloads.BooleanTogglePayload;
 import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.ItemId;
+import com.tbot.ruler.things.EmitterId;
 import com.tbot.ruler.things.service.MessagePublisher;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import lombok.NonNull;
 @Builder(builderClassName = "_SceneActivationEmitterBuilder")
 public class SceneActivationEmitter implements Emitter {
 
-    @NonNull private ItemId id;
+    @NonNull private EmitterId id;
     @NonNull private String name;
     @NonNull private String description;
     @NonNull private MessagePublisher messagePublisher;

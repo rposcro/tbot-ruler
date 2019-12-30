@@ -8,5 +8,6 @@ import java.util.Date;
 @Data
 @AllArgsConstructor
 public class EmissionTriggerContext {
+
     private Date lastScheduledExecutionTime;
 }

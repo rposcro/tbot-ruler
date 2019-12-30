@@ -1,25 +1,18 @@
 package com.tbot.ruler.appliances;
 
-import com.tbot.ruler.model.state.StateValue;
-import lombok.Getter;
-import lombok.Setter;
+import com.tbot.ruler.appliances.state.State;
+import com.tbot.ruler.message.Message;
+import com.tbot.ruler.message.MessagePayload;
+import com.tbot.ruler.things.ApplianceId;
+import com.tbot.ruler.things.Item;
+import com.tbot.ruler.things.service.MessageConsumer;
 
 import java.util.Optional;
 
-@Getter
-public abstract class Appliance<T extends StateValue> {
+public interface Appliance<T extends State> extends Item<ApplianceId>, MessageConsumer {
 
-    private ApplianceId id;
-    @Setter
-    private String name;
-    @Setter
-    private String description;
-    private Optional<T> stateValue;
-
-    protected Appliance(ApplianceId applianceId) {
-        this.id = applianceId;
-    }
-
-    public abstract Optional<T> getStateValue();
-    public abstract void setStateValue(T signalValue);
+    Optional<Message> acceptDirectPayload(MessagePayload payload);
+    Optional<T> getState();
+    @Override
+    ApplianceId getId();
 }

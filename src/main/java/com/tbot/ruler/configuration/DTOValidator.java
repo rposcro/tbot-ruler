@@ -20,13 +20,6 @@ public class DTOValidator {
     private DTOConfiguration dtoConfiguration;
 
     @EventListener
-    public void validateUniqueApplianceBindings(ApplicationReadyEvent event) {
-        validateDistinctIds(
-            "ApplianceId in Binding",
-            dtoConfiguration.bindingDTOs().stream().map(dto -> dto.getApplianceId().getValue()).collect(Collectors.toList()));
-    }
-
-    @EventListener
     public void validateUniqueThingId(ApplicationReadyEvent event) {
         validateDistinctIds(
             "Things",

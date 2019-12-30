@@ -6,6 +6,10 @@ public class MessageProcessingException extends MessageException {
         super(message);
     }
 
+    public MessageProcessingException(String message, Throwable throwable) {
+        super(message, throwable);
+    }
+
     public MessageProcessingException(Throwable throwable) {
         super(throwable);
     }

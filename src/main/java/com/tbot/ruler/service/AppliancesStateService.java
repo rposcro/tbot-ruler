@@ -1,28 +1,31 @@
 package com.tbot.ruler.service;
 
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.appliances.ApplianceId;
-import com.tbot.ruler.exceptions.SignalException;
-import com.tbot.ruler.signals.EmitterSignal;
-import com.tbot.ruler.signals.OnOffSignalValue;
-import com.tbot.ruler.things.EmitterId;
+import com.tbot.ruler.appliances.state.OnOffState;
+import com.tbot.ruler.broker.MessageQueue;
+import com.tbot.ruler.message.Message;
+import com.tbot.ruler.message.MessagePayload;
+import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.things.ApplianceId;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Slf4j
 @Service
 public class AppliancesStateService {
-
-    private static final EmitterId EMITTER_SERVICE_ID = new EmitterId("rest-service");
 
     @Autowired
     private AppliancesService appliancesService;
 
     @Autowired
-    private ApplianceAgentService applianceAgentService;
+    private MessageQueue messageQueue;
 
-    public void changeStateValue(ApplianceId applianceId, OnOffSignalValue signalValue) throws SignalException {
+    public void updateApplianceState(ApplianceId applianceId, OnOffState state) {
         Appliance appliance = appliancesService.applianceById(applianceId);
-        EmitterSignal signal = new EmitterSignal(signalValue, EMITTER_SERVICE_ID);
-        applianceAgentService.distributeSignal(signal, appliance);
+        Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(BooleanUpdatePayload.of(state.isOn()));
+        optionalForwardMessage.ifPresent(message -> messageQueue.publish(message));
     }
 }

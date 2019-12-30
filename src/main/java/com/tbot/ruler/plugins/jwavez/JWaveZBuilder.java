@@ -2,12 +2,11 @@ package com.tbot.ruler.plugins.jwavez;
 
 import com.tbot.ruler.plugins.jwavez.basicset.BasicSetActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.sceneactivation.SceneActivationEmitterBuilder;
-import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.BasicThing;
+import com.tbot.ruler.plugins.jwavez.switchmultilevel.SwitchMultilevelCollectorBuilder;
+import com.tbot.ruler.things.*;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
+import com.tbot.ruler.things.builder.dto.CollectorDTO;
 import com.tbot.ruler.things.builder.dto.ThingDTO;
-import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.ThingPluginBuilder;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
@@ -21,14 +20,17 @@ import java.util.List;
 public class JWaveZBuilder implements ThingPluginBuilder {
 
     private static final String EMITTER_TYPE_SCENE_ACTIVATION = "scene-activation";
-    private static final String EMITTER_TYPE_BASIC_SET = "basic-set";
+    private static final String ACTUATOR_TYPE_BASIC_SET = "basic-set";
+    private static final String COLLECTOR_TYPE_SWITCH_MULTILEVEL = "switch-multilevel";
 
     private BasicSetActuatorBuilder basicSetEmitterBuilder;
     private SceneActivationEmitterBuilder sceneActivationEmitterBuilder;
+    private SwitchMultilevelCollectorBuilder switchMultilevelCollectorBuilder;
 
     public JWaveZBuilder() {
         this.basicSetEmitterBuilder = new BasicSetActuatorBuilder();
         this.sceneActivationEmitterBuilder = new SceneActivationEmitterBuilder();
+        this.switchMultilevelCollectorBuilder = new SwitchMultilevelCollectorBuilder();
     }
 
     @Override
@@ -42,6 +44,7 @@ public class JWaveZBuilder implements ThingPluginBuilder {
             .description(thingDTO.getDescription())
             .emitters(buildEmitters(builderContext, agent))
             .actuators(buildActuators(builderContext, agent))
+            .collectors(buildCollectors(builderContext, agent))
             .startUpTask(() -> agent.connect())
             .build();
     }
@@ -60,7 +63,7 @@ public class JWaveZBuilder implements ThingPluginBuilder {
 
     private Actuator buildActuator(JWaveZAgent agent, ThingBuilderContext context, ActuatorDTO actuatorDTO) throws PluginException {
         switch(actuatorDTO.getRef()) {
-            case EMITTER_TYPE_BASIC_SET:
+            case ACTUATOR_TYPE_BASIC_SET:
                 return basicSetEmitterBuilder.buildActuator(agent.getBasicSetHandler(), context, actuatorDTO);
             default:
                 throw new PluginException("Unknown actuator reference " + actuatorDTO.getRef() + ", skipping this DTO");
@@ -81,6 +84,23 @@ public class JWaveZBuilder implements ThingPluginBuilder {
                 return sceneActivationEmitterBuilder.buildEmitter(agent.getSceneActivationHandler(), context, emitterDTO);
             default:
                 throw new PluginException("Unknown emitter reference " + emitterDTO.getRef() + ", skipping this DTO");
+        }
+    }
+
+    private List<Collector> buildCollectors(ThingBuilderContext builderContext, JWaveZAgent agent) throws PluginException {
+        List<Collector> collectors = new LinkedList<>();
+        for (CollectorDTO collectorDTO : builderContext.getThingDTO().getCollectors()) {
+            collectors.add(buildCollector(agent, builderContext, collectorDTO));
+        }
+        return collectors;
+    }
+
+    private Collector buildCollector(JWaveZAgent agent, ThingBuilderContext context, CollectorDTO collectorDTO) throws PluginException {
+        switch(collectorDTO.getRef()) {
+            case COLLECTOR_TYPE_SWITCH_MULTILEVEL:
+                return switchMultilevelCollectorBuilder.buildCollector(collectorDTO, agent);
+            default:
+                throw new PluginException("Unknown collector reference " + collectorDTO.getRef() + ", skipping this DTO");
         }
     }
 }

@@ -1,8 +1,8 @@
 package com.tbot.ruler.things;
 
-public interface Item {
+public interface Item<T extends ItemId> {
 
-    ItemId getId();
+    T getId();
     String getName();
     String getDescription();
 }

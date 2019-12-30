@@ -8,7 +8,7 @@ import lombok.NonNull;
 import java.util.Optional;
 
 @Getter
-public class BasicEmitter extends AbstractItem implements Emitter {
+public class BasicEmitter extends AbstractItem<EmitterId> implements Emitter {
 
     private Optional<Runnable> startUpTask;
     private Optional<Runnable> triggerableTask;
@@ -16,7 +16,7 @@ public class BasicEmitter extends AbstractItem implements Emitter {
 
     @Builder
     public BasicEmitter(
-        @NonNull ItemId id,
+        @NonNull EmitterId id,
         @NonNull String name,
         String description,
         Runnable startUpTask,

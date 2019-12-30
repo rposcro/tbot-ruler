@@ -1,6 +1,6 @@
 package com.tbot.ruler.things.builder.dto;
 
-import com.tbot.ruler.things.ItemId;
+import com.tbot.ruler.things.EmitterId;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class EmitterDTO extends ConfigurableDTO {
 
-    private ItemId id;
+    private EmitterId id;
     private String ref;
     private String name;
     private String description;

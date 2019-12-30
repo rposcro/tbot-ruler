@@ -22,8 +22,8 @@ public class SunEventEmitterBuilder extends AbstractEmitterBuilder {
             .id(emitterDTO.getId())
             .name(emitterDTO.getName())
             .description(emitterDTO.getDescription())
-            .emissionTrigger(emissionTrigger(emitterDTO))
-            .emissionTask(emissionTask(emitterDTO))
+            .taskTrigger(emissionTrigger(emitterDTO))
+            .triggerableTask(emissionTask(emitterDTO))
             .build();
     }
 

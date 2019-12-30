@@ -1,7 +1,7 @@
 package com.tbot.ruler.service.admin;
 
 import com.tbot.ruler.configuration.DTOConfiguration;
-import com.tbot.ruler.things.ThingId;
+import com.tbot.ruler.things.ItemId;
 import com.tbot.ruler.things.builder.dto.ThingDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,13 +16,13 @@ public class ThingsAdminService {
     @Autowired
     private DTOConfiguration dtoConfiguration;
 
-    private Map<ThingId, ThingDTO> thingsDTOById;
+    private Map<ItemId, ThingDTO> thingsDTOById;
 
     public List<ThingDTO> allThings() {
         return dtoConfiguration.thingDTOs();
     }
 
-    public ThingDTO thingDTOById(ThingId thingId) {
+    public ThingDTO thingDTOById(ItemId thingId) {
         return dtoConfiguration.thingDTOMap().get(thingId);
     }
 

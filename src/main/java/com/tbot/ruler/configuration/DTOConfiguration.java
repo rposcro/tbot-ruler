@@ -9,11 +9,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.tbot.ruler.appliances.ApplianceId;
-import com.tbot.ruler.things.ActuatorId;
-import com.tbot.ruler.things.CollectorId;
-import com.tbot.ruler.things.EmitterId;
-import com.tbot.ruler.things.ThingId;
+import com.tbot.ruler.things.*;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import com.tbot.ruler.things.builder.dto.BindingDTO;
@@ -131,12 +127,6 @@ public class DTOConfiguration {
             .collect(Collectors.toList());
         log.info("Found and read {} binding DTOs", dtos.size());
         return dtos;
-    }
-
-    @Bean
-    public Map<ApplianceId, BindingDTO> applianceBindingDTOMap() {
-        return bindingDTOs().stream()
-            .collect(Collectors.toMap(bindingDto -> bindingDto.getApplianceId(), Function.identity()));
     }
 
     @Bean

@@ -1,8 +1,6 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.message.Message;
+import com.tbot.ruler.things.service.MessageConsumer;
 
-public interface Collector extends Item {
-
-    void acceptMessage(Message message);
+public interface Collector extends Item<CollectorId>, MessageConsumer {
 }

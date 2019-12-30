@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @Getter
-public class BasicActuator extends AbstractItem implements Actuator {
+public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator {
 
     private Consumer<Message> messageCollectorConsumer;
     private Optional<Runnable> startUpTask;
@@ -19,7 +19,7 @@ public class BasicActuator extends AbstractItem implements Actuator {
 
     @Builder
     public BasicActuator(
-        @NonNull ItemId id,
+        @NonNull ActuatorId id,
         @NonNull String name,
         String description,
         Runnable startUpTask,

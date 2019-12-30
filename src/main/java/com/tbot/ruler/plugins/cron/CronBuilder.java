@@ -27,7 +27,7 @@ public class CronBuilder implements ThingPluginBuilder {
         ThingDTO thingDTO = builderContext.getThingDTO();
         log.debug("Building Cron: " + thingDTO.getName());
 
-        List<Emitter > emitters = buildEmitters(builderContext);
+        List<Emitter> emitters = buildEmitters(builderContext);
 
         return BasicThing.builder()
             .id(thingDTO.getId())
