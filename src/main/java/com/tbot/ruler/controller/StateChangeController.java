@@ -1,7 +1,9 @@
 package com.tbot.ruler.controller;
 
 import com.tbot.ruler.appliances.state.OnOffState;
+import com.tbot.ruler.appliances.state.RGBWState;
 import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.message.payloads.RGBWUpdatePayload;
 import com.tbot.ruler.service.AppliancesStateService;
 import com.tbot.ruler.things.ApplianceId;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +26,18 @@ public class StateChangeController extends AbstractController {
     @PatchMapping(value = "/{applianceId}/state/on-off")
     public ResponseEntity<?> changeBinaryState(
         @PathVariable("applianceId") ApplianceId applianceId,
-        @RequestBody OnOffState state) {
-        log.debug("Requested on-off {} state change for {}", state.isOn(), applianceId.getValue());
-        appliancesStateService.updateApplianceState(applianceId, state);
+        @RequestBody BooleanUpdatePayload stateUpdate) {
+        log.debug("Requested on-off {} state change for {}", stateUpdate.isState(), applianceId.getValue());
+        appliancesStateService.updateApplianceState(applianceId, stateUpdate);
+        return response(ResponseEntity.noContent()).build();
+    }
+
+    @PatchMapping(value = "/{applianceId}/state/color")
+    public ResponseEntity<?> changeColorState(
+        @PathVariable("applianceId") ApplianceId applianceId,
+        @RequestBody RGBWUpdatePayload stateUpdate) {
+        log.debug("Requested color change for {}", applianceId.getValue());
+        appliancesStateService.updateApplianceState(applianceId, stateUpdate);
         return response(ResponseEntity.noContent()).build();
     }
 }

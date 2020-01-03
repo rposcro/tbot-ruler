@@ -13,7 +13,7 @@ import java.util.Optional;
 
 import static com.tbot.ruler.appliances.state.OnOffState.STATE_OFF;
 
-public class OnOffAppliance extends AbstractAppliance {
+public class OnOffAppliance extends AbstractAppliance<OnOffState> {
 
     public OnOffAppliance(ApplianceId id, String name, String description) {
         super(id, name, description);
