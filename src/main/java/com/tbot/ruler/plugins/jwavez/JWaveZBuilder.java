@@ -2,6 +2,7 @@ package com.tbot.ruler.plugins.jwavez;
 
 import com.tbot.ruler.plugins.jwavez.basicset.BasicSetActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.sceneactivation.SceneActivationEmitterBuilder;
+import com.tbot.ruler.plugins.jwavez.switchcolor.SwitchColorCollectorBuilder;
 import com.tbot.ruler.plugins.jwavez.switchmultilevel.SwitchMultilevelCollectorBuilder;
 import com.tbot.ruler.things.*;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
@@ -22,15 +23,18 @@ public class JWaveZBuilder implements ThingPluginBuilder {
     private static final String EMITTER_TYPE_SCENE_ACTIVATION = "scene-activation";
     private static final String ACTUATOR_TYPE_BASIC_SET = "basic-set";
     private static final String COLLECTOR_TYPE_SWITCH_MULTILEVEL = "switch-multilevel";
+    private static final String COLLECTOR_TYPE_SWITCH_COLOR = "switch-color";
 
     private BasicSetActuatorBuilder basicSetEmitterBuilder;
     private SceneActivationEmitterBuilder sceneActivationEmitterBuilder;
     private SwitchMultilevelCollectorBuilder switchMultilevelCollectorBuilder;
+    private SwitchColorCollectorBuilder switchColorCollectorBuilder;
 
     public JWaveZBuilder() {
         this.basicSetEmitterBuilder = new BasicSetActuatorBuilder();
         this.sceneActivationEmitterBuilder = new SceneActivationEmitterBuilder();
         this.switchMultilevelCollectorBuilder = new SwitchMultilevelCollectorBuilder();
+        this.switchColorCollectorBuilder = new SwitchColorCollectorBuilder();
     }
 
     @Override
@@ -99,6 +103,8 @@ public class JWaveZBuilder implements ThingPluginBuilder {
         switch(collectorDTO.getRef()) {
             case COLLECTOR_TYPE_SWITCH_MULTILEVEL:
                 return switchMultilevelCollectorBuilder.buildCollector(collectorDTO, agent);
+            case COLLECTOR_TYPE_SWITCH_COLOR:
+                return switchColorCollectorBuilder.buildCollector(collectorDTO, agent);
             default:
                 throw new PluginException("Unknown collector reference " + collectorDTO.getRef() + ", skipping this DTO");
         }

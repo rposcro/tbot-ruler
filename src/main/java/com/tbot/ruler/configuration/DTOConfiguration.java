@@ -1,11 +1,6 @@
 package com.tbot.ruler.configuration;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -35,6 +30,7 @@ public class DTOConfiguration {
 
     @Value("${ruler.thingsConfig.path}")
     private String configPath;
+
     @Autowired
     private FileUtil fileUtil;
 
@@ -42,7 +38,11 @@ public class DTOConfiguration {
 
     @PostConstruct
     public void initialize() {
-        dtoWrappers = fileUtil.deserializeJsonFilesInSubPackages(configPath, WrapperDTO.class);
+        this.dtoWrappers = new LinkedList<>();
+        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/plugins", WrapperDTO.class));
+        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/things", WrapperDTO.class));
+        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/appliances", WrapperDTO.class));
+        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/bindings", WrapperDTO.class));
     }
 
     @Bean

@@ -45,7 +45,7 @@ public class FileUtil {
             .collect(Collectors.toList());
     }
 
-    private <T> T deserializeJsonFile(File jsonFile, Class<T> dtoClass) {
+    public <T> T deserializeJsonFile(File jsonFile, Class<T> dtoClass) {
         try {
             logFile(jsonFile);
             ObjectMapper mapper = new ObjectMapper();

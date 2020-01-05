@@ -10,7 +10,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
 
 @Slf4j
-@SpringBootApplication
+@SpringBootApplication(scanBasePackages = { "com.tbot.ruler", "com.tbot.layout"})
 public class RulerApp implements CommandLineRunner {
     
     public static final String APPLICATION_NAME = "tbot-ruler";

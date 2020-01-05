@@ -24,7 +24,7 @@ public class AppliancesController extends AbstractController {
     @Autowired
     private AppliancesService appliancesService;
 
-    @GetMapping(value="")
+    @GetMapping(value = "")
     public ResponseEntity<List<ApplianceEntity>> getAll() {
         List<ApplianceEntity> entities = appliancesService.allAppliances().stream()
             .map((appliance) -> new ApplianceEntity(appliance, Collections.emptyMap()))
