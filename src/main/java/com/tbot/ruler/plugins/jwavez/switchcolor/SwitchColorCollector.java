@@ -12,9 +12,11 @@ import com.tbot.ruler.things.CollectorId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.function.BiConsumer;
 
+@Slf4j
 @Getter
 @Builder
 public class SwitchColorCollector implements Collector {
@@ -35,6 +37,7 @@ public class SwitchColorCollector implements Collector {
     public void acceptMessage(Message message) {
         try {
             RGBWUpdatePayload payload = message.getPayload().ensureMessageType();
+            log.debug(String.format("Color switch requested: r%s g%s b%s w%s", payload.getRed(), payload.getGreen(), payload.getBlue(), payload.getWhite()));
             ZWaveControlledCommand command = buildCommand(payload);
             commandConsumer.accept(nodeId, command);
         } catch(JWaveZException e) {
