@@ -6,7 +6,7 @@ import com.tbot.ruler.message.MessagePayload;
 import com.tbot.ruler.message.payloads.BooleanTogglePayload;
 import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.things.ItemId;
-import com.tbot.ruler.things.service.MessagePublisher;
+import com.tbot.ruler.message.MessagePublisher;
 import lombok.Builder;
 import lombok.Getter;
 

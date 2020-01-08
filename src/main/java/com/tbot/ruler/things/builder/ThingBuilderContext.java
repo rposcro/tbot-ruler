@@ -2,7 +2,7 @@ package com.tbot.ruler.things.builder;
 
 import com.tbot.ruler.things.builder.dto.ThingDTO;
 import com.tbot.ruler.things.builder.dto.ThingPluginDTO;
-import com.tbot.ruler.things.service.MessagePublisher;
+import com.tbot.ruler.message.MessagePublisher;
 import com.tbot.ruler.things.service.ServiceProvider;
 import lombok.Builder;
 import lombok.Getter;

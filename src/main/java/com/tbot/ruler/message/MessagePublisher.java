@@ -1,4 +1,4 @@
-package com.tbot.ruler.things.service;
+package com.tbot.ruler.message;
 
 import com.tbot.ruler.message.Message;
 

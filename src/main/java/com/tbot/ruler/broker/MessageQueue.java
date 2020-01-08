@@ -3,7 +3,7 @@ package com.tbot.ruler.broker;
 import com.tbot.ruler.things.ItemId;
 import com.tbot.ruler.message.MessagePayload;
 import com.tbot.ruler.message.Message;
-import com.tbot.ruler.things.service.MessagePublisher;
+import com.tbot.ruler.message.MessagePublisher;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

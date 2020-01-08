@@ -1,10 +1,11 @@
 package com.tbot.ruler.plugins.jwavez.sceneactivation;
 
+import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.payloads.BooleanTogglePayload;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.EmitterId;
-import com.tbot.ruler.things.service.MessagePublisher;
+import com.tbot.ruler.message.MessagePublisher;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -40,5 +41,9 @@ public class SceneActivationEmitter implements Emitter {
 
     public static String uniqueSceneKey(byte nodeId, byte sceneId) {
         return String.format("%02x-%02x", nodeId, sceneId);
+    }
+
+    @Override
+    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
     }
 }

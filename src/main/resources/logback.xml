@@ -9,9 +9,26 @@
 	</appender>
 
 	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOGS_PATH:-.}/tbot-ruler.log</file>
+		<file>${LOGS_PATH:-./logs}/tbot-ruler.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
 			<fileNamePattern>${LOGS_PATH:-./logs}/tbot-ruler-%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>100MB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d %5p %40.40c:%4L - %m%n</pattern>
+		</encoder>
+	</appender>
+
+	<appender name="errorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOGS_PATH:-./logs}/tbot-ruler-errors.log</file>
+		<filter class="ch.qos.logback.classic.filter.LevelFilter">
+			<level>ERROR</level>
+			<onMatch>ACCEPT</onMatch>
+			<onMismatch>DENY</onMismatch>
+		</filter>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGS_PATH:-./logs}/tbot-ruler-errors-%d{yyyy-MM-dd}.log</fileNamePattern>
 			<maxHistory>30</maxHistory>
 			<totalSizeCap>100MB</totalSizeCap>
 		</rollingPolicy>
@@ -23,16 +40,19 @@
 	<root level="${APP_LOGGING_LEVEL:-INFO}">
 		<appender-ref ref="console" />
 		<appender-ref ref="file" />
+		<appender-ref ref="errorFile" />
 	</root>
 	
 	<logger level="${TBOT_LOGGING_LEVEL:-INFO}" name="com.tbot.ruler" additivity="false">
         <appender-ref ref="console" />
 		<appender-ref ref="file" />
+		<appender-ref ref="errorFile" />
 	</logger>
 	
 	<logger level="${RPOSCRO_LOGGING_LEVEL:-DEBUG}" name="com.rposcro" additivity="false">
         <appender-ref ref="console" />
 		<appender-ref ref="file" />
+		<appender-ref ref="errorFile" />
 	</logger>
 
 </configuration>

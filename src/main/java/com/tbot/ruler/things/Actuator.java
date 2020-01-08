@@ -1,6 +1,7 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.things.service.MessageConsumer;
+import com.tbot.ruler.message.MessageReceiver;
+import com.tbot.ruler.message.MessageSender;
 
-public interface Actuator extends TaskBasedItem<ActuatorId>, MessageConsumer {
+public interface Actuator extends TaskBasedItem<ActuatorId>, MessageReceiver, MessageSender {
 }

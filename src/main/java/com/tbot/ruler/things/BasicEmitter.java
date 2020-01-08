@@ -1,5 +1,6 @@
 package com.tbot.ruler.things;
 
+import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,5 +32,9 @@ public class BasicEmitter extends AbstractItem<EmitterId> implements Emitter {
         if (taskTrigger != null && triggerableTask == null) {
             throw new IllegalArgumentException("Emission trigger is only allowed when emission task is specified!");
         }
+    }
+
+    @Override
+    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
     }
 }

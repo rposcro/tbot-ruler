@@ -14,7 +14,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.function.Consumer;
 
-import com.tbot.ruler.things.service.MessagePublisher;
+import com.tbot.ruler.message.MessagePublisher;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;

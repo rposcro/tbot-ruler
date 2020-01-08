@@ -1,5 +1,6 @@
 package com.tbot.ruler.plugins.jwavez.basicset;
 
+import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Actuator;
@@ -29,5 +30,9 @@ public class BasicSetActuator extends AbstractItem<ActuatorId> implements Actuat
     @Override
     public void acceptMessage(Message message) {
         messageConsumer.accept(message);
+    }
+
+    @Override
+    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
     }
 }

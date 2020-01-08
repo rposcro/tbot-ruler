@@ -1,4 +1,6 @@
 package com.tbot.ruler.things;
 
-public interface Emitter extends TaskBasedItem<EmitterId> {
+import com.tbot.ruler.message.MessageSender;
+
+public interface Emitter extends TaskBasedItem<EmitterId>, MessageSender {
 }

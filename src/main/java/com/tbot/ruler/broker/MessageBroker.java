@@ -1,9 +1,13 @@
 package com.tbot.ruler.broker;
 
 import com.tbot.ruler.exceptions.MessageException;
+import com.tbot.ruler.message.DeliveryReport;
+import com.tbot.ruler.message.DeliveryReport.DeliveryReportBuilder;
+import com.tbot.ruler.message.MessageSender;
 import com.tbot.ruler.service.things.BindingsService;
 import com.tbot.ruler.message.Message;
-import com.tbot.ruler.things.service.MessageConsumer;
+import com.tbot.ruler.message.MessageReceiver;
+import com.tbot.ruler.things.ItemId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,27 +29,40 @@ public class MessageBroker implements Runnable {
         while(true) {
             try {
                 Message message = messageQueue.nextMessage();
-                Collection<MessageConsumer> consumers = bindingsService.findBindedMessageConsumers(message.getSenderId());
-                if (consumers.isEmpty()) {
-                    log.info("No bindings found for messages from {}", message.getSenderId().getValue());
-                } else {
-                    consumers.stream()
-                        .forEach(collector -> {
-                            try {
-                                this.deliverMessage(message, collector);
-                                log.debug("Dispatched message from {}", message.getSenderId().getValue());
-                            } catch(MessageException e) {
-                                log.error("Consumer failed to process message from " + message.getSenderId().getValue(), e);
-                            }
-                        });
-                }
+                DeliveryReport deliveryReport = distributeMessage(message);
+                MessageSender messageSender = bindingsService.messageSenderById(message.getSenderId());
+                messageSender.acceptDeliveryReport(deliveryReport);
             } catch(Exception e) {
-                log.error("Message dispatching interrupted", e);
+                log.error("Message dispatching interrupted by unexpected internal error", e);
             }
         }
     }
 
-    private void deliverMessage(Message message, MessageConsumer messageConsumer) {
-        messageConsumer.acceptMessage(message);
+    private DeliveryReport distributeMessage(Message message) {
+        DeliveryReportBuilder reportBuilder = DeliveryReport.builder();
+        Collection<ItemId> consumers = bindingsService.findBindedMessageConsumerIds(message.getSenderId());
+
+        if (consumers.isEmpty()) {
+            log.warn("No bindings found for messages from {}", message.getSenderId().getValue());
+        } else {
+            consumers.stream()
+                .forEach(receiverId -> {
+                    try {
+                        this.deliverMessage(message, receiverId);
+                        reportBuilder.successfulReceiver(receiverId);
+                        log.info("Dispatched message from {} to {}", message.getSenderId().getValue(), receiverId.getValue());
+                    } catch(MessageException e) {
+                        reportBuilder.failedReceiver(receiverId);
+                        log.error("Consumer failed to process message from " + message.getSenderId().getValue() + " to " + receiverId.getValue(), e);
+                    }
+                });
+        }
+
+        return reportBuilder.build();
+    }
+
+    private void deliverMessage(Message message, ItemId receiverId) {
+        MessageReceiver messageReceiver = bindingsService.messageReceiverById(receiverId);
+        messageReceiver.acceptMessage(message);
     }
 }
