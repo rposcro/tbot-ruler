@@ -1,7 +1,5 @@
 package com.tbot.ruler.message;
 
-import com.tbot.ruler.message.Message;
-
 import java.util.function.Consumer;
 
 @FunctionalInterface

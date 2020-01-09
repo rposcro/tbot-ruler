@@ -30,8 +30,7 @@ public class MessageBroker implements Runnable {
             try {
                 Message message = messageQueue.nextMessage();
                 DeliveryReport deliveryReport = distributeMessage(message);
-                MessageSender messageSender = bindingsService.messageSenderById(message.getSenderId());
-                messageSender.acceptDeliveryReport(deliveryReport);
+                deliverReport(message, deliveryReport);
             } catch(Exception e) {
                 log.error("Message dispatching interrupted by unexpected internal error", e);
             }
@@ -39,7 +38,7 @@ public class MessageBroker implements Runnable {
     }
 
     private DeliveryReport distributeMessage(Message message) {
-        DeliveryReportBuilder reportBuilder = DeliveryReport.builder();
+        DeliveryReportBuilder reportBuilder = DeliveryReport.builder().relatedMessageId(message.getId());
         Collection<ItemId> consumers = bindingsService.findBindedMessageConsumerIds(message.getSenderId());
 
         if (consumers.isEmpty()) {
@@ -59,6 +58,11 @@ public class MessageBroker implements Runnable {
         }
 
         return reportBuilder.build();
+    }
+
+    private void deliverReport(Message message, DeliveryReport deliveryReport) {
+        MessageSender messageSender = bindingsService.messageSenderById(message.getSenderId());
+        messageSender.acceptDeliveryReport(deliveryReport);
     }
 
     private void deliverMessage(Message message, ItemId receiverId) {
