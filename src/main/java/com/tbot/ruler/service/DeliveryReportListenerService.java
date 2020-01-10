@@ -14,13 +14,14 @@ public class DeliveryReportListenerService {
 
     private Map<Long, Object> taskMap = new ConcurrentHashMap<>();
 
-    public DeliveryReport waitForReport(long originalMessageId) {
-        return waitForReport(originalMessageId, DEFAULT_TIMEOUT);
+    public DeliveryReport deliverAndWaitForReport(long originalMessageId, Runnable deliveryTask) {
+        return deliverAndWaitForReport(originalMessageId, deliveryTask, DEFAULT_TIMEOUT);
     }
 
-    public DeliveryReport waitForReport(long originalMessageId, long timeout) {
+    public DeliveryReport deliverAndWaitForReport(long originalMessageId, Runnable deliveryTask, long timeout) {
         CompletableFuture<DeliveryReport> future = settleFuture(originalMessageId);
         try {
+            deliveryTask.run();
             return future.get(timeout, TimeUnit.MILLISECONDS);
         } catch(Exception e) {
             removeFuture(originalMessageId, future);
@@ -46,7 +47,7 @@ public class DeliveryReportListenerService {
         taskMap.computeIfPresent(originalMessageId, (key, mapping) -> {
             if (mapping instanceof Set) {
                 Set<CompletableFuture<DeliveryReport>> futureSet = (Set<CompletableFuture<DeliveryReport>>) mapping;
-                futureSet.remove(mapping);
+                futureSet.remove(future);
                 if (!futureSet.isEmpty()) {
                     return futureSet;
                 }
@@ -62,6 +63,7 @@ public class DeliveryReportListenerService {
             if (oldValue instanceof CompletableFuture) {
                 HashSet<CompletableFuture> taskSet = new HashSet<>();
                 taskSet.add((CompletableFuture) oldValue);
+                taskSet.add((CompletableFuture) value);
                 return taskSet;
             } else if (oldValue instanceof Set) {
                 ((Set<CompletableFuture>) oldValue).add((CompletableFuture) value);
