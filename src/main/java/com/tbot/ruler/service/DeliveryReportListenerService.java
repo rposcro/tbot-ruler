@@ -1,6 +1,8 @@
 package com.tbot.ruler.service;
 
 import com.tbot.ruler.exceptions.ServiceException;
+import com.tbot.ruler.exceptions.ServiceExecutionException;
+import com.tbot.ruler.exceptions.ServiceTimeoutException;
 import com.tbot.ruler.message.DeliveryReport;
 import org.springframework.stereotype.Service;
 
@@ -23,9 +25,12 @@ public class DeliveryReportListenerService {
         try {
             deliveryTask.run();
             return future.get(timeout, TimeUnit.MILLISECONDS);
+        } catch(TimeoutException e) {
+            removeFuture(originalMessageId, future);
+            throw new ServiceTimeoutException("Delivery report not received in scheduled time", e);
         } catch(Exception e) {
             removeFuture(originalMessageId, future);
-            throw new ServiceException("Delivery report could not be received", e);
+            throw new ServiceExecutionException("Delivery report could not be received", e);
         }
     }
 

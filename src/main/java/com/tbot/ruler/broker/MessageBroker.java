@@ -4,6 +4,7 @@ import com.tbot.ruler.exceptions.MessageException;
 import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.message.DeliveryReport.DeliveryReportBuilder;
 import com.tbot.ruler.message.MessageSender;
+import com.tbot.ruler.service.DeliveryReportListenerService;
 import com.tbot.ruler.service.things.BindingsService;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.MessageReceiver;
@@ -23,6 +24,9 @@ public class MessageBroker implements Runnable {
 
     @Autowired
     private BindingsService bindingsService;
+
+    @Autowired
+    private DeliveryReportListenerService listenerService;
 
     @Override
     public void run() {
@@ -63,6 +67,7 @@ public class MessageBroker implements Runnable {
     private void deliverReport(Message message, DeliveryReport deliveryReport) {
         MessageSender messageSender = bindingsService.messageSenderById(message.getSenderId());
         messageSender.acceptDeliveryReport(deliveryReport);
+        listenerService.acceptDeliveryReport(deliveryReport);
     }
 
     private void deliverMessage(Message message, ItemId receiverId) {
