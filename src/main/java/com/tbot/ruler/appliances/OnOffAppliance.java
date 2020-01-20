@@ -36,7 +36,6 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
 
     @Override
     public Optional<Message> acceptDirectPayload(MessagePayload payload) {
-        setState(payload);
         return Optional.of(Message.builder()
             .senderId(getId())
             .payload(BooleanUpdatePayload.of(state.get().isOn()))
@@ -60,8 +59,9 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
     @Override
     public void acceptDeliveryReport(DeliveryReport deliveryReport) {
         super.acceptDeliveryReport(deliveryReport);
-        if (deliveryReport.deliverySuccessful()) {
+        if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             getPersistenceService().persist(this.getId(), PERSIST_KEY, Boolean.toString(state.get().isOn()));
+            setState(deliveryReport.getOriginalMessage().getPayload());
         }
     }
 }

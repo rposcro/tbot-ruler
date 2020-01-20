@@ -42,7 +42,7 @@ public class MessageBroker implements Runnable {
     }
 
     private DeliveryReport distributeMessage(Message message) {
-        DeliveryReportBuilder reportBuilder = DeliveryReport.builder().relatedMessageId(message.getId());
+        DeliveryReportBuilder reportBuilder = DeliveryReport.builder().originalMessage(message);
         Collection<ItemId> consumers = bindingsService.findBindedMessageConsumerIds(message.getSenderId());
 
         if (consumers.isEmpty()) {

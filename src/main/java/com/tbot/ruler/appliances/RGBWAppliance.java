@@ -50,6 +50,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWState> {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             getPersistenceService().persist(this.getId(), PERSIST_KEY, toString(colorState.get()));
+            processPayload(deliveryReport.getOriginalMessage().getPayload());
         }
     }
 

@@ -1,6 +1,5 @@
 package com.tbot.ruler.service;
 
-import com.tbot.ruler.exceptions.ServiceException;
 import com.tbot.ruler.exceptions.ServiceExecutionException;
 import com.tbot.ruler.exceptions.ServiceTimeoutException;
 import com.tbot.ruler.message.DeliveryReport;
@@ -35,7 +34,7 @@ public class DeliveryReportListenerService {
     }
 
     public void acceptDeliveryReport(DeliveryReport deliveryReport) {
-        Object mapped = taskMap.remove(deliveryReport.getRelatedMessageId());
+        Object mapped = taskMap.remove(deliveryReport.getOriginalMessage().getId());
         if (mapped instanceof CompletableFuture) {
             deliverReport((CompletableFuture) mapped, deliveryReport);
         } else if (mapped instanceof Set) {

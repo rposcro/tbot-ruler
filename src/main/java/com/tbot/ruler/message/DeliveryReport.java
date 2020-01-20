@@ -11,7 +11,7 @@ import java.util.Set;
 @Getter
 public class DeliveryReport {
 
-    private long relatedMessageId;
+    private Message originalMessage;
     private Set<ItemId> failedReceivers;
     private Set<ItemId> successfulReceivers;
 
@@ -19,10 +19,10 @@ public class DeliveryReport {
     public DeliveryReport(
         @NonNull @Singular Set<ItemId> failedReceivers,
         @NonNull @Singular Set<ItemId> successfulReceivers,
-        long relatedMessageId) {
+        @NonNull Message originalMessage) {
         this.failedReceivers = failedReceivers;
         this.successfulReceivers = successfulReceivers;
-        this.relatedMessageId = relatedMessageId;
+        this.originalMessage = originalMessage;
     }
 
     public boolean noReceiversFound() {
