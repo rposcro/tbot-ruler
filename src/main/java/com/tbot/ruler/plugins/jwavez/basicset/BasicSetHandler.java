@@ -21,7 +21,7 @@ public class BasicSetHandler implements SupportedCommandHandler<BasicSet> {
 
     @Override
     public void handleCommand(BasicSet command) {
-        log.debug("Received scene activation command");
+        log.debug("Received basic set command");
         byte commandValue = (byte) command.getValue();
         String emitterKey = emitterKey(command.getSourceNodeId().getId(), commandValue);
         Optional.ofNullable(emittersPerKey.get(emitterKey))

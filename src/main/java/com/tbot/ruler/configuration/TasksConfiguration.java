@@ -1,5 +1,6 @@
 package com.tbot.ruler.configuration;
 
+import com.tbot.ruler.service.PersistenceService;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.TaskBasedItem;
@@ -18,6 +19,7 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.Executors;
 import java.util.stream.Collectors;
 
@@ -25,14 +27,13 @@ import java.util.stream.Collectors;
 @Configuration
 public class TasksConfiguration {
 
-    @Autowired
-    private List<Emitter> emitters;
+    @Autowired private List<Emitter> emitters;
 
-    @Autowired
-    private List<Actuator> actuators;
+    @Autowired private List<Actuator> actuators;
 
-    @Autowired
-    private List<Thing> things;
+    @Autowired private List<Thing> things;
+
+    @Autowired PersistenceService persistenceService;
 
     @Bean(destroyMethod = "shutdown")
     public ThreadPoolTaskScheduler periodicEmittersScheduler() {
@@ -56,7 +57,16 @@ public class TasksConfiguration {
     }
 
     @EventListener
-    public void launchEmitterThreads(ApplicationReadyEvent event) {
+    public void launchPersistenceFlushThread(ApplicationReadyEvent event) {
+        periodicEmittersScheduler().schedule(
+            () -> persistenceService.flush(),
+            context -> new Date(Optional.ofNullable(context.lastCompletionTime()).orElse(new Date()).getTime() + 60_000)
+        );
+        log.info("Scheduled periodic persistence flush task");
+    }
+
+    @EventListener
+    public void launchTaskBasedItemThreads(ApplicationReadyEvent event) {
         List<TaskBasedItem> taskBasedItems = taskBasedItems();
         startUpTasks(taskBasedItems)
             .stream()

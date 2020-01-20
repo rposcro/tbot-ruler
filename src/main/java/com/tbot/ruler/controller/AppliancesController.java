@@ -1,9 +1,12 @@
 package com.tbot.ruler.controller;
 
 import com.tbot.ruler.appliances.Appliance;
+import com.tbot.ruler.appliances.state.State;
 import com.tbot.ruler.controller.entity.ApplianceEntity;
 import com.tbot.ruler.service.AppliancesService;
+import com.tbot.ruler.service.admin.AppliancesAdminService;
 import com.tbot.ruler.things.ApplianceId;
+import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -24,10 +27,13 @@ public class AppliancesController extends AbstractController {
     @Autowired
     private AppliancesService appliancesService;
 
+    @Autowired
+    private AppliancesAdminService adminService;
+
     @GetMapping(value = "")
     public ResponseEntity<List<ApplianceEntity>> getAll() {
         List<ApplianceEntity> entities = appliancesService.allAppliances().stream()
-            .map((appliance) -> new ApplianceEntity(appliance, Collections.emptyMap()))
+            .map(this::fromAppliance)
             .collect(Collectors.toList());
         return response(ResponseEntity.ok())
             .body(entities);
@@ -39,8 +45,19 @@ public class AppliancesController extends AbstractController {
         if (appliance == null) {
             return ResponseEntity.noContent().build();
         }
-        ApplianceEntity entity = new ApplianceEntity(appliance, Collections.emptyMap());
+        ApplianceEntity entity = fromAppliance(appliance);
         return response(ResponseEntity.ok())
             .body(entity);
+    }
+
+    private ApplianceEntity fromAppliance(Appliance appliance) {
+        ApplianceDTO dto = adminService.applianceDTOById(appliance.getId());
+        return ApplianceEntity.builder()
+            .id(appliance.getId().getValue())
+            .name(dto.getName())
+            .description(dto.getDescription())
+            .stateValue((State) appliance.getState().orElse(null))
+            .links(Collections.emptyMap())
+            .build();
     }
 }

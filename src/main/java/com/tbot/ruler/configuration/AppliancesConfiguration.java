@@ -1,6 +1,7 @@
 package com.tbot.ruler.configuration;
 
 import com.tbot.ruler.appliances.Appliance;
+import com.tbot.ruler.service.PersistenceService;
 import com.tbot.ruler.things.ApplianceId;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import com.tbot.ruler.util.PackageScanner;
@@ -23,6 +24,8 @@ public class AppliancesConfiguration {
 
     @Autowired
     private List<ApplianceDTO> applianceDTOList;
+
+    @Autowired PersistenceService persistenceService;
 
     @Bean
     public Map<String, Class<? extends Appliance>> applianceClassesMap() {
@@ -49,8 +52,8 @@ public class AppliancesConfiguration {
     private Optional<Appliance> fromDTO(ApplianceDTO dto) {
         try {
             Class<? extends Appliance> clazz = applianceClassesMap().get(dto.getType());
-            Constructor<? extends Appliance> constructor = clazz.getConstructor(ApplianceId.class, String.class, String.class);
-            Appliance appliance = constructor.newInstance(dto.getId(), dto.getName(), dto.getDescription());
+            Constructor<? extends Appliance> constructor = clazz.getConstructor(ApplianceId.class, PersistenceService.class);
+            Appliance appliance = constructor.newInstance(dto.getId(), persistenceService);
             return Optional.of(appliance);
         } catch(ReflectiveOperationException | SecurityException e) {
             log.error("Incorrect appliance class type: " + dto.getType() + ", skipping appliance: " + dto.getId());

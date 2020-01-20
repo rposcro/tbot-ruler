@@ -5,10 +5,12 @@ import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
+import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.message.Message;
+import com.tbot.ruler.message.MessagePublisher;
 import com.tbot.ruler.message.payloads.RGBWUpdatePayload;
-import com.tbot.ruler.things.Collector;
-import com.tbot.ruler.things.CollectorId;
+import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.things.ActuatorId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -19,9 +21,11 @@ import java.util.function.BiConsumer;
 @Slf4j
 @Getter
 @Builder
-public class SwitchColorCollector implements Collector {
+public class SwitchColorActuator implements Actuator {
 
-    @NonNull private CollectorId id;
+    private final static String PERSISTENCE_KEY = "rgbw";
+
+    @NonNull private ActuatorId id;
     @NonNull private String name;
     private String description;
 
@@ -29,6 +33,8 @@ public class SwitchColorCollector implements Collector {
     @NonNull private byte switchDuration;
     @NonNull private NodeId nodeId;
     @NonNull private BiConsumer<NodeId, ZWaveControlledCommand> commandConsumer;
+    @NonNull private MessagePublisher messagePublisher;
+
 
     @Builder.Default
     private final SwitchColorCommandBuilder commandBuilder = new SwitchColorCommandBuilder();
@@ -56,5 +62,9 @@ public class SwitchColorCollector implements Collector {
             default:
                 throw new MessageProcessingException("Unknown ColorMode never seen before!");
         }
+    }
+
+    @Override
+    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
     }
 }
