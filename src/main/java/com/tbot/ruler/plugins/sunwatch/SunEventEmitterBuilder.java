@@ -1,11 +1,11 @@
 package com.tbot.ruler.plugins.sunwatch;
 
-import com.tbot.ruler.signals.EmitterSignal;
-import com.tbot.ruler.things.EmissionThread;
-import com.tbot.ruler.things.EmissionTrigger;
+import com.tbot.ruler.message.Message;
+import com.tbot.ruler.things.BasicEmitter;
+import com.tbot.ruler.things.thread.TaskTrigger;
 import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.ThingBuilderContext;
-import com.tbot.ruler.things.dto.EmitterDTO;
+import com.tbot.ruler.things.builder.ThingBuilderContext;
+import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import lombok.Builder;
 
 @Builder
@@ -18,21 +18,24 @@ public class SunEventEmitterBuilder extends AbstractEmitterBuilder {
     private SunEventLocale eventLocale;
 
     public Emitter buildEmitter(EmitterDTO emitterDTO) {
-        registerEmitterThread(emitterDTO);
-        return SunEventEmitter.builder()
+        return BasicEmitter.builder()
             .id(emitterDTO.getId())
-            .metadata(emitterMetadata(emitterDTO))
+            .name(emitterDTO.getName())
+            .description(emitterDTO.getDescription())
+            .taskTrigger(emissionTrigger(emitterDTO))
+            .triggerableTask(emissionTask(emitterDTO))
             .build();
     }
 
-    private void registerEmitterThread(EmitterDTO emitterDTO) {
-        EmitterSignal signal = emitterSignal(emitterDTO, PARAM_EMITTER_SIGNAL);
-        EmissionTrigger trigger = emissionTrigger(emitterDTO);
-        EmissionThread thread = EmissionThread.ofSignal(builderContext.getSignalConsumer(), signal);
-        builderContext.getServices().getRegistrationService().registerPeriodicEmissionThread(thread, trigger);
+    private Runnable emissionTask(EmitterDTO emitterDTO) {
+        Message message = Message.builder()
+            .senderId(emitterDTO.getId())
+            .payload(emitterPayload(emitterDTO, PARAM_EMITTER_SIGNAL))
+            .build();
+        return () -> builderContext.getMessagePublisher().accept(message);
     }
 
-    private EmissionTrigger emissionTrigger(EmitterDTO emitterDTO) {
+    private TaskTrigger emissionTrigger(EmitterDTO emitterDTO) {
         SunEventTimer eventTimer = sunEvent(emitterDTO);
         return SunEventTrigger.builder()
             .timer(eventTimer)

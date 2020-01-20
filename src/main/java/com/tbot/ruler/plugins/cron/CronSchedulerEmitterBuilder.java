@@ -1,62 +1,44 @@
 package com.tbot.ruler.plugins.cron;
 
-import com.tbot.ruler.signals.EmitterSignal;
-import com.tbot.ruler.signals.SignalValue;
-import com.tbot.ruler.things.EmissionThread;
-import com.tbot.ruler.things.EmitterId;
-import com.tbot.ruler.things.EmitterMetadata;
-import com.tbot.ruler.things.ThingBuilderContext;
-import com.tbot.ruler.things.dto.EmitterDTO;
-import com.tbot.ruler.signals.SignalValueType;
+import com.tbot.ruler.message.Message;
+import com.tbot.ruler.message.MessagePayload;
+import com.tbot.ruler.message.payloads.HeartBeatPayload;
+import com.tbot.ruler.things.BasicEmitter;
+import com.tbot.ruler.things.Emitter;
+import com.tbot.ruler.things.ItemId;
+import com.tbot.ruler.things.builder.ThingBuilderContext;
+import com.tbot.ruler.things.builder.dto.EmitterDTO;
 
 import java.util.TimeZone;
+import java.util.function.Consumer;
 
 public class CronSchedulerEmitterBuilder {
 
-    private static final String PARAM_SIGNAL_TYPE = "signalType";
-    private static final String PARAM_SIGNAL_VALUE = "signalValue";
     private static final String PARAM_SCHEDULE_PATTERN = "schedulePattern";
 
-    public CronSchedulerEmitter buildEmitter(ThingBuilderContext builderContext, EmitterDTO emitterDTO, TimeZone timeZone) {
-        EmitterId emitterId = emitterDTO.getId();
-        EmitterSignal signal = parseSignal(emitterDTO, emitterId);
-        CronSchedulerEmitter emitter = CronSchedulerEmitter.builder()
-            .id(emitterId)
-            .metadata(buildMetadata(emitterDTO, signal.getSignalValue().getSignalValueType(), emitterId))
+    public Emitter buildEmitter(ThingBuilderContext builderContext, EmitterDTO emitterDTO, TimeZone timeZone) {
+        return BasicEmitter.builder()
+            .id(emitterDTO.getId())
+            .name(emitterDTO.getName())
+            .description(emitterDTO.getDescription())
+            .triggerableTask(emissionTask(emitterDTO, builderContext.getMessagePublisher()))
+            .taskTrigger(emissionTrigger(emitterDTO, timeZone))
             .build();
-        registerEmitterThread(builderContext, emitterDTO, timeZone, signal);
-        return emitter;
     }
 
-    private EmitterMetadata buildMetadata(EmitterDTO emitterDTO, SignalValueType signalType, EmitterId emitterId) {
-        return EmitterMetadata.builder()
-                .id(emitterId)
-                .name(emitterDTO.getName())
-                .description(emitterDTO.getName())
-                .emittedSignalType(signalType)
-                .build();
-    }
-
-    private EmitterSignal parseSignal(EmitterDTO emitterDTO, EmitterId emitterId) {
-        return new EmitterSignal(
-                SignalValue.parse(
-                    emitterDTO.getStringParameter(PARAM_SIGNAL_TYPE),
-                    emitterDTO.getStringParameter(PARAM_SIGNAL_VALUE)),
-                emitterId);
-    }
-
-    private void registerEmitterThread(
-            ThingBuilderContext builderContext,
-            EmitterDTO emitterDTO,
-            TimeZone timeZone,
-            EmitterSignal signal) {
-        builderContext.getServices().getRegistrationService().registerPeriodicEmissionThread(
-                EmissionThread.ofSignal(builderContext.getSignalConsumer(), signal),
-                emissionTrigger(emitterDTO, timeZone));
+    private Runnable emissionTask(EmitterDTO emitterDTO, Consumer<Message> messageConsumer) {
+        return () -> messageConsumer.accept(messageToSend(emitterDTO.getId(), new HeartBeatPayload()));
     }
 
     private CronEmissionTrigger emissionTrigger(EmitterDTO emitterDTO, TimeZone timeZone) {
         String pattern = emitterDTO.getConfig().get(PARAM_SCHEDULE_PATTERN);
         return new CronEmissionTrigger(pattern, timeZone);
+    }
+
+    private Message messageToSend(ItemId emitterId, MessagePayload messagePayload) {
+        return Message.builder()
+            .senderId(emitterId)
+            .payload(messagePayload)
+            .build();
     }
 }

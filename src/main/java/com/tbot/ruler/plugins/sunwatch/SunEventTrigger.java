@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.sunwatch;
 
-import com.tbot.ruler.things.EmissionTrigger;
-import com.tbot.ruler.things.EmissionTriggerContext;
+import com.tbot.ruler.things.thread.TaskTrigger;
+import com.tbot.ruler.things.thread.EmissionTriggerContext;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Slf4j
 @Builder
-public class SunEventTrigger implements EmissionTrigger {
+public class SunEventTrigger implements TaskTrigger {
 
     private ZoneId zoneId;
     private SunEventTimer timer;

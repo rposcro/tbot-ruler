@@ -28,10 +28,10 @@ public class AbstractController implements ControllerConstants {
     }
 
     protected ResponseEntity.BodyBuilder response(ResponseEntity.BodyBuilder builder) {
-        return builder.header("Access-Control-Allow-Origin", "http://localhost:4200");
+        return builder.header("Customer-Header", "Provided by TBot");
     }
 
     protected ResponseEntity.HeadersBuilder response(ResponseEntity.HeadersBuilder builder) {
-        return builder.header("Access-Control-Allow-Origin", "http://localhost:4200");
+        return builder.header("Customer-Header", "Provided by TBot");
     }
 }

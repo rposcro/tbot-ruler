@@ -29,6 +29,6 @@ public class CollectorsConfiguration {
 
     @Bean
     public Map<CollectorId, Collector> collectorsPerId() {
-        return collectors().stream().collect(Collectors.toMap(a -> a.getId(), Function.identity()));
+        return collectors().stream().collect(Collectors.toMap(Collector::getId, Function.identity()));
     }
 }

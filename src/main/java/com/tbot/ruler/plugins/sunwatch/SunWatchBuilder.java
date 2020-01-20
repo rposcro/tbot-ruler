@@ -9,12 +9,11 @@ import com.luckycatlabs.sunrisesunset.dto.Location;
 import com.tbot.ruler.things.BasicThing;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.Thing;
-import com.tbot.ruler.things.ThingBuilderContext;
-import com.tbot.ruler.things.ThingMetadata;
-import com.tbot.ruler.things.ThingPluginBuilder;
-import com.tbot.ruler.things.dto.EmitterDTO;
+import com.tbot.ruler.things.builder.ThingBuilderContext;
+import com.tbot.ruler.things.builder.ThingPluginBuilder;
+import com.tbot.ruler.things.builder.dto.EmitterDTO;
 
-import com.tbot.ruler.things.dto.ThingDTO;
+import com.tbot.ruler.things.builder.dto.ThingDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -50,9 +49,11 @@ public class SunWatchBuilder implements ThingPluginBuilder {
         List<Emitter> emitters = buildEmitters(thingDTO.getEmitters());
 
         return BasicThing.builder()
-                .metadata(ThingMetadata.fromThingMetadata(thingDTO))
-                .emitters(emitters)
-                .build();
+            .id(thingDTO.getId())
+            .name(thingDTO.getName())
+            .description(thingDTO.getDescription())
+            .emitters(emitters)
+            .build();
     }
 
     private List<Emitter> buildEmitters(List<EmitterDTO> emitterDTOList) {

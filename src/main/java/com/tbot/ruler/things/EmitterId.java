@@ -1,16 +1,8 @@
 package com.tbot.ruler.things;
 
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.ToString;
-
-@Getter
-@EqualsAndHashCode
-@ToString
-public class EmitterId {
-    private final String value;
+public class EmitterId extends ItemId {
 
     public EmitterId(String value) {
-        this.value = value;
+        super(value);
     }
 }

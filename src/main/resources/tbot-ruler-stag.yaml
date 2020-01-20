@@ -37,6 +37,8 @@ eureka:
 ruler:
     thingsConfig:
         path: /config/config-stag
+    cache:
+        path: /cache
     broker:
         emissionQueueLength: 200
         collectionQueueLength: 200

@@ -1,8 +1,8 @@
 package com.tbot.ruler.service;
 
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.appliances.ApplianceId;
 import com.tbot.ruler.configuration.AppliancesConfiguration;
+import com.tbot.ruler.things.ApplianceId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

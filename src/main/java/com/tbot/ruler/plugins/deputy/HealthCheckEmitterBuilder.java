@@ -1,42 +1,34 @@
 package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.rest.RestGetCommand;
-import com.tbot.ruler.things.EmissionThread;
-import com.tbot.ruler.things.EmitterId;
-import com.tbot.ruler.things.EmitterMetadata;
-import com.tbot.ruler.things.RegularEmissionTrigger;
-import com.tbot.ruler.things.ThingBuilderContext;
-import com.tbot.ruler.things.dto.EmitterDTO;
-import com.tbot.ruler.things.dto.ThingDTO;
-import com.tbot.ruler.signals.SignalValueType;
+import com.tbot.ruler.things.BasicEmitter;
+import com.tbot.ruler.things.Emitter;
+import com.tbot.ruler.things.thread.RegularEmissionTrigger;
+import com.tbot.ruler.things.builder.ThingBuilderContext;
+import com.tbot.ruler.things.builder.dto.EmitterDTO;
+import com.tbot.ruler.things.builder.dto.ThingDTO;
 
 class HealthCheckEmitterBuilder {
 
     private static final String PARAM_FREQUENCY = "frequency";
     private static final String DEFAULT_FREQUENCY = "15";
 
-    HealthCheckEmitter buildEmitter(ThingBuilderContext builderContext, EmitterDTO emitterDTO) {
-        HealthCheckEmitter emitter = HealthCheckEmitter.builder()
+    Emitter buildEmitter(ThingBuilderContext builderContext, EmitterDTO emitterDTO) {
+        return BasicEmitter.builder()
             .id(emitterDTO.getId())
-            .metadata(emitterMetadata(emitterDTO))
+            .name(emitterDTO.getName())
+            .description(emitterDTO.getDescription())
+            .triggerableTask(emissionTask(builderContext, emitterDTO))
+            .taskTrigger(emissionTrigger(emitterDTO))
             .build();
-        registerEmitterThread(builderContext, emitterDTO);
-        return emitter;
     }
 
-    private void registerEmitterThread(ThingBuilderContext builderContext, EmitterDTO emitterDTO) {
-        builderContext.getServices().getRegistrationService().registerPeriodicEmissionThread(
-                emissionThread(builderContext, emitterDTO.getId()),
-                emissionTrigger(emitterDTO)
-        );
-    }
-
-    private EmissionThread emissionThread(ThingBuilderContext builderContext, EmitterId emitterId) {
-        return HealthCheckEmissionThread.builder()
-                .emitterId(emitterId)
-                .healthCheckCommand(restGetCommand(builderContext))
-                .signalConsumer(builderContext.getSignalConsumer())
-                .build();
+    private HealthCheckEmissionTask emissionTask(ThingBuilderContext builderContext, EmitterDTO emitterDTO) {
+        return HealthCheckEmissionTask.builder()
+            .emitterId(emitterDTO.getId())
+            .healthCheckCommand(restGetCommand(builderContext))
+            .messageConsumer(builderContext.getMessagePublisher())
+            .build();
     }
 
     private RegularEmissionTrigger emissionTrigger(EmitterDTO emitterDTO) {
@@ -50,15 +42,6 @@ class HealthCheckEmitterBuilder {
                 .host(thingDTO.getConfig().get(DeputyBuilder.PARAM_HOST))
                 .port(thingDTO.getConfig().get(DeputyBuilder.PARAM_PORT))
                 .path(thingDTO.getConfig().get(DeputyBuilder.PARAM_PATH))
-                .build();
-    }
-
-    private EmitterMetadata emitterMetadata(EmitterDTO emitterDTO) {
-        return EmitterMetadata.builder()
-                .id(emitterDTO.getId())
-                .name(emitterDTO.getName())
-                .description(emitterDTO.getName())
-                .emittedSignalType(SignalValueType.Boolean)
                 .build();
     }
 }

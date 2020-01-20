@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.dto.ActuatorDTO;
+import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -10,13 +10,12 @@ import com.tbot.ruler.things.BasicThing;
 import com.tbot.ruler.things.Collector;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.Thing;
-import com.tbot.ruler.things.ThingBuilderContext;
-import com.tbot.ruler.things.ThingMetadata;
-import com.tbot.ruler.things.ThingPluginBuilder;
-import com.tbot.ruler.things.dto.CollectorDTO;
-import com.tbot.ruler.things.dto.EmitterDTO;
+import com.tbot.ruler.things.builder.ThingBuilderContext;
+import com.tbot.ruler.things.builder.ThingPluginBuilder;
+import com.tbot.ruler.things.builder.dto.CollectorDTO;
+import com.tbot.ruler.things.builder.dto.EmitterDTO;
 
-import com.tbot.ruler.things.dto.ThingDTO;
+import com.tbot.ruler.things.builder.dto.ThingDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -32,24 +31,25 @@ public class DeputyBuilder implements ThingPluginBuilder {
 
     private HealthCheckEmitterBuilder healthCheckEmitterBuilder = new HealthCheckEmitterBuilder();
     private BinOutCollectorBuilder binOutCollectorBuilder = new BinOutCollectorBuilder();
-    private BinOutActuatorBuilder binOutActuatorBuilder = new BinOutActuatorBuilder();
+    private BinaryActuatorBuilder binOutActuatorBuilder = new BinaryActuatorBuilder();
 
     @Override
     public Thing buildThing(ThingBuilderContext builderContext) {
         ThingDTO thingDTO = builderContext.getThingDTO();
         log.debug("Building Deputy: " + thingDTO.getName());
 
-        ThingMetadata metadata = ThingMetadata.fromThingMetadata(thingDTO);
         List<Collector> collectors = buildCollectors(builderContext);
         List<Emitter> emitters = buildEmitters(builderContext);
         List<Actuator> actuators = buildActuators(builderContext);
 
         return BasicThing.builder()
-                .metadata(metadata)
-                .emitters(emitters)
-                .collectors(collectors)
-                .actuators(actuators)
-                .build();
+            .id(thingDTO.getId())
+            .name(thingDTO.getName())
+            .description(thingDTO.getDescription())
+            .emitters(emitters)
+            .collectors(collectors)
+            .actuators(actuators)
+            .build();
     }
 
     private List<Emitter> buildEmitters(ThingBuilderContext builderContext) {
@@ -92,12 +92,11 @@ public class DeputyBuilder implements ThingPluginBuilder {
             List<Actuator> actuators = new ArrayList<>(actuatorDTOs.size());
             actuatorDTOs.forEach(actuatorDTO -> {
                 if (ACTUATOR_REF_BINOUT.equals(actuatorDTO.getRef())) {
-                    actuators.add(binOutActuatorBuilder.buildActuator(thingDTO, actuatorDTO, builderContext.getServices()));
+                    actuators.add(binOutActuatorBuilder.buildActuator(thingDTO, actuatorDTO, builderContext));
                 }
             });
             return actuators;
         }
         return Collections.emptyList();
     }
-
 }

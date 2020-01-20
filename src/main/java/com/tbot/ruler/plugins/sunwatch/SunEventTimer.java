@@ -12,9 +12,9 @@ import com.luckycatlabs.sunrisesunset.SunriseSunsetCalculator;
 @FunctionalInterface
 public interface SunEventTimer {
 
-    public ZonedDateTime forDate(LocalDate forDate);
+    ZonedDateTime forDate(LocalDate forDate);
 
-    public static SunEventTimerContext context(ZoneId zoneId, Location location) {
+    static SunEventTimerContext context(ZoneId zoneId, Location location) {
         SunEventTimerContext context = new SunEventTimerContext();
         TimeZone timeZone = TimeZone.getTimeZone(zoneId);
         context.calendar = Calendar.getInstance(timeZone);
@@ -23,7 +23,7 @@ public interface SunEventTimer {
         return context;
     }
 
-    public static class SunEventTimerContext {
+    class SunEventTimerContext {
         private SunriseSunsetCalculator calculator;
         private Calendar calendar;
     }

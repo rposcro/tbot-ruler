@@ -1,24 +1,15 @@
 package com.tbot.ruler.configuration;
 
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.tbot.ruler.appliances.ApplianceId;
-import com.tbot.ruler.things.ActuatorId;
-import com.tbot.ruler.things.CollectorId;
-import com.tbot.ruler.things.EmitterId;
-import com.tbot.ruler.things.ThingId;
-import com.tbot.ruler.things.dto.ActuatorDTO;
-import com.tbot.ruler.things.dto.ApplianceDTO;
-import com.tbot.ruler.things.dto.BindingDTO;
-import com.tbot.ruler.things.dto.CollectorDTO;
-import com.tbot.ruler.things.dto.EmitterDTO;
+import com.tbot.ruler.things.*;
+import com.tbot.ruler.things.builder.dto.ActuatorDTO;
+import com.tbot.ruler.things.builder.dto.ApplianceDTO;
+import com.tbot.ruler.things.builder.dto.BindingDTO;
+import com.tbot.ruler.things.builder.dto.CollectorDTO;
+import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.util.FileUtil;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,8 +17,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.tbot.ruler.things.dto.ThingDTO;
-import com.tbot.ruler.things.dto.ThingPluginDTO;
+import com.tbot.ruler.things.builder.dto.ThingDTO;
+import com.tbot.ruler.things.builder.dto.ThingPluginDTO;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -39,6 +30,7 @@ public class DTOConfiguration {
 
     @Value("${ruler.thingsConfig.path}")
     private String configPath;
+
     @Autowired
     private FileUtil fileUtil;
 
@@ -46,7 +38,11 @@ public class DTOConfiguration {
 
     @PostConstruct
     public void initialize() {
-        dtoWrappers = fileUtil.deserializeJsonFilesInSubPackages(configPath, WrapperDTO.class);
+        this.dtoWrappers = new LinkedList<>();
+        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/plugins", WrapperDTO.class));
+        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/things", WrapperDTO.class));
+        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/appliances", WrapperDTO.class));
+        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/bindings", WrapperDTO.class));
     }
 
     @Bean
@@ -131,12 +127,6 @@ public class DTOConfiguration {
             .collect(Collectors.toList());
         log.info("Found and read {} binding DTOs", dtos.size());
         return dtos;
-    }
-
-    @Bean
-    public Map<ApplianceId, BindingDTO> applianceBindingDTOMap() {
-        return bindingDTOs().stream()
-            .collect(Collectors.toMap(bindingDto -> bindingDto.getApplianceId(), Function.identity()));
     }
 
     @Bean

@@ -1,14 +1,26 @@
 package com.tbot.ruler.plugins.jwavez;
 
+import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
 import com.rposcro.jwavez.core.commands.enums.BasicCommandType;
 import com.rposcro.jwavez.core.commands.enums.SceneActivationCommandType;
+import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.handlers.SupportedCommandDispatcher;
+import com.rposcro.jwavez.core.model.NodeId;
 import com.rposcro.jwavez.serial.controllers.GeneralAsynchronousController;
+import com.rposcro.jwavez.serial.exceptions.SerialException;
 import com.rposcro.jwavez.serial.exceptions.SerialPortException;
+import com.rposcro.jwavez.serial.frames.requests.SendDataRequest;
 import com.rposcro.jwavez.serial.handlers.ApplicationCommandHandler;
-import com.tbot.ruler.things.ThingBuilderContext;
+import com.rposcro.jwavez.serial.rxtx.SerialRequest;
+import com.tbot.ruler.exceptions.MessageProcessingException;
+import com.tbot.ruler.plugins.jwavez.basicset.BasicSetHandler;
+import com.tbot.ruler.plugins.jwavez.sceneactivation.SceneActivationHandler;
+import com.tbot.ruler.things.builder.ThingBuilderContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiConsumer;
 
 @Slf4j
 @Getter
@@ -30,6 +42,8 @@ public class JWaveZAgent {
 
     private final int reconnectAttempts;
     private final int reconnectDelay;
+
+    private final AtomicInteger callbackId = new AtomicInteger(1);
 
     public JWaveZAgent(ThingBuilderContext builderContext) {
         this.reconnectAttempts = builderContext.getThingDTO().getIntParameter(PARAM_RECONNECT_ATTEMPTS, DEFAULT_MAX_RETRIES);
@@ -59,6 +73,20 @@ public class JWaveZAgent {
         }
     }
 
+    public BiConsumer<NodeId, ZWaveControlledCommand> commandSender() {
+        return (nodeId, command) -> {
+            if (jwzController == null) {
+                throw new MessageProcessingException("JWaveZ controller is not active!");
+            }
+            try {
+                SerialRequest request = SendDataRequest.createSendDataRequest(nodeId, command, nextCallbackId());
+                jwzController.requestCallbackFlow(request);
+            } catch(SerialException e) {
+                throw new MessageProcessingException("Exception when sending command!", e);
+            }
+        };
+    }
+
     private GeneralAsynchronousController jwavezController(String device, SupportedCommandDispatcher commandDispatcher) {
         return GeneralAsynchronousController.builder()
             .dongleDevice(device)
@@ -79,5 +107,9 @@ public class JWaveZAgent {
 
     private SupportedCommandDispatcher commandDispatcher() {
         return new SupportedCommandDispatcher();
+    }
+
+    private byte nextCallbackId() {
+        return (byte) callbackId.accumulateAndGet(1, (current, add) -> (++current > 250 ? 1 : current));
     }
 }

@@ -1,28 +1,52 @@
 package com.tbot.ruler.service;
 
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.appliances.ApplianceId;
-import com.tbot.ruler.exceptions.SignalException;
-import com.tbot.ruler.signals.EmitterSignal;
-import com.tbot.ruler.signals.OnOffSignalValue;
-import com.tbot.ruler.things.EmitterId;
+import com.tbot.ruler.broker.MessageQueue;
+import com.tbot.ruler.exceptions.ServiceException;
+import com.tbot.ruler.exceptions.ServiceUnavailableException;
+import com.tbot.ruler.message.DeliveryReport;
+import com.tbot.ruler.message.Message;
+import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.message.payloads.RGBWUpdatePayload;
+import com.tbot.ruler.things.ApplianceId;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
+@Slf4j
 @Service
 public class AppliancesStateService {
 
-    private static final EmitterId EMITTER_SERVICE_ID = new EmitterId("rest-service");
+    @Autowired
+    private DeliveryReportListenerService listenerService;
 
     @Autowired
     private AppliancesService appliancesService;
 
     @Autowired
-    private AppliancesAgentService appliancesAgentService;
+    private MessageQueue messageQueue;
 
-    public void changeStateValue(ApplianceId applianceId, OnOffSignalValue signalValue) throws SignalException {
+    public DeliveryReport updateApplianceState(ApplianceId applianceId, BooleanUpdatePayload stateUpdate) {
         Appliance appliance = appliancesService.applianceById(applianceId);
-        EmitterSignal signal = new EmitterSignal(signalValue, EMITTER_SERVICE_ID);
-        appliancesAgentService.distributeSignal(signal, appliance);
+        Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(stateUpdate);
+        return publishMessage(optionalForwardMessage);
+    }
+
+    public DeliveryReport updateApplianceState(ApplianceId applianceId, RGBWUpdatePayload stateUpdate) {
+        Appliance appliance = appliancesService.applianceById(applianceId);
+        Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(stateUpdate);
+        return publishMessage(optionalForwardMessage);
+    }
+
+    private DeliveryReport publishMessage(Optional<Message> optionalForwardMessage) {
+        DeliveryReport report = optionalForwardMessage
+            .map(message -> listenerService.deliverAndWaitForReport(message.getId(), () -> messageQueue.publish(message), 3000))
+            .orElseThrow(() -> new ServiceException("Unexpected missing delivery report without exception!"));
+        if (!report.deliverySuccessful()) {
+            throw new ServiceUnavailableException("Some or all items are unavailable for messaging", report.getFailedReceivers());
+        }
+        return report;
     }
 }

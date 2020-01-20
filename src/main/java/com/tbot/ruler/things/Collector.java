@@ -1,10 +1,6 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.signals.ApplianceSignal;
+import com.tbot.ruler.message.MessageReceiver;
 
-public interface Collector {
-
-    public CollectorId getId();
-    public CollectorMetadata getMetadata();
-    public void collectSignal(ApplianceSignal signal) throws CollectorException;
+public interface Collector extends Item<CollectorId>, MessageReceiver {
 }

@@ -1,8 +1,8 @@
 package com.tbot.ruler.service.admin;
 
-import com.tbot.ruler.appliances.ApplianceId;
 import com.tbot.ruler.configuration.DTOConfiguration;
-import com.tbot.ruler.things.dto.ApplianceDTO;
+import com.tbot.ruler.things.ItemId;
+import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +18,7 @@ public class AppliancesAdminService {
         return dtoConfiguration.applianceDTOs();
     }
 
-    public ApplianceDTO applianceDTOById(ApplianceId applianceId) {
+    public ApplianceDTO applianceDTOById(ItemId applianceId) {
         return dtoConfiguration.applianceDTOMap().get(applianceId);
     }
 }

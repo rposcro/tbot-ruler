@@ -4,7 +4,7 @@
 
     <groupId>com.rposcro.tbot</groupId>
     <artifactId>tbot-ruler</artifactId>
-    <version>1.1.0</version>
+    <version>1.2.0</version>
     <packaging>jar</packaging>
 
     <name>tbot-ruler</name>
@@ -14,7 +14,7 @@
         <java.version>1.8</java.version>
         <start-class>com.tbot.ruler.RulerApp</start-class>
 
-        <jwavez.version>1.1.2</jwavez.version>
+        <jwavez.version>1.1.3-SNAPSHOT</jwavez.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <spock.version>1.1-groovy-2.4</spock.version>
         <codehouse.groovy.version>2.4.6</codehouse.groovy.version>
