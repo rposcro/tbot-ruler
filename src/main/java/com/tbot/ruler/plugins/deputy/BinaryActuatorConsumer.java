@@ -3,6 +3,7 @@ package com.tbot.ruler.plugins.deputy;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.MessagePayload;
+import com.tbot.ruler.message.payloads.BooleanTogglePayload;
 import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.message.payloads.UpdateRequestPayload;
 import com.tbot.ruler.plugins.deputy.model.BinOutState;
@@ -27,8 +28,8 @@ import org.springframework.web.client.RestClientException;
 @AllArgsConstructor
 public class BinaryActuatorConsumer implements Consumer<Message> {
 
-    @NonNull private MessagePublisher messagePublisher;
     @NonNull private ItemId actuatorId;
+    @NonNull private MessagePublisher messagePublisher;
     @NonNull private RestPatchCommand patchCommand;
     @NonNull private RestGetCommand getCommand;
 
@@ -37,14 +38,24 @@ public class BinaryActuatorConsumer implements Consumer<Message> {
         MessagePayload payload = message.getPayload();
         if (payload instanceof BooleanUpdatePayload) {
             handleBooleanUpdate(payload.ensureMessageType());
+        } else if (payload instanceof BooleanTogglePayload) {
+            handleToggleUpdate();
         } else if (payload instanceof UpdateRequestPayload) {
-            handleUpdateRequest(payload.ensureMessageType());
+            handleUpdateRequest();
         }
     }
 
+    private void handleToggleUpdate() {
+        handleStateUpdate("toggle");
+    }
+
     private void handleBooleanUpdate(BooleanUpdatePayload payload) {
+        handleStateUpdate(payload.isState() ? "on" : "off");
+    }
+
+    private void handleStateUpdate(String stateValue) {
         try {
-            Map<String, String> reqParams = Collections.singletonMap("state", payload.isState() ? "on" : "off");
+            Map<String, String> reqParams = Collections.singletonMap("state", stateValue);
             RestResponse response = patchCommand.sendPatch(reqParams);
 
             if (response.getStatusCode() != 200) {
@@ -58,7 +69,7 @@ public class BinaryActuatorConsumer implements Consumer<Message> {
         }
     }
 
-    private void handleUpdateRequest(BooleanUpdatePayload payload) {
+    private void handleUpdateRequest() {
         try {
             ResponseEntity<BinOutState> response = getCommand.sendGet(BinOutState.class);
 

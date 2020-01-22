@@ -5,6 +5,7 @@ import org.springframework.http.ResponseEntity;
 
 @AllArgsConstructor
 public class RestResponse {
+
     private ResponseEntity<String> entity;
 
     public String getBody() {

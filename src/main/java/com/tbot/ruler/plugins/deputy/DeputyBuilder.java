@@ -7,12 +7,10 @@ import java.util.Collections;
 import java.util.List;
 
 import com.tbot.ruler.things.BasicThing;
-import com.tbot.ruler.things.Collector;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.ThingPluginBuilder;
-import com.tbot.ruler.things.builder.dto.CollectorDTO;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 
 import com.tbot.ruler.things.builder.dto.ThingDTO;
@@ -25,12 +23,10 @@ public class DeputyBuilder implements ThingPluginBuilder {
     static final String PARAM_PORT = "port";
     static final String PARAM_PATH = "path";
 
-    private static final String COLLECTOR_REF_BINOUT = "binout";
     private static final String ACTUATOR_REF_BINOUT = "binary-output";
     private static final String EMITTER_REF_HEALTHCHECK = "health-check";
 
     private HealthCheckEmitterBuilder healthCheckEmitterBuilder = new HealthCheckEmitterBuilder();
-    private BinOutCollectorBuilder binOutCollectorBuilder = new BinOutCollectorBuilder();
     private BinaryActuatorBuilder binOutActuatorBuilder = new BinaryActuatorBuilder();
 
     @Override
@@ -38,7 +34,6 @@ public class DeputyBuilder implements ThingPluginBuilder {
         ThingDTO thingDTO = builderContext.getThingDTO();
         log.debug("Building Deputy: " + thingDTO.getName());
 
-        List<Collector> collectors = buildCollectors(builderContext);
         List<Emitter> emitters = buildEmitters(builderContext);
         List<Actuator> actuators = buildActuators(builderContext);
 
@@ -47,7 +42,6 @@ public class DeputyBuilder implements ThingPluginBuilder {
             .name(thingDTO.getName())
             .description(thingDTO.getDescription())
             .emitters(emitters)
-            .collectors(collectors)
             .actuators(actuators)
             .build();
     }
@@ -68,22 +62,6 @@ public class DeputyBuilder implements ThingPluginBuilder {
         return Collections.emptyList();
     }
     
-    private List<Collector> buildCollectors(ThingBuilderContext builderContext) {
-        ThingDTO thingDTO = builderContext.getThingDTO();
-        List<CollectorDTO> collectorDTOs = thingDTO.getCollectors();
-
-        if (collectorDTOs != null) {
-            List<Collector> collectors = new ArrayList<>(collectorDTOs.size());
-            collectorDTOs.forEach(collectorDTO -> {
-                if (COLLECTOR_REF_BINOUT.equals(collectorDTO.getRef())) {
-                    collectors.add(binOutCollectorBuilder.buildCollector(thingDTO, collectorDTO, builderContext.getServices()));
-                }
-            });
-            return collectors;
-        }
-        return Collections.emptyList();
-    }
-
     private List<Actuator> buildActuators(ThingBuilderContext builderContext) {
         ThingDTO thingDTO = builderContext.getThingDTO();
         List<ActuatorDTO> actuatorDTOs = thingDTO.getActuators();

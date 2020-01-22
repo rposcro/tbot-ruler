@@ -3,6 +3,7 @@ package com.tbot.ruler.util
 import spock.lang.Specification
 
 class ParseUtilSpec extends Specification {
+
     def "parses numbers of different radix" () {
         given:
         String sZero = "0";
