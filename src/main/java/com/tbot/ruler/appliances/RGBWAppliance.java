@@ -1,14 +1,12 @@
 package com.tbot.ruler.appliances;
 
 import com.tbot.ruler.appliances.state.RGBWState;
-import com.tbot.ruler.exceptions.MessageUnsupportedException;
 import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.MessagePayload;
 import com.tbot.ruler.message.payloads.RGBWUpdatePayload;
 import com.tbot.ruler.service.PersistenceService;
 import com.tbot.ruler.things.ApplianceId;
-import lombok.Getter;
 
 import java.util.Optional;
 
@@ -24,20 +22,29 @@ public class RGBWAppliance extends AbstractAppliance<RGBWState> {
         );
     }
 
-    @Getter
     private Optional<RGBWState> colorState = Optional.empty();
 
     @Override
     public void acceptMessage(Message message) {
-        processPayload(message.getPayload());
+        setState(message.getPayload().ensureMessageType());
     }
 
     @Override
     public Optional<Message> acceptDirectPayload(MessagePayload payload) {
+        RGBWUpdatePayload forwardPayload = payload.ensureMessageType();
         return Optional.of(Message.builder()
             .senderId(getId())
-            .payload(processPayload(payload))
+            .payload(forwardPayload)
             .build());
+    }
+
+    @Override
+    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+        super.acceptDeliveryReport(deliveryReport);
+        if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
+            setState(deliveryReport.getOriginalMessage().getPayload().ensureMessageType());
+            getPersistenceService().persist(this.getId(), PERSIST_KEY, toString(colorState.get()));
+        }
     }
 
     @Override
@@ -45,24 +52,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWState> {
         return this.colorState;
     }
 
-    @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
-        super.acceptDeliveryReport(deliveryReport);
-        if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
-            getPersistenceService().persist(this.getId(), PERSIST_KEY, toString(colorState.get()));
-            processPayload(deliveryReport.getOriginalMessage().getPayload());
-        }
-    }
-
-    private MessagePayload processPayload(MessagePayload messagePayload) {
-        if (messagePayload instanceof RGBWUpdatePayload) {
-            return processColor((RGBWUpdatePayload) messagePayload);
-        } else {
-            throw new MessageUnsupportedException("Unsupported message payload of class " + messagePayload.getClass());
-        }
-    }
-
-    private MessagePayload processColor(RGBWUpdatePayload rgbw) {
+    private MessagePayload setState(RGBWUpdatePayload rgbw) {
         RGBWState newState = RGBWState.of(rgbw.getRed(), rgbw.getGreen(), rgbw.getBlue(), rgbw.getWhite());
         this.colorState = Optional.of(newState);
         return rgbw;

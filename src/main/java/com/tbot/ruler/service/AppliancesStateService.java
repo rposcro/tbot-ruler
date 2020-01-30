@@ -3,6 +3,7 @@ package com.tbot.ruler.service;
 import com.tbot.ruler.appliances.Appliance;
 import com.tbot.ruler.broker.MessageQueue;
 import com.tbot.ruler.exceptions.ServiceException;
+import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.exceptions.ServiceUnavailableException;
 import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.message.Message;
@@ -29,13 +30,17 @@ public class AppliancesStateService {
     private MessageQueue messageQueue;
 
     public DeliveryReport updateApplianceState(ApplianceId applianceId, BooleanUpdatePayload stateUpdate) {
-        Appliance appliance = appliancesService.applianceById(applianceId);
+        Appliance appliance = appliancesService.applianceById(applianceId).orElseThrow(
+            () -> new ServiceRequestException("No appliance id " + applianceId.getValue() + " found")
+        );
         Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(stateUpdate);
         return publishMessage(optionalForwardMessage);
     }
 
     public DeliveryReport updateApplianceState(ApplianceId applianceId, RGBWUpdatePayload stateUpdate) {
-        Appliance appliance = appliancesService.applianceById(applianceId);
+        Appliance appliance = appliancesService.applianceById(applianceId).orElseThrow(
+            () -> new ServiceRequestException("No appliance id " + applianceId.getValue() + " found")
+        );
         Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(stateUpdate);
         return publishMessage(optionalForwardMessage);
     }

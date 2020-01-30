@@ -38,30 +38,30 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
     public Optional<Message> acceptDirectPayload(MessagePayload payload) {
         return Optional.of(Message.builder()
             .senderId(getId())
-            .payload(BooleanUpdatePayload.of(state.get().isOn()))
+            .payload(BooleanUpdatePayload.of(determineValue(payload)))
             .build());
-    }
-
-    private void setState(MessagePayload messagePayload) {
-        OnOffState newValue;
-
-        if (messagePayload instanceof BooleanTogglePayload) {
-            newValue = this.state.orElse(STATE_OFF).invert();
-        } else if (messagePayload instanceof BooleanUpdatePayload) {
-            newValue = OnOffState.of(((BooleanUpdatePayload) messagePayload).isState());
-        } else {
-            throw new MessageUnsupportedException("Unsupported message payload of class " + messagePayload.getClass());
-        }
-
-        this.state = Optional.of(newValue);
     }
 
     @Override
     public void acceptDeliveryReport(DeliveryReport deliveryReport) {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
-            getPersistenceService().persist(this.getId(), PERSIST_KEY, Boolean.toString(state.get().isOn()));
             setState(deliveryReport.getOriginalMessage().getPayload());
+            getPersistenceService().persist(this.getId(), PERSIST_KEY, Boolean.toString(state.get().isOn()));
+        }
+    }
+
+    private void setState(MessagePayload messagePayload) {
+        this.state = Optional.of(OnOffState.of(determineValue(messagePayload)));
+    }
+
+    private boolean determineValue(MessagePayload messagePayload) {
+        if (messagePayload instanceof BooleanTogglePayload) {
+            return !this.state.orElse(STATE_OFF).isOn();
+        } else if (messagePayload instanceof BooleanUpdatePayload) {
+            return ((BooleanUpdatePayload) messagePayload).isState();
+        } else {
+            throw new MessageUnsupportedException("Unsupported message payload of class " + messagePayload.getClass());
         }
     }
 }

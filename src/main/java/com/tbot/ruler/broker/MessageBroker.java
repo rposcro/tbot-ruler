@@ -51,9 +51,9 @@ public class MessageBroker implements Runnable {
             consumers.stream()
                 .forEach(receiverId -> {
                     try {
+                        log.info("Dispatching message from {} to {}", message.getSenderId().getValue(), receiverId.getValue());
                         this.deliverMessage(message, receiverId);
                         reportBuilder.successfulReceiver(receiverId);
-                        log.info("Dispatched message from {} to {}", message.getSenderId().getValue(), receiverId.getValue());
                     } catch(MessageException e) {
                         reportBuilder.failedReceiver(receiverId);
                         log.error("Consumer failed to process message from " + message.getSenderId().getValue() + " to " + receiverId.getValue(), e);

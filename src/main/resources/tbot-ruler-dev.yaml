@@ -37,7 +37,7 @@ eureka:
 ruler:
     thingsConfig:
         path: target/ruler-config/config-dev
-    persistence:
+    cache:
         path: ignore/cache
     broker:
         emissionQueueLength: 200

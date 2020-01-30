@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.Optional;
+import java.util.function.Consumer;
 
 @Getter
 public class BasicEmitter extends AbstractItem<EmitterId> implements Emitter {
@@ -14,6 +15,7 @@ public class BasicEmitter extends AbstractItem<EmitterId> implements Emitter {
     private Optional<Runnable> startUpTask;
     private Optional<Runnable> triggerableTask;
     private Optional<TaskTrigger> taskTrigger;
+    private Optional<Consumer<DeliveryReport>> reportListener;
 
     @Builder
     public BasicEmitter(
@@ -22,12 +24,14 @@ public class BasicEmitter extends AbstractItem<EmitterId> implements Emitter {
         String description,
         Runnable startUpTask,
         Runnable triggerableTask,
-        TaskTrigger taskTrigger
+        TaskTrigger taskTrigger,
+        Consumer<DeliveryReport> reportListener
     ) {
         super(id, name, description);
         this.triggerableTask = Optional.ofNullable(triggerableTask);
         this.taskTrigger = Optional.ofNullable(taskTrigger);
         this.startUpTask = Optional.ofNullable(startUpTask);
+        this.reportListener = Optional.ofNullable(reportListener);
 
         if (taskTrigger != null && triggerableTask == null) {
             throw new IllegalArgumentException("Emission trigger is only allowed when emission task is specified!");
@@ -36,5 +40,6 @@ public class BasicEmitter extends AbstractItem<EmitterId> implements Emitter {
 
     @Override
     public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+        reportListener.ifPresent(listener -> listener.accept(deliveryReport));
     }
 }

@@ -3,15 +3,18 @@ package com.tbot.ruler.plugins.jwavez;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
 import com.rposcro.jwavez.core.commands.enums.BasicCommandType;
 import com.rposcro.jwavez.core.commands.enums.SceneActivationCommandType;
-import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.handlers.SupportedCommandDispatcher;
 import com.rposcro.jwavez.core.model.NodeId;
+import com.rposcro.jwavez.core.utils.ImmutableBuffer;
+import com.rposcro.jwavez.serial.buffers.ViewBuffer;
 import com.rposcro.jwavez.serial.controllers.GeneralAsynchronousController;
 import com.rposcro.jwavez.serial.exceptions.SerialException;
 import com.rposcro.jwavez.serial.exceptions.SerialPortException;
 import com.rposcro.jwavez.serial.frames.requests.SendDataRequest;
-import com.rposcro.jwavez.serial.handlers.ApplicationCommandHandler;
+import com.rposcro.jwavez.serial.handlers.InterceptableCallbackHandler;
+import com.rposcro.jwavez.serial.interceptors.ApplicationCommandInterceptor;
 import com.rposcro.jwavez.serial.rxtx.SerialRequest;
+import com.rposcro.jwavez.serial.utils.BufferUtil;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.plugins.jwavez.basicset.BasicSetHandler;
 import com.tbot.ruler.plugins.jwavez.sceneactivation.SceneActivationHandler;
@@ -21,6 +24,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.stream.IntStream;
 
 @Slf4j
 @Getter
@@ -33,10 +38,8 @@ public class JWaveZAgent {
     private static final int DEFAULT_SECONDS_BETWEEN_RETRIES = 5;
     private static final int DEFAULT_MAX_RETRIES = 36;
 
-    private SupportedCommandDispatcher commandDispatcher;
-    private GeneralAsynchronousController jwzController;
     private String device;
-
+    private GeneralAsynchronousController jwzController;
     private SceneActivationHandler sceneActivationHandler;
     private BasicSetHandler basicSetHandler;
 
@@ -49,8 +52,8 @@ public class JWaveZAgent {
         this.reconnectAttempts = builderContext.getThingDTO().getIntParameter(PARAM_RECONNECT_ATTEMPTS, DEFAULT_MAX_RETRIES);
         this.reconnectDelay = builderContext.getThingDTO().getIntParameter(PARAM_RECONNECT_DELAY, DEFAULT_SECONDS_BETWEEN_RETRIES);
         this.device = builderContext.getThingDTO().getStringParameter(PARAM_DEVICE);
-        this.commandDispatcher = commandDispatcher();
-        setupHandlers(commandDispatcher);
+        this.sceneActivationHandler = new SceneActivationHandler();
+        this.basicSetHandler = new BasicSetHandler();
     }
 
     public void connect() {
@@ -58,7 +61,7 @@ public class JWaveZAgent {
         while (this.jwzController == null && retries++ < reconnectAttempts) {
             try {
                 log.info("JWaveZ agent connection, attempt #{}", retries);
-                GeneralAsynchronousController jwzController = jwavezController(device, commandDispatcher);
+                GeneralAsynchronousController jwzController = jwavezController(device);
                 jwzController.connect();
                 this.jwzController = jwzController;
                 log.info("JWaveZ agent successfully connected to dongle device");
@@ -75,6 +78,10 @@ public class JWaveZAgent {
 
     public BiConsumer<NodeId, ZWaveControlledCommand> commandSender() {
         return (nodeId, command) -> {
+            if (log.isDebugEnabled()) {
+                log.debug("Request frame sending: {}", bufferToString(command.getPayload()));
+            }
+
             if (jwzController == null) {
                 throw new MessageProcessingException("JWaveZ controller is not active!");
             }
@@ -87,29 +94,50 @@ public class JWaveZAgent {
         };
     }
 
-    private GeneralAsynchronousController jwavezController(String device, SupportedCommandDispatcher commandDispatcher) {
+    private GeneralAsynchronousController jwavezController(String device) {
         return GeneralAsynchronousController.builder()
             .dongleDevice(device)
-            .callbackHandler(ApplicationCommandHandler.builder()
-                .supportedCommandDispatcher(commandDispatcher)
-                .supportBroadcasts(false)
-                .supportMulticasts(false)
-                .build())
+            .callbackHandler(callbackHandler())
+            .responseHandler(responseHandler())
             .build();
     }
 
-    private void setupHandlers(SupportedCommandDispatcher commandDispatcher) {
-        this.sceneActivationHandler = new SceneActivationHandler();
-        this.basicSetHandler = new BasicSetHandler();
-        commandDispatcher.registerHandler(SceneActivationCommandType.SCENE_ACTIVATION_SET, sceneActivationHandler);
-        commandDispatcher.registerHandler(BasicCommandType.BASIC_SET, basicSetHandler);
+    private Consumer<ViewBuffer> responseHandler() {
+        return (buffer) -> {
+            if (log.isDebugEnabled()) {
+                log.debug("Response frame received: {}", BufferUtil.bufferToString(buffer));
+            }
+        };
     }
 
-    private SupportedCommandDispatcher commandDispatcher() {
-        return new SupportedCommandDispatcher();
+    private Consumer<ViewBuffer> callbackHandler() {
+        return new InterceptableCallbackHandler()
+            .addCallbackInterceptor(applicationCommandInterceptor())
+            .addViewBufferInterceptor((buffer) -> {
+                if (log.isDebugEnabled()) {
+                    log.debug("Callback frame received: {}", BufferUtil.bufferToString(buffer));
+                }
+            });
+    }
+
+    private ApplicationCommandInterceptor applicationCommandInterceptor() {
+        SupportedCommandDispatcher commandDispatcher = new SupportedCommandDispatcher()
+            .registerHandler(SceneActivationCommandType.SCENE_ACTIVATION_SET, sceneActivationHandler)
+            .registerHandler(BasicCommandType.BASIC_SET, basicSetHandler);
+        return ApplicationCommandInterceptor.builder()
+            .supportedCommandDispatcher(commandDispatcher)
+            .build();
     }
 
     private byte nextCallbackId() {
         return (byte) callbackId.accumulateAndGet(1, (current, add) -> (++current > 250 ? 1 : current));
     }
+
+    private String bufferToString(ImmutableBuffer buffer) {
+        StringBuffer string = new StringBuffer();
+        IntStream.range(0, buffer.getLength())
+            .forEach(index -> string.append(String.format("%02x ", buffer.getByte(index))));
+        return string.toString();
+    }
+
 }
