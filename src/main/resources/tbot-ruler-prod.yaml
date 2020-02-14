@@ -42,3 +42,7 @@ ruler:
     broker:
         emissionQueueLength: 200
         collectionQueueLength: 200
+    restService:
+        connectionTimeout: 10000
+        readTimeout: 20000
+        retryCount: 5

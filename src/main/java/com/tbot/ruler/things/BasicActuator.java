@@ -2,18 +2,18 @@ package com.tbot.ruler.things;
 
 import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.message.Message;
+import com.tbot.ruler.message.MessageReceiver;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 
 @Getter
 public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator {
 
-    private Consumer<Message> messageCollectorConsumer;
+    private MessageReceiver messageReceiver;
     private Optional<Runnable> startUpTask;
     private Optional<Runnable> emissionTask;
     private Optional<TaskTrigger> emissionTrigger;
@@ -26,7 +26,7 @@ public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator 
         Runnable startUpTask,
         Runnable emissionTask,
         TaskTrigger taskTrigger,
-        @NonNull Consumer<Message> messageCollectorConsumer
+        @NonNull MessageReceiver messageReceiver
     ) {
         super(id, name, description);
 
@@ -34,7 +34,7 @@ public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator 
             throw new IllegalArgumentException("Emission trigger is only allowed when emission task is specified!");
         }
 
-        this.messageCollectorConsumer = messageCollectorConsumer;
+        this.messageReceiver = messageReceiver;
         this.emissionTask = Optional.ofNullable(emissionTask);
         this.emissionTrigger = Optional.ofNullable(taskTrigger);
         this.startUpTask = Optional.ofNullable(startUpTask);
@@ -42,7 +42,7 @@ public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator 
 
     @Override
     public void acceptMessage(Message message) {
-        messageCollectorConsumer.accept(message);
+        messageReceiver.acceptMessage(message);
     }
 
     @Override

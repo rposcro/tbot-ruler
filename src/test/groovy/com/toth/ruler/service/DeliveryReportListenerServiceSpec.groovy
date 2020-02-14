@@ -2,7 +2,11 @@ package com.toth.ruler.service
 
 import com.tbot.ruler.exceptions.ServiceException
 import com.tbot.ruler.message.DeliveryReport
+import com.tbot.ruler.message.Message
+import com.tbot.ruler.message.payloads.BooleanTogglePayload
+import com.tbot.ruler.message.payloads.BooleanUpdatePayload
 import com.tbot.ruler.service.DeliveryReportListenerService
+import com.tbot.ruler.things.EmitterId
 import spock.lang.Specification
 
 import java.util.concurrent.CompletableFuture
@@ -11,81 +15,76 @@ import java.util.concurrent.TimeUnit
 
 class DeliveryReportListenerServiceSpec extends Specification {
 
+    def msg1 = Message.builder().senderId(new EmitterId("123")).payload(BooleanUpdatePayload.UPDATE_TRUE).build();
+    def msg2 = Message.builder().senderId(new EmitterId("234")).payload(BooleanUpdatePayload.UPDATE_FALSE).build();
+    def msg3 = Message.builder().senderId(new EmitterId("345")).payload(BooleanTogglePayload.TOGGLE_PAYLOAD).build();
+
     def "single waiter per message id"() {
         given:
         def service = new DeliveryReportListenerService();
-        def msg1 = 123l;
-        def msg2 = 234l;
 
         when:
-        service.settleFuture(msg1);
-        service.settleFuture(msg2);
+        service.settleFuture(msg1.id);
+        service.settleFuture(msg2.id);
 
         then:
-        service.taskMap.get(msg1).getClass() == CompletableFuture.class;
-        service.taskMap.get(msg2).getClass() == CompletableFuture.class;
+        service.taskMap.get(msg1.id).getClass() == CompletableFuture.class;
+        service.taskMap.get(msg2.id).getClass() == CompletableFuture.class;
     }
 
     def "waiters for mixed message ids"() {
         given:
         def service = new DeliveryReportListenerService();
-        def msg1 = 123l;
-        def msg2 = 234l;
-        def msg3 = 345l;
 
         when:
-        service.settleFuture(msg1);
-        service.settleFuture(msg2);
-        service.settleFuture(msg2);
-        service.settleFuture(msg3);
-        service.settleFuture(msg3);
-        service.settleFuture(msg3);
+        service.settleFuture(msg1.id);
+        service.settleFuture(msg2.id);
+        service.settleFuture(msg2.id);
+        service.settleFuture(msg3.id);
+        service.settleFuture(msg3.id);
+        service.settleFuture(msg3.id);
 
         then:
-        CompletableFuture.isAssignableFrom(service.taskMap.get(msg1).getClass());
-        Set.isAssignableFrom(service.taskMap.get(msg2).getClass());
-        ((Set) service.taskMap.get(msg2)).size() == 2;
-        Set.isAssignableFrom(service.taskMap.get(msg3).getClass());
-        ((Set) service.taskMap.get(msg3)).size() == 3;
+        CompletableFuture.isAssignableFrom(service.taskMap.get(msg1.id).getClass());
+        Set.isAssignableFrom(service.taskMap.get(msg2.id).getClass());
+        ((Set) service.taskMap.get(msg2.id)).size() == 2;
+        Set.isAssignableFrom(service.taskMap.get(msg3.id).getClass());
+        ((Set) service.taskMap.get(msg3.id)).size() == 3;
     }
 
     def "map key empty after removing all waiters"() {
         given:
         def service = new DeliveryReportListenerService();
-        def msg1 = 123l;
-        def msg2 = 234l;
 
         when:
-        def future1 = service.settleFuture(msg1);
-        def future2 = service.settleFuture(msg2);
-        def future3 = service.settleFuture(msg2);
+        def future1 = service.settleFuture(msg1.id);
+        def future2 = service.settleFuture(msg2.id);
+        def future3 = service.settleFuture(msg2.id);
 
-        service.removeFuture(msg1, future1);
-        service.removeFuture(msg2, future2);
-        service.removeFuture(msg2, future3);
+        service.removeFuture(msg1.id, future1);
+        service.removeFuture(msg2.id, future2);
+        service.removeFuture(msg2.id, future3);
 
         then:
-        service.taskMap.get(msg1) == null;
-        service.taskMap.get(msg2) == null;
+        service.taskMap.get(msg1.id) == null;
+        service.taskMap.get(msg2.id) == null;
     }
 
     def "map key empty after delivering message"() {
         given:
         def service = new DeliveryReportListenerService();
-        def msg1 = 123l;
-        def msg2 = 234l;
 
         when:
-        service.settleFuture(msg1);
-        service.settleFuture(msg2);
-        service.settleFuture(msg2);
+        service.settleFuture(msg1.id);
+        service.settleFuture(msg2.id);
+        service.settleFuture(msg2.id);
 
-        service.acceptDeliveryReport(DeliveryReport.builder().relatedMessageId(msg1).build());
-        service.acceptDeliveryReport(DeliveryReport.builder().relatedMessageId(msg2).build());
+        service.acceptDeliveryReport(DeliveryReport.builder().originalMessage(msg1).build());
+        service.acceptDeliveryReport(DeliveryReport.builder().originalMessage(msg2).build());
 
         then:
-        service.taskMap.get(msg1) == null;
-        service.taskMap.get(msg2) == null;
+        service.taskMap.get(msg1.id) == null;
+        service.taskMap.get(msg2.id) == null;
     }
 
     def "waiting time outs after one millisecond"() {
@@ -114,12 +113,11 @@ class DeliveryReportListenerServiceSpec extends Specification {
 
     def "waiter receives report"() {
         given:
-        def messageId = 123;
         def service = new DeliveryReportListenerService();
-        def report = DeliveryReport.builder().relatedMessageId(messageId).build();
+        def report = DeliveryReport.builder().originalMessage(msg1).build();
 
         when:
-        def waiter = hangOnWaiter(messageId, service, 60_000);
+        def waiter = hangOnWaiter(msg1.id, service, 60_000);
         service.acceptDeliveryReport(report);
 
         then:

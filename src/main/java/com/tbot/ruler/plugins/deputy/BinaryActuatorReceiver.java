@@ -1,8 +1,10 @@
 package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.exceptions.MessageProcessingException;
+import com.tbot.ruler.exceptions.RestRequestException;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.MessagePayload;
+import com.tbot.ruler.message.MessageReceiver;
 import com.tbot.ruler.message.payloads.BooleanTogglePayload;
 import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.message.payloads.UpdateRequestPayload;
@@ -13,20 +15,17 @@ import com.tbot.ruler.rest.RestResponse;
 import com.tbot.ruler.things.ItemId;
 import java.util.Collections;
 import java.util.Map;
-import java.util.function.Consumer;
 
 import com.tbot.ruler.message.MessagePublisher;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.client.RestClientException;
 
 @Slf4j
 @Builder
 @AllArgsConstructor
-public class BinaryActuatorConsumer implements Consumer<Message> {
+public class BinaryActuatorReceiver implements MessageReceiver {
 
     @NonNull private ItemId actuatorId;
     @NonNull private MessagePublisher messagePublisher;
@@ -34,7 +33,7 @@ public class BinaryActuatorConsumer implements Consumer<Message> {
     @NonNull private RestGetCommand getCommand;
 
     @Override
-    public void accept(Message message) {
+    public void acceptMessage(Message message) {
         MessagePayload payload = message.getPayload();
         if (payload instanceof BooleanUpdatePayload) {
             handleBooleanUpdate(payload.ensureMessageType());
@@ -63,7 +62,7 @@ public class BinaryActuatorConsumer implements Consumer<Message> {
                 throw new MessageProcessingException("Failed to request bin-out state change! Status code returned: " + response.getStatusCode());
             }
         }
-        catch(RestClientException e) {
+        catch(RestRequestException e) {
             log.info("Bin-out state change request failed! " + e.getMessage());
             throw new MessageProcessingException(e);
         }
@@ -71,9 +70,9 @@ public class BinaryActuatorConsumer implements Consumer<Message> {
 
     private void handleUpdateRequest() {
         try {
-            ResponseEntity<BinOutState> response = getCommand.sendGet(BinOutState.class);
+            RestResponse<BinOutState> response = getCommand.sendGet(BinOutState.class);
 
-            if (response.getStatusCodeValue() != 200) {
+            if (response.getStatusCode() != 200) {
                 log.info("Bin-out state read request failed! " + response.getStatusCode());
                 throw new MessageProcessingException("Failed to request bin-out state value! Status code returned: " + response.getStatusCode());
             }
@@ -86,7 +85,7 @@ public class BinaryActuatorConsumer implements Consumer<Message> {
                 .build();
             messagePublisher.acceptMessage(message);
         }
-        catch(RestClientException e) {
+        catch(RestRequestException e) {
             log.info("Bin-out state change request failed! " + e.getMessage());
             throw new MessageProcessingException(e);
         }

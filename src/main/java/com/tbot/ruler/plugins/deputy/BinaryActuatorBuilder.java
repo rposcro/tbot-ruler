@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.message.Message;
+import com.tbot.ruler.message.MessageReceiver;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.rest.RestPatchCommand;
 import com.tbot.ruler.rest.RestService;
@@ -9,8 +9,6 @@ import com.tbot.ruler.things.BasicActuator;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.builder.dto.ThingDTO;
-
-import java.util.function.Consumer;
 
 public class BinaryActuatorBuilder {
 
@@ -22,12 +20,12 @@ public class BinaryActuatorBuilder {
             .id(actuatorDTO.getId())
             .name(actuatorDTO.getName())
             .description(actuatorDTO.getDescription())
-            .messageCollectorConsumer(binOutActuatorCollector(thingDTO, actuatorDTO, builderContext))
+            .messageReceiver(binOutActuatorCollector(thingDTO, actuatorDTO, builderContext))
             .build();
     }
 
-    private Consumer<Message> binOutActuatorCollector(ThingDTO thingDTO, ActuatorDTO actuatorDTO, ThingBuilderContext builderContext) {
-        return BinaryActuatorConsumer.builder()
+    private MessageReceiver binOutActuatorCollector(ThingDTO thingDTO, ActuatorDTO actuatorDTO, ThingBuilderContext builderContext) {
+        return BinaryActuatorReceiver.builder()
             .actuatorId(actuatorDTO.getId())
             .patchCommand(restPatchCommand(thingDTO, actuatorDTO, builderContext.getServices().getRestService()))
             .getCommand(restGetCommand(thingDTO, actuatorDTO, builderContext.getServices().getRestService()))
