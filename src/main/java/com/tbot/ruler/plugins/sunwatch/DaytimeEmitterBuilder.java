@@ -19,12 +19,15 @@ public class DaytimeEmitterBuilder extends AbstractEmitterBuilder {
 
     public Emitter buildEmitter(EmitterDTO emitterDTO) {
         DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterDTO);
+        DaytimeEmissionTask emissionTask = emissionTask(emitterDTO, emissionTrigger);
+
         return BasicEmitter.builder()
             .id(emitterDTO.getId())
             .name(emitterDTO.getName())
             .description(emitterDTO.getDescription())
-            .triggerableTask(emissionTask(emitterDTO, emissionTrigger))
+            .triggerableTask(emissionTask)
             .taskTrigger(emissionTrigger)
+            .reportListener(emissionTask::acceptDeliveryReport)
             .build();
     }
 
@@ -32,7 +35,7 @@ public class DaytimeEmitterBuilder extends AbstractEmitterBuilder {
         return DaytimeEmissionTask.builder()
             .emitterId(emitterDTO.getId())
             .daytimeTrigger(trigger)
-            .messageConsumer(builderContext.getMessagePublisher())
+            .messagePublisher(builderContext.getMessagePublisher())
             .sunriseMessage(emitterMessage(emitterDTO, PARAM_EMITTER_SIGNAL_SUNRISE))
             .sunsetMessage(emitterMessage(emitterDTO, PARAM_EMITTER_SIGNAL_SUNSET))
             .build();

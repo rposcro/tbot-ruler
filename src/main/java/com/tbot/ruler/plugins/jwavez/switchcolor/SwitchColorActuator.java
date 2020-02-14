@@ -29,12 +29,11 @@ public class SwitchColorActuator implements Actuator {
     @NonNull private String name;
     private String description;
 
-    @NonNull private ColorMode colorMode;
-    @NonNull private byte switchDuration;
+    private byte switchDuration;
     @NonNull private NodeId nodeId;
+    @NonNull private ColorMode colorMode;
     @NonNull private BiConsumer<NodeId, ZWaveControlledCommand> commandConsumer;
     @NonNull private MessagePublisher messagePublisher;
-
 
     @Builder.Default
     private final SwitchColorCommandBuilder commandBuilder = new SwitchColorCommandBuilder();

@@ -23,7 +23,7 @@ public class BasicSetEmissionProducer {
     private byte turnOffValue;
 
     public void acceptCommandValue(byte commandValue) {
-        messagePublisher.accept(Message.builder()
+        messagePublisher.acceptMessage(Message.builder()
             .senderId(actuatorId)
             .payload(messagePayload(commandValue))
             .build());

@@ -18,13 +18,13 @@ public class SceneActivationEmitter implements Emitter {
     @NonNull private String name;
     @NonNull private String description;
     @NonNull private MessagePublisher messagePublisher;
-    @NonNull private byte sourceNodeId;
-    @NonNull private byte sceneId;
+    private byte sourceNodeId;
+    private byte sceneId;
 
     @Builder.Default
-    private String uniqueSceneKey;
+    private String uniqueSceneKey = null;
     @Builder.Default
-    private Message message;
+    private Message message = null;
 
     public SceneActivationEmitter init() {
         this.message = Message.builder()
@@ -36,7 +36,7 @@ public class SceneActivationEmitter implements Emitter {
     }
 
     public void publishMessage() {
-        messagePublisher.accept(message);
+        messagePublisher.acceptMessage(message);
     }
 
     public static String uniqueSceneKey(byte nodeId, byte sceneId) {

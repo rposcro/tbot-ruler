@@ -23,7 +23,7 @@ public class SwitchMultilevelCollector implements Collector {
     @NonNull private String name;
     private String description;
 
-    @NonNull private byte switchDuration;
+    private byte switchDuration;
     @NonNull private NodeId nodeId;
     @NonNull private BiConsumer<NodeId, ZWaveControlledCommand> commandConsumer;
 

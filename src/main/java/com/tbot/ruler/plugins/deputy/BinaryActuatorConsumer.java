@@ -84,7 +84,7 @@ public class BinaryActuatorConsumer implements Consumer<Message> {
                     .state("on".equalsIgnoreCase(response.getBody().getState()))
                     .build())
                 .build();
-            messagePublisher.accept(message);
+            messagePublisher.acceptMessage(message);
         }
         catch(RestClientException e) {
             log.info("Bin-out state change request failed! " + e.getMessage());

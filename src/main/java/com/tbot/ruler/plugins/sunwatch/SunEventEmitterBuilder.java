@@ -32,7 +32,7 @@ public class SunEventEmitterBuilder extends AbstractEmitterBuilder {
             .senderId(emitterDTO.getId())
             .payload(emitterPayload(emitterDTO, PARAM_EMITTER_SIGNAL))
             .build();
-        return () -> builderContext.getMessagePublisher().accept(message);
+        return () -> builderContext.getMessagePublisher().acceptMessage(message);
     }
 
     private TaskTrigger emissionTrigger(EmitterDTO emitterDTO) {
