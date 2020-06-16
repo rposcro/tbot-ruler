@@ -1,6 +1,6 @@
 package com.tbot.ruler.appliances;
 
-import com.tbot.ruler.appliances.state.OnOffState;
+import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
 import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.message.Message;
@@ -13,7 +13,7 @@ import lombok.Getter;
 
 import java.util.Optional;
 
-import static com.tbot.ruler.appliances.state.OnOffState.STATE_OFF;
+import static com.tbot.ruler.model.OnOffState.STATE_OFF;
 
 public class OnOffAppliance extends AbstractAppliance<OnOffState> {
 

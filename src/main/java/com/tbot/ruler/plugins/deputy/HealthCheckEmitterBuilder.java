@@ -27,7 +27,7 @@ class HealthCheckEmitterBuilder {
         return HealthCheckEmissionTask.builder()
             .emitterId(emitterDTO.getId())
             .healthCheckCommand(restGetCommand(builderContext))
-            .messageConsumer(builderContext.getMessagePublisher())
+            .messagePublisher(builderContext.getMessagePublisher())
             .build();
     }
 

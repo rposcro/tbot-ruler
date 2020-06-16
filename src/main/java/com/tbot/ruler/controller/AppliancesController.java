@@ -1,7 +1,6 @@
 package com.tbot.ruler.controller;
 
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.appliances.state.State;
 import com.tbot.ruler.controller.entity.ApplianceEntity;
 import com.tbot.ruler.exceptions.ServiceException;
 import com.tbot.ruler.service.AppliancesService;
@@ -55,8 +54,8 @@ public class AppliancesController extends AbstractController {
             .id(appliance.getId().getValue())
             .name(dto.getName())
             .description(dto.getDescription())
-            .stateValue((State) appliance.getState().orElse(null))
-            .links(Collections.emptyMap())
+            .stateValue(appliance.getState().orElse(null))
+
             .build();
     }
 }
