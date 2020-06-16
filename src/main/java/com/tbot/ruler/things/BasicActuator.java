@@ -13,7 +13,7 @@ import java.util.Optional;
 @Getter
 public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator {
 
-    private MessageReceiver messageReceiver;
+    private Optional<MessageReceiver> messageReceiver;
     private Optional<Runnable> startUpTask;
     private Optional<Runnable> emissionTask;
     private Optional<TaskTrigger> emissionTrigger;
@@ -26,7 +26,7 @@ public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator 
         Runnable startUpTask,
         Runnable emissionTask,
         TaskTrigger taskTrigger,
-        @NonNull MessageReceiver messageReceiver
+        MessageReceiver messageReceiver
     ) {
         super(id, name, description);
 
@@ -34,7 +34,7 @@ public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator 
             throw new IllegalArgumentException("Emission trigger is only allowed when emission task is specified!");
         }
 
-        this.messageReceiver = messageReceiver;
+        this.messageReceiver = Optional.ofNullable(messageReceiver);
         this.emissionTask = Optional.ofNullable(emissionTask);
         this.emissionTrigger = Optional.ofNullable(taskTrigger);
         this.startUpTask = Optional.ofNullable(startUpTask);
@@ -42,7 +42,7 @@ public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator 
 
     @Override
     public void acceptMessage(Message message) {
-        messageReceiver.acceptMessage(message);
+        messageReceiver.ifPresent(receiver -> receiver.acceptMessage(message));
     }
 
     @Override
