@@ -1,4 +1,5 @@
 #!/bin/sh
+# This script is an entrypoint for Ruler's docker image.
 
 # When crashed, dongle device lock is left and due to a bug in neurotics lib, serial port cannot get connected
 echo cleaning up dongle device locks

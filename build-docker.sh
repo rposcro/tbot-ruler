@@ -1,3 +1,10 @@
 #!/bin/bash
-docker build -t tbot-ruler .
-docker save --output target/tbot-ruler.docker.tar tbot-ruler:latest
+
+if [ -z "$1" ]; then
+  PLATFORM="linux/amd64"
+else
+  PLATFORM="$1"
+fi
+
+echo "Building for platform: $PLATFORM"
+docker buildx build --platform $PLATFORM --load -t tbot-ruler .

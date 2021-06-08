@@ -36,7 +36,7 @@ eureka:
 
 ruler:
     thingsConfig:
-        path: /config/config-prod
+        path: /config
     cache:
         path: /cache
     broker:
