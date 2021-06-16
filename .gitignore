@@ -1,8 +1,10 @@
 # Project specific
+/build/
 /target/
 /logs/
 /config/
 /.idea/
+.gradle/
 *.iml
 
 # Local specific files

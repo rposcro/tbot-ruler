@@ -17,7 +17,7 @@ Simply run from IDE. Check `tbot-ruler-dev.yaml` for configuration paths.
 * Build docker image, run `./build-docker.sh`. Default platform is linux/amd64 which is probably what you need.
 * Run `run-staging.sh` to start up the container.
 
-### Staging
+### Production
 * Build docker image, run `./build-docker.sh`. You may need to consider platform other than default, for example linux/arm/v7.
 * Check with `tbot-host` repo for details on how to set up, deploy and run production environment.
 
