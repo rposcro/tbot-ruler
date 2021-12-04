@@ -6,6 +6,7 @@
 /.idea/
 .gradle/
 *.iml
+*.bak
 
 # Local specific files
 /ignore/

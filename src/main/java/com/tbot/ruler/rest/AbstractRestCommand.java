@@ -1,6 +1,7 @@
 package com.tbot.ruler.rest;
 
 import com.tbot.ruler.exceptions.RestRequestException;
+import java.time.Duration;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,8 +22,8 @@ public class AbstractRestCommand {
 
     protected RestTemplate newRestTemplate() {
         return new RestTemplateBuilder()
-            .setConnectTimeout(connectionTimeout)
-            .setReadTimeout(readTimeout)
+            .setConnectTimeout(Duration.ofMillis(connectionTimeout))
+            .setReadTimeout(Duration.ofMillis(readTimeout))
             .requestFactory(HttpComponentsClientHttpRequestFactory.class)
             .build();
     }
