@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.jwavez.switchmultilevel;
 
-import com.rposcro.jwavez.core.commands.controlled.SwitchMultiLevelCommandBuilder;
+import com.rposcro.jwavez.core.commands.controlled.builders.SwitchMultiLevelCommandBuilder;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;

@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.jwavez;
 
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
-import com.rposcro.jwavez.core.commands.enums.BasicCommandType;
-import com.rposcro.jwavez.core.commands.enums.SceneActivationCommandType;
+import com.rposcro.jwavez.core.commands.types.BasicCommandType;
+import com.rposcro.jwavez.core.commands.types.SceneActivationCommandType;
 import com.rposcro.jwavez.core.handlers.SupportedCommandDispatcher;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.rposcro.jwavez.core.utils.ImmutableBuffer;

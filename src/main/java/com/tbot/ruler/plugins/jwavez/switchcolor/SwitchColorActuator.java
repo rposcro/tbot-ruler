@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.jwavez.switchcolor;
 
-import com.rposcro.jwavez.core.commands.controlled.SwitchColorCommandBuilder;
+import com.rposcro.jwavez.core.commands.controlled.builders.SwitchColorCommandBuilder;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
