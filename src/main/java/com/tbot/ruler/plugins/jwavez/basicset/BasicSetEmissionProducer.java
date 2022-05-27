@@ -19,6 +19,8 @@ public class BasicSetEmissionProducer {
     private MessagePublisher messagePublisher;
 
     private byte sourceNodeId;
+    @Builder.Default
+    private byte sourceEndPointId = (byte) 0xff;
     private byte turnOnValue;
     private byte turnOffValue;
 

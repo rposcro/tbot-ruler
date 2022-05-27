@@ -23,7 +23,7 @@ ext {
     lombokPluginVersion = '1.16.16.0'
     slf4jVersion = '1.7.25'
     lockbackVersion = '1.1.7'
-    jwavezVersion = '1.2.0'
+    jwavezVersion = '1.2.1-SNAPSHOT'
     reflectionsVersion = '0.10.2'
 
     javaMainClass = "com.tbot.ruler.RulerApp"

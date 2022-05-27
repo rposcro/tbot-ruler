@@ -29,12 +29,28 @@ public class BasicSetHandler implements SupportedCommandHandler<BasicSet> {
             .ifPresent(stream -> stream.forEach(emitter -> emitter.acceptCommandValue(commandValue)));
     }
 
+    public void handleEncapsulatedCommand(byte sourceNodId, byte sourceEndPointId, byte commandValue) {
+        log.debug("Received encapsulated basic set command");
+        String emitterKey = emitterKey(sourceNodId, sourceEndPointId, commandValue);
+        Optional.ofNullable(emittersPerKey.get(emitterKey))
+            .map(List::stream)
+            .ifPresent(stream -> stream.forEach(emitter -> emitter.acceptCommandValue(commandValue)));
+    }
+
     public void registerEmissionProducer(BasicSetEmissionProducer emitter) {
-        emittersPerKey.computeIfAbsent(emitterKey(emitter.getSourceNodeId(), emitter.getTurnOffValue()), key -> new LinkedList()).add(emitter);
-        emittersPerKey.computeIfAbsent(emitterKey(emitter.getSourceNodeId(), emitter.getTurnOnValue()), key -> new LinkedList()).add(emitter);
+        emittersPerKey.computeIfAbsent(
+            emitterKey(emitter.getSourceNodeId(), emitter.getSourceEndPointId(), emitter.getTurnOffValue()),
+            key -> new LinkedList()).add(emitter);
+        emittersPerKey.computeIfAbsent(
+            emitterKey(emitter.getSourceNodeId(), emitter.getSourceEndPointId(), emitter.getTurnOnValue()),
+            key -> new LinkedList()).add(emitter);
     }
 
     public static String emitterKey(byte nodeId, byte commandValue) {
-        return String.format("%02x-%02x", nodeId, commandValue);
+        return String.format("%02x-ff-%02x", nodeId, commandValue);
+    }
+
+    public static String emitterKey(byte nodeId, byte endPointId, byte commandValue) {
+        return String.format("%02x-%02x-%02x", nodeId, endPointId, commandValue);
     }
 }

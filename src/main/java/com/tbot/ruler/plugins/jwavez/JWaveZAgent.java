@@ -1,7 +1,9 @@
 package com.tbot.ruler.plugins.jwavez;
 
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
+import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
 import com.rposcro.jwavez.core.commands.types.BasicCommandType;
+import com.rposcro.jwavez.core.commands.types.MultiChannelCommandType;
 import com.rposcro.jwavez.core.commands.types.SceneActivationCommandType;
 import com.rposcro.jwavez.core.handlers.SupportedCommandDispatcher;
 import com.rposcro.jwavez.core.model.NodeId;
@@ -17,6 +19,7 @@ import com.rposcro.jwavez.serial.rxtx.SerialRequest;
 import com.rposcro.jwavez.serial.utils.BufferUtil;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.plugins.jwavez.basicset.BasicSetHandler;
+import com.tbot.ruler.plugins.jwavez.multichannel.CommandEncapsulationHandler;
 import com.tbot.ruler.plugins.jwavez.sceneactivation.SceneActivationHandler;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import lombok.Getter;
@@ -42,6 +45,7 @@ public class JWaveZAgent {
     private GeneralAsynchronousController jwzController;
     private SceneActivationHandler sceneActivationHandler;
     private BasicSetHandler basicSetHandler;
+    private CommandEncapsulationHandler commandEncapsulationHandler;
 
     private final int reconnectAttempts;
     private final int reconnectDelay;
@@ -54,6 +58,7 @@ public class JWaveZAgent {
         this.device = builderContext.getThingDTO().getStringParameter(PARAM_DEVICE);
         this.sceneActivationHandler = new SceneActivationHandler();
         this.basicSetHandler = new BasicSetHandler();
+        this.commandEncapsulationHandler = new CommandEncapsulationHandler();
     }
 
     public void connect() {
@@ -123,7 +128,8 @@ public class JWaveZAgent {
     private ApplicationCommandInterceptor applicationCommandInterceptor() {
         SupportedCommandDispatcher commandDispatcher = new SupportedCommandDispatcher()
             .registerHandler(SceneActivationCommandType.SCENE_ACTIVATION_SET, sceneActivationHandler)
-            .registerHandler(BasicCommandType.BASIC_SET, basicSetHandler);
+            .registerHandler(BasicCommandType.BASIC_SET, basicSetHandler)
+            .registerHandler(MultiChannelCommandType.MULTI_CHANNEL_CMD_ENCAP, commandEncapsulationHandler);
         return ApplicationCommandInterceptor.builder()
             .supportedCommandDispatcher(commandDispatcher)
             .build();
