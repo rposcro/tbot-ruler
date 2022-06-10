@@ -17,7 +17,7 @@ import com.tbot.ruler.things.builder.dto.ThingDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class DeputyBuilder implements ThingPluginBuilder {
+public class DeputyThingBuilder implements ThingPluginBuilder {
 
     static final String PARAM_HOST = "host";
     static final String PARAM_PORT = "port";

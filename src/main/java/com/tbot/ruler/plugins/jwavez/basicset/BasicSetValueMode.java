@@ -6,7 +6,7 @@ public enum BasicSetValueMode {
     ON_OFF_VALUES;
 
     public static BasicSetValueMode of(String modeName) {
-        switch(modeName) {
+        switch(modeName.toLowerCase()) {
             case "toggle":
                 return TOGGLE_VALUE;
             case "on-off":

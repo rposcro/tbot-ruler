@@ -10,7 +10,7 @@ public abstract class AbstractEmitterBuilder {
     private static final String VALUE_ON = "on";
 
     protected MessagePayload emitterPayload(EmitterDTO emitterDTO, String paramName) {
-        return BooleanUpdatePayload.of(VALUE_ON.equalsIgnoreCase(emitterDTO.getConfig().getOrDefault(paramName, "off")));
+        return BooleanUpdatePayload.of(VALUE_ON.equalsIgnoreCase(emitterDTO.getStringParameter(paramName, "off")));
     }
 
     protected Message emitterMessage(EmitterDTO emitterDTO, String paramName) {
@@ -22,6 +22,6 @@ public abstract class AbstractEmitterBuilder {
 
     protected Long plusMinutes(EmitterDTO emitterDTO, String paramName) {
         return Long.parseLong(
-            emitterDTO.getConfig().getOrDefault(paramName, "0"));
+            emitterDTO.getStringParameter(paramName, "0"));
     }
 }

@@ -50,7 +50,7 @@ public class FileUtil {
             logFile(jsonFile);
             ObjectMapper mapper = new ObjectMapper();
             mapper.registerModule(new Jdk8Module());
-            return mapper.readValue(jsonFile, dtoClass);
+                return mapper.readValue(jsonFile, dtoClass);
         }
         catch(IOException e) {
             log.error(String.format("Failed to deserialize json: %s!", jsonFile.getAbsolutePath()), e);

@@ -28,4 +28,16 @@ For running in DEBUG mode use another env variables:
 
 In order to specify logs directory add --env LOGS_PATH=<path_to_logs_dir>
 
+## Build Runnable Artifact
+Use SpringBoot plugin to build a jar with dependencies:
+
+`./gradlew bootJar`
+
+If you need runnable docker image type:
+
+`./gradlew docker`
+
+Now, you can export the image from local docker images.
+Note! Dockerfile specifies *linux/amd64* as the target platform, change it if needed.
+
 # Enjoy!

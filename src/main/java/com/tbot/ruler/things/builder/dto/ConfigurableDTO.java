@@ -1,30 +1,44 @@
 package com.tbot.ruler.things.builder.dto;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.tbot.ruler.util.ParseUtil;
-import lombok.Data;
+import lombok.Getter;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.StreamSupport;
 
-@Data
+@Getter
 public abstract class ConfigurableDTO {
 
-    private Map<String, String> config = Collections.emptyMap();;
+    private JsonNode configurationNode;
+    private Map<String, String> configurationMap = Collections.emptyMap();;
+
+    @JsonProperty("config")
+    public void setConfigurationNode(JsonNode configurationNode) {
+        this.configurationNode = configurationNode;
+        this.configurationMap = new HashMap<>();
+        Iterable<String> namesIterable = () -> configurationNode.fieldNames();
+        StreamSupport.stream(namesIterable.spliterator(), false)
+                .forEach(fieldName -> configurationMap.put(fieldName, configurationNode.get(fieldName).asText()));
+    }
 
     public String getStringParameter(String paramName) {
-        return config.get(paramName);
+        return configurationMap.get(paramName);
     }
 
     public String getStringParameter(String paramName, String defaultValue) {
-        return config.getOrDefault(paramName, defaultValue);
+        return configurationMap.getOrDefault(paramName, defaultValue);
     }
 
     public int getIntParameter(String paramName) {
-        return ParseUtil.parseInt(config.get(paramName));
+        return ParseUtil.parseInt(configurationMap.get(paramName));
     }
 
     public int getIntParameter(String paramName, int defaultValue) {
-        String value = config.get(paramName);
+        String value = configurationMap.get(paramName);
         return value != null ? ParseUtil.parseInt(value) : defaultValue;
     }
 }

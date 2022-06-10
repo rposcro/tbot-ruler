@@ -2,6 +2,7 @@ package com.tbot.ruler.plugins.jwavez;
 
 import com.tbot.ruler.plugins.jwavez.basicset.BasicSetActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.sceneactivation.SceneActivationEmitterBuilder;
+import com.tbot.ruler.plugins.jwavez.switchbinary.SwitchBinaryCollectorBuilder;
 import com.tbot.ruler.plugins.jwavez.switchcolor.SwitchColorActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.switchmultilevel.SwitchMultilevelCollectorBuilder;
 import com.tbot.ruler.things.*;
@@ -18,22 +19,25 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
-public class JWaveZBuilder implements ThingPluginBuilder {
+public class JWaveZThingBuilder implements ThingPluginBuilder {
 
     private static final String EMITTER_TYPE_SCENE_ACTIVATION = "scene-activation";
     private static final String ACTUATOR_TYPE_BASIC_SET = "basic-set";
     private static final String ACTUATOR_TYPE_SWITCH_COLOR = "switch-color";
     private static final String COLLECTOR_TYPE_SWITCH_MULTILEVEL = "switch-multilevel";
+    private static final String COLLECTOR_TYPE_SWITCH_BINARY = "switch-binary";
 
     private BasicSetActuatorBuilder basicSetEmitterBuilder;
     private SceneActivationEmitterBuilder sceneActivationEmitterBuilder;
     private SwitchMultilevelCollectorBuilder switchMultilevelCollectorBuilder;
+    private SwitchBinaryCollectorBuilder switchBinaryCollectorBuilder;
     private SwitchColorActuatorBuilder switchColorActuatorBuilder;
 
-    public JWaveZBuilder() {
+    public JWaveZThingBuilder() {
         this.basicSetEmitterBuilder = new BasicSetActuatorBuilder();
         this.sceneActivationEmitterBuilder = new SceneActivationEmitterBuilder();
         this.switchMultilevelCollectorBuilder = new SwitchMultilevelCollectorBuilder();
+        this.switchBinaryCollectorBuilder = new SwitchBinaryCollectorBuilder();
         this.switchColorActuatorBuilder = new SwitchColorActuatorBuilder();
     }
 
@@ -105,6 +109,8 @@ public class JWaveZBuilder implements ThingPluginBuilder {
         switch(collectorDTO.getRef()) {
             case COLLECTOR_TYPE_SWITCH_MULTILEVEL:
                 return switchMultilevelCollectorBuilder.buildCollector(collectorDTO, agent);
+            case COLLECTOR_TYPE_SWITCH_BINARY:
+                return switchBinaryCollectorBuilder.buildCollector(collectorDTO, agent);
             default:
                 throw new PluginException("Unknown collector reference " + collectorDTO.getRef() + ", skipping this DTO");
         }

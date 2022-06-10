@@ -7,9 +7,9 @@ import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 
 public class SwitchColorActuatorBuilder {
 
-    private static final String SWITCH_PARAM_NODE_ID = "node-id";
-    private static final String SWITCH_PARAM_COLOR_MODE = "color-mode";
-    private static final String SWITCH_PARAM_SWITCH_DURATION = "switch-duration";
+    private static final String SWITCH_PARAM_NODE_ID = "nodeId";
+    private static final String SWITCH_PARAM_COLOR_MODE = "colorMode";
+    private static final String SWITCH_PARAM_SWITCH_DURATION = "switchDuration";
 
     public SwitchColorActuator buildActuator(JWaveZAgent agent, ThingBuilderContext context, ActuatorDTO actuatorDTO) {
         return SwitchColorActuator.builder()

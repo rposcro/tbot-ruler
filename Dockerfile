@@ -1,4 +1,4 @@
-FROM openjdk:8u151-jre-alpine3.7
+FROM --platform=linux/amd64 openjdk:13-alpine3.9
 
 WORKDIR /cache
 WORKDIR /app

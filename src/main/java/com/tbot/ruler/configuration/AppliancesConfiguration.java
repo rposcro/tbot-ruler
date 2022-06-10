@@ -52,7 +52,13 @@ public class AppliancesConfiguration {
     private Optional<Appliance> fromDTO(ApplianceDTO dto) {
         try {
             Class<? extends Appliance> clazz = applianceClassesMap().get(dto.getType());
+            if (clazz == null) {
+                throw new NullPointerException("Appliance class " + dto.getType() + " could not be found!");
+            }
             Constructor<? extends Appliance> constructor = clazz.getConstructor(ApplianceId.class, PersistenceService.class);
+            if (constructor == null) {
+                throw new NullPointerException("Appliance constructor for class " + dto.getType() + " could not be found!");
+            }
             Appliance appliance = constructor.newInstance(dto.getId(), persistenceService);
             return Optional.of(appliance);
         } catch(ReflectiveOperationException | SecurityException e) {

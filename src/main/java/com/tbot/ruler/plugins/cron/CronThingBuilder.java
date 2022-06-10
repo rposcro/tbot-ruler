@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.TimeZone;
 
 @Slf4j
-public class CronBuilder implements ThingPluginBuilder {
+public class CronThingBuilder implements ThingPluginBuilder {
 
     private static final String EMITTER_REF_SCHEDULER = "scheduler";
     private static final String PARAM_TIME_ZONE = "timeZone";
@@ -54,7 +54,7 @@ public class CronBuilder implements ThingPluginBuilder {
     }
     
     private TimeZone determineTimeZone(ThingDTO thingDTO) {
-        String tzString = thingDTO.getConfig().get(PARAM_TIME_ZONE);
+        String tzString = thingDTO.getStringParameter(PARAM_TIME_ZONE);
         TimeZone timeZone = tzString == null ? TimeZone.getDefault() : TimeZone.getTimeZone(tzString);
         return timeZone;
     }

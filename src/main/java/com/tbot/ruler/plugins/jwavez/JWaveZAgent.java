@@ -34,9 +34,9 @@ import java.util.stream.IntStream;
 @Getter
 public class JWaveZAgent {
 
-    private static final String PARAM_DEVICE = "module-device";
-    private static final String PARAM_RECONNECT_ATTEMPTS = "reconnect-attempts";
-    private static final String PARAM_RECONNECT_DELAY = "reconnect-delay";
+    private static final String PARAM_DEVICE = "moduleDevice";
+    private static final String PARAM_RECONNECT_ATTEMPTS = "reconnectAttempts";
+    private static final String PARAM_RECONNECT_DELAY = "reconnectDelay";
 
     private static final int DEFAULT_SECONDS_BETWEEN_RETRIES = 5;
     private static final int DEFAULT_MAX_RETRIES = 36;

@@ -31,7 +31,7 @@ public class CronSchedulerEmitterBuilder {
     }
 
     private CronEmissionTrigger emissionTrigger(EmitterDTO emitterDTO, TimeZone timeZone) {
-        String pattern = emitterDTO.getConfig().get(PARAM_SCHEDULE_PATTERN);
+        String pattern = emitterDTO.getStringParameter(PARAM_SCHEDULE_PATTERN);
         return new CronEmissionTrigger(pattern, timeZone);
     }
 

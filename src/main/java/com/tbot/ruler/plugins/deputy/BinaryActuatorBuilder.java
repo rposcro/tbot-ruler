@@ -30,28 +30,28 @@ public class BinaryActuatorBuilder {
 
     private RestPatchCommand restPatchCommand(ThingDTO thingDTO, ActuatorDTO actuatorDTO, RestService restService) {
         return restService.builderForPatch()
-                .host(thingDTO.getConfig().get(DeputyBuilder.PARAM_HOST))
-                .port(thingDTO.getConfig().get(DeputyBuilder.PARAM_PORT))
+                .host(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_HOST))
+                .port(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_PORT))
                 .path(buildBinOutPath(thingDTO, actuatorDTO))
                 .build();
     }
 
     private RestGetCommand restGetCommand(ThingDTO thingDTO, ActuatorDTO actuatorDTO, RestService restService) {
         return restService.builderForGet()
-                .host(thingDTO.getConfig().get(DeputyBuilder.PARAM_HOST))
-                .port(thingDTO.getConfig().get(DeputyBuilder.PARAM_PORT))
+                .host(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_HOST))
+                .port(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_PORT))
                 .path(buildBinOutPath(thingDTO, actuatorDTO))
                 .build();
     }
 
     private String buildBinOutPath(ThingDTO thingDTO, ActuatorDTO actuatorDTO) {
-        String basePath = thingDTO.getConfig().get(DeputyBuilder.PARAM_PATH);
+        String basePath = thingDTO.getStringParameter(DeputyThingBuilder.PARAM_PATH);
         basePath = (basePath == null) ? "" : basePath.trim();
 
         if (!basePath.endsWith("/")) {
             basePath = basePath + "/";
         }
 
-        return String.format(basePath + PATH_BINOUT_TEMPLATE, actuatorDTO.getConfig().get(PARAM_PIN));
+        return String.format(basePath + PATH_BINOUT_TEMPLATE, actuatorDTO.getStringParameter(PARAM_PIN));
     }
 }

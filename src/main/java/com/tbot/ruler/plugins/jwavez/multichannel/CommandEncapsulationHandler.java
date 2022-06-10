@@ -16,7 +16,7 @@ public class CommandEncapsulationHandler implements SupportedCommandHandler<Mult
 
     static {
         handlersPerCommand = new HashMap<>();
-        handlersPerCommand.put(MultiChannelCommandType.MULTI_CHANNEL_CMD_ENCAP, new EncapsulatedBasicSetProcessor());
+//        handlersPerCommand.put(MultiChannelCommandType.MULTI_CHANNEL_CMD_ENCAP, new EncapsulatedBasicSetProcessor());
     }
 
     public void handleCommand(MultiChannelCommandEncapsulation commandEncapsulation) {

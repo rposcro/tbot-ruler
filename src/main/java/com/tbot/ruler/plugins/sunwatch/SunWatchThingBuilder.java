@@ -17,7 +17,7 @@ import com.tbot.ruler.things.builder.dto.ThingDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class SunWatchBuilder implements ThingPluginBuilder {
+public class SunWatchThingBuilder implements ThingPluginBuilder {
 
     private static final String PARAM_LATITUDE = "latitude";
     private static final String PARAM_LONGITUDE = "longitude";

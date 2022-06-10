@@ -47,9 +47,9 @@ public class SunEventEmitterBuilder extends AbstractEmitterBuilder {
     private SunEventTimer sunEvent(EmitterDTO emitterDTO) {
         SunCalculator sunCalculator = new SunCalculator(eventLocale);
         switch(emitterDTO.getRef()) {
-            case SunWatchBuilder.EMITTER_REF_SUNRISE:
+            case SunWatchThingBuilder.EMITTER_REF_SUNRISE:
                 return sunCalculator::sunriseForDate;
-            case SunWatchBuilder.EMITTER_REF_SUNSET:
+            case SunWatchThingBuilder.EMITTER_REF_SUNSET:
                 return sunCalculator::sunsetForDate;
             default:
                 throw new IllegalArgumentException("Unrecognized emitter reference: " + emitterDTO.getRef());
