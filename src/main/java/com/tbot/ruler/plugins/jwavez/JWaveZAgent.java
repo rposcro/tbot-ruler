@@ -1,11 +1,9 @@
 package com.tbot.ruler.plugins.jwavez;
 
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
-import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
-import com.rposcro.jwavez.core.commands.types.BasicCommandType;
-import com.rposcro.jwavez.core.commands.types.MultiChannelCommandType;
-import com.rposcro.jwavez.core.commands.types.SceneActivationCommandType;
+import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.handlers.SupportedCommandDispatcher;
+import com.rposcro.jwavez.core.handlers.SupportedCommandHandler;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.rposcro.jwavez.core.utils.ImmutableBuffer;
 import com.rposcro.jwavez.serial.buffers.ViewBuffer;
@@ -18,13 +16,11 @@ import com.rposcro.jwavez.serial.interceptors.ApplicationCommandInterceptor;
 import com.rposcro.jwavez.serial.rxtx.SerialRequest;
 import com.rposcro.jwavez.serial.utils.BufferUtil;
 import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.plugins.jwavez.basicset.BasicSetHandler;
-import com.tbot.ruler.plugins.jwavez.multichannel.CommandEncapsulationHandler;
-import com.tbot.ruler.plugins.jwavez.sceneactivation.SceneActivationHandler;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -43,22 +39,18 @@ public class JWaveZAgent {
 
     private String device;
     private GeneralAsynchronousController jwzController;
-    private SceneActivationHandler sceneActivationHandler;
-    private BasicSetHandler basicSetHandler;
-    private CommandEncapsulationHandler commandEncapsulationHandler;
+    private Map<CommandType, SupportedCommandHandler<?>> commandHandlersMap;
 
     private final int reconnectAttempts;
     private final int reconnectDelay;
 
     private final AtomicInteger callbackId = new AtomicInteger(1);
 
-    public JWaveZAgent(ThingBuilderContext builderContext) {
+    public JWaveZAgent(ThingBuilderContext builderContext, Map<CommandType, SupportedCommandHandler<?>> commandHandlersMap) {
+        this.commandHandlersMap = commandHandlersMap;
         this.reconnectAttempts = builderContext.getThingDTO().getIntParameter(PARAM_RECONNECT_ATTEMPTS, DEFAULT_MAX_RETRIES);
         this.reconnectDelay = builderContext.getThingDTO().getIntParameter(PARAM_RECONNECT_DELAY, DEFAULT_SECONDS_BETWEEN_RETRIES);
         this.device = builderContext.getThingDTO().getStringParameter(PARAM_DEVICE);
-        this.sceneActivationHandler = new SceneActivationHandler();
-        this.basicSetHandler = new BasicSetHandler();
-        this.commandEncapsulationHandler = new CommandEncapsulationHandler();
     }
 
     public void connect() {
@@ -102,7 +94,7 @@ public class JWaveZAgent {
     private GeneralAsynchronousController jwavezController(String device) {
         return GeneralAsynchronousController.builder()
             .dongleDevice(device)
-            .callbackHandler(callbackHandler())
+            .callbackHandler(buildCallbackHandler())
             .responseHandler(responseHandler())
             .build();
     }
@@ -115,9 +107,9 @@ public class JWaveZAgent {
         };
     }
 
-    private Consumer<ViewBuffer> callbackHandler() {
+    private Consumer<ViewBuffer> buildCallbackHandler() {
         return new InterceptableCallbackHandler()
-            .addCallbackInterceptor(applicationCommandInterceptor())
+            .addCallbackInterceptor(buildApplicationCommandInterceptor())
             .addViewBufferInterceptor((buffer) -> {
                 if (log.isDebugEnabled()) {
                     log.debug("Callback frame received: {}", BufferUtil.bufferToString(buffer));
@@ -125,11 +117,9 @@ public class JWaveZAgent {
             });
     }
 
-    private ApplicationCommandInterceptor applicationCommandInterceptor() {
-        SupportedCommandDispatcher commandDispatcher = new SupportedCommandDispatcher()
-            .registerHandler(SceneActivationCommandType.SCENE_ACTIVATION_SET, sceneActivationHandler)
-            .registerHandler(BasicCommandType.BASIC_SET, basicSetHandler)
-            .registerHandler(MultiChannelCommandType.MULTI_CHANNEL_CMD_ENCAP, commandEncapsulationHandler);
+    private ApplicationCommandInterceptor buildApplicationCommandInterceptor() {
+        SupportedCommandDispatcher commandDispatcher = new SupportedCommandDispatcher();
+        commandHandlersMap.entrySet().stream().forEach(entry -> commandDispatcher.registerHandler(entry.getKey(), entry.getValue()));
         return ApplicationCommandInterceptor.builder()
             .supportedCommandDispatcher(commandDispatcher)
             .build();
@@ -145,5 +135,4 @@ public class JWaveZAgent {
             .forEach(index -> string.append(String.format("%02x ", buffer.getByte(index))));
         return string.toString();
     }
-
 }

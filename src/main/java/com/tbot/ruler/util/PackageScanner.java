@@ -1,6 +1,5 @@
 package com.tbot.ruler.util;
 
-import org.reflections.Configuration;
 import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 

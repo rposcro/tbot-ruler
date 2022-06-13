@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 openjdk:13-alpine3.9
+FROM --platform=linux/amd64 adoptopenjdk/openjdk8
 
 WORKDIR /cache
 WORKDIR /app

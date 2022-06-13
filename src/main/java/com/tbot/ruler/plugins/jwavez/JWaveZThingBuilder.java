@@ -1,10 +1,7 @@
 package com.tbot.ruler.plugins.jwavez;
 
-import com.tbot.ruler.plugins.jwavez.basicset.BasicSetActuatorBuilder;
-import com.tbot.ruler.plugins.jwavez.sceneactivation.SceneActivationEmitterBuilder;
-import com.tbot.ruler.plugins.jwavez.switchbinary.SwitchBinaryCollectorBuilder;
-import com.tbot.ruler.plugins.jwavez.switchcolor.SwitchColorActuatorBuilder;
-import com.tbot.ruler.plugins.jwavez.switchmultilevel.SwitchMultilevelCollectorBuilder;
+import com.rposcro.jwavez.core.commands.types.CommandType;
+import com.rposcro.jwavez.core.handlers.SupportedCommandHandler;
 import com.tbot.ruler.things.*;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.builder.dto.CollectorDTO;
@@ -13,37 +10,31 @@ import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.ThingPluginBuilder;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
+import com.tbot.ruler.util.PackageScanner;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 public class JWaveZThingBuilder implements ThingPluginBuilder {
 
-    private static final String EMITTER_TYPE_SCENE_ACTIVATION = "scene-activation";
-    private static final String ACTUATOR_TYPE_BASIC_SET = "basic-set";
-    private static final String ACTUATOR_TYPE_SWITCH_COLOR = "switch-color";
-    private static final String COLLECTOR_TYPE_SWITCH_MULTILEVEL = "switch-multilevel";
-    private static final String COLLECTOR_TYPE_SWITCH_BINARY = "switch-binary";
-
-    private BasicSetActuatorBuilder basicSetEmitterBuilder;
-    private SceneActivationEmitterBuilder sceneActivationEmitterBuilder;
-    private SwitchMultilevelCollectorBuilder switchMultilevelCollectorBuilder;
-    private SwitchBinaryCollectorBuilder switchBinaryCollectorBuilder;
-    private SwitchColorActuatorBuilder switchColorActuatorBuilder;
+    private Map<String, ActuatorBuilder> actuatorBuilderMap;
+    private Map<String, EmitterBuilder> emitterBuilderMap;
+    private Map<String, CollectorBuilder> collectorBuilderMap;
 
     public JWaveZThingBuilder() {
-        this.basicSetEmitterBuilder = new BasicSetActuatorBuilder();
-        this.sceneActivationEmitterBuilder = new SceneActivationEmitterBuilder();
-        this.switchMultilevelCollectorBuilder = new SwitchMultilevelCollectorBuilder();
-        this.switchBinaryCollectorBuilder = new SwitchBinaryCollectorBuilder();
-        this.switchColorActuatorBuilder = new SwitchColorActuatorBuilder();
+        this.actuatorBuilderMap = findActuatorsBuilders();
+        this.emitterBuilderMap = findEmittersBuilders();
+        this.collectorBuilderMap = findCollectorsBuilders();
     }
 
     @Override
     public Thing buildThing(ThingBuilderContext builderContext) throws PluginException {
-        JWaveZAgent agent = agent(builderContext);
+        JWaveZAgent agent = agent(builderContext, commandHandlerMap());
         ThingDTO thingDTO = builderContext.getThingDTO();
 
         return BasicThing.builder()
@@ -57,8 +48,44 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
             .build();
     }
 
-    private JWaveZAgent agent(ThingBuilderContext builderContext) {
-        return new JWaveZAgent(builderContext);
+    private Map<CommandType, SupportedCommandHandler<?>> commandHandlerMap() {
+        Map<CommandType, SupportedCommandHandler<?>> handlersMap = new HashMap<>();
+        actuatorBuilderMap.values().stream()
+                .forEach(builder -> handlersMap.put(builder.getSupportedCommandType(), builder.getSupportedCommandHandler()));
+        emitterBuilderMap.values().stream()
+                .forEach(builder -> handlersMap.put(builder.getSupportedCommandType(), builder.getSupportedCommandHandler()));
+        return handlersMap;
+    }
+
+    private Map<String, ActuatorBuilder> findActuatorsBuilders() {
+        Map<String, ActuatorBuilder> buildersMap = new HashMap<>();
+        PackageScanner packageScanner = new PackageScanner();
+        Set<Class<? extends ActuatorBuilder>> buildersClasses = packageScanner.findAllClassesOfType(ActuatorBuilder.class, "com.tbot.ruler.plugins.jwavez");
+        Set<? extends ActuatorBuilder> builders = packageScanner.instantiateAll(buildersClasses);
+        builders.stream().forEach(builder -> buildersMap.put(builder.getReference(), builder));
+        return buildersMap;
+    }
+
+    private Map<String, EmitterBuilder> findEmittersBuilders() {
+        Map<String, EmitterBuilder> buildersMap = new HashMap<>();
+        PackageScanner packageScanner = new PackageScanner();
+        Set<Class<? extends EmitterBuilder>> buildersClasses = packageScanner.findAllClassesOfType(EmitterBuilder.class, "com.tbot.ruler.plugins.jwavez");
+        Set<? extends EmitterBuilder> builders = packageScanner.instantiateAll(buildersClasses);
+        builders.stream().forEach(builder -> buildersMap.put(builder.getReference(), builder));
+        return buildersMap;
+    }
+
+    private Map<String, CollectorBuilder> findCollectorsBuilders() {
+        Map<String, CollectorBuilder> buildersMap = new HashMap<>();
+        PackageScanner packageScanner = new PackageScanner();
+        Set<Class<? extends CollectorBuilder>> buildersClasses = packageScanner.findAllClassesOfType(CollectorBuilder.class, "com.tbot.ruler.plugins.jwavez");
+        Set<? extends CollectorBuilder> builders = packageScanner.instantiateAll(buildersClasses);
+        builders.stream().forEach(builder -> buildersMap.put(builder.getReference(), builder));
+        return buildersMap;
+    }
+
+    private JWaveZAgent agent(ThingBuilderContext builderContext, Map<CommandType, SupportedCommandHandler<?>> commandHandlerMap) {
+        return new JWaveZAgent(builderContext, commandHandlerMap);
     }
 
     private List<Actuator> buildActuators(ThingBuilderContext builderContext, JWaveZAgent agent) throws PluginException {
@@ -70,14 +97,11 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
     }
 
     private Actuator buildActuator(JWaveZAgent agent, ThingBuilderContext context, ActuatorDTO actuatorDTO) throws PluginException {
-        switch(actuatorDTO.getRef()) {
-            case ACTUATOR_TYPE_BASIC_SET:
-                return basicSetEmitterBuilder.buildActuator(agent.getBasicSetHandler(), context, actuatorDTO);
-            case ACTUATOR_TYPE_SWITCH_COLOR:
-                return switchColorActuatorBuilder.buildActuator(agent, context, actuatorDTO);
-            default:
-                throw new PluginException("Unknown actuator reference " + actuatorDTO.getRef() + ", skipping this DTO");
+        ActuatorBuilder actuatorBuilder = actuatorBuilderMap.get(actuatorDTO.getRef());
+        if (actuatorBuilder == null) {
+            throw new PluginException("Unknown actuator reference " + actuatorDTO.getRef() + ", skipping this DTO");
         }
+        return actuatorBuilder.buildActuator(agent, context, actuatorDTO);
     }
 
     private List<Emitter> buildEmitters(ThingBuilderContext builderContext, JWaveZAgent agent) throws PluginException {
@@ -89,12 +113,11 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
     }
 
     private Emitter buildEmitter(JWaveZAgent agent, ThingBuilderContext context, EmitterDTO emitterDTO) throws PluginException {
-        switch(emitterDTO.getRef()) {
-            case EMITTER_TYPE_SCENE_ACTIVATION:
-                return sceneActivationEmitterBuilder.buildEmitter(agent.getSceneActivationHandler(), context, emitterDTO);
-            default:
-                throw new PluginException("Unknown emitter reference " + emitterDTO.getRef() + ", skipping this DTO");
+        EmitterBuilder emitterBuilder = emitterBuilderMap.get(emitterDTO.getRef());
+        if (emitterBuilder == null) {
+            throw new PluginException("Unknown emitter reference " + emitterDTO.getRef() + ", skipping this DTO");
         }
+        return emitterBuilder.buildEmitter(agent, context, emitterDTO);
     }
 
     private List<Collector> buildCollectors(ThingBuilderContext builderContext, JWaveZAgent agent) throws PluginException {
@@ -106,13 +129,10 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
     }
 
     private Collector buildCollector(JWaveZAgent agent, ThingBuilderContext context, CollectorDTO collectorDTO) throws PluginException {
-        switch(collectorDTO.getRef()) {
-            case COLLECTOR_TYPE_SWITCH_MULTILEVEL:
-                return switchMultilevelCollectorBuilder.buildCollector(collectorDTO, agent);
-            case COLLECTOR_TYPE_SWITCH_BINARY:
-                return switchBinaryCollectorBuilder.buildCollector(collectorDTO, agent);
-            default:
-                throw new PluginException("Unknown collector reference " + collectorDTO.getRef() + ", skipping this DTO");
+        CollectorBuilder collectorBuilder = collectorBuilderMap.get(collectorDTO.getRef());
+        if (collectorBuilder == null) {
+            throw new PluginException("Unknown collector reference " + collectorDTO.getRef() + ", skipping this DTO");
         }
+        return collectorBuilder.buildCollector(agent, context, collectorDTO);
     }
 }
