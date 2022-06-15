@@ -1,7 +1,10 @@
 package com.tbot.ruler.plugins.jwavez;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
 import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.handlers.SupportedCommandHandler;
+import com.tbot.ruler.plugins.jwavez.switchbinary.SwitchBinaryConfiguration;
 import com.tbot.ruler.things.*;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.builder.dto.CollectorDTO;
@@ -13,6 +16,7 @@ import com.tbot.ruler.things.exceptions.PluginException;
 import com.tbot.ruler.util.PackageScanner;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +38,7 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
 
     @Override
     public Thing buildThing(ThingBuilderContext builderContext) throws PluginException {
-        JWaveZAgent agent = agent(builderContext, commandHandlerMap());
+        JWaveZAgent agent = buildAgent(builderContext, commandHandlerMap());
         ThingDTO thingDTO = builderContext.getThingDTO();
 
         return BasicThing.builder()
@@ -48,8 +52,8 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
             .build();
     }
 
-    private Map<CommandType, SupportedCommandHandler<?>> commandHandlerMap() {
-        Map<CommandType, SupportedCommandHandler<?>> handlersMap = new HashMap<>();
+    private Map<CommandType, JWaveZCommandHandler<? extends ZWaveSupportedCommand>> commandHandlerMap() {
+        Map<CommandType, JWaveZCommandHandler<? extends ZWaveSupportedCommand>> handlersMap = new HashMap<>();
         actuatorBuilderMap.values().stream()
                 .forEach(builder -> handlersMap.put(builder.getSupportedCommandType(), builder.getSupportedCommandHandler()));
         emitterBuilderMap.values().stream()
@@ -84,8 +88,17 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
         return buildersMap;
     }
 
-    private JWaveZAgent agent(ThingBuilderContext builderContext, Map<CommandType, SupportedCommandHandler<?>> commandHandlerMap) {
-        return new JWaveZAgent(builderContext, commandHandlerMap);
+    private JWaveZAgent buildAgent(ThingBuilderContext builderContext, Map<CommandType, JWaveZCommandHandler<? extends ZWaveSupportedCommand>> commandHandlerMap)
+    throws PluginException {
+        return new JWaveZAgent(buildThingConfiguration(builderContext), commandHandlerMap);
+    }
+
+    private JWaveZThingConfiguration buildThingConfiguration(ThingBuilderContext builderContext) throws PluginException {
+        try {
+            return new ObjectMapper().readerFor(JWaveZThingConfiguration.class).readValue(builderContext.getThingDTO().getConfigurationNode());
+        } catch(IOException e) {
+            throw new PluginException("Could not parse JWaveZ thing's configuration!", e);
+        }
     }
 
     private List<Actuator> buildActuators(ThingBuilderContext builderContext, JWaveZAgent agent) throws PluginException {

@@ -1,10 +1,11 @@
 package com.tbot.ruler.plugins.jwavez;
 
-import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
+import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
+import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
 import com.rposcro.jwavez.core.commands.types.CommandType;
-import com.rposcro.jwavez.core.handlers.SupportedCommandDispatcher;
+import com.rposcro.jwavez.core.commands.types.CommandTypesRegistry;
+import com.rposcro.jwavez.core.commands.types.MultiChannelCommandType;
 import com.rposcro.jwavez.core.handlers.SupportedCommandHandler;
-import com.rposcro.jwavez.core.model.NodeId;
 import com.rposcro.jwavez.core.utils.ImmutableBuffer;
 import com.rposcro.jwavez.serial.buffers.ViewBuffer;
 import com.rposcro.jwavez.serial.controllers.GeneralAsynchronousController;
@@ -16,13 +17,11 @@ import com.rposcro.jwavez.serial.interceptors.ApplicationCommandInterceptor;
 import com.rposcro.jwavez.serial.rxtx.SerialRequest;
 import com.rposcro.jwavez.serial.utils.BufferUtil;
 import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.things.builder.ThingBuilderContext;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
@@ -34,23 +33,20 @@ public class JWaveZAgent {
     private static final String PARAM_RECONNECT_ATTEMPTS = "reconnectAttempts";
     private static final String PARAM_RECONNECT_DELAY = "reconnectDelay";
 
-    private static final int DEFAULT_SECONDS_BETWEEN_RETRIES = 5;
-    private static final int DEFAULT_MAX_RETRIES = 36;
-
     private String device;
     private GeneralAsynchronousController jwzController;
-    private Map<CommandType, SupportedCommandHandler<?>> commandHandlersMap;
+    private Map<CommandType, JWaveZCommandHandler<? extends ZWaveSupportedCommand>> commandHandlersMap;
 
     private final int reconnectAttempts;
     private final int reconnectDelay;
 
     private final AtomicInteger callbackId = new AtomicInteger(1);
 
-    public JWaveZAgent(ThingBuilderContext builderContext, Map<CommandType, SupportedCommandHandler<?>> commandHandlersMap) {
+    public JWaveZAgent(JWaveZThingConfiguration configuration, Map<CommandType, JWaveZCommandHandler<? extends ZWaveSupportedCommand>> commandHandlersMap) {
         this.commandHandlersMap = commandHandlersMap;
-        this.reconnectAttempts = builderContext.getThingDTO().getIntParameter(PARAM_RECONNECT_ATTEMPTS, DEFAULT_MAX_RETRIES);
-        this.reconnectDelay = builderContext.getThingDTO().getIntParameter(PARAM_RECONNECT_DELAY, DEFAULT_SECONDS_BETWEEN_RETRIES);
-        this.device = builderContext.getThingDTO().getStringParameter(PARAM_DEVICE);
+        this.reconnectAttempts = configuration.getReconnectAttempts();
+        this.reconnectDelay = configuration.getReconnectDelay();
+        this.device = configuration.getModuleDevice();
     }
 
     public void connect() {
@@ -73,7 +69,7 @@ public class JWaveZAgent {
         }
     }
 
-    public BiConsumer<NodeId, ZWaveControlledCommand> commandSender() {
+    public JWaveZCommandSender getCommandSender() {
         return (nodeId, command) -> {
             if (log.isDebugEnabled()) {
                 log.debug("Request frame sending: {}", bufferToString(command.getPayload()));
@@ -118,11 +114,28 @@ public class JWaveZAgent {
     }
 
     private ApplicationCommandInterceptor buildApplicationCommandInterceptor() {
-        SupportedCommandDispatcher commandDispatcher = new SupportedCommandDispatcher();
-        commandHandlersMap.entrySet().stream().forEach(entry -> commandDispatcher.registerHandler(entry.getKey(), entry.getValue()));
-        return ApplicationCommandInterceptor.builder()
-            .supportedCommandDispatcher(commandDispatcher)
-            .build();
+        ApplicationCommandInterceptor interceptor = new ApplicationCommandInterceptor();
+        commandHandlersMap.entrySet().stream().forEach(entry -> interceptor.registerCommandHandler(entry.getKey(), entry.getValue()));
+        interceptor.registerCommandHandler(MultiChannelCommandType.MULTI_CHANNEL_CMD_ENCAP, buildCommandEncapsulationHandler());
+        return interceptor;
+    }
+
+    private SupportedCommandHandler<MultiChannelCommandEncapsulation> buildCommandEncapsulationHandler() {
+        return encapsulation -> {
+            try {
+                CommandType commandType = CommandTypesRegistry.decodeCommandType(
+                        encapsulation.getEncapsulatedCommandClass(), encapsulation.getEncapsulatedCommandCode());
+                JWaveZCommandHandler commandHandler = commandHandlersMap.get(commandType);
+                if (commandHandler == null) {
+                    log.info("Encapsulated command type " + commandType + " is not supported");
+                } else {
+                    commandHandler.handleEncapsulatedCommand(encapsulation);
+                }
+            } catch(Exception e) {
+                log.error("Failed to handle encapsulated command " + encapsulation.getEncapsulatedCommandClass()
+                        + " with command type code " + encapsulation.getEncapsulatedCommandCode());
+            }
+        };
     }
 
     private byte nextCallbackId() {

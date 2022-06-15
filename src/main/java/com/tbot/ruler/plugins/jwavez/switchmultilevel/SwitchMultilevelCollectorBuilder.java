@@ -26,7 +26,7 @@ public class SwitchMultilevelCollectorBuilder implements CollectorBuilder {
             .description(collectorDTO.getDescription())
             .switchDuration((byte) collectorDTO.getIntParameter(SWITCH_PARAM_SWITCH_DURATION, 0))
             .nodeId(new NodeId((byte) collectorDTO.getIntParameter(SWITCH_PARAM_NODE_ID)))
-            .commandSender(agent.commandSender())
+            .commandSender(agent.getCommandSender())
             .build();
     }
 }

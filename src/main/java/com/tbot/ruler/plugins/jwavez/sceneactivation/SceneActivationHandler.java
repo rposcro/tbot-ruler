@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.jwavez.sceneactivation;
 
 import com.rposcro.jwavez.core.commands.supported.sceneactivation.SceneActivationSet;
-import com.rposcro.jwavez.core.handlers.SupportedCommandHandler;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
-public class SceneActivationHandler implements SupportedCommandHandler<SceneActivationSet> {
+public class SceneActivationHandler extends JWaveZCommandHandler<SceneActivationSet> {
 
     private Map<String, List<SceneActivationEmitter>> emittersPerKey;
 

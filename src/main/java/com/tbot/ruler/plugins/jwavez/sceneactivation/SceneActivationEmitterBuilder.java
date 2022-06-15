@@ -1,10 +1,12 @@
 package com.tbot.ruler.plugins.jwavez.sceneactivation;
 
+import com.rposcro.jwavez.core.commands.supported.sceneactivation.SceneActivationSet;
 import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.commands.types.SceneActivationCommandType;
 import com.rposcro.jwavez.core.handlers.SupportedCommandHandler;
 import com.tbot.ruler.plugins.jwavez.EmitterBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZAgent;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 
@@ -22,7 +24,7 @@ public class SceneActivationEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public SupportedCommandHandler<?> getSupportedCommandHandler() {
+    public JWaveZCommandHandler<SceneActivationSet> getSupportedCommandHandler() {
         return sceneActivationHandler;
     }
 
