@@ -1,10 +1,14 @@
 package com.tbot.ruler.plugins.sunwatch;
 
+import java.io.IOException;
 import java.time.ZoneId;
-import java.util.ArrayList;
-import java.util.Collections;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 import com.tbot.ruler.things.BasicThing;
 import com.tbot.ruler.things.Emitter;
@@ -14,39 +18,27 @@ import com.tbot.ruler.things.builder.ThingPluginBuilder;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 
 import com.tbot.ruler.things.builder.dto.ThingDTO;
+import com.tbot.ruler.things.exceptions.PluginException;
+import com.tbot.ruler.util.PackageScanner;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class SunWatchThingBuilder implements ThingPluginBuilder {
 
-    private static final String PARAM_LATITUDE = "latitude";
-    private static final String PARAM_LONGITUDE = "longitude";
-    private static final String PARAM_TIMEZONE = "timezone";
+    private Map<String, AbstractEmitterBuilder> emitterBuilderMap;
 
-    static final String EMITTER_REF_SUNRISE = "sunrise";
-    static final String EMITTER_REF_SUNSET = "sunset";
-    static final String EMITTER_REF_DAYTIME = "daytime";
-
-    private SunEventEmitterBuilder sunEventEmitterBuilder;
-    private DaytimeEmitterBuilder daytimeEmitterBuilder;
+    public SunWatchThingBuilder() {
+        emitterBuilderMap = findEmittersBuilders();
+    }
 
     @Override
-    public Thing buildThing(ThingBuilderContext builderContext) {
+    public Thing buildThing(ThingBuilderContext builderContext) throws PluginException {
         ThingDTO thingDTO = builderContext.getThingDTO();
-        SunEventLocale sunEventLocale = sunEventLocale(thingDTO);
+        SunWatchThingConfiguration thingConfiguration = buildThingConfiguration(builderContext);
+        SunEventLocale sunEventLocale = sunEventLocale(thingConfiguration);
         log.debug("Building Sun Clock: {}, with locale: {}", thingDTO.getName(), sunEventLocale);
 
-        sunEventEmitterBuilder = SunEventEmitterBuilder.builder()
-            .builderContext(builderContext)
-            .eventLocale(sunEventLocale)
-            .build();
-
-        daytimeEmitterBuilder = DaytimeEmitterBuilder.builder()
-            .builderContext(builderContext)
-            .eventLocale(sunEventLocale)
-            .build();
-
-        List<Emitter> emitters = buildEmitters(thingDTO.getEmitters());
+        List<Emitter> emitters = buildEmitters(builderContext, sunEventLocale);
 
         return BasicThing.builder()
             .id(thingDTO.getId())
@@ -56,42 +48,56 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
             .build();
     }
 
-    private List<Emitter> buildEmitters(List<EmitterDTO> emitterDTOList) {
-        if (emitterDTOList != null) {
-            List<Emitter> emitters = new ArrayList<>(emitterDTOList.size());
-            emitterDTOList.forEach(emitterDTO -> {
-                if (EMITTER_REF_SUNRISE.equals(emitterDTO.getRef()) || EMITTER_REF_SUNSET.equals(emitterDTO.getRef())) {
-                    emitters.add(sunEventEmitterBuilder.buildEmitter(emitterDTO));
-                }
-                else if (EMITTER_REF_DAYTIME.equals(emitterDTO.getRef())) {
-                    emitters.add(daytimeEmitterBuilder.buildEmitter(emitterDTO));
-                }
-                else {
-                    log.error("Unrecognized emitter reference: {}", emitterDTO.getRef());
-                    throw new IllegalArgumentException("Unrecognized emitter reference: " + emitterDTO.getRef());
-                }
-            });
-            return emitters;
-        }
-        return Collections.emptyList();
+    private Map<String, AbstractEmitterBuilder> findEmittersBuilders() {
+        Map<String, AbstractEmitterBuilder> buildersMap = new HashMap<>();
+        PackageScanner packageScanner = new PackageScanner();
+        Set<Class<? extends AbstractEmitterBuilder>> buildersClasses = packageScanner.findAllClassesOfType(AbstractEmitterBuilder.class, "com.tbot.ruler.plugins.sunwatch");
+        Set<? extends AbstractEmitterBuilder> builders = packageScanner.instantiateAll(buildersClasses);
+        builders.stream().forEach(builder -> buildersMap.put(builder.getReference(), builder));
+        return buildersMap;
     }
 
-    private SunEventLocale sunEventLocale(ThingDTO thingDTO) {
+    private SunWatchThingConfiguration buildThingConfiguration(ThingBuilderContext builderContext) throws PluginException {
+        try {
+            return new ObjectMapper().readerFor(SunWatchThingConfiguration.class).readValue(builderContext.getThingDTO().getConfigurationNode());
+        } catch(IOException e) {
+            throw new PluginException("Could not parse SunWatch thing's configuration!", e);
+        }
+    }
+
+    private List<Emitter> buildEmitters(ThingBuilderContext builderContext, SunEventLocale sunEventLocale)
+    throws PluginException {
+        List<Emitter> emitters = new LinkedList<>();
+        for (EmitterDTO emitterDTO : builderContext.getThingDTO().getEmitters()) {
+            emitters.add(buildEmitter(builderContext, sunEventLocale, emitterDTO));
+        }
+        return emitters;
+    }
+
+    private Emitter buildEmitter(ThingBuilderContext builderContext, SunEventLocale sunEventLocale, EmitterDTO emitterDTO)
+    throws PluginException {
+        AbstractEmitterBuilder emitterBuilder = emitterBuilderMap.get(emitterDTO.getRef());
+        if (emitterBuilder == null) {
+            throw new PluginException("Unknown emitter reference " + emitterDTO.getRef() + ", skipping this DTO");
+        }
+        return emitterBuilder.buildEmitter(builderContext, sunEventLocale);
+    }
+
+    private SunEventLocale sunEventLocale(SunWatchThingConfiguration configuration) {
         return SunEventLocale.builder()
-                .location(thingLocation(thingDTO))
-                .zoneId(thingZoneId(thingDTO))
+                .location(thingLocation(configuration))
+                .zoneId(thingZoneId(configuration))
                 .build();
     }
 
-    private Location thingLocation(ThingDTO thingDTO) {
+    private Location thingLocation(SunWatchThingConfiguration configuration) {
         Location location = new Location(
-                thingDTO.getStringParameter(PARAM_LATITUDE),
-                thingDTO.getStringParameter(PARAM_LONGITUDE));
+                configuration.getLatitude(),
+                configuration.getLongitude());
         return location;
     }
     
-    private ZoneId thingZoneId(ThingDTO thingDTO) {
-        return ZoneId.of(thingDTO.getStringParameter(PARAM_TIMEZONE));
+    private ZoneId thingZoneId(SunWatchThingConfiguration configuration) {
+        return ZoneId.of(configuration.getTimeZone());
     }
-
 }

@@ -41,4 +41,13 @@ public abstract class ConfigurableDTO {
         String value = configurationMap.get(paramName);
         return value != null ? ParseUtil.parseInt(value) : defaultValue;
     }
+
+    public long getLongParameter(String paramName) {
+        return ParseUtil.parseLong(configurationMap.get(paramName));
+    }
+
+    public long getLongParameter(String paramName, long defaultValue) {
+        String value = configurationMap.get(paramName);
+        return value != null ? ParseUtil.parseLong(value) : defaultValue;
+    }
 }

@@ -29,10 +29,6 @@ import java.util.stream.IntStream;
 @Getter
 public class JWaveZAgent {
 
-    private static final String PARAM_DEVICE = "moduleDevice";
-    private static final String PARAM_RECONNECT_ATTEMPTS = "reconnectAttempts";
-    private static final String PARAM_RECONNECT_DELAY = "reconnectDelay";
-
     private String device;
     private GeneralAsynchronousController jwzController;
     private Map<CommandType, JWaveZCommandHandler<? extends ZWaveSupportedCommand>> commandHandlersMap;
