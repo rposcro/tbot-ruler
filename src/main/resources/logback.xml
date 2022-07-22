@@ -20,6 +20,18 @@
 		</encoder>
 	</appender>
 
+	<appender name="jwavezFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
+		<file>${LOGS_PATH:-./logs}/jwavez.log</file>
+		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+			<fileNamePattern>${LOGS_PATH:-./logs}/jwavez-%d{yyyy-MM-dd}.log</fileNamePattern>
+			<maxHistory>30</maxHistory>
+			<totalSizeCap>100MB</totalSizeCap>
+		</rollingPolicy>
+		<encoder>
+			<pattern>%d %5p %40.40c:%4L - %m%n</pattern>
+		</encoder>
+	</appender>
+
 	<appender name="errorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
 		<file>${LOGS_PATH:-./logs}/tbot-ruler-errors.log</file>
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
@@ -49,10 +61,9 @@
 		<appender-ref ref="errorFile" />
 	</logger>
 	
-	<logger level="${RPOSCRO_LOGGING_LEVEL:-DEBUG}" name="com.rposcro" additivity="false">
+	<logger level="${RPOSCRO_LOGGING_LEVEL:-DEBUG}" name="com.rposcro.jwavez" additivity="false">
         <appender-ref ref="console" />
-		<appender-ref ref="file" />
-		<appender-ref ref="errorFile" />
+		<appender-ref ref="jwavezFile" />
 	</logger>
 
 </configuration>

@@ -20,7 +20,7 @@ import com.tbot.ruler.things.builder.dto.ThingPluginDTO;
 
 @Slf4j
 @RestController
-@RequestMapping(value = "common")
+@RequestMapping(path = "common")
 public class ThingsAdminController extends AbstractController {
 
     @Autowired
@@ -32,25 +32,25 @@ public class ThingsAdminController extends AbstractController {
     @Autowired
     private AppliancesAdminService appliancesService;
 
-    @RequestMapping(value="/things", method = RequestMethod.GET, produces = MEDIA_TYPE)
+    @RequestMapping(path="/things", method = RequestMethod.GET, produces = MEDIA_TYPE)
     public List<ThingDTO> getThingsDTOs() {
         log.debug("Requested things dto ...");
     	return thingsService.allThings();
     }
 
-    @RequestMapping(value="/plugins", method = RequestMethod.GET, produces = MEDIA_TYPE)
+    @RequestMapping(path="/plugins", method = RequestMethod.GET, produces = MEDIA_TYPE)
     public List<ThingPluginDTO> getPluginsDTOs() {
         log.debug("Requested plugins dto ...");
         return pluginsService.allPlugins();
     }
 
-    @RequestMapping(value="/bindings", method = RequestMethod.GET, produces = MEDIA_TYPE)
+    @RequestMapping(path="/bindings", method = RequestMethod.GET, produces = MEDIA_TYPE)
     public List<BindingDTO> getBindingsDTOs() {
         log.debug("Requested bindings dto ...");
         return bindingsService.allBindings();
     }
 
-    @RequestMapping(value="/appliances", method = RequestMethod.GET, produces = MEDIA_TYPE)
+    @RequestMapping(path="/appliances", method = RequestMethod.GET, produces = MEDIA_TYPE)
     public List<ApplianceDTO> getAppliancesDTOs() {
         log.debug("Requested appliances dto ...");
         return appliancesService.allAppliances();

@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.jwavez.switchmultilevel;
 
-import com.rposcro.jwavez.core.commands.controlled.SwitchMultiLevelCommandBuilder;
+import com.rposcro.jwavez.core.commands.controlled.builders.SwitchMultiLevelCommandBuilder;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
@@ -23,9 +23,9 @@ public class SwitchMultilevelCollector implements Collector {
     @NonNull private String name;
     private String description;
 
-    @NonNull private byte switchDuration;
+    private byte switchDuration;
     @NonNull private NodeId nodeId;
-    @NonNull private BiConsumer<NodeId, ZWaveControlledCommand> commandConsumer;
+    @NonNull private BiConsumer<NodeId, ZWaveControlledCommand> commandSender;
 
     @Override
     public void acceptMessage(Message message) {
@@ -33,7 +33,7 @@ public class SwitchMultilevelCollector implements Collector {
             BooleanUpdatePayload payload = message.getPayload().ensureMessageType();
             ZWaveControlledCommand command = new SwitchMultiLevelCommandBuilder()
                 .buildSetCommand((byte) (payload.isState() ? 255 : 0), switchDuration);
-            commandConsumer.accept(nodeId, command);
+            commandSender.accept(nodeId, command);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }

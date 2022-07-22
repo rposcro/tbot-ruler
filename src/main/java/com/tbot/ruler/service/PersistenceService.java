@@ -58,7 +58,6 @@ public class PersistenceService {
                 StandardOpenOption.WRITE, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
         ) {
             properties.store(outputStream, "");
-            log.debug("Successfully flushed persistence log");
         } catch(IOException e) {
             throw new ServiceExecutionException("Could not write to file, persistence log not flushed!");
         }

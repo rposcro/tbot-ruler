@@ -13,7 +13,7 @@ import spock.lang.Specification
 @Ignore
 class BindingsConfigurationSpec extends Specification {
 
-    def String bindingsJsonString = this.getClass().getResource( '/bindings/test-bindings.json' ).text;
+    def String bindingsJsonString = this.getClass().getResource( '/bindings/test-bindings-lights.json' ).text;
 
     @Shared
     def ObjectMapper objectMapper;

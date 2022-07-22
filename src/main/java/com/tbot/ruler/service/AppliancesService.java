@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class AppliancesService {
@@ -18,7 +19,7 @@ public class AppliancesService {
         return appliancesConfiguration.appliances();
     }
 
-    public Appliance applianceById(ApplianceId applianceId) {
-        return appliancesConfiguration.appliancesPerId().get(applianceId);
+    public Optional<Appliance> applianceById(ApplianceId applianceId) {
+        return Optional.ofNullable(appliancesConfiguration.appliancesPerId().get(applianceId));
     }
 }

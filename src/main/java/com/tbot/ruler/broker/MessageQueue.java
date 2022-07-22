@@ -24,18 +24,18 @@ public class MessageQueue implements MessagePublisher {
     }
 
     public void publish(ItemId senderId, MessagePayload messagePayload) {
-        accept(Message.builder()
+        acceptMessage(Message.builder()
                 .senderId(senderId)
                 .payload(messagePayload)
                 .build());
     }
 
     public void publish(Message message) {
-        accept(message);
+        acceptMessage(message);
     }
 
     @Override
-    public void accept(Message message) {
+    public void acceptMessage(Message message) {
         log.debug("Enqueued message from {} with payload {}", message.getSenderId().getValue(), message.getPayload().getClass().getSimpleName());
         messageQueue.add(message);
     }

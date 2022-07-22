@@ -1,9 +1,6 @@
 package com.tbot.ruler.handlers;
 
-import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.exceptions.ServiceException;
-import com.tbot.ruler.exceptions.ServiceTimeoutException;
-import com.tbot.ruler.exceptions.ServiceUnavailableException;
+import com.tbot.ruler.exceptions.*;
 import com.tbot.ruler.model.ApplicationProblemDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -50,6 +47,17 @@ public class ControllerToServiceExceptionHandler {
             .body(ApplicationProblemDetails.builder()
                 .message("Service could not complete within scheduled time!")
                 .stackTrace(ex.toString())
+                .build()
+        );
+    }
+
+    @ExceptionHandler(ServiceRequestException.class)
+    public ResponseEntity<ApplicationProblemDetails> handleServiceRequestException(HttpServletRequest request, ServiceRequestException ex) {
+        log.warn("Bad service request!", ex);
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+            .header("Content-Type", "application/json")
+            .body(ApplicationProblemDetails.builder()
+                .message("Bad service request! " + ex.getMessage())
                 .build()
         );
     }

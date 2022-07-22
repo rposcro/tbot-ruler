@@ -15,12 +15,9 @@ public class BasicThing extends AbstractItem<ThingId> implements Thing {
     private ThingId id;
     private String name;
     private String description;
-    @Builder.Default
-    private List<? extends Emitter> emitters = Collections.emptyList();
-    @Builder.Default
-    private List<? extends Collector> collectors = Collections.emptyList();
-    @Builder.Default
-    private List<? extends Actuator> actuators = Collections.emptyList();
+    private List<? extends Emitter> emitters;
+    private List<? extends Collector> collectors;
+    private List<? extends Actuator> actuators;
 
     private Optional<Runnable> startUpTask;
     private Optional<Runnable> triggerableTask;
@@ -47,8 +44,8 @@ public class BasicThing extends AbstractItem<ThingId> implements Thing {
         this.triggerableTask = Optional.ofNullable(triggerableTask);
         this.taskTrigger = Optional.ofNullable(taskTrigger);
         this.startUpTask = Optional.ofNullable(startUpTask);
-        this.emitters = emitters;
-        this.collectors = collectors;
-        this.actuators = actuators;
+        this.emitters = emitters != null ? emitters : Collections.emptyList();
+        this.collectors = collectors != null ? collectors : Collections.emptyList();
+        this.actuators = actuators != null ? actuators : Collections.emptyList();
     }
 }

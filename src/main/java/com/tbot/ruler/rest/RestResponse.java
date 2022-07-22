@@ -4,10 +4,11 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 
 @AllArgsConstructor
-public class RestResponse {
-    private ResponseEntity<String> entity;
+public class RestResponse<T> {
 
-    public String getBody() {
+    private ResponseEntity<T> entity;
+
+    public T getBody() {
         return entity.getBody();
     }
 

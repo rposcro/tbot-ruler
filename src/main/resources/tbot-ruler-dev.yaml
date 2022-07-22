@@ -36,9 +36,13 @@ eureka:
         
 ruler:
     thingsConfig:
-        path: target/ruler-config/config-dev
-    persistence:
+        path: ignore/config-dev
+    cache:
         path: ignore/cache
     broker:
         emissionQueueLength: 200
         collectionQueueLength: 200
+    restService:
+        connectionTimeout: 1000
+        readTimeout: 2000
+        retryCount: 5

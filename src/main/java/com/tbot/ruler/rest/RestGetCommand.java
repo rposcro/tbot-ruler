@@ -3,46 +3,50 @@ package com.tbot.ruler.rest;
 import java.util.Collections;
 import java.util.Map;
 
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import lombok.NonNull;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Builder
-@AllArgsConstructor
-public class RestGetCommand {
+public class RestGetCommand extends AbstractRestCommand {
     
     private String host;
     private String port;
     private String path;
-    @Builder.Default
+
     private Map<String, String> reqParams = Collections.emptyMap();
-    
-    public RestResponse sendGet() {
-        String uri = uri();
-        log.debug("Requested get for: " + uri);
-        RestTemplate restTmpl = new RestTemplateBuilder()
-                .setConnectTimeout(RestService.CONNECT_TIMEOUT)
-                .setReadTimeout(RestService.READ_TIMEOUT)
-                .build();
-        ResponseEntity<String> entity = restTmpl.getForEntity(uri, String.class);
-        return new RestResponse(entity);
+
+    @Builder
+    public RestGetCommand(
+        @NonNull String host,
+        @NonNull String port,
+        @NonNull String path,
+        int connectionTimeout,
+        int readTimeout,
+        int retryCount
+    ) {
+        super(connectionTimeout, readTimeout, retryCount);
+        this.host = host;
+        this.port = port;
+        this.path = path;
     }
 
-    public <T> ResponseEntity<T> sendGet(Class<T> responseType) {
+    public RestResponse<String> sendGet() {
+        return sendGet(String.class);
+    }
+
+    public <T> RestResponse<T> sendGet(Class<T> responseType) {
         String uri = uri();
         log.debug("Requested get for: " + uri);
-        RestTemplate restTmpl = new RestTemplateBuilder()
-            .setConnectTimeout(RestService.CONNECT_TIMEOUT)
-            .setReadTimeout(RestService.READ_TIMEOUT)
-            .build();
-        ResponseEntity<T> entity = restTmpl.getForEntity(uri, responseType);
-        return entity;
+        return executeRequest(() -> {
+            RestTemplate restTmpl = newRestTemplate();
+            ResponseEntity<T> entity = restTmpl.getForEntity(uri, responseType);
+            return new RestResponse(entity);
+        });
     }
 
     private String uri() {
@@ -53,5 +57,4 @@ public class RestGetCommand {
                 .buildAndExpand(reqParams)
                 .toUriString();
     }
-
 }

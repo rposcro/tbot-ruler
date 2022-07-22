@@ -36,9 +36,13 @@ eureka:
         
 ruler:
     thingsConfig:
-        path: /config/config-stag
+        path: /config
     cache:
         path: /cache
     broker:
         emissionQueueLength: 200
         collectionQueueLength: 200
+    restService:
+        connectionTimeout: 1000
+        readTimeout: 2000
+        retryCount: 5

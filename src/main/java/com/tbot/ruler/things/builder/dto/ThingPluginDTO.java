@@ -2,9 +2,11 @@ package com.tbot.ruler.things.builder.dto;
 
 import java.util.List;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class ThingPluginDTO {
     private String alias;
     private String builder;

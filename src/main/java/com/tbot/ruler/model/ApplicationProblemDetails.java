@@ -19,6 +19,6 @@ public class ApplicationProblemDetails {
     @JsonInclude(NON_NULL)
     private Object payload;
 
-    @NonNull
+    @JsonInclude(NON_NULL)
     private String stackTrace;
 }

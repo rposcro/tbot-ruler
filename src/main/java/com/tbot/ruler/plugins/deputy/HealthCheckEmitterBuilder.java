@@ -27,21 +27,21 @@ class HealthCheckEmitterBuilder {
         return HealthCheckEmissionTask.builder()
             .emitterId(emitterDTO.getId())
             .healthCheckCommand(restGetCommand(builderContext))
-            .messageConsumer(builderContext.getMessagePublisher())
+            .messagePublisher(builderContext.getMessagePublisher())
             .build();
     }
 
     private RegularEmissionTrigger emissionTrigger(EmitterDTO emitterDTO) {
         return new RegularEmissionTrigger(
-                1000 * Long.parseLong(emitterDTO.getConfig().getOrDefault(PARAM_FREQUENCY, DEFAULT_FREQUENCY)));
+                1000 * Long.parseLong(emitterDTO.getStringParameter(PARAM_FREQUENCY, DEFAULT_FREQUENCY)));
     }
 
     private RestGetCommand restGetCommand(ThingBuilderContext builderContext) {
         ThingDTO thingDTO = builderContext.getThingDTO();
         return builderContext.getServices().getRestService().builderForGet()
-                .host(thingDTO.getConfig().get(DeputyBuilder.PARAM_HOST))
-                .port(thingDTO.getConfig().get(DeputyBuilder.PARAM_PORT))
-                .path(thingDTO.getConfig().get(DeputyBuilder.PARAM_PATH))
+                .host(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_HOST))
+                .port(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_PORT))
+                .path(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_PATH))
                 .build();
     }
 }

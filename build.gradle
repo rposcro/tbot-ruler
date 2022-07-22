@@ -1,0 +1,110 @@
+plugins {
+    id 'application'
+    id 'maven-publish'
+    id 'com.palantir.docker' version '0.33.0'
+    id 'org.springframework.boot' version '2.5.8'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+application {
+    mainClass = 'com.tbot.ruler.RulerApp'
+}
+
+group = "com.rposcro.tbot"
+version = "1.2.2"
+description = "TBot Ruler"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+ext {
+    jwavezVersion = '1.2.2-SNAPSHOT'
+    jacksonVersion = '2.11.4'
+    javaxValidationVersion = '2.0.2'
+    lombokVersion = '1.18.22'
+    lombokPluginVersion = '1.16.16.0'
+    slf4jVersion = '1.7.25'
+    lockbackVersion = '1.2.9'
+    reflectionsVersion = '0.10.2'
+}
+
+dependencies {
+    implementation "com.jwavez:jwavez-serial:${jwavezVersion}"
+    implementation "com.jwavez:jwavez-core:${jwavezVersion}"
+
+    implementation "org.springframework.boot:spring-boot-starter"
+    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    implementation "org.springframework:spring-webmvc"
+
+    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
+    implementation "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
+    implementation "ch.qos.logback:logback-classic:${lockbackVersion}"
+
+    implementation "org.reflections:reflections:${reflectionsVersion}"
+    implementation "jakarta.validation:jakarta.validation-api:${javaxValidationVersion}"
+
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}"
+    implementation "org.apache.httpcomponents:httpclient:4.5.5"
+    implementation "com.luckycatlabs:SunriseSunsetCalculator:1.2"
+
+    compileOnly "org.projectlombok:lombok-maven-plugin:${lombokPluginVersion}"
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
+    testImplementation 'org.codehaus.groovy:groovy-all:2.4.6'
+    testImplementation 'cglib:cglib-nodep:3.3.0'
+
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+docker {
+    name "${rootProject.name}"
+    noCache true
+
+    copySpec.with {
+        from("build/libs") {
+            include "${rootProject.name}-${version}.jar"
+            rename(name -> "${rootProject.name}.jar")
+        }
+        from("src/main/sh") {
+            include "**"
+        }
+    }
+}
+
+task fatJar(type: Jar) {
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+    archiveClassifier = 'fat'
+
+    manifest {
+        attributes (
+                'Main-Class': application.mainClass,
+                "Implementation-Title": "TBot Ruler",
+                "Implementation-Version": archiveVersion,
+        )
+    }
+
+    from sourceSets.main.output
+    from {
+        configurations.runtimeClasspath.findAll { it.name.endsWith('jar') }.collect { zipTree(it) }
+    }
+}

@@ -4,45 +4,53 @@ import com.tbot.ruler.things.BasicEmitter;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
-import lombok.Builder;
+import com.tbot.ruler.things.exceptions.PluginException;
 
-@Builder
 public class DaytimeEmitterBuilder extends AbstractEmitterBuilder {
 
-    private static final String PARAM_EMITTER_SHIFT_SUNRISE = "sunriseShift";
-    private static final String PARAM_EMITTER_SHIFT_SUNSET = "sunsetShift";
-    private static final String PARAM_EMITTER_SIGNAL_SUNRISE = "sunriseSignal";
-    private static final String PARAM_EMITTER_SIGNAL_SUNSET = "sunsetSignal";
+    private static final String REFERENCE = "daytime";
 
-    private ThingBuilderContext builderContext;
-    private SunEventLocale eventLocale;
+    @Override
+    public String getReference() {
+        return REFERENCE;
+    }
 
-    public Emitter buildEmitter(EmitterDTO emitterDTO) {
-        DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterDTO);
+    @Override
+    public Emitter buildEmitter(ThingBuilderContext builderContext, SunEventLocale eventLocale) throws PluginException {
+        EmitterDTO emitterDTO = findEmitterDTO(REFERENCE, builderContext);
+        DaytimeEmitterConfiguration emitterConfiguration = parseEmitterConfiguration(emitterDTO, DaytimeEmitterConfiguration.class);
+        DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterConfiguration, eventLocale);
+        DaytimeEmissionTask emissionTask = emissionTask(emitterDTO, builderContext, emissionTrigger, emitterConfiguration);
+
         return BasicEmitter.builder()
             .id(emitterDTO.getId())
             .name(emitterDTO.getName())
             .description(emitterDTO.getDescription())
-            .triggerableTask(emissionTask(emitterDTO, emissionTrigger))
+            .triggerableTask(emissionTask)
             .taskTrigger(emissionTrigger)
+            .reportListener(emissionTask::acceptDeliveryReport)
             .build();
     }
 
-    private DaytimeEmissionTask emissionTask(EmitterDTO emitterDTO, DaytimeEmissionTrigger trigger) {
+    private DaytimeEmissionTask emissionTask(
+            EmitterDTO emitterDTO,
+            ThingBuilderContext builderContext,
+            DaytimeEmissionTrigger trigger,
+            DaytimeEmitterConfiguration emitterConfiguration) {
         return DaytimeEmissionTask.builder()
             .emitterId(emitterDTO.getId())
             .daytimeTrigger(trigger)
-            .messageConsumer(builderContext.getMessagePublisher())
-            .sunriseMessage(emitterMessage(emitterDTO, PARAM_EMITTER_SIGNAL_SUNRISE))
-            .sunsetMessage(emitterMessage(emitterDTO, PARAM_EMITTER_SIGNAL_SUNSET))
+            .messagePublisher(builderContext.getMessagePublisher())
+            .sunriseMessage(emitterMessage(emitterDTO, emitterConfiguration.getSunriseSignal()))
+            .sunsetMessage(emitterMessage(emitterDTO, emitterConfiguration.getSunsetSignal()))
             .build();
     }
 
-    private DaytimeEmissionTrigger emissionTrigger(EmitterDTO emitterDTO) {
+    private DaytimeEmissionTrigger emissionTrigger(DaytimeEmitterConfiguration emitterConfiguration, SunEventLocale eventLocale) {
         return DaytimeEmissionTrigger.builder()
             .sunCalculator(new SunCalculator(eventLocale))
-            .plusSunriseMinutes(plusMinutes(emitterDTO, PARAM_EMITTER_SHIFT_SUNRISE))
-            .plusSunsetMinutes(plusMinutes(emitterDTO, PARAM_EMITTER_SHIFT_SUNSET))
+            .plusSunriseMinutes(emitterConfiguration.getSunriseShift())
+            .plusSunsetMinutes(emitterConfiguration.getSunsetShift())
             .zoneId(eventLocale.getZoneId())
             .build();
     }

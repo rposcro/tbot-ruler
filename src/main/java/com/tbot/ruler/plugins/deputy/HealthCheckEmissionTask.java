@@ -1,6 +1,10 @@
 package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.message.Message;
+import com.tbot.ruler.message.MessagePublisher;
+import com.tbot.ruler.message.payloads.ReportPayload;
+import com.tbot.ruler.model.ReportEntry;
+import com.tbot.ruler.model.ReportEntryLevel;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.rest.RestResponse;
 import com.tbot.ruler.things.ItemId;
@@ -8,32 +12,28 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.function.Consumer;
-
-import static com.tbot.ruler.message.payloads.BooleanUpdatePayload.UPDATE_FALSE;
-import static com.tbot.ruler.message.payloads.BooleanUpdatePayload.UPDATE_TRUE;
+import java.time.ZonedDateTime;
+import java.util.Optional;
 
 @Slf4j
-class HealthCheckEmissionTask implements Runnable {
+class  HealthCheckEmissionTask implements Runnable {
 
     private ItemId emitterId;
-    private Consumer<Message> messageConsumer;
+    private MessagePublisher messagePublisher;
     private RestGetCommand healthCheckCommand;
 
-    private Message messageHealthy;
-    private Message messageSick;
+    private Optional<Boolean> isHealthy;
 
     @Builder
     public HealthCheckEmissionTask(
         @NonNull ItemId emitterId,
-        @NonNull Consumer<Message> messageConsumer,
+        @NonNull MessagePublisher messagePublisher,
         @NonNull RestGetCommand healthCheckCommand
     ) {
         this.emitterId = emitterId;
-        this.messageConsumer = messageConsumer;
+        this.messagePublisher = messagePublisher;
         this.healthCheckCommand = healthCheckCommand;
-        this.messageHealthy = Message.builder().senderId(emitterId).payload(UPDATE_TRUE).build();
-        this.messageSick = Message.builder().senderId(emitterId).payload(UPDATE_FALSE).build();
+        this.isHealthy = Optional.empty();
     }
 
     @Override
@@ -42,12 +42,43 @@ class HealthCheckEmissionTask implements Runnable {
             log.info("[EMISSION] Deputy health check for emitter {}", emitterId.getValue());
             RestResponse response = healthCheckCommand.sendGet();
             if (response.getStatusCode() == 200) {
-                messageConsumer.accept(messageHealthy);
+                handleHealthy();
+            } else {
+                handleUnhealthy(response.getStatusCode());
             }
         }
         catch(Exception e) {
             log.info("Deputy health check failed: " + e.getMessage());
-            messageConsumer.accept(messageSick);
+            handleUnhealthy(null);
         }
+    }
+
+    private void handleUnhealthy(Integer statusCode) {
+        if (!isHealthy.isPresent() || isHealthy.get()) {
+            isHealthy = Optional.of(false);
+            messagePublisher.acceptMessage(buildMessage(
+                "Deputy node unhealthy: " + (statusCode == null ? "Unreachable" : statusCode.toString()),
+                ReportEntryLevel.IMPORTANT));
+        }
+    }
+
+    private void handleHealthy() {
+        if (!isHealthy.isPresent() || !isHealthy.get()) {
+            isHealthy = Optional.of(true);
+            messagePublisher.acceptMessage(buildMessage("Deputy node is healthy", ReportEntryLevel.REGULAR));
+        }
+    }
+
+    private Message buildMessage(String message, ReportEntryLevel entryLevel) {
+        return Message.builder()
+            .senderId(emitterId)
+            .payload(ReportPayload.builder()
+                .reportEntry(ReportEntry.builder()
+                    .entryLevel(entryLevel)
+                    .timestamp(ZonedDateTime.now())
+                    .message(message)
+                    .build())
+                .build())
+            .build();
     }
 }

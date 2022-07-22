@@ -1,16 +1,11 @@
 package com.tbot.ruler.controller.console;
 
-import com.tbot.ruler.controller.ControllerConstants;
 import com.tbot.ruler.service.admin.AppliancesAdminService;
 import com.tbot.ruler.service.admin.BindingsAdminService;
 import com.tbot.ruler.service.admin.PluginsAdminService;
 import com.tbot.ruler.service.admin.ThingsAdminService;
-import com.tbot.ruler.things.ItemId;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
+import com.tbot.ruler.things.ApplianceId;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
-import com.tbot.ruler.things.builder.dto.CollectorDTO;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
-import com.tbot.ruler.things.builder.dto.ThingDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,38 +15,37 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.stream.Collectors;
-
 @Slf4j
 @Controller
-@RequestMapping(path = ControllerConstants.ENDPOINT_CONSOLE)
+@RequestMapping(path = "/console")
 public class ConsoleController {
 
     @Autowired
-    private PluginsAdminService pluginsService;
+    private PluginsAdminService pluginsAdminService;
 
     @Autowired
-    private ThingsAdminService thingsService;
+    private ThingsAdminService thingsAdminService;
 
     @Autowired
-    private AppliancesAdminService appliancesService;
+    private AppliancesAdminService appliancesAdminService;
 
     @Autowired
-    private BindingsAdminService bindingsService;
+    private BindingsAdminService bindingsAdminService;
 
     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView home() {
         ModelAndView mav = new ModelAndView("home");
-        mav.addObject("plugins", pluginsService.allPlugins());
-        mav.addObject("thingsByPlugin", thingsService.thingsByPlugin());
-        mav.addObject("appliances", appliancesService.allAppliances());
+        mav.addObject("plugins", pluginsAdminService.allPlugins());
+        mav.addObject("things", thingsAdminService.allThings());
+        mav.addObject("thingsByPlugin", thingsAdminService.thingsByPlugin());
+        mav.addObject("appliances", appliancesAdminService.allAppliances());
         return mav;
     }
 
     @GetMapping(path = "things", produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView things() {
         ModelAndView mav = new ModelAndView("things");
-        mav.addObject("things", thingsService.allThings());
+        mav.addObject("things", thingsAdminService.allThings());
         return mav;
     }
 
@@ -78,21 +72,26 @@ public class ConsoleController {
     @GetMapping(path = "appliances", produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView appliances() {
         ModelAndView mav = new ModelAndView("appliances");
-        mav.addObject("appliances", appliancesService.allAppliances());
+        mav.addObject("appliances", appliancesAdminService.allAppliances());
         return mav;
     }
 
 //    @GetMapping(path = "appliances/{applianceId}", produces = MediaType.TEXT_HTML_VALUE)
-//    public ModelAndView appliances(@PathVariable ItemId applianceId) {
+//    public ModelAndView appliances(@PathVariable String applianceIdString) {
+//        ApplianceId applianceId = new ApplianceId(applianceIdString);
 //        ModelAndView mav = new ModelAndView("appliances");
-//        mav.addObject("appliances", appliancesService.allAppliances());
 //
-//        ApplianceDTO applianceDTO = appliancesService.applianceDTOById(applianceId);
+//        ApplianceDTO applianceDTO = appliancesAdminService.applianceDTOById(applianceId);
 //        mav.addObject("applianceId", applianceId);
 //        mav.addObject("appliance", applianceDTO);
-//        mav.addObject("bindedEmitters", bindingsService.bindedEmittersByAppliance(applianceId));
-//        mav.addObject("bindedCollectors", bindingsService.bindedCollectorsByAppliance(applianceId));
-//        mav.addObject("bindedActuators", bindingsService.bindedActuatorsByAppliance(applianceId));
+//        mav.addObject("bindedEmitters", bindingsAdminService.bindedEmittersByAppliance(applianceId));
+//        mav.addObject("bindedCollectors", bindingsAdminService.bindedCollectorsByAppliance(applianceId));
+//        mav.addObject("bindedActuators", bindingsAdminService.bindedActuatorsByAppliance(applianceId));
 //        return mav;
 //    }
+
+    @GetMapping(path = "about")
+    public String about() {
+        return "about";
+    }
 }
