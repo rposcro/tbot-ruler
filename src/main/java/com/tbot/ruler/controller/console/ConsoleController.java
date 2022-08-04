@@ -4,7 +4,6 @@ import com.tbot.ruler.service.admin.AppliancesAdminService;
 import com.tbot.ruler.service.admin.BindingsAdminService;
 import com.tbot.ruler.service.admin.PluginsAdminService;
 import com.tbot.ruler.service.admin.ThingsAdminService;
-import com.tbot.ruler.things.ApplianceId;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -76,19 +75,17 @@ public class ConsoleController {
         return mav;
     }
 
-//    @GetMapping(path = "appliances/{applianceId}", produces = MediaType.TEXT_HTML_VALUE)
-//    public ModelAndView appliances(@PathVariable String applianceIdString) {
-//        ApplianceId applianceId = new ApplianceId(applianceIdString);
-//        ModelAndView mav = new ModelAndView("appliances");
-//
-//        ApplianceDTO applianceDTO = appliancesAdminService.applianceDTOById(applianceId);
-//        mav.addObject("applianceId", applianceId);
-//        mav.addObject("appliance", applianceDTO);
-//        mav.addObject("bindedEmitters", bindingsAdminService.bindedEmittersByAppliance(applianceId));
-//        mav.addObject("bindedCollectors", bindingsAdminService.bindedCollectorsByAppliance(applianceId));
-//        mav.addObject("bindedActuators", bindingsAdminService.bindedActuatorsByAppliance(applianceId));
-//        return mav;
-//    }
+    @GetMapping(path = "appliances/{applianceId}", produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView appliances(@PathVariable String applianceId) {
+        ModelAndView mav = new ModelAndView("appliances");
+
+        ApplianceDTO applianceDTO = appliancesAdminService.applianceDTOById(applianceId);
+        mav.addObject("applianceId", applianceId);
+        mav.addObject("appliance", applianceDTO);
+        mav.addObject("senders", bindingsAdminService.sendersForItem(applianceId));
+        mav.addObject("listeners", bindingsAdminService.listenersForItem(applianceId));
+        return mav;
+    }
 
     @GetMapping(path = "about")
     public String about() {

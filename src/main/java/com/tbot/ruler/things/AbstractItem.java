@@ -6,9 +6,9 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public abstract class AbstractItem<T extends ItemId> implements Item<T> {
+public abstract class AbstractItem implements Item {
 
-    private T id;
+    private String id;
     private String name;
     private String description;
 }

@@ -1,7 +1,6 @@
 package com.tbot.ruler.service;
 
 import com.tbot.ruler.exceptions.ServiceExecutionException;
-import com.tbot.ruler.things.ItemId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -44,11 +43,11 @@ public class PersistenceService {
         }
     }
 
-    public void persist(ItemId itemId, String key, String value) {
+    public void persist(String itemId, String key, String value) {
         properties.setProperty(key(itemId, key), value);
     }
 
-    public Optional<String> retrieve(ItemId itemId, String key) {
+    public Optional<String> retrieve(String itemId, String key) {
         return Optional.ofNullable(properties.getProperty(key(itemId, key)));
     }
 
@@ -63,7 +62,7 @@ public class PersistenceService {
         }
     }
 
-    private String key(ItemId itemId, String key) {
-        return itemId.getValue() + "." + key;
+    private String key(String itemId, String key) {
+        return itemId + "." + key;
     }
 }

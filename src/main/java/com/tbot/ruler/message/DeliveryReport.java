@@ -1,6 +1,5 @@
 package com.tbot.ruler.message;
 
-import com.tbot.ruler.things.ItemId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -12,13 +11,13 @@ import java.util.Set;
 public class DeliveryReport {
 
     private Message originalMessage;
-    private Set<ItemId> failedReceivers;
-    private Set<ItemId> successfulReceivers;
+    private Set<String> failedReceivers;
+    private Set<String> successfulReceivers;
 
     @Builder(builderClassName = "DeliveryReportBuilder")
     public DeliveryReport(
-        @NonNull @Singular Set<ItemId> failedReceivers,
-        @NonNull @Singular Set<ItemId> successfulReceivers,
+        @NonNull @Singular Set<String> failedReceivers,
+        @NonNull @Singular Set<String> successfulReceivers,
         @NonNull Message originalMessage) {
         this.failedReceivers = failedReceivers;
         this.successfulReceivers = successfulReceivers;

@@ -8,13 +8,13 @@ import lombok.NonNull;
 import java.util.function.Consumer;
 
 @Getter
-public class BasicCollector extends AbstractItem<CollectorId> implements Collector {
+public class BasicCollector extends AbstractItem implements Collector {
 
     private Consumer<Message> messageCollectorConsumer;
 
     @Builder
     public BasicCollector(
-        @NonNull CollectorId id,
+        @NonNull String id,
         @NonNull String name,
         String description,
         @NonNull Consumer<Message> messageCollectorConsumer

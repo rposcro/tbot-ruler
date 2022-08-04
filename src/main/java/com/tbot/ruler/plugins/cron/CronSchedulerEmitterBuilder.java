@@ -6,7 +6,6 @@ import com.tbot.ruler.message.MessagePublisher;
 import com.tbot.ruler.message.payloads.HeartBeatPayload;
 import com.tbot.ruler.things.BasicEmitter;
 import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.ItemId;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 
@@ -35,7 +34,7 @@ public class CronSchedulerEmitterBuilder {
         return new CronEmissionTrigger(pattern, timeZone);
     }
 
-    private Message messageToSend(ItemId emitterId, MessagePayload messagePayload) {
+    private Message messageToSend(String emitterId, MessagePayload messagePayload) {
         return Message.builder()
             .senderId(emitterId)
             .payload(messagePayload)

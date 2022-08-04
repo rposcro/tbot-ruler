@@ -4,7 +4,6 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.tbot.ruler.things.*;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import com.tbot.ruler.things.builder.dto.BindingDTO;
@@ -57,7 +56,7 @@ public class DTOConfiguration {
     }
 
     @Bean
-    public Map<ApplianceId, ApplianceDTO> applianceDTOMap() {
+    public Map<String, ApplianceDTO> applianceDTOMap() {
         return applianceDTOs().stream()
             .collect(Collectors.toMap(ApplianceDTO::getId, Function.identity()));
     }
@@ -70,7 +69,7 @@ public class DTOConfiguration {
     }
 
     @Bean
-    public Map<EmitterId, EmitterDTO> emitterDTOMap() {
+    public Map<String, EmitterDTO> emitterDTOMap() {
         return emitterDTOs().stream()
             .collect(Collectors.toMap(EmitterDTO::getId, Function.identity()));
     }
@@ -83,7 +82,7 @@ public class DTOConfiguration {
     }
 
     @Bean
-    public Map<CollectorId, CollectorDTO> collectorDTOMap() {
+    public Map<String, CollectorDTO> collectorDTOMap() {
         return collectorDTOs().stream()
             .collect(Collectors.toMap(CollectorDTO::getId, Function.identity()));
     }
@@ -96,7 +95,7 @@ public class DTOConfiguration {
     }
 
     @Bean
-    public Map<ActuatorId, ActuatorDTO> actuatorDTOMap() {
+    public Map<String, ActuatorDTO> actuatorDTOMap() {
         return actuatorDTOs().stream()
             .collect(Collectors.toMap(ActuatorDTO::getId, Function.identity()));
     }
@@ -113,7 +112,7 @@ public class DTOConfiguration {
     }
 
     @Bean
-    public Map<ThingId, ThingDTO> thingDTOMap() {
+    public Map<String, ThingDTO> thingDTOMap() {
         return thingDTOs().stream()
             .collect(Collectors.toMap(ThingDTO::getId, Function.identity()));
     }

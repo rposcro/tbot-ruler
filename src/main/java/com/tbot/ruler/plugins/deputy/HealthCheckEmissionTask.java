@@ -7,7 +7,6 @@ import com.tbot.ruler.model.ReportEntry;
 import com.tbot.ruler.model.ReportEntryLevel;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.rest.RestResponse;
-import com.tbot.ruler.things.ItemId;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +17,7 @@ import java.util.Optional;
 @Slf4j
 class  HealthCheckEmissionTask implements Runnable {
 
-    private ItemId emitterId;
+    private String emitterId;
     private MessagePublisher messagePublisher;
     private RestGetCommand healthCheckCommand;
 
@@ -26,7 +25,7 @@ class  HealthCheckEmissionTask implements Runnable {
 
     @Builder
     public HealthCheckEmissionTask(
-        @NonNull ItemId emitterId,
+        @NonNull String emitterId,
         @NonNull MessagePublisher messagePublisher,
         @NonNull RestGetCommand healthCheckCommand
     ) {
@@ -39,7 +38,7 @@ class  HealthCheckEmissionTask implements Runnable {
     @Override
     public void run() {
         try {
-            log.info("[EMISSION] Deputy health check for emitter {}", emitterId.getValue());
+            log.info("[EMISSION] Deputy health check for emitter {}", emitterId);
             RestResponse response = healthCheckCommand.sendGet();
             if (response.getStatusCode() == 200) {
                 handleHealthy();

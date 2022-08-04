@@ -8,7 +8,6 @@ import com.tbot.ruler.service.DeliveryReportListenerService;
 import com.tbot.ruler.service.things.BindingsService;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.MessageReceiver;
-import com.tbot.ruler.things.ItemId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -43,20 +42,20 @@ public class MessageBroker implements Runnable {
 
     private DeliveryReport distributeMessage(Message message) {
         DeliveryReportBuilder reportBuilder = DeliveryReport.builder().originalMessage(message);
-        Collection<ItemId> consumers = bindingsService.findBindedMessageConsumerIds(message.getSenderId());
+        Collection<String> consumers = bindingsService.findBindedMessageConsumerIds(message.getSenderId());
 
         if (consumers.isEmpty()) {
-            log.warn("No bindings found for messages from {}", message.getSenderId().getValue());
+            log.warn("No bindings found for messages from {}", message.getSenderId());
         } else {
             consumers.stream()
                 .forEach(receiverId -> {
                     try {
-                        log.info("Dispatching message from {} to {}", message.getSenderId().getValue(), receiverId.getValue());
+                        log.info("Dispatching message from {} to {}", message.getSenderId(), receiverId);
                         this.deliverMessage(message, receiverId);
                         reportBuilder.successfulReceiver(receiverId);
                     } catch(MessageException e) {
                         reportBuilder.failedReceiver(receiverId);
-                        log.error("Consumer failed to process message from " + message.getSenderId().getValue() + " to " + receiverId.getValue(), e);
+                        log.error("Consumer failed to process message from " + message.getSenderId() + " to " + receiverId, e);
                     }
                 });
         }
@@ -70,7 +69,7 @@ public class MessageBroker implements Runnable {
         listenerService.acceptDeliveryReport(deliveryReport);
     }
 
-    private void deliverMessage(Message message, ItemId receiverId) {
+    private void deliverMessage(Message message, String receiverId) {
         MessageReceiver messageReceiver = bindingsService.messageReceiverById(receiverId);
         messageReceiver.acceptMessage(message);
     }

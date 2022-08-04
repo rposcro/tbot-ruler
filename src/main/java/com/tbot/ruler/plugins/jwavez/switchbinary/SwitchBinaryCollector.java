@@ -10,7 +10,6 @@ import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Collector;
-import com.tbot.ruler.things.CollectorId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -18,7 +17,7 @@ import lombok.NonNull;
 import java.util.function.BiConsumer;
 
 @Getter
-public class SwitchBinaryCollector extends AbstractItem<CollectorId> implements Collector {
+public class SwitchBinaryCollector extends AbstractItem implements Collector {
 
     private final static byte SOURCE_ENDPOINT_ID = 0;
 
@@ -29,7 +28,7 @@ public class SwitchBinaryCollector extends AbstractItem<CollectorId> implements 
 
     @Builder
     public SwitchBinaryCollector(
-            CollectorId id,
+            String id,
             String name,
             String description,
             SwitchBinaryConfiguration configuration,

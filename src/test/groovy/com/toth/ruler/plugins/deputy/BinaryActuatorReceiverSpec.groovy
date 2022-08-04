@@ -12,8 +12,8 @@ import com.tbot.ruler.plugins.deputy.model.BinOutState
 import com.tbot.ruler.rest.RestGetCommand
 import com.tbot.ruler.rest.RestPatchCommand
 import com.tbot.ruler.rest.RestResponse
-import com.tbot.ruler.things.ActuatorId
-import com.tbot.ruler.things.ApplianceId
+
+
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification

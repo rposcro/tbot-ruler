@@ -8,7 +8,6 @@ import com.tbot.ruler.message.MessagePayload;
 import com.tbot.ruler.message.payloads.BooleanTogglePayload;
 import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.service.PersistenceService;
-import com.tbot.ruler.things.ApplianceId;
 import lombok.Getter;
 
 import java.util.Optional;
@@ -19,7 +18,7 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
 
     private final static String PERSIST_KEY = "state";
 
-    public OnOffAppliance(ApplianceId id, PersistenceService persistenceService) {
+    public OnOffAppliance(String id, PersistenceService persistenceService) {
         super(id, persistenceService);
         persistenceService.retrieve(this.getId(), PERSIST_KEY).ifPresent(
             encState -> this.state = Optional.of(OnOffState.of(Boolean.parseBoolean(encState)))

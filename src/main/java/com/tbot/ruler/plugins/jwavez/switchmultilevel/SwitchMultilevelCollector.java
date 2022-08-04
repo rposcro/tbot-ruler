@@ -8,7 +8,6 @@ import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.things.Collector;
-import com.tbot.ruler.things.CollectorId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -19,7 +18,7 @@ import java.util.function.BiConsumer;
 @Builder
 public class SwitchMultilevelCollector implements Collector {
 
-    @NonNull private CollectorId id;
+    @NonNull private String id;
     @NonNull private String name;
     private String description;
 

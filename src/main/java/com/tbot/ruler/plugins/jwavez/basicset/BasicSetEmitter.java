@@ -1,7 +1,5 @@
 package com.tbot.ruler.plugins.jwavez.basicset;
 
-import com.rposcro.jwavez.core.commands.supported.basic.BasicSet;
-import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.message.Message;
@@ -11,13 +9,12 @@ import com.tbot.ruler.message.payloads.BooleanTogglePayload;
 import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.EmitterId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
 @Getter
-public class BasicSetEmitter extends AbstractItem<EmitterId> implements Emitter {
+public class BasicSetEmitter extends AbstractItem implements Emitter {
 
     private MessagePublisher messagePublisher;
     private BasicSetValueMode valueMode;
@@ -25,7 +22,7 @@ public class BasicSetEmitter extends AbstractItem<EmitterId> implements Emitter 
 
     @Builder
     public BasicSetEmitter(
-        @NonNull EmitterId id,
+        @NonNull String id,
         @NonNull String name,
         String description,
         @NonNull MessagePublisher messagePublisher,

@@ -5,7 +5,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.tbot.ruler.things.EmitterId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -31,7 +30,7 @@ public class EmittersConfiguration {
     }
 
     @Bean
-    public Map<EmitterId, Emitter> emittersPerId() {
+    public Map<String, Emitter> emittersPerId() {
         return emitters().stream().collect(Collectors.toMap(Emitter::getId, Function.identity()));
     }
 }

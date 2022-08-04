@@ -11,7 +11,7 @@ import lombok.NonNull;
 import java.util.Optional;
 
 @Getter
-public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator {
+public class BasicActuator extends AbstractItem implements Actuator {
 
     private Optional<MessageReceiver> messageReceiver;
     private Optional<Runnable> startUpTask;
@@ -20,7 +20,7 @@ public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator 
 
     @Builder
     public BasicActuator(
-        @NonNull ActuatorId id,
+        @NonNull String id,
         @NonNull String name,
         String description,
         Runnable startUpTask,

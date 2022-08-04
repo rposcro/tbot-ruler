@@ -1,7 +1,6 @@
 package com.tbot.ruler.configuration;
 
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.ActuatorId;
 import com.tbot.ruler.things.Thing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,7 @@ public class ActuatorsConfiguration {
     }
 
     @Bean
-    public Map<ActuatorId, Actuator> actuatorsPerId() {
+    public Map<String, Actuator> actuatorsPerId() {
         return actuators().stream().collect(Collectors.toMap(Actuator::getId, Function.identity()));
     }
 }

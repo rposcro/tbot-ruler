@@ -6,9 +6,9 @@ import com.tbot.ruler.things.thread.TaskTrigger;
 
 import java.util.Optional;
 
-public abstract class AbstractActuator extends AbstractItem<ActuatorId> implements Actuator {
+public abstract class AbstractActuator extends AbstractItem implements Actuator {
 
-    protected AbstractActuator(ActuatorId id, String name, String description) {
+    protected AbstractActuator(String id, String name, String description) {
         super(id, name, description);
     }
 

@@ -5,7 +5,6 @@ import com.tbot.ruler.controller.entity.ApplianceEntity;
 import com.tbot.ruler.exceptions.ServiceException;
 import com.tbot.ruler.service.AppliancesService;
 import com.tbot.ruler.service.admin.AppliancesAdminService;
-import com.tbot.ruler.things.ApplianceId;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +14,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -40,7 +38,7 @@ public class AppliancesController extends AbstractController {
     }
 
     @GetMapping(value = "/{applianceId}")
-    public ResponseEntity<ApplianceEntity> getAppliance(@PathVariable("applianceId") ApplianceId applianceId) {
+    public ResponseEntity<ApplianceEntity> getAppliance(@PathVariable("applianceId") String applianceId) {
         Appliance appliance = appliancesService.applianceById(applianceId)
             .orElseThrow(() -> new ServiceException("Unexpected missing delivery report without exception!"));
         ApplianceEntity entity = fromAppliance(appliance);
@@ -51,11 +49,10 @@ public class AppliancesController extends AbstractController {
     private ApplianceEntity fromAppliance(Appliance appliance) {
         ApplianceDTO dto = adminService.applianceDTOById(appliance.getId());
         return ApplianceEntity.builder()
-            .id(appliance.getId().getValue())
+            .id(appliance.getId())
             .name(dto.getName())
             .description(dto.getDescription())
             .stateValue(appliance.getState().orElse(null))
-
             .build();
     }
 }

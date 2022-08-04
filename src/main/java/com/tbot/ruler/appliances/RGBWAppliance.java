@@ -6,7 +6,6 @@ import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.MessagePayload;
 import com.tbot.ruler.message.payloads.RGBWUpdatePayload;
 import com.tbot.ruler.service.PersistenceService;
-import com.tbot.ruler.things.ApplianceId;
 
 import java.util.Optional;
 
@@ -15,7 +14,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
     private final static String CODING_SEPARATOR = "-";
     private final static String PERSIST_KEY = "state";
 
-    public RGBWAppliance(ApplianceId id, PersistenceService persistenceService) {
+    public RGBWAppliance(String id, PersistenceService persistenceService) {
         super(id, persistenceService);
         persistenceService.retrieve(this.getId(), PERSIST_KEY).ifPresent(
             encState -> this.colorState = Optional.of(fromString(encState))

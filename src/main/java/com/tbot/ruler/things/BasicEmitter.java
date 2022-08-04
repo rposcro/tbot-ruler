@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @Getter
-public class BasicEmitter extends AbstractItem<EmitterId> implements Emitter {
+public class BasicEmitter extends AbstractItem implements Emitter {
 
     private Optional<Runnable> startUpTask;
     private Optional<Runnable> triggerableTask;
@@ -19,7 +19,7 @@ public class BasicEmitter extends AbstractItem<EmitterId> implements Emitter {
 
     @Builder
     public BasicEmitter(
-        @NonNull EmitterId id,
+        @NonNull String id,
         @NonNull String name,
         String description,
         Runnable startUpTask,

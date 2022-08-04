@@ -17,23 +17,23 @@ public class BindingsService {
     @Autowired
     private BindingsConfiguration bindingsConfiguration;
 
-    public Collection<MessageReceiver> findBindedMessageConsumers(ItemId itemId) {
+    public Collection<MessageReceiver> findBindedMessageConsumers(String itemId) {
         return bindingsConfiguration.consumersBySenderId().getOrDefault(itemId, Collections.emptyList());
     }
 
-    public Collection<ItemId> findBindedMessageConsumerIds(ItemId itemId) {
+    public Collection<String> findBindedMessageConsumerIds(String itemId) {
         return bindingsConfiguration.consumerIdsBySenderId().getOrDefault(itemId, Collections.emptyList());
     }
 
-    public MessageReceiver messageReceiverById(ItemId receiverId) {
+    public MessageReceiver messageReceiverById(String receiverId) {
         return bindingsConfiguration.receiversPerId().computeIfAbsent(
             receiverId,
-            (itemId) -> { throw new ConfigurationException("No receiverId " + itemId.getValue() + " found in configuration!"); });
+            (itemId) -> { throw new ConfigurationException("No receiverId " + itemId + " found in configuration!"); });
     }
 
-    public MessageSender messageSenderById(ItemId senderId) {
+    public MessageSender messageSenderById(String senderId) {
         return bindingsConfiguration.sendersPerId().computeIfAbsent(
             senderId,
-            (itemId) -> { throw new ConfigurationException("No senderId " + itemId.getValue() + " found in configuration!"); });
+            (itemId) -> { throw new ConfigurationException("No senderId " + itemId + " found in configuration!"); });
     }
 }

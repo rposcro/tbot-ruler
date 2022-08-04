@@ -1,6 +1,5 @@
 package com.tbot.ruler.broker;
 
-import com.tbot.ruler.things.ItemId;
 import com.tbot.ruler.message.MessagePayload;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.MessagePublisher;
@@ -23,7 +22,7 @@ public class MessageQueue implements MessagePublisher {
         messageQueue = new LinkedBlockingQueue<>(queueSize);
     }
 
-    public void publish(ItemId senderId, MessagePayload messagePayload) {
+    public void publish(String senderId, MessagePayload messagePayload) {
         acceptMessage(Message.builder()
                 .senderId(senderId)
                 .payload(messagePayload)
@@ -36,7 +35,7 @@ public class MessageQueue implements MessagePublisher {
 
     @Override
     public void acceptMessage(Message message) {
-        log.debug("Enqueued message from {} with payload {}", message.getSenderId().getValue(), message.getPayload().getClass().getSimpleName());
+        log.debug("Enqueued message from {} with payload {}", message.getSenderId(), message.getPayload().getClass().getSimpleName());
         messageQueue.add(message);
     }
 

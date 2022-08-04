@@ -6,7 +6,7 @@ import com.tbot.ruler.message.Message
 import com.tbot.ruler.message.payloads.BooleanTogglePayload
 import com.tbot.ruler.message.payloads.BooleanUpdatePayload
 import com.tbot.ruler.service.DeliveryReportListenerService
-import com.tbot.ruler.things.EmitterId
+
 import spock.lang.Specification
 
 import java.util.concurrent.CompletableFuture

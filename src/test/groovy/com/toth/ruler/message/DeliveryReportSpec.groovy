@@ -3,8 +3,7 @@ package com.toth.ruler.message
 import com.tbot.ruler.message.DeliveryReport
 import com.tbot.ruler.message.Message
 import com.tbot.ruler.message.payloads.BooleanTogglePayload
-import com.tbot.ruler.things.EmitterId
-import com.tbot.ruler.things.ItemId
+
 import spock.lang.Specification
 import spock.lang.Unroll
 

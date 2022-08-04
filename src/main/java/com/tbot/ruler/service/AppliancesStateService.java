@@ -9,7 +9,6 @@ import com.tbot.ruler.message.DeliveryReport;
 import com.tbot.ruler.message.Message;
 import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.message.payloads.RGBWUpdatePayload;
-import com.tbot.ruler.things.ApplianceId;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,17 +28,17 @@ public class AppliancesStateService {
     @Autowired
     private MessageQueue messageQueue;
 
-    public DeliveryReport updateApplianceState(ApplianceId applianceId, BooleanUpdatePayload stateUpdate) {
+    public DeliveryReport updateApplianceState(String applianceId, BooleanUpdatePayload stateUpdate) {
         Appliance appliance = appliancesService.applianceById(applianceId).orElseThrow(
-            () -> new ServiceRequestException("No appliance id " + applianceId.getValue() + " found")
+            () -> new ServiceRequestException("No appliance id " + applianceId + " found")
         );
         Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(stateUpdate);
         return publishMessage(optionalForwardMessage);
     }
 
-    public DeliveryReport updateApplianceState(ApplianceId applianceId, RGBWUpdatePayload stateUpdate) {
+    public DeliveryReport updateApplianceState(String applianceId, RGBWUpdatePayload stateUpdate) {
         Appliance appliance = appliancesService.applianceById(applianceId).orElseThrow(
-            () -> new ServiceRequestException("No appliance id " + applianceId.getValue() + " found")
+            () -> new ServiceRequestException("No appliance id " + applianceId + " found")
         );
         Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(stateUpdate);
         return publishMessage(optionalForwardMessage);
