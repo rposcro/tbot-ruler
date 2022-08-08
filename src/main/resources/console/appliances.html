@@ -1,87 +1,43 @@
 <!DOCTYPE html>
 <html>
-<head>
-    <link rel="stylesheet" type="text/css" href="/console/css/console.css" />
-    <link rel="stylesheet" type="text/css" href="/console/css/menu.css" />
-    <script language="JavaScript">
-        function switchAppliance() {
-            var applianceIdSel = document.getElementById("value");
-            window.location.href = "/console/appliances/" + applianceIdSel.options[applianceIdSel.selectedIndex].value;
-        }
-    </script>
-</head>
-<body>
-<div th:replace="fragments:: header('Appliances')" />
-<div class="desktop">
-    <th:block th:if="${applianceId == null}">
-        <div class="property">Pick an appliance from the list:
-            <select th:id="value" onchange="switchAppliance()">
-                <option></option>
-                <option th:each="appliance: ${appliances}" th:value="${appliance.id.value}" th:text="|${appliance.name}|"></select>
-            </select>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/console.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/menu.css"/>
+        <script>
+            function switchItem() {
+                var idSelector = document.getElementById("itemSelector");
+                window.location.href = "/console/appliances/" + idSelector.options[idSelector.selectedIndex].value;
+            }
+        </script>
+    </head>
+    <body>
+        <div th:replace="fragments:: header('Appliances')"/>
+        <div class="desktop">
+            <th:block th:if="${applianceId == null}">
+                <div class="property">Pick an appliance from the list:
+                    <select th:id="itemSelector" onchange="switchItem()">
+                        <option></option>
+                        <option th:each="appliance: ${appliances}" th:value="${appliance.id}"
+                                th:text="|${appliance.name}|" />
+                    </select>
+                </div>
+            </th:block>
+            <th:block th:if="${applianceId != null}">
+                <div class="section">
+                    <div class="property">Appliance:
+                        <select th:id="itemSelector" onchange="switchItem()">
+                            <option th:each="appliance: ${appliances}" th:value="${appliance.id}"
+                                    th:text="|${appliance.name}|" th:selected="${appliance.id.equals(applianceId)}" />
+                        </select>
+                    </div>
+                    <div class="property">UUID: <span class="highlight">[[${appliance.id}]]</span></div>
+                    <div class="property">Name: <span class="highlight">[[${appliance.name}]]</span></div>
+                    <div class="property">Description: <span class="highlight">[[${appliance.description}]]</span></div>
+                    <div class="property">Category: <span class="highlight">[[${appliance.type}]]</span></div>
+                    <div class="property"></div>
+                </div>
+                <div th:replace="fragments:: bindings(${senders}, ${listeners})"/>
+            </th:block>
         </div>
-    </th:block>
-    <th:block th:if="${applianceId != null}">
-        <div class="property">Appliance:
-            <select th:field="${applianceId.value}" onchange="switchAppliance()">
-                <option th:each="appliance: ${appliances}" th:value="${appliance.id.value}" th:text="|${appliance.name}|"></select>
-            </select>
-        </div>
-        <div class="property">UUID: <span class="highlight">[[${appliance.id.value}]]</span></div>
-        <div class="property">Description: <span class="highlight">[[${appliance.description}]]</span></div>
-        <div class="property">Category: <span class="highlight">[[${appliance.type}]]</span></div>
-        <div class="property">&nbsp;</div>
-        <div class="section">
-            <div class="section-title">Binded Actuator</div>
-            <table class="grid">
-                <tr class="grid-header">
-                    <td>Name</td>
-                    <td>UUID</td>
-                    <td>Plugin</td>
-                    <td>Properties</td>
-                </tr>
-                <tr th:if="${bindedActuator != null}" class="grid-row">
-                    <td>[[${bindedActuator.name}]]</td>
-                    <td>[[${bindedActuator.id.value}]]</td>
-                    <td>[[${bindedActuator.ref}]]</td>
-                    <td><div th:each="parameter: ${bindedActuator.parameters}">[[${parameter.key}]]: [[${parameter.value}]]</div></td>
-                </tr>
-            </table>
-        </div>
-        <div class="section">
-            <div class="section-title">Binded Emitters</div>
-            <table class="grid">
-                <tr class="grid-header">
-                    <td>Name</td>
-                    <td>UUID</td>
-                    <td>Plugin</td>
-                    <td>Properties</td>
-                </tr>
-                <tr th:each="emitter: ${bindedEmitters}" class="grid-row">
-                    <td>[[${emitter.name}]]</td>
-                    <td>[[${emitter.id.value}]]</td>
-                    <td>[[${emitter.ref}]]</td>
-                    <td><div th:each="parameter: ${emitter.parameters}">[[${parameter.key}]]: [[${parameter.value}]]</div></td>
-                </tr>
-            </table>
-        </div>
-        <div class="section">
-            <div class="section-title">Binded Collectors</div>
-            <table class="grid">
-                <tr class="grid-header">
-                    <td>Name</td>
-                    <td>UUID</td>
-                    <td>Plugin</td>
-                    <td>Properties</td>
-                </tr>
-                <tr th:each="collector: ${bindedCollectors}" class="grid-row">
-                    <td>[[${collector.name}]]</td>
-                    <td>[[${collector.id.value}]]</td>
-                    <td>[[${collector.ref}]]</td>
-                    <td><div th:each="parameter: ${collector.parameters}">[[${parameter.key}]]: [[${parameter.value}]]</div></td>
-                </tr>
-            </table>
-        </div>
-    </th:block>
-</body>
+    </body>
 </html>

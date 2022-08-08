@@ -22,21 +22,21 @@ public class BindingsAdminService {
     }
 
     public List<ItemDTO> sendersForItem(String itemId) {
-        List<ItemDTO> emitters = dtoConfiguration.bindingDTOs().stream()
+        List<ItemDTO> senders = dtoConfiguration.bindingDTOs().stream()
                 .filter(binding -> binding.getConsumerIds().contains(itemId))
                 .map(BindingDTO::getSenderId)
                 .map(this::findSenderDTO)
                 .collect(Collectors.toList());
-        return emitters;
+        return senders;
     }
 
     public List<ItemDTO> listenersForItem(String itemId) {
-        List<ItemDTO> emitters = dtoConfiguration.bindingDTOs().stream()
+        List<ItemDTO> listeners = dtoConfiguration.bindingDTOs().stream()
                 .filter(binding -> binding.getSenderId().equals(itemId))
                 .flatMap(binding -> binding.getConsumerIds().stream())
                 .map(this::findListenerDTO)
                 .collect(Collectors.toList());
-        return emitters;
+        return listeners;
     }
 
     private ItemDTO findSenderDTO(String itemId) {

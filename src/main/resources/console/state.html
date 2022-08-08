@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <link rel="stylesheet" type="text/css" href="/console/css/console.css" />
-    <link rel="stylesheet" type="text/css" href="/console/css/menu.css" />
+    <link rel="stylesheet" type="text/css" href="/css/console.css" />
+    <link rel="stylesheet" type="text/css" href="/css/menu.css" />
 </head>
 <body>
 <div th:replace="fragments:: header('Appliances State')" />
@@ -19,7 +19,7 @@
                 </tr>
                 <tr th:each="light: ${lights}" class="grid-row">
                     <td>[[${light.metadata.name}]]</td>
-                    <td>[[${light.id.value}]]</td>
+                    <td>[[${light.id}]]</td>
                     <td>[[${light.metadata.description}]]</td>
                     <td th:insert="fragments:: formatOptional(${light.state})" />
                 </tr>
@@ -38,7 +38,7 @@
                 </tr>
                 <tr th:each="sprinkler: ${sprinklers}" class="grid-row">
                     <td>[[${sprinkler.metadata.name}]]</td>
-                    <td>[[${sprinkler.id.value}]]</td>
+                    <td>[[${sprinkler.id}]]</td>
                     <td>[[${sprinkler.metadata.description}]]</td>
                     <td th:insert="fragments:: formatOptional(${sprinkler.state})" />
                 </tr>

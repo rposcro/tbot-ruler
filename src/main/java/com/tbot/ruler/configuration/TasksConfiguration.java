@@ -80,7 +80,7 @@ public class TasksConfiguration {
                     task,
                     context -> {
                         Date nextEmissionTime = trigger.nextEmissionTime(new EmissionTriggerContext(context.lastScheduledExecutionTime()));
-                        log.debug("Next emission time for {} is {}", task, nextEmissionTime);
+                        log.info("Next emission time for {} is {}", task, nextEmissionTime);
                         return nextEmissionTime;
                     });
             }
