@@ -18,5 +18,5 @@ public class ReportEntry {
     @JsonEnumDefaultValue
     private ReportEntryLevel entryLevel;
 
-    private String message;
+    private String content;
 }

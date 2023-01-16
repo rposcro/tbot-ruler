@@ -75,7 +75,7 @@ class  HealthCheckEmissionTask implements Runnable {
                 .reportEntry(ReportEntry.builder()
                     .entryLevel(entryLevel)
                     .timestamp(ZonedDateTime.now())
-                    .message(message)
+                    .content(message)
                     .build())
                 .build())
             .build();
