@@ -9,7 +9,6 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class JWaveZCommandHandler<T extends ZWaveSupportedCommand> implements SupportedCommandHandler<T> {
 
     public void handleEncapsulatedCommand(MultiChannelCommandEncapsulation commandEncapsulation) {
-        log.info("Ignored command encapsulation from node: "
-                + commandEncapsulation.getSourceNodeId() + "/" + commandEncapsulation.getSourceEndpointId());
+        log.info("Handling encapsulation command with no action");
     }
 }

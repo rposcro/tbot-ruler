@@ -19,7 +19,7 @@ public class BasicSetCommandHandler extends JWaveZCommandHandler<BasicSet> {
 
     @Override
     public void handleCommand(BasicSet command) {
-        log.debug("Received basic set command");
+        log.debug("Handling basic set command");
         byte nodeId = command.getSourceNodeId().getId();
         byte commandValue = (byte) command.getValue();
         emitters.stream()
@@ -29,10 +29,11 @@ public class BasicSetCommandHandler extends JWaveZCommandHandler<BasicSet> {
 
     @Override
     public void handleEncapsulatedCommand(MultiChannelCommandEncapsulation commandEncapsulation) {
-        log.debug("Received basic set encapsulated command");
+        log.debug("Handling encapsulated basic set command");
         byte nodeId = commandEncapsulation.getSourceNodeId().getId();
         byte sourceEndpointId = commandEncapsulation.getSourceEndpointId();
         byte commandValue = commandEncapsulation.getEncapsulatedCommandPayload()[0];
+
         emitters.stream()
                 .filter(emitter -> emitter.acceptsCommand(nodeId, sourceEndpointId))
                 .forEach(emitter -> emitter.acceptCommandValue(commandValue));

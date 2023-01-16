@@ -74,8 +74,8 @@ public class TasksConfiguration {
 
         periodicItems(taskBasedItems).forEach(
             (item) -> {
-                Runnable task = (Runnable) item.getTriggerableTask().get();
-                TaskTrigger trigger = (TaskTrigger) item.getTaskTrigger().get();
+                Runnable task = item.getTriggerableTask().get();
+                TaskTrigger trigger = item.getTaskTrigger().get();
                 periodicEmittersScheduler().schedule(
                     task,
                     context -> {

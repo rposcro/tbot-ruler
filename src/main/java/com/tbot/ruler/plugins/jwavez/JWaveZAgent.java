@@ -7,23 +7,27 @@ import com.rposcro.jwavez.core.commands.types.CommandTypesRegistry;
 import com.rposcro.jwavez.core.commands.types.MultiChannelCommandType;
 import com.rposcro.jwavez.core.handlers.SupportedCommandHandler;
 import com.rposcro.jwavez.core.utils.ImmutableBuffer;
-import com.rposcro.jwavez.serial.buffers.ViewBuffer;
 import com.rposcro.jwavez.serial.controllers.GeneralAsynchronousController;
 import com.rposcro.jwavez.serial.exceptions.SerialException;
 import com.rposcro.jwavez.serial.exceptions.SerialPortException;
+import com.rposcro.jwavez.serial.frames.callbacks.ZWaveCallback;
 import com.rposcro.jwavez.serial.frames.requests.SendDataRequest;
 import com.rposcro.jwavez.serial.handlers.InterceptableCallbackHandler;
 import com.rposcro.jwavez.serial.interceptors.ApplicationCommandInterceptor;
+import com.rposcro.jwavez.serial.rxtx.CallbackHandler;
+import com.rposcro.jwavez.serial.rxtx.ResponseHandler;
 import com.rposcro.jwavez.serial.rxtx.SerialRequest;
-import com.rposcro.jwavez.serial.utils.BufferUtil;
+import com.rposcro.jwavez.serial.utils.FrameUtil;
 import com.tbot.ruler.exceptions.MessageProcessingException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.Consumer;
 import java.util.stream.IntStream;
+
+import static com.tbot.ruler.util.LogArgument.argument;
 
 @Slf4j
 @Getter
@@ -67,9 +71,7 @@ public class JWaveZAgent {
 
     public JWaveZCommandSender getCommandSender() {
         return (nodeId, command) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("Request frame sending: {}", bufferToString(command.getPayload()));
-            }
+            log.debug("Request frame sending: {}", argument(() -> bufferToString(command.getPayload())));
 
             if (jwzController == null) {
                 throw new MessageProcessingException("JWaveZ controller is not active!");
@@ -91,28 +93,24 @@ public class JWaveZAgent {
             .build();
     }
 
-    private Consumer<ViewBuffer> responseHandler() {
+    private ResponseHandler responseHandler() {
         return (buffer) -> {
-            if (log.isDebugEnabled()) {
-                log.debug("Response frame received: {}", BufferUtil.bufferToString(buffer));
-            }
+            log.debug("Response frame received: {}", argument(() -> FrameUtil.asFineString(buffer)));
         };
     }
 
-    private Consumer<ViewBuffer> buildCallbackHandler() {
+    private CallbackHandler buildCallbackHandler() {
         return new InterceptableCallbackHandler()
-            .addCallbackInterceptor(buildApplicationCommandInterceptor())
-            .addViewBufferInterceptor((buffer) -> {
-                if (log.isDebugEnabled()) {
-                    log.debug("Callback frame received: {}", BufferUtil.bufferToString(buffer));
-                }
-            });
+            .addViewBufferInterceptor((buffer) -> log.debug("Callback frame received: {}", argument(() -> FrameUtil.asFineString(buffer))))
+            .addCallbackInterceptor(buildApplicationCommandInterceptor());
     }
 
     private ApplicationCommandInterceptor buildApplicationCommandInterceptor() {
-        ApplicationCommandInterceptor interceptor = new ApplicationCommandInterceptor();
-        commandHandlersMap.entrySet().stream().forEach(entry -> interceptor.registerCommandHandler(entry.getKey(), entry.getValue()));
-        interceptor.registerCommandHandler(MultiChannelCommandType.MULTI_CHANNEL_CMD_ENCAP, buildCommandEncapsulationHandler());
+        ApplicationCommandInterceptor interceptor = new LoggingApplicationCommandCallbackInterceptor();
+        commandHandlersMap.entrySet().stream().forEach(entry -> interceptor.registerCommandHandler(
+                entry.getKey(), new LoggingCommandHandler(entry.getValue())));
+        interceptor.registerCommandHandler(
+                MultiChannelCommandType.MULTI_CHANNEL_CMD_ENCAP, new LoggingCommandHandler(buildCommandEncapsulationHandler()));
         return interceptor;
     }
 
@@ -123,8 +121,9 @@ public class JWaveZAgent {
                         encapsulation.getEncapsulatedCommandClass(), encapsulation.getEncapsulatedCommandCode());
                 JWaveZCommandHandler commandHandler = commandHandlersMap.get(commandType);
                 if (commandHandler == null) {
-                    log.info("Encapsulated command type " + commandType + " is not supported");
+                    log.info("Command encapsulation not handled ");
                 } else {
+                    log.debug("Handler found for command encapsulation: {}", commandHandler.getClass());
                     commandHandler.handleEncapsulatedCommand(encapsulation);
                 }
             } catch(Exception e) {
@@ -143,5 +142,25 @@ public class JWaveZAgent {
         IntStream.range(0, buffer.getLength())
             .forEach(index -> string.append(String.format("%02x ", buffer.getByte(index))));
         return string.toString();
+    }
+
+    @AllArgsConstructor
+    private class LoggingCommandHandler<T extends ZWaveSupportedCommand> implements SupportedCommandHandler<T> {
+
+        private SupportedCommandHandler<T> delegate;
+
+        @Override
+        public void handleCommand(T command) {
+            log.debug("ZWave supported command received: {}", argument(() -> command.asNiceString()));
+            delegate.handleCommand(command);
+        }
+    }
+
+    private class LoggingApplicationCommandCallbackInterceptor extends ApplicationCommandInterceptor {
+        @Override
+        public void intercept(ZWaveCallback callback) {
+            log.debug("Application command callback received: {}", argument(() ->  callback.asFineString()));
+            super.intercept(callback);
+        }
     }
 }

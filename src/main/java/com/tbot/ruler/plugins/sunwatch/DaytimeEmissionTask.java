@@ -10,28 +10,40 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.concurrent.Semaphore;
 
 @Slf4j
-@Builder
 public class DaytimeEmissionTask implements Runnable {
 
-    @NonNull private Message sunriseMessage;
-    @NonNull private Message sunsetMessage;
-    @NonNull private DaytimeEmissionTrigger daytimeTrigger;
-    @NonNull private MessagePublisher messagePublisher;
-    @NonNull private String emitterId;
+    private Message dayTimeMessage;
+    private Message nightTimeMessage;
+    private SunCalculator sunCalculator;
+    private MessagePublisher messagePublisher;
+    private String emitterId;
 
-    @Builder.Default
     private final Semaphore emissionLock = new Semaphore(1);
+
+    @Builder
+    public DaytimeEmissionTask(
+            @NonNull Message dayTimeMessage,
+            @NonNull Message nightTimeMessage,
+            @NonNull SunCalculator sunCalculator,
+            @NonNull MessagePublisher messagePublisher,
+            @NonNull String emitterId) {
+        this.dayTimeMessage = dayTimeMessage;
+        this.nightTimeMessage = nightTimeMessage;
+        this.sunCalculator = sunCalculator;
+        this.messagePublisher = messagePublisher;
+        this.emitterId = emitterId;
+    }
 
     public void run() {
         if (emissionLock.tryAcquire()) {
-            boolean isSunrise = daytimeTrigger.triggeredOnSunrise();
-            log.info("[EMISSION] Daytime event for emitter {}, event {}", emitterId, isSunrise ? "Sunrise" : "Sunset");
-            messagePublisher.acceptMessage(isSunrise ? sunriseMessage : sunsetMessage);
+            boolean isDaytime = sunCalculator.isDaytimeNow();
+            log.info("[EMISSION] Daytime event for emitter {}, event for {}", emitterId, isDaytime ? "DayTime" : "NightTime");
+            messagePublisher.acceptMessage(isDaytime ? dayTimeMessage : nightTimeMessage);
             emissionLock.release();
         }
     }
 
     public void acceptDeliveryReport(DeliveryReport deliveryReport) {
-
+        log.info("Received delivery report: " + deliveryReport.deliverySuccessful());
     }
 }

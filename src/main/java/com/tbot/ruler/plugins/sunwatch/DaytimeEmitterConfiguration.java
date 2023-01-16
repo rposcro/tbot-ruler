@@ -9,11 +9,13 @@ import lombok.Setter;
 public class DaytimeEmitterConfiguration {
 
     @JsonProperty(defaultValue = "0")
+    private long emissionInterval;
+    @JsonProperty(defaultValue = "0")
     private long sunriseShift;
     @JsonProperty(defaultValue = "0")
     private long sunsetShift;
     @JsonProperty(defaultValue = "on")
-    private String sunriseSignal;
+    private String dayTimeSignal;
     @JsonProperty(defaultValue = "off")
-    private String sunsetSignal;
+    private String nightTimeSignal;
 }

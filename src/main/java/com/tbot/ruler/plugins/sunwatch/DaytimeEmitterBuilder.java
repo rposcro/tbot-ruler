@@ -19,39 +19,47 @@ public class DaytimeEmitterBuilder extends AbstractEmitterBuilder {
     public Emitter buildEmitter(ThingBuilderContext builderContext, SunEventLocale eventLocale) throws PluginException {
         EmitterDTO emitterDTO = findEmitterDTO(REFERENCE, builderContext);
         DaytimeEmitterConfiguration emitterConfiguration = parseEmitterConfiguration(emitterDTO, DaytimeEmitterConfiguration.class);
-        DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterConfiguration, eventLocale);
-        DaytimeEmissionTask emissionTask = emissionTask(emitterDTO, builderContext, emissionTrigger, emitterConfiguration);
+        SunCalculator sunCalculator = sunCalculator(emitterConfiguration, eventLocale);
+        DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterConfiguration, eventLocale, sunCalculator);
+        DaytimeEmissionTask emissionTask = emissionTask(emitterDTO, builderContext, sunCalculator, emitterConfiguration);
 
         return BasicEmitter.builder()
-            .id(emitterDTO.getId())
-            .name(emitterDTO.getName())
-            .description(emitterDTO.getDescription())
-            .triggerableTask(emissionTask)
-            .taskTrigger(emissionTrigger)
-            .reportListener(emissionTask::acceptDeliveryReport)
-            .build();
+                .id(emitterDTO.getId())
+                .name(emitterDTO.getName())
+                .description(emitterDTO.getDescription())
+                .triggerableTask(emissionTask)
+                .taskTrigger(emissionTrigger)
+                .reportListener(emissionTask::acceptDeliveryReport)
+                .build();
     }
 
     private DaytimeEmissionTask emissionTask(
             EmitterDTO emitterDTO,
             ThingBuilderContext builderContext,
-            DaytimeEmissionTrigger trigger,
+            SunCalculator sunCalculator,
             DaytimeEmitterConfiguration emitterConfiguration) {
         return DaytimeEmissionTask.builder()
-            .emitterId(emitterDTO.getId())
-            .daytimeTrigger(trigger)
-            .messagePublisher(builderContext.getMessagePublisher())
-            .sunriseMessage(emitterMessage(emitterDTO, emitterConfiguration.getSunriseSignal()))
-            .sunsetMessage(emitterMessage(emitterDTO, emitterConfiguration.getSunsetSignal()))
-            .build();
+                .emitterId(emitterDTO.getId())
+                .messagePublisher(builderContext.getMessagePublisher())
+                .dayTimeMessage(emitterMessage(emitterDTO, emitterConfiguration.getDayTimeSignal()))
+                .nightTimeMessage(emitterMessage(emitterDTO, emitterConfiguration.getNightTimeSignal()))
+                .sunCalculator(sunCalculator)
+                .build();
     }
 
-    private DaytimeEmissionTrigger emissionTrigger(DaytimeEmitterConfiguration emitterConfiguration, SunEventLocale eventLocale) {
+    private DaytimeEmissionTrigger emissionTrigger(DaytimeEmitterConfiguration configuration, SunEventLocale eventLocale, SunCalculator sunCalculator) {
         return DaytimeEmissionTrigger.builder()
-            .sunCalculator(new SunCalculator(eventLocale))
-            .plusSunriseMinutes(emitterConfiguration.getSunriseShift())
-            .plusSunsetMinutes(emitterConfiguration.getSunsetShift())
-            .zoneId(eventLocale.getZoneId())
-            .build();
+                .sunCalculator(sunCalculator)
+                .emissionIntervalMinutes(configuration.getEmissionInterval())
+                .zoneId(eventLocale.getZoneId())
+                .build();
+    }
+
+    private SunCalculator sunCalculator(DaytimeEmitterConfiguration configuration, SunEventLocale eventLocale) {
+        return SunCalculator.builder()
+                .eventLocale(eventLocale)
+                .sunriseShiftMinutes(configuration.getSunriseShift())
+                .sunsetShiftMinutes(configuration.getSunsetShift())
+                .build();
     }
 }

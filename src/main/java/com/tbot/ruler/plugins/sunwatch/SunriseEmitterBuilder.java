@@ -42,7 +42,7 @@ public class SunriseEmitterBuilder extends AbstractEmitterBuilder {
     }
 
     private TaskTrigger emissionTrigger(SunEventEmitterConfiguration emitterConfiguration) {
-        SunEventTimer eventTimer = sunEvent();
+        SunEventTimer eventTimer = sunEvent(emitterConfiguration.getShift());
         return SunEventTrigger.builder()
             .timer(eventTimer)
             .zoneId(eventLocale.getZoneId())
@@ -50,8 +50,12 @@ public class SunriseEmitterBuilder extends AbstractEmitterBuilder {
             .build();
     }
 
-    private SunEventTimer sunEvent() {
-        SunCalculator sunCalculator = new SunCalculator(eventLocale);
+    private SunEventTimer sunEvent(long sunriseShift) {
+        SunCalculator sunCalculator = SunCalculator.builder()
+                .eventLocale(eventLocale)
+                .sunriseShiftMinutes(sunriseShift)
+                .sunsetShiftMinutes(0)
+                .build();
         return sunCalculator::sunriseForDate;
     }
 }
