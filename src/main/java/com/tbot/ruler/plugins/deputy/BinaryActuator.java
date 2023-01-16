@@ -72,6 +72,6 @@ public class BinaryActuator extends AbstractActuator {
                 .state(expectedState)
                 .build())
             .build();
-        messagePublisher.acceptMessage(message);
+        messagePublisher.publishMessage(message);
     }
 }

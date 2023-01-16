@@ -46,7 +46,7 @@ public class BasicSetEmitter extends AbstractItem implements Emitter {
     }
 
     public void acceptCommandValue(byte commandValue) {
-        messagePublisher.acceptMessage(Message.builder()
+        messagePublisher.publishMessage(Message.builder()
                 .senderId(this.getId())
                 .payload(messagePayload(commandValue))
                 .build());

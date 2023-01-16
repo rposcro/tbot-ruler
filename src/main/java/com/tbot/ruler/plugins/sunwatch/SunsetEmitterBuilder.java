@@ -38,7 +38,7 @@ public class SunsetEmitterBuilder extends AbstractEmitterBuilder {
 
     private Runnable emissionTask(EmitterDTO emitterDTO, SunEventEmitterConfiguration emitterConfiguration) {
         Message message = emitterMessage(emitterDTO, emitterConfiguration.getSignal());
-        return () -> builderContext.getMessagePublisher().acceptMessage(message);
+        return () -> builderContext.getMessagePublisher().publishMessage(message);
     }
 
     private TaskTrigger emissionTrigger(SunEventEmitterConfiguration emitterConfiguration) {

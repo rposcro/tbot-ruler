@@ -26,7 +26,7 @@ public class CronSchedulerEmitterBuilder {
     }
 
     private Runnable emissionTask(EmitterDTO emitterDTO, MessagePublisher messagePublisher) {
-        return () -> messagePublisher.acceptMessage(messageToSend(emitterDTO.getId(), new HeartBeatPayload()));
+        return () -> messagePublisher.publishMessage(messageToSend(emitterDTO.getId(), new HeartBeatPayload()));
     }
 
     private CronEmissionTrigger emissionTrigger(EmitterDTO emitterDTO, TimeZone timeZone) {

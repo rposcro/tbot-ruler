@@ -91,7 +91,7 @@ class BinaryActuatorReceiverSpec extends Specification {
             state.setState(param);
             return new RestResponse<>(new ResponseEntity<>(state, HttpStatus.OK));
         };
-        1 * messagePublisher.acceptMessage({
+        1 * messagePublisher.publishMessage({
             it.senderId.equals(actuatorId) && it.payload.getClass() == BooleanUpdatePayload && it.payload.state == state
         });
 

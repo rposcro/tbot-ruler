@@ -55,7 +55,7 @@ class  HealthCheckEmissionTask implements Runnable {
     private void handleUnhealthy(Integer statusCode) {
         if (!isHealthy.isPresent() || isHealthy.get()) {
             isHealthy = Optional.of(false);
-            messagePublisher.acceptMessage(buildMessage(
+            messagePublisher.publishMessage(buildMessage(
                 "Deputy node unhealthy: " + (statusCode == null ? "Unreachable" : statusCode.toString()),
                 ReportEntryLevel.IMPORTANT));
         }
@@ -64,7 +64,7 @@ class  HealthCheckEmissionTask implements Runnable {
     private void handleHealthy() {
         if (!isHealthy.isPresent() || !isHealthy.get()) {
             isHealthy = Optional.of(true);
-            messagePublisher.acceptMessage(buildMessage("Deputy node is healthy", ReportEntryLevel.REGULAR));
+            messagePublisher.publishMessage(buildMessage("Deputy node is healthy", ReportEntryLevel.REGULAR));
         }
     }
 

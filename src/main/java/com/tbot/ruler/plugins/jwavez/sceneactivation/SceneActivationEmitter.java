@@ -35,7 +35,7 @@ public class SceneActivationEmitter implements Emitter {
     }
 
     public void publishMessage() {
-        messagePublisher.acceptMessage(message);
+        messagePublisher.publishMessage(message);
     }
 
     public static String uniqueSceneKey(byte nodeId, byte sceneId) {

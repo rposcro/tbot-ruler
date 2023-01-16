@@ -38,7 +38,7 @@ public class DaytimeEmissionTask implements Runnable {
         if (emissionLock.tryAcquire()) {
             boolean isDaytime = sunCalculator.isDaytimeNow();
             log.info("[EMISSION] Daytime event for emitter {}, event for {}", emitterId, isDaytime ? "DayTime" : "NightTime");
-            messagePublisher.acceptMessage(isDaytime ? dayTimeMessage : nightTimeMessage);
+            messagePublisher.publishMessage(isDaytime ? dayTimeMessage : nightTimeMessage);
             emissionLock.release();
         }
     }
