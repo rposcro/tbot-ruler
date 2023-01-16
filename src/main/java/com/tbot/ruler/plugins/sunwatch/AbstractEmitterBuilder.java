@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.sunwatch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;

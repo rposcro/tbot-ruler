@@ -1,11 +1,11 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePayload;
-import com.tbot.ruler.message.MessagePublisher;
-import com.tbot.ruler.message.payloads.BooleanTogglePayload;
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
-import com.tbot.ruler.message.payloads.UpdateRequestPayload;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.model.MessagePayload;
+import com.tbot.ruler.messages.MessagePublisher;
+import com.tbot.ruler.messages.payloads.BooleanTogglePayload;
+import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.messages.payloads.UpdateRequestPayload;
 import com.tbot.ruler.things.AbstractActuator;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.thread.RegularEmissionTrigger;

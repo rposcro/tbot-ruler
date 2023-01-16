@@ -1,7 +1,7 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.Message;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.things.thread.TaskTrigger;
 
 import java.util.Optional;
@@ -32,6 +32,6 @@ public abstract class AbstractActuator extends AbstractItem implements Actuator 
     }
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
     }
 }

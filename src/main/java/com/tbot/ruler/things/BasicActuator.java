@@ -1,8 +1,8 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessageReceiver;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.MessageReceiver;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;
@@ -46,6 +46,6 @@ public class BasicActuator extends AbstractItem implements Actuator {
     }
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
     }
 }

@@ -1,6 +1,6 @@
-package com.tbot.ruler.message.payloads;
+package com.tbot.ruler.messages.payloads;
 
-import com.tbot.ruler.message.MessagePayload;
+import com.tbot.ruler.messages.model.MessagePayload;
 
 public class BooleanTogglePayload implements MessagePayload {
 

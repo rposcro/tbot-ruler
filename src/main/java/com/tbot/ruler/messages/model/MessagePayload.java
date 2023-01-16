@@ -1,4 +1,4 @@
-package com.tbot.ruler.message;
+package com.tbot.ruler.messages.model;
 
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
 

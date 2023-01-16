@@ -1,10 +1,10 @@
 package com.tbot.ruler.appliances;
 
 import com.tbot.ruler.model.RGBWColor;
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePayload;
-import com.tbot.ruler.message.payloads.RGBWUpdatePayload;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.model.MessagePayload;
+import com.tbot.ruler.messages.payloads.RGBWUpdatePayload;
 import com.tbot.ruler.service.PersistenceService;
 
 import java.util.Optional;
@@ -38,7 +38,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
     }
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             setState(deliveryReport.getOriginalMessage().getPayload().ensureMessageType());

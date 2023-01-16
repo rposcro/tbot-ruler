@@ -1,6 +1,6 @@
 package com.tbot.ruler.things.thread;
 
-import com.tbot.ruler.message.Message;
+import com.tbot.ruler.messages.model.Message;
 
 import java.util.function.Consumer;
 

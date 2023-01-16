@@ -1,6 +1,6 @@
 package com.tbot.ruler.appliances;
 
-import com.tbot.ruler.message.DeliveryReport;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.service.PersistenceService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -17,7 +17,7 @@ public abstract class AbstractAppliance<T> implements Appliance<T> {
     @NonNull private PersistenceService persistenceService;
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport report) {
+    public void acceptDeliveryReport(MessageDeliveryReport report) {
         log.debug("Delivery report sender: {}, empty: {}, success: {}, failure: {}, part failure: {}",
             id, report.noReceiversFound(), report.deliverySuccessful(), report.deliveryFailed(), report.deliveryPartiallyFailed());
     }

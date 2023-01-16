@@ -1,9 +1,9 @@
 package com.tbot.ruler.plugins.cron;
 
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePayload;
-import com.tbot.ruler.message.MessagePublisher;
-import com.tbot.ruler.message.payloads.HeartBeatPayload;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.model.MessagePayload;
+import com.tbot.ruler.messages.MessagePublisher;
+import com.tbot.ruler.messages.payloads.HeartBeatPayload;
 import com.tbot.ruler.things.BasicEmitter;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.builder.ThingBuilderContext;

@@ -1,4 +1,4 @@
-package com.tbot.ruler.message;
+package com.tbot.ruler.messages.model;
 
 import lombok.Builder;
 import lombok.Getter;

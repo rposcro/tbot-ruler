@@ -1,6 +1,6 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.message.Message;
+import com.tbot.ruler.messages.model.Message;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;

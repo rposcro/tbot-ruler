@@ -1,8 +1,8 @@
 package com.tbot.ruler.appliances;
 
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePayload;
-import com.tbot.ruler.message.payloads.ReportPayload;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.model.MessagePayload;
+import com.tbot.ruler.messages.payloads.ReportPayload;
 import com.tbot.ruler.model.ReportEntry;
 import com.tbot.ruler.service.PersistenceService;
 

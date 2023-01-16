@@ -6,8 +6,8 @@ import com.rposcro.jwavez.core.commands.controlled.builders.SwitchBinaryCommandB
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Collector;
 import lombok.Builder;

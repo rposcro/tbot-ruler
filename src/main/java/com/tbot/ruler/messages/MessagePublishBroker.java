@@ -1,47 +1,46 @@
-package com.tbot.ruler.broker;
+package com.tbot.ruler.messages;
 
 import com.tbot.ruler.exceptions.MessageException;
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.DeliveryReport.DeliveryReportBuilder;
-import com.tbot.ruler.message.MessageSender;
-import com.tbot.ruler.service.DeliveryReportListenerService;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.MessageDeliveryReport.DeliveryReportBuilder;
+import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.service.things.BindingsService;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessageReceiver;
+import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.util.Collection;
 
 @Slf4j
-@Component
-public class MessageBroker implements Runnable {
+@Service
+public class MessagePublishBroker implements Runnable {
 
-    @Autowired
-    private MessageQueue messageQueue;
+    private final MessageQueueComponent messageQueue;
+    private final BindingsService bindingsService;
 
+    @Builder
     @Autowired
-    private BindingsService bindingsService;
-
-    @Autowired
-    private DeliveryReportListenerService listenerService;
+    public MessagePublishBroker(MessageQueueComponent messageQueue, BindingsService bindingsService) {
+        this.messageQueue = messageQueue;
+        this.bindingsService = bindingsService;
+    }
 
     @Override
     public void run() {
         while(true) {
             try {
                 Message message = messageQueue.nextMessage();
-                DeliveryReport deliveryReport = distributeMessage(message);
-                deliverReport(message, deliveryReport);
+                MessageDeliveryReport deliveryReport = distributeMessage(message);
+                messageQueue.enqueueDeliveryReport(deliveryReport);
             } catch(Exception e) {
                 log.error("Message dispatching interrupted by unexpected internal error", e);
             }
         }
     }
 
-    private DeliveryReport distributeMessage(Message message) {
-        DeliveryReportBuilder reportBuilder = DeliveryReport.builder().originalMessage(message);
+    private MessageDeliveryReport distributeMessage(Message message) {
+        DeliveryReportBuilder reportBuilder = MessageDeliveryReport.builder().originalMessage(message);
         Collection<String> consumers = bindingsService.findBindedMessageConsumerIds(message.getSenderId());
 
         if (consumers.isEmpty()) {
@@ -61,12 +60,6 @@ public class MessageBroker implements Runnable {
         }
 
         return reportBuilder.build();
-    }
-
-    private void deliverReport(Message message, DeliveryReport deliveryReport) {
-        MessageSender messageSender = bindingsService.messageSenderById(message.getSenderId());
-        messageSender.acceptDeliveryReport(deliveryReport);
-        listenerService.acceptDeliveryReport(deliveryReport);
     }
 
     private void deliverMessage(Message message, String receiverId) {

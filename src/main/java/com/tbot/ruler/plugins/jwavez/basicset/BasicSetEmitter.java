@@ -1,12 +1,12 @@
 package com.tbot.ruler.plugins.jwavez.basicset;
 
 import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePayload;
-import com.tbot.ruler.message.MessagePublisher;
-import com.tbot.ruler.message.payloads.BooleanTogglePayload;
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.model.MessagePayload;
+import com.tbot.ruler.messages.MessagePublisher;
+import com.tbot.ruler.messages.payloads.BooleanTogglePayload;
+import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Emitter;
 import lombok.Builder;
@@ -53,7 +53,7 @@ public class BasicSetEmitter extends AbstractItem implements Emitter {
     }
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
     }
 
     private MessagePayload messagePayload(byte commandValue) {

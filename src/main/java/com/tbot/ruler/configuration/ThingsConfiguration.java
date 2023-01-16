@@ -7,7 +7,7 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.tbot.ruler.broker.MessageQueue;
+import com.tbot.ruler.messages.MessagePublisher;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.exceptions.PluginException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +30,7 @@ public class ThingsConfiguration {
     private ServiceProvider serviceProvider;
 
     @Autowired
-    private MessageQueue messageQueue;
+    private MessagePublisher messagePublisher;
 
     @Bean
     public List<Thing> things(List<ThingDTO> thingDTOs, List<ThingPluginDTO> pluginDTOs) {
@@ -62,7 +62,7 @@ public class ThingsConfiguration {
                 .services(serviceProvider)
                 .thingDTO(thingDTO)
                 .pluginDTO(pluginDTO)
-                .messagePublisher(messageQueue)
+                .messagePublisher(messagePublisher)
                 .build();
         Thing thing = instantiateBuilder(pluginDTO)
                 .buildThing(builderContext);

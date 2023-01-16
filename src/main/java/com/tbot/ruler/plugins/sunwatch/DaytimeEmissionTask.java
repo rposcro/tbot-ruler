@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.sunwatch;
 
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePublisher;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.MessagePublisher;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +43,7 @@ public class DaytimeEmissionTask implements Runnable {
         }
     }
 
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
         log.info("Received delivery report: " + deliveryReport.deliverySuccessful());
     }
 }

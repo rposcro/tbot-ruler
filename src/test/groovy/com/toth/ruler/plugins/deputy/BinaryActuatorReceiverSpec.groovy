@@ -2,11 +2,11 @@ package com.toth.ruler.plugins.deputy
 
 import com.tbot.ruler.exceptions.MessageProcessingException
 import com.tbot.ruler.exceptions.RestRequestException
-import com.tbot.ruler.message.Message
-import com.tbot.ruler.message.MessagePublisher
-import com.tbot.ruler.message.payloads.BooleanTogglePayload
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload
-import com.tbot.ruler.message.payloads.UpdateRequestPayload
+import com.tbot.ruler.messages.model.Message
+import com.tbot.ruler.messages.MessagePublisher
+import com.tbot.ruler.messages.model.payloads.BooleanTogglePayload
+import com.tbot.ruler.messages.model.payloads.BooleanUpdatePayload
+import com.tbot.ruler.messages.model.payloads.UpdateRequestPayload
 import com.tbot.ruler.plugins.deputy.BinaryActuatorReceiver
 import com.tbot.ruler.plugins.deputy.model.BinOutState
 import com.tbot.ruler.rest.RestGetCommand

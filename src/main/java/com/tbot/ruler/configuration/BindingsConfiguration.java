@@ -4,9 +4,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.message.MessageSender;
+import com.tbot.ruler.messages.MessageSender;
 import com.tbot.ruler.things.*;
-import com.tbot.ruler.message.MessageReceiver;
+import com.tbot.ruler.messages.MessageReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

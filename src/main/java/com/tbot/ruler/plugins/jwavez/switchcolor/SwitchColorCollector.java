@@ -5,8 +5,8 @@ import com.rposcro.jwavez.core.commands.controlled.builders.SwitchColorCommandBu
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.payloads.RGBWUpdatePayload;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.payloads.RGBWUpdatePayload;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Collector;

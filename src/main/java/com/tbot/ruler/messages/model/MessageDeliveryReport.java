@@ -1,4 +1,4 @@
-package com.tbot.ruler.message;
+package com.tbot.ruler.messages.model;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,14 +8,14 @@ import lombok.Singular;
 import java.util.Set;
 
 @Getter
-public class DeliveryReport {
+public class MessageDeliveryReport {
 
     private Message originalMessage;
     private Set<String> failedReceivers;
     private Set<String> successfulReceivers;
 
     @Builder(builderClassName = "DeliveryReportBuilder")
-    public DeliveryReport(
+    public MessageDeliveryReport(
         @NonNull @Singular Set<String> failedReceivers,
         @NonNull @Singular Set<String> successfulReceivers,
         @NonNull Message originalMessage) {

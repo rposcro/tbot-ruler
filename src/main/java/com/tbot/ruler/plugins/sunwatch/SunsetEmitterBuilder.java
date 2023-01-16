@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.sunwatch;
 
-import com.tbot.ruler.message.Message;
+import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.things.BasicEmitter;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.builder.ThingBuilderContext;

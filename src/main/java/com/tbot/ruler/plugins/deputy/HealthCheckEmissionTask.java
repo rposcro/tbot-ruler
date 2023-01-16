@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePublisher;
-import com.tbot.ruler.message.payloads.ReportPayload;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.MessagePublisher;
+import com.tbot.ruler.messages.payloads.ReportPayload;
 import com.tbot.ruler.model.ReportEntry;
 import com.tbot.ruler.model.ReportEntryLevel;
 import com.tbot.ruler.rest.RestGetCommand;

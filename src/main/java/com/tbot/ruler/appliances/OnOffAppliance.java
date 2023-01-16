@@ -2,11 +2,11 @@ package com.tbot.ruler.appliances;
 
 import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePayload;
-import com.tbot.ruler.message.payloads.BooleanTogglePayload;
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.model.MessagePayload;
+import com.tbot.ruler.messages.payloads.BooleanTogglePayload;
+import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.service.PersistenceService;
 import lombok.Getter;
 
@@ -42,7 +42,7 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
     }
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             setState(deliveryReport.getOriginalMessage().getPayload());
