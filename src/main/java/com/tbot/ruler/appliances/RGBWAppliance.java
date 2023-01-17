@@ -5,23 +5,18 @@ import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessagePayload;
 import com.tbot.ruler.messages.payloads.RGBWUpdatePayload;
-import com.tbot.ruler.service.PersistenceService;
+import com.tbot.ruler.service.ApplianceStatePersistenceService;
 
 import java.util.Optional;
 
 public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
 
-    private final static String CODING_SEPARATOR = "-";
-    private final static String PERSIST_KEY = "state";
+    private Optional<RGBWColor> colorState;
 
-    public RGBWAppliance(String id, PersistenceService persistenceService) {
+    public RGBWAppliance(String id, ApplianceStatePersistenceService persistenceService) {
         super(id, persistenceService);
-        persistenceService.retrieve(this.getId(), PERSIST_KEY).ifPresent(
-            encState -> this.colorState = Optional.of(fromString(encState))
-        );
+        colorState = persistenceService.retrieve(this.getId());
     }
-
-    private Optional<RGBWColor> colorState = Optional.empty();
 
     @Override
     public void acceptMessage(Message message) {
@@ -42,7 +37,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             setState(deliveryReport.getOriginalMessage().getPayload().ensureMessageType());
-            getPersistenceService().persist(this.getId(), PERSIST_KEY, toString(colorState.get()));
+            getPersistenceService().persist(this.getId(), colorState.get());
         }
     }
 
@@ -55,19 +50,5 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
         RGBWColor newState = RGBWColor.of(rgbw.getRed(), rgbw.getGreen(), rgbw.getBlue(), rgbw.getWhite());
         this.colorState = Optional.of(newState);
         return rgbw;
-    }
-
-    private String toString(RGBWColor state) {
-        return String.join(CODING_SEPARATOR, "" + state.getRed(), "" + state.getGreen(), "" + state.getBlue(), "" + state.getWhite());
-    }
-
-    private RGBWColor fromString(String encState) {
-        String[] components = encState.split(CODING_SEPARATOR);
-        return RGBWColor.of(
-            Integer.parseInt(components[0]),
-            Integer.parseInt(components[1]),
-            Integer.parseInt(components[2]),
-            Integer.parseInt(components[3])
-        );
     }
 }

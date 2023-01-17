@@ -1,7 +1,7 @@
 package com.tbot.ruler.configuration;
 
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.service.PersistenceService;
+import com.tbot.ruler.service.ApplianceStatePersistenceService;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import com.tbot.ruler.util.PackageScanner;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,8 @@ public class AppliancesConfiguration {
     @Autowired
     private List<ApplianceDTO> applianceDTOList;
 
-    @Autowired PersistenceService persistenceService;
+    @Autowired
+    ApplianceStatePersistenceService persistenceService;
 
     @Bean
     public Map<String, Class<? extends Appliance>> applianceClassesMap() {
@@ -54,7 +55,7 @@ public class AppliancesConfiguration {
             if (clazz == null) {
                 throw new NullPointerException("Appliance class " + dto.getType() + " could not be found!");
             }
-            Constructor<? extends Appliance> constructor = clazz.getConstructor(String.class, PersistenceService.class);
+            Constructor<? extends Appliance> constructor = clazz.getConstructor(String.class, ApplianceStatePersistenceService.class);
             if (constructor == null) {
                 throw new NullPointerException("Appliance constructor for class " + dto.getType() + " could not be found!");
             }

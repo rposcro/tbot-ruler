@@ -7,7 +7,7 @@ import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessagePayload;
 import com.tbot.ruler.messages.payloads.BooleanTogglePayload;
 import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
-import com.tbot.ruler.service.PersistenceService;
+import com.tbot.ruler.service.ApplianceStatePersistenceService;
 import lombok.Getter;
 
 import java.util.Optional;
@@ -16,17 +16,13 @@ import static com.tbot.ruler.model.OnOffState.STATE_OFF;
 
 public class OnOffAppliance extends AbstractAppliance<OnOffState> {
 
-    private final static String PERSIST_KEY = "state";
-
-    public OnOffAppliance(String id, PersistenceService persistenceService) {
-        super(id, persistenceService);
-        persistenceService.retrieve(this.getId(), PERSIST_KEY).ifPresent(
-            encState -> this.state = Optional.of(OnOffState.of(Boolean.parseBoolean(encState)))
-        );
-    }
-
     @Getter
-    private Optional<OnOffState> state = Optional.empty();
+    private Optional<OnOffState> state;
+
+    public OnOffAppliance(String id, ApplianceStatePersistenceService persistenceService) {
+        super(id, persistenceService);
+        state = persistenceService.retrieve(this.getId());
+    }
 
     @Override
     public void acceptMessage(Message message) {
@@ -46,7 +42,7 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             setState(deliveryReport.getOriginalMessage().getPayload());
-            getPersistenceService().persist(this.getId(), PERSIST_KEY, Boolean.toString(state.get().isOn()));
+            getPersistenceService().persist(this.getId(), state);
         }
     }
 

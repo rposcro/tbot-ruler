@@ -1,6 +1,7 @@
 package com.tbot.ruler.configuration;
 
-import com.tbot.ruler.service.PersistenceService;
+import com.tbot.ruler.persistance.ApplianceStateRepository;
+import com.tbot.ruler.persistance.JsonFileApplianceStateRepository;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.TaskBasedItem;
@@ -27,13 +28,17 @@ import java.util.stream.Collectors;
 @Configuration
 public class TasksConfiguration {
 
-    @Autowired private List<Emitter> emitters;
+    @Autowired
+    private List<Emitter> emitters;
 
-    @Autowired private List<Actuator> actuators;
+    @Autowired
+    private List<Actuator> actuators;
 
-    @Autowired private List<Thing> things;
+    @Autowired
+    private List<Thing> things;
 
-    @Autowired PersistenceService persistenceService;
+    @Autowired
+    private ApplianceStateRepository applianceStateRepository;
 
     @Bean(destroyMethod = "shutdown")
     public ThreadPoolTaskScheduler periodicEmittersScheduler() {
@@ -58,11 +63,13 @@ public class TasksConfiguration {
 
     @EventListener
     public void launchPersistenceFlushThread(ApplicationReadyEvent event) {
-        periodicEmittersScheduler().schedule(
-            () -> persistenceService.flush(),
-            context -> new Date(Optional.ofNullable(context.lastCompletionTime()).orElse(new Date()).getTime() + 60_000)
-        );
-        log.info("Scheduled periodic persistence flush task");
+        if (applianceStateRepository instanceof JsonFileApplianceStateRepository) {
+            periodicEmittersScheduler().schedule(
+                    () -> ((JsonFileApplianceStateRepository) applianceStateRepository).flush(),
+                    context -> new Date(Optional.ofNullable(context.lastCompletionTime()).orElse(new Date()).getTime() + 60_000)
+            );
+            log.info("Scheduled periodic persistence flush task");
+        }
     }
 
     @EventListener

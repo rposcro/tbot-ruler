@@ -4,7 +4,7 @@ import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessagePayload;
 import com.tbot.ruler.messages.payloads.ReportPayload;
 import com.tbot.ruler.model.ReportEntry;
-import com.tbot.ruler.service.PersistenceService;
+import com.tbot.ruler.service.ApplianceStatePersistenceService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,7 +18,7 @@ public class ReportAppliance extends AbstractAppliance<List<ReportEntry>> {
     private final Semaphore lock = new Semaphore(1);
     private ConcurrentLinkedQueue<ReportEntry> reportEntries;
 
-    public ReportAppliance(String id, PersistenceService persistenceService) {
+    public ReportAppliance(String id, ApplianceStatePersistenceService persistenceService) {
         super(id, persistenceService);
         this.reportEntries = new ConcurrentLinkedQueue<>();
     }

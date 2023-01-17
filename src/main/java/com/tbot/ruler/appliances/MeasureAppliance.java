@@ -1,0 +1,48 @@
+package com.tbot.ruler.appliances;
+
+import com.tbot.ruler.exceptions.MessageUnsupportedException;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.MessagePayload;
+import com.tbot.ruler.model.Measure;
+import com.tbot.ruler.service.ApplianceStatePersistenceService;
+
+import java.util.Optional;
+
+public class MeasureAppliance extends AbstractAppliance<Measure> {
+
+    private Optional<Measure> measureState;
+
+    public MeasureAppliance(String id, ApplianceStatePersistenceService persistenceService) {
+        super(id, persistenceService);
+        this.measureState = persistenceService.retrieve(this.getId());
+    }
+
+    @Override
+    public void acceptMessage(Message message) {
+        setState(message.getPayload().ensureMessageType());
+    }
+
+    @Override
+    public Optional<Message> acceptDirectPayload(MessagePayload payload) {
+        throw new MessageUnsupportedException("Direct messages unsupported by appliance " + this.getClass());
+    }
+
+    @Override
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
+        super.acceptDeliveryReport(deliveryReport);
+        if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
+            setState(deliveryReport.getOriginalMessage().getPayload().ensureMessageType());
+            getPersistenceService().persist(this.getId(), measureState.get());
+        }
+    }
+
+    @Override
+    public Optional<Measure> getState() {
+        return this.measureState;
+    }
+
+    private void setState(Measure measure) {
+        this.measureState = Optional.of(measure);
+    }
+}

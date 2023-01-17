@@ -1,7 +1,7 @@
 package com.tbot.ruler.appliances;
 
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
-import com.tbot.ruler.service.PersistenceService;
+import com.tbot.ruler.service.ApplianceStatePersistenceService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -13,8 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractAppliance<T> implements Appliance<T> {
 
-    @NonNull private String id;
-    @NonNull private PersistenceService persistenceService;
+    @NonNull
+    private String id;
+
+    @NonNull
+    private ApplianceStatePersistenceService persistenceService;
 
     @Override
     public void acceptDeliveryReport(MessageDeliveryReport report) {
