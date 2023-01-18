@@ -27,10 +27,11 @@ public class JsonFileApplianceStateRepository implements ApplianceStateRepositor
     private HashMap<String, ApplianceState> statesMap;
 
     @Autowired
-    public JsonFileApplianceStateRepository(@Value("${ruler.cache.states.path}") String statesPath) {
+    public JsonFileApplianceStateRepository(
+            @Value("${ruler.cache.states.path}") String statesPath,
+            ObjectMapper objectMapper) {
         this.statesFile = Paths.get(statesPath);
-        this.objectMapper = new ObjectMapper()
-                .registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
+        this.objectMapper = objectMapper;
         this.valueClassMap = new HashMap<>();
     }
 

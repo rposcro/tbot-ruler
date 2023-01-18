@@ -1,5 +1,8 @@
 package com.tbot.ruler.persistance;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.tbot.ruler.model.Measure;
 import com.tbot.ruler.model.MeasureQuantity;
 import com.tbot.ruler.model.OnOffState;
@@ -22,16 +25,18 @@ import static org.junit.Assert.assertTrue;
 public class JsonFileApplianceStateRepositoryTest {
 
     private static Path statesFile;
+    private static ObjectMapper objectMapper;
 
     @BeforeAll
     public static void beforeClass() throws IOException {
         statesFile = Files.createTempFile(".", "test-states.json");
+        objectMapper = new ObjectMapper().registerModule(new ParameterNamesModule(JsonCreator.Mode.PROPERTIES));
     }
 
     @Test
     @Order(1)
-    public void newRepositoryIsUpAndWorking() throws IOException {
-        JsonFileApplianceStateRepository repository = new JsonFileApplianceStateRepository(statesFile.toString());
+    public void newRepositoryIsUpAndWorking() {
+        JsonFileApplianceStateRepository repository = createRepository();
         repository.initialize();
 
         repository.save(ApplianceState.builder().key("ble-blah").value(mockMeasure(123, 1)).valueClass(Measure.class).build());
@@ -45,7 +50,7 @@ public class JsonFileApplianceStateRepositoryTest {
     @Test
     @Order(2)
     public void existingRepositoryIsOpenedAndWorking() {
-        JsonFileApplianceStateRepository repository = new JsonFileApplianceStateRepository(statesFile.toString());
+        JsonFileApplianceStateRepository repository = createRepository();
         repository.initialize();
 
         assertRepoContent(repository);
@@ -80,6 +85,10 @@ public class JsonFileApplianceStateRepositoryTest {
         assertEquals(100, color.getGreen());
         assertEquals(50, color.getBlue());
         assertEquals(99, color.getWhite());
+    }
+
+    private JsonFileApplianceStateRepository createRepository() {
+        return new JsonFileApplianceStateRepository(statesFile.toString(), objectMapper);
     }
 
     private RGBWColor mockRGBW(int red, int green, int blue, int white) {

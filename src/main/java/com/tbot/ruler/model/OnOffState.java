@@ -1,8 +1,10 @@
 package com.tbot.ruler.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor()
@@ -14,7 +16,7 @@ public class OnOffState {
     private boolean on;
 
     @JsonCreator
-    public static OnOffState of(boolean on) {
+    public static OnOffState of(@JsonProperty("on") boolean on) {
         return on ? STATE_ON : STATE_OFF;
     }
 }

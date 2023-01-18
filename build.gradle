@@ -27,7 +27,7 @@ repositories {
 
 ext {
     jwavezVersion = '1.2.2-SNAPSHOT'
-    jacksonVersion = '2.11.4'
+    jacksonVersion = '2.14.1'
     javaxValidationVersion = '2.0.2'
     lombokVersion = '1.18.22'
     lombokPluginVersion = '1.16.16.0'
@@ -53,9 +53,12 @@ dependencies {
     implementation "org.reflections:reflections:${reflectionsVersion}"
     implementation "jakarta.validation:jakarta.validation-api:${javaxValidationVersion}"
 
+    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
     implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
     implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}"
     implementation "com.fasterxml.jackson.module:jackson-module-parameter-names:${jacksonVersion}"
+
     implementation "org.apache.httpcomponents:httpclient:4.5.5"
     implementation "com.luckycatlabs:SunriseSunsetCalculator:1.2"
 

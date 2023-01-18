@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Service
-public class SynchronousMessageSender implements MessageDeliveryReportListener {
+    public class SynchronousMessageSender implements MessageDeliveryReportListener {
 
     private final static long DEFAULT_TIMEOUT = 60_000;
 
@@ -38,18 +38,21 @@ public class SynchronousMessageSender implements MessageDeliveryReportListener {
     public void deliveryReportCompleted(MessageDeliveryReport deliveryReport) {
         long originalMessageId = deliveryReport.getOriginalMessage().getId();
         Object mapped = futuresMap.remove(originalMessageId);
-        Stream<CompletableFuture<MessageDeliveryReport>> futureStream;
 
-        if (mapped instanceof CompletableFuture) {
-            futureStream = Stream.of((CompletableFuture<MessageDeliveryReport>) mapped);
-        } else if (mapped instanceof Set) {
-            futureStream = ((Set<CompletableFuture<MessageDeliveryReport>>) mapped).stream();
-        } else {
-            log.warn("Wrong type of futures map entry: {} for original message id", mapped.getClass(), originalMessageId);
-            futureStream = Stream.empty();
+        if (mapped != null) {
+            Stream<CompletableFuture<MessageDeliveryReport>> futureStream;
+
+            if (mapped instanceof CompletableFuture) {
+                futureStream = Stream.of((CompletableFuture<MessageDeliveryReport>) mapped);
+            } else if (mapped instanceof Set) {
+                futureStream = ((Set<CompletableFuture<MessageDeliveryReport>>) mapped).stream();
+            } else {
+                log.warn("Wrong type of futures map entry: {} for original message id", mapped.getClass(), originalMessageId);
+                futureStream = Stream.empty();
+            }
+
+            futureStream.forEach(future -> deliverReport(future, deliveryReport));
         }
-
-        futureStream.forEach(future -> deliverReport(future, deliveryReport));
     }
 
     public MessageDeliveryReport sendAndWaitForReport(Message message) {
