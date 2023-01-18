@@ -20,7 +20,7 @@ public class MeasureAppliance extends AbstractAppliance<Measure> {
 
     @Override
     public void acceptMessage(Message message) {
-        setState(message.getPayloadObject());
+        setState(message.getPayloadAs(Measure.class));
     }
 
     @Override
@@ -32,7 +32,7 @@ public class MeasureAppliance extends AbstractAppliance<Measure> {
     public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
-            setState(deliveryReport.getOriginalMessage().getPayloadObject());
+            setState(deliveryReport.getOriginalMessage().getPayloadAs(Measure.class));
             getPersistenceService().persist(this.getId(), measureState.get());
         }
     }

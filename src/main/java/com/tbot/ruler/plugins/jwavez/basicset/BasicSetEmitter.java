@@ -3,10 +3,8 @@ package com.tbot.ruler.plugins.jwavez.basicset;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.model.MessagePayload;
 import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.messages.payloads.BooleanTogglePayload;
-import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.model.BinaryStateClaim;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Emitter;
 import lombok.Builder;
@@ -56,12 +54,13 @@ public class BasicSetEmitter extends AbstractItem implements Emitter {
     public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
     }
 
-    private MessagePayload messagePayload(byte commandValue) {
+    private Object messagePayload(byte commandValue) {
         switch(valueMode) {
             case TOGGLE_VALUE:
-                return BooleanTogglePayload.TOGGLE_PAYLOAD;
+                return BinaryStateClaim.TOGGLE;
             case ON_OFF_VALUES:
-                return BooleanUpdatePayload.of(commandValue == (byte) configuration.getTurnOnValue());
+                return (commandValue == (byte) configuration.getTurnOnValue()) ?
+                        BinaryStateClaim.SET_ON : BinaryStateClaim.SET_OFF;
             default:
                 throw new MessageProcessingException("Unexpected implementation inconsistency!");
         }

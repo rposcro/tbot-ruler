@@ -4,7 +4,6 @@ import com.tbot.ruler.model.RGBWColor;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessagePayload;
-import com.tbot.ruler.messages.payloads.RGBWUpdatePayload;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
 
 import java.util.Optional;
@@ -20,15 +19,14 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
 
     @Override
     public void acceptMessage(Message message) {
-        setState(message.getPayloadObject());
+        setState(message.getPayloadAs(RGBWColor.class));
     }
 
     @Override
-    public Optional<Message> acceptDirectPayload(MessagePayload payload) {
-        RGBWUpdatePayload forwardPayload = asPayloadType(payload);
+    public Optional<Message> acceptDirectPayload(MessagePayload messagePayload) {
         return Optional.of(Message.builder()
             .senderId(getId())
-            .payload(forwardPayload)
+            .payload(messagePayload.getPayload())
             .build());
     }
 
@@ -36,7 +34,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
     public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
-            setState(deliveryReport.getOriginalMessage().getPayloadObject());
+            setState(deliveryReport.getOriginalMessage().getPayloadAs(RGBWColor.class));
             getPersistenceService().persist(this.getId(), colorState.get());
         }
     }
@@ -46,9 +44,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
         return this.colorState;
     }
 
-    private MessagePayload setState(RGBWUpdatePayload rgbw) {
-        RGBWColor newState = RGBWColor.of(rgbw.getRed(), rgbw.getGreen(), rgbw.getBlue(), rgbw.getWhite());
-        this.colorState = Optional.of(newState);
-        return rgbw;
+    private void setState(RGBWColor rgbw) {
+        this.colorState = Optional.of(rgbw);
     }
 }

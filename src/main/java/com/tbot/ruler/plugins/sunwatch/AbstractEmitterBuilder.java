@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.sunwatch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
@@ -27,7 +27,7 @@ public abstract class AbstractEmitterBuilder {
     protected Message emitterMessage(EmitterDTO emitterDTO, String signalValue) {
         return Message.builder()
             .senderId(emitterDTO.getId())
-            .payload(BooleanUpdatePayload.of(VALUE_ON.equalsIgnoreCase(signalValue)))
+            .payload(OnOffState.of(VALUE_ON.equalsIgnoreCase(signalValue)))
             .build();
     }
 

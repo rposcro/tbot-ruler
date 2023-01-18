@@ -26,7 +26,8 @@ public class MessageQueueComponent {
 
     protected void enqueueMessage(Message message) {
         this.messageQueue.add(message);
-        log.debug("Enqueued message from {} with payload {}", message.getSenderId(), message.getPayloadObject().getClass().getSimpleName());
+        log.debug("Enqueued message from {} with payload {}",
+                message.getSenderId(), message.getPayload().getClass().getSimpleName());
     }
 
     protected void enqueueDeliveryReport(MessageDeliveryReport deliveryReport) {

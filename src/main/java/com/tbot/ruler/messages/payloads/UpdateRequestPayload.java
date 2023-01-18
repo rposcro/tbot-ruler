@@ -1,6 +1,5 @@
 package com.tbot.ruler.messages.payloads;
 
-import com.tbot.ruler.messages.model.MessagePayload;
 import lombok.NoArgsConstructor;
 
 /**
@@ -8,7 +7,7 @@ import lombok.NoArgsConstructor;
  * For example binary output actuator to emit BooleanUpdatePayload message.
  */
 @NoArgsConstructor
-public class UpdateRequestPayload implements MessagePayload {
+public class UpdateRequestPayload {
 
     public final static UpdateRequestPayload UPDATE_REQUEST_PAYLOAD = new UpdateRequestPayload();
 }

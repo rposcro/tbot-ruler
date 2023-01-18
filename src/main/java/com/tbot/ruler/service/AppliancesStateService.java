@@ -7,8 +7,9 @@ import com.tbot.ruler.exceptions.ServiceUnavailableException;
 import com.tbot.ruler.messages.SynchronousMessageSender;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
-import com.tbot.ruler.messages.payloads.RGBWUpdatePayload;
+import com.tbot.ruler.messages.model.MessagePayload;
+import com.tbot.ruler.model.OnOffState;
+import com.tbot.ruler.model.RGBWColor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,19 +26,20 @@ public class AppliancesStateService {
     @Autowired
     private AppliancesService appliancesService;
 
-    public MessageDeliveryReport updateApplianceState(String applianceId, BooleanUpdatePayload stateUpdate) {
+    public MessageDeliveryReport updateApplianceState(String applianceId, OnOffState onOffState) {
         Appliance appliance = appliancesService.applianceById(applianceId).orElseThrow(
             () -> new ServiceRequestException("No appliance id " + applianceId + " found")
         );
-        Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(stateUpdate);
+        Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(new MessagePayload(onOffState));
         return publishMessage(optionalForwardMessage);
     }
 
-    public MessageDeliveryReport updateApplianceState(String applianceId, RGBWUpdatePayload stateUpdate) {
+    public MessageDeliveryReport updateApplianceState(String applianceId, RGBWColor stateUpdate) {
         Appliance appliance = appliancesService.applianceById(applianceId).orElseThrow(
             () -> new ServiceRequestException("No appliance id " + applianceId + " found")
         );
-        Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(stateUpdate);
+        Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(
+                new MessagePayload(stateUpdate));
         return publishMessage(optionalForwardMessage);
     }
 

@@ -6,7 +6,7 @@ import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.payloads.RGBWUpdatePayload;
+import com.tbot.ruler.model.RGBWColor;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Collector;
@@ -44,7 +44,7 @@ public class SwitchColorCollector extends AbstractItem implements Collector {
     @Override
     public void acceptMessage(Message message) {
         try {
-            RGBWUpdatePayload payload = message.getPayloadObject();
+            RGBWColor payload = message.getPayloadAs(RGBWColor.class);
             log.debug(String.format("Color switch requested: r%s g%s b%s w%s", payload.getRed(), payload.getGreen(), payload.getBlue(), payload.getWhite()));
             ZWaveControlledCommand command = buildCommand(payload);
             commandSender.accept(new NodeId(configuration.getNodeId()), command);
@@ -53,7 +53,7 @@ public class SwitchColorCollector extends AbstractItem implements Collector {
         }
     }
 
-    private ZWaveControlledCommand buildCommand(RGBWUpdatePayload payload) {
+    private ZWaveControlledCommand buildCommand(RGBWColor payload) {
         switch(colorMode) {
             case RGB:
                 return commandBuilder.buildSetRGBCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) configuration.getSwitchDuration());

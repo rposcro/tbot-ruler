@@ -1,6 +1,5 @@
 package com.tbot.ruler.appliances;
 
-import com.tbot.ruler.exceptions.MessageUnsupportedException;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
 import lombok.AccessLevel;
@@ -24,13 +23,5 @@ public abstract class AbstractAppliance<T> implements Appliance<T> {
     public void acceptDeliveryReport(MessageDeliveryReport report) {
         log.debug("Delivery report sender: {}, empty: {}, success: {}, failure: {}, part failure: {}",
             id, report.noReceiversFound(), report.deliverySuccessful(), report.deliveryFailed(), report.deliveryPartiallyFailed());
-    }
-
-    protected <T> T asPayloadType(Object payload) {
-        try {
-            return (T) this;
-        } catch(ClassCastException e) {
-            throw new MessageUnsupportedException("Unsupported message type: " + this.getClass());
-        }
     }
 }

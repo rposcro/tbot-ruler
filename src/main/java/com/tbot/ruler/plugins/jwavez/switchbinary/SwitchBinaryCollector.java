@@ -7,7 +7,7 @@ import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Collector;
 import lombok.Builder;
@@ -41,9 +41,9 @@ public class SwitchBinaryCollector extends AbstractItem implements Collector {
     @Override
     public void acceptMessage(Message message) {
         try {
-            BooleanUpdatePayload payload = message.getPayloadObject();
+            OnOffState payload = message.getPayloadAs(OnOffState.class);
             ZWaveControlledCommand command = new SwitchBinaryCommandBuilder()
-                    .buildSetCommandV1((byte) (payload.isState() ? 255 : 0));
+                    .buildSetCommandV1((byte) (payload.isOn() ? 255 : 0));
 
             if (configuration.isMultiChannelOn()) {
                 command = new MultiChannelCommandBuilder().encapsulateCommand(SOURCE_ENDPOINT_ID, (byte) configuration.getDestinationEndPointId(), command);

@@ -2,17 +2,18 @@ package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.messages.payloads.BooleanTogglePayload;
-import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.messages.payloads.UpdateRequestPayload;
+import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.things.AbstractActuator;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.thread.RegularEmissionTrigger;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
+@Slf4j
 public class BinaryActuator extends AbstractActuator {
 
     private BinaryActuatorChannel binaryChannel;
@@ -33,29 +34,19 @@ public class BinaryActuator extends AbstractActuator {
 
     @Override
     public Optional<Runnable> getTriggerableTask() {
-        return Optional.of(() -> {
-            binaryChannel.updateState(expectedState);
-        });
+        return Optional.of(() -> binaryChannel.updateState(expectedState));
     }
 
     @Override
     public void acceptMessage(Message message) {
-        Object payload = message.getPayloadObject();
-        if (payload instanceof BooleanUpdatePayload) {
-            handleBooleanUpdate((BooleanUpdatePayload) payload);
-        } else if (payload instanceof BooleanTogglePayload) {
-            handleToggleUpdate();
+        Object payload = message.getPayload();
+        if (payload instanceof OnOffState) {
+            handleStateUpdate(((OnOffState) payload).isOn());
         } else if (payload instanceof UpdateRequestPayload) {
             handleUpdateRequest();
+        } else {
+            log.warn("BinaryActuator doesn't handle {} payloads", payload.getClass());
         }
-    }
-
-    private void handleToggleUpdate() {
-        handleStateUpdate(!expectedState);
-    }
-
-    private void handleBooleanUpdate(BooleanUpdatePayload payload) {
-        handleStateUpdate(payload.isState());
     }
 
     private void handleStateUpdate(boolean state) {
@@ -67,9 +58,7 @@ public class BinaryActuator extends AbstractActuator {
         expectedState = binaryChannel.requestState();
         Message message = Message.builder()
             .senderId(getId())
-            .payload(BooleanUpdatePayload.builder()
-                .state(expectedState)
-                .build())
+            .payload(OnOffState.of(expectedState))
             .build();
         messagePublisher.publishMessage(message);
     }

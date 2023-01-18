@@ -1,7 +1,6 @@
 package com.tbot.ruler.plugins.cron;
 
 import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.model.MessagePayload;
 import com.tbot.ruler.messages.MessagePublisher;
 import com.tbot.ruler.messages.payloads.HeartBeatPayload;
 import com.tbot.ruler.things.BasicEmitter;
@@ -34,7 +33,7 @@ public class CronSchedulerEmitterBuilder {
         return new CronEmissionTrigger(pattern, timeZone);
     }
 
-    private Message messageToSend(String emitterId, MessagePayload messagePayload) {
+    private Message messageToSend(String emitterId, Object messagePayload) {
         return Message.builder()
             .senderId(emitterId)
             .payload(messagePayload)

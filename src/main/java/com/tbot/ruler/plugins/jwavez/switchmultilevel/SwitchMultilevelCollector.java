@@ -6,7 +6,7 @@ import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.things.Collector;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,9 +29,9 @@ public class SwitchMultilevelCollector implements Collector {
     @Override
     public void acceptMessage(Message message) {
         try {
-            BooleanUpdatePayload payload = message.getPayloadObject();
+            OnOffState payload = message.getPayloadAs(OnOffState.class);
             ZWaveControlledCommand command = new SwitchMultiLevelCommandBuilder()
-                .buildSetCommand((byte) (payload.isState() ? 255 : 0), switchDuration);
+                .buildSetCommand((byte) (payload.isOn() ? 255 : 0), switchDuration);
             commandSender.accept(nodeId, command);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);

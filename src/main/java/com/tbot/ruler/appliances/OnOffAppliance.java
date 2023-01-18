@@ -1,12 +1,11 @@
 package com.tbot.ruler.appliances;
 
+import com.tbot.ruler.model.BinaryStateClaim;
 import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessagePayload;
-import com.tbot.ruler.messages.payloads.BooleanTogglePayload;
-import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
 import lombok.Getter;
 
@@ -26,14 +25,14 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
 
     @Override
     public void acceptMessage(Message message) {
-        setState(message.getPayloadObject());
+        setState(message.getPayload());
     }
 
     @Override
-    public Optional<Message> acceptDirectPayload(MessagePayload payload) {
+    public Optional<Message> acceptDirectPayload(MessagePayload messagePayload) {
         return Optional.of(Message.builder()
             .senderId(getId())
-            .payload(BooleanUpdatePayload.of(determineValue(payload)))
+            .payload(OnOffState.of(determineValue(messagePayload.getPayload())))
             .build());
     }
 
@@ -41,22 +40,27 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
     public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
-            setState(deliveryReport.getOriginalMessage().getPayloadObject());
+            setState(deliveryReport.getOriginalMessage().getPayload());
             getPersistenceService().persist(this.getId(), state);
         }
     }
 
-    private void setState(MessagePayload messagePayload) {
-        this.state = Optional.of(OnOffState.of(determineValue(messagePayload)));
+    private void setState(Object payload) {
+        this.state = Optional.of(OnOffState.of(determineValue(payload)));
     }
 
-    private boolean determineValue(MessagePayload messagePayload) {
-        if (messagePayload instanceof BooleanTogglePayload) {
-            return !this.state.orElse(STATE_OFF).isOn();
-        } else if (messagePayload instanceof BooleanUpdatePayload) {
-            return ((BooleanUpdatePayload) messagePayload).isState();
+    private boolean determineValue(Object payload) {
+        if (payload instanceof BinaryStateClaim) {
+            BinaryStateClaim claim = (BinaryStateClaim) payload;
+            if (claim.isToggle()) {
+                return !this.state.orElse(STATE_OFF).isOn();
+            } else {
+                return claim.isSetOn();
+            }
+        } else if (payload instanceof OnOffState) {
+            return ((OnOffState) payload).isOn();
         } else {
-            throw new MessageUnsupportedException("Unsupported message payload of class " + messagePayload.getClass());
+            throw new MessageUnsupportedException("Unsupported message payload of class " + payload.getClass());
         }
     }
 }

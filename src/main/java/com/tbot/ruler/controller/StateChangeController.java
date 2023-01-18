@@ -1,8 +1,8 @@
 package com.tbot.ruler.controller;
 
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
-import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
-import com.tbot.ruler.messages.payloads.RGBWUpdatePayload;
+import com.tbot.ruler.model.OnOffState;
+import com.tbot.ruler.model.RGBWColor;
 import com.tbot.ruler.service.AppliancesStateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,16 +24,16 @@ public class StateChangeController extends AbstractController {
     @PatchMapping(value = "/{applianceId}/state/on-off")
     public ResponseEntity<MessageDeliveryReport> changeBinaryState(
         @PathVariable("applianceId") String applianceId,
-        @RequestBody BooleanUpdatePayload stateUpdate) {
-        log.debug("Requested on-off {} state change for {}", stateUpdate.isState(), applianceId);
-        MessageDeliveryReport report = appliancesStateService.updateApplianceState(applianceId, stateUpdate);
+        @RequestBody OnOffState onOffState) {
+        log.debug("Requested on-off {} state change for {}", onOffState.isOn(), applianceId);
+        MessageDeliveryReport report = appliancesStateService.updateApplianceState(applianceId, onOffState);
         return response(ResponseEntity.ok()).body(report);
     }
 
     @PatchMapping(value = "/{applianceId}/state/color")
     public ResponseEntity<MessageDeliveryReport> changeColorState(
         @PathVariable("applianceId") String applianceId,
-        @RequestBody RGBWUpdatePayload stateUpdate) {
+        @RequestBody RGBWColor stateUpdate) {
         log.debug("Requested color change for {}", applianceId);
         MessageDeliveryReport report = appliancesStateService.updateApplianceState(applianceId, stateUpdate);
         return response(ResponseEntity.ok()).body(report);
