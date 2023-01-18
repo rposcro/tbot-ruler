@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping(value = ControllerConstants.ENDPOINT_APPLIANCES)
+@RequestMapping(value = "/appliances")
 public class StateChangeController extends AbstractController {
 
     @Autowired

@@ -1,4 +1,4 @@
-package com.tbot.ruler.controller.entity;
+package com.tbot.ruler.controller.payload;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -11,7 +11,7 @@ import java.util.Map;
 @Getter
 @Builder
 @JsonRootName(value = "appliance")
-public class ApplianceEntity {
+public class ApplianceResponse {
 
 	@JsonProperty(value = "_links")
 	@JsonInclude(JsonInclude.Include.NON_EMPTY)

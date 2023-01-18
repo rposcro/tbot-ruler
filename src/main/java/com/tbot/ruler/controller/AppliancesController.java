@@ -1,7 +1,7 @@
 package com.tbot.ruler.controller;
 
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.controller.entity.ApplianceEntity;
+import com.tbot.ruler.controller.payload.ApplianceResponse;
 import com.tbot.ruler.exceptions.ServiceException;
 import com.tbot.ruler.service.AppliancesService;
 import com.tbot.ruler.service.admin.AppliancesAdminService;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
-@RequestMapping(value = ControllerConstants.ENDPOINT_APPLIANCES)
+@RequestMapping(value = "/appliances")
 public class AppliancesController extends AbstractController {
 
     @Autowired
@@ -29,8 +29,8 @@ public class AppliancesController extends AbstractController {
     private AppliancesAdminService adminService;
 
     @GetMapping(value = "")
-    public ResponseEntity<List<ApplianceEntity>> getAll() {
-        List<ApplianceEntity> entities = appliancesService.allAppliances().stream()
+    public ResponseEntity<List<ApplianceResponse>> getAll() {
+        List<ApplianceResponse> entities = appliancesService.allAppliances().stream()
             .map(this::fromAppliance)
             .collect(Collectors.toList());
         return response(ResponseEntity.ok())
@@ -38,17 +38,17 @@ public class AppliancesController extends AbstractController {
     }
 
     @GetMapping(value = "/{applianceId}")
-    public ResponseEntity<ApplianceEntity> getAppliance(@PathVariable("applianceId") String applianceId) {
+    public ResponseEntity<ApplianceResponse> getAppliance(@PathVariable("applianceId") String applianceId) {
         Appliance appliance = appliancesService.applianceById(applianceId)
             .orElseThrow(() -> new ServiceException("Unexpected missing delivery report without exception!"));
-        ApplianceEntity entity = fromAppliance(appliance);
+        ApplianceResponse entity = fromAppliance(appliance);
         return response(ResponseEntity.ok())
             .body(entity);
     }
 
-    private ApplianceEntity fromAppliance(Appliance appliance) {
+    private ApplianceResponse fromAppliance(Appliance appliance) {
         ApplianceDTO dto = adminService.applianceDTOById(appliance.getId());
-        return ApplianceEntity.builder()
+        return ApplianceResponse.builder()
             .id(appliance.getId())
             .name(dto.getName())
             .description(dto.getDescription())
