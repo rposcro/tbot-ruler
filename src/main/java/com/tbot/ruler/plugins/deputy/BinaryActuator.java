@@ -1,7 +1,6 @@
 package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.model.MessagePayload;
 import com.tbot.ruler.messages.MessagePublisher;
 import com.tbot.ruler.messages.payloads.BooleanTogglePayload;
 import com.tbot.ruler.messages.payloads.BooleanUpdatePayload;
@@ -41,9 +40,9 @@ public class BinaryActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
-        MessagePayload payload = message.getPayload();
+        Object payload = message.getPayloadObject();
         if (payload instanceof BooleanUpdatePayload) {
-            handleBooleanUpdate(payload.ensureMessageType());
+            handleBooleanUpdate((BooleanUpdatePayload) payload);
         } else if (payload instanceof BooleanTogglePayload) {
             handleToggleUpdate();
         } else if (payload instanceof UpdateRequestPayload) {

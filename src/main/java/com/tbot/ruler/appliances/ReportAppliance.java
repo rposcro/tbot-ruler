@@ -35,7 +35,7 @@ public class ReportAppliance extends AbstractAppliance<List<ReportEntry>> {
 
     @Override
     public void acceptMessage(Message message) {
-        ReportPayload payload = message.getPayload().ensureMessageType();
+        ReportPayload payload = message.getPayloadObject();
         pushEntry(payload.getReportEntry());
     }
 

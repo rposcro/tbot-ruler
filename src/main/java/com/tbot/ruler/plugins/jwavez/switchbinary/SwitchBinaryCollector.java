@@ -41,7 +41,7 @@ public class SwitchBinaryCollector extends AbstractItem implements Collector {
     @Override
     public void acceptMessage(Message message) {
         try {
-            BooleanUpdatePayload payload = message.getPayload().ensureMessageType();
+            BooleanUpdatePayload payload = message.getPayloadObject();
             ZWaveControlledCommand command = new SwitchBinaryCommandBuilder()
                     .buildSetCommandV1((byte) (payload.isState() ? 255 : 0));
 

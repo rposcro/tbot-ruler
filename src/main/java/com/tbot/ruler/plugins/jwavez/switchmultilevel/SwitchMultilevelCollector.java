@@ -29,7 +29,7 @@ public class SwitchMultilevelCollector implements Collector {
     @Override
     public void acceptMessage(Message message) {
         try {
-            BooleanUpdatePayload payload = message.getPayload().ensureMessageType();
+            BooleanUpdatePayload payload = message.getPayloadObject();
             ZWaveControlledCommand command = new SwitchMultiLevelCommandBuilder()
                 .buildSetCommand((byte) (payload.isState() ? 255 : 0), switchDuration);
             commandSender.accept(nodeId, command);

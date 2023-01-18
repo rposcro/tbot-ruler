@@ -26,7 +26,7 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
 
     @Override
     public void acceptMessage(Message message) {
-        setState(message.getPayload());
+        setState(message.getPayloadObject());
     }
 
     @Override
@@ -41,7 +41,7 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
     public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
-            setState(deliveryReport.getOriginalMessage().getPayload());
+            setState(deliveryReport.getOriginalMessage().getPayloadObject());
             getPersistenceService().persist(this.getId(), state);
         }
     }

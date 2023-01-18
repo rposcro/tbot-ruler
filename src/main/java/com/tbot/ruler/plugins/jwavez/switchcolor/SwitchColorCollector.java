@@ -44,7 +44,7 @@ public class SwitchColorCollector extends AbstractItem implements Collector {
     @Override
     public void acceptMessage(Message message) {
         try {
-            RGBWUpdatePayload payload = message.getPayload().ensureMessageType();
+            RGBWUpdatePayload payload = message.getPayloadObject();
             log.debug(String.format("Color switch requested: r%s g%s b%s w%s", payload.getRed(), payload.getGreen(), payload.getBlue(), payload.getWhite()));
             ZWaveControlledCommand command = buildCommand(payload);
             commandSender.accept(new NodeId(configuration.getNodeId()), command);
