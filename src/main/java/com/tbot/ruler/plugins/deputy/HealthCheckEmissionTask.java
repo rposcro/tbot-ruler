@@ -2,9 +2,8 @@ package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.messages.payloads.ReportPayload;
-import com.tbot.ruler.model.ReportEntry;
-import com.tbot.ruler.model.ReportEntryLevel;
+import com.tbot.ruler.model.ReportLog;
+import com.tbot.ruler.model.ReportLogLevel;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.rest.RestResponse;
 import lombok.Builder;
@@ -57,27 +56,25 @@ class  HealthCheckEmissionTask implements Runnable {
             isHealthy = Optional.of(false);
             messagePublisher.publishMessage(buildMessage(
                 "Deputy node unhealthy: " + (statusCode == null ? "Unreachable" : statusCode.toString()),
-                ReportEntryLevel.IMPORTANT));
+                ReportLogLevel.IMPORTANT));
         }
     }
 
     private void handleHealthy() {
         if (!isHealthy.isPresent() || !isHealthy.get()) {
             isHealthy = Optional.of(true);
-            messagePublisher.publishMessage(buildMessage("Deputy node is healthy", ReportEntryLevel.REGULAR));
+            messagePublisher.publishMessage(buildMessage("Deputy node is healthy", ReportLogLevel.REGULAR));
         }
     }
 
-    private Message buildMessage(String message, ReportEntryLevel entryLevel) {
+    private Message buildMessage(String message, ReportLogLevel entryLevel) {
         return Message.builder()
             .senderId(emitterId)
-            .payload(ReportPayload.builder()
-                .reportEntry(ReportEntry.builder()
-                    .entryLevel(entryLevel)
+            .payload(ReportLog.builder()
+                    .logLevel(entryLevel)
                     .timestamp(ZonedDateTime.now())
                     .content(message)
                     .build())
-                .build())
             .build();
     }
 }

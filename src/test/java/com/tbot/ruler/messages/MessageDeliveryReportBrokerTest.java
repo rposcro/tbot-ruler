@@ -2,7 +2,7 @@ package com.tbot.ruler.messages;
 
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
-import com.tbot.ruler.messages.payloads.HeartBeatPayload;
+import com.tbot.ruler.model.Notification;
 import com.tbot.ruler.service.things.BindingsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -59,7 +59,7 @@ public class MessageDeliveryReportBrokerTest {
     public void successfullyDeliversEnqueuedReport() {
         final String senderId = "mocked-sender-id";
         final MessageSender sender = mock(MessageSender.class);
-        final Message message = Message.builder().senderId(senderId).payload(new HeartBeatPayload()).build();
+        final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
         final MessageDeliveryReport report = MessageDeliveryReport.builder().originalMessage(message).build();
 
         when(bindingsService.messageSenderById(eq(senderId))).thenReturn(sender);

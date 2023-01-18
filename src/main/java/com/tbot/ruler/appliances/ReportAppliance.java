@@ -1,9 +1,9 @@
 package com.tbot.ruler.appliances;
 
+import com.tbot.ruler.exceptions.MessageUnsupportedException;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessagePayload;
-import com.tbot.ruler.messages.payloads.ReportPayload;
-import com.tbot.ruler.model.ReportEntry;
+import com.tbot.ruler.model.ReportLog;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
 
 import java.util.ArrayList;
@@ -12,40 +12,40 @@ import java.util.Optional;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.Semaphore;
 
-public class ReportAppliance extends AbstractAppliance<List<ReportEntry>> {
+public class ReportAppliance extends AbstractAppliance<List<ReportLog>> {
 
     private final int reportSize = 20;
     private final Semaphore lock = new Semaphore(1);
-    private ConcurrentLinkedQueue<ReportEntry> reportEntries;
+    private ConcurrentLinkedQueue<ReportLog> reportLogs;
 
     public ReportAppliance(String id, ApplianceStatePersistenceService persistenceService) {
         super(id, persistenceService);
-        this.reportEntries = new ConcurrentLinkedQueue<>();
+        this.reportLogs = new ConcurrentLinkedQueue<>();
     }
 
     @Override
-    public Optional<List<ReportEntry>> getState() {
-        return Optional.of(new ArrayList<>(reportEntries));
+    public Optional<List<ReportLog>> getState() {
+        return Optional.of(new ArrayList<>(reportLogs));
     }
 
     @Override
     public Optional<Message> acceptDirectPayload(MessagePayload payload) {
-        return Optional.empty();
+        throw new MessageUnsupportedException("Direct messages unsupported by appliance " + this.getClass());
     }
 
     @Override
     public void acceptMessage(Message message) {
-        ReportPayload payload = message.getPayloadAs(ReportPayload.class);
-        pushEntry(payload.getReportEntry());
+        ReportLog reportLog = message.getPayloadAs(ReportLog.class);
+        pushLog(reportLog);
     }
 
-    public void pushEntry(ReportEntry reportEntry) {
+    public void pushLog(ReportLog reportLog) {
         lock.acquireUninterruptibly();
         try {
-            while (reportEntries.size() >= reportSize) {
-                reportEntries.poll();
+            while (reportLogs.size() >= reportSize) {
+                reportLogs.poll();
             }
-            reportEntries.add(reportEntry);
+            reportLogs.add(reportLog);
         } finally {
             lock.release();
         }

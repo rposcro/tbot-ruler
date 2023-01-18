@@ -3,7 +3,7 @@ package com.tbot.ruler.messages;
 import com.tbot.ruler.exceptions.ServiceTimeoutException;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
-import com.tbot.ruler.messages.payloads.HeartBeatPayload;
+import com.tbot.ruler.model.Notification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -35,7 +35,7 @@ public class SynchronousMessageSenderTest {
 
     @Test
     public void successfullySendsMessageAndReceivesReport() {
-        final Message message = Message.builder().senderId("sender-id").payload(new HeartBeatPayload()).build();
+        final Message message = Message.builder().senderId("sender-id").payload(Notification.HEARTBEAT).build();
         final MessageDeliveryReport deliveryReport = MessageDeliveryReport.builder().originalMessage(message).build();
 
         Mockito.doAnswer(args -> {
@@ -55,7 +55,7 @@ public class SynchronousMessageSenderTest {
 
     @Test
     public void timesOutWhenSynchronousSend() {
-        final Message message = Message.builder().senderId("sender-id").payload(new HeartBeatPayload()).build();
+        final Message message = Message.builder().senderId("sender-id").payload(Notification.HEARTBEAT).build();
 
         Mockito.doNothing().when(messagePublisher).publishMessage(eq(message));
 

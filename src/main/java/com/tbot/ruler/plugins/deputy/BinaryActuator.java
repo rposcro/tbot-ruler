@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.messages.payloads.UpdateRequestPayload;
+import com.tbot.ruler.model.Notification;
 import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.things.AbstractActuator;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
@@ -42,7 +42,7 @@ public class BinaryActuator extends AbstractActuator {
         Object payload = message.getPayload();
         if (payload instanceof OnOffState) {
             handleStateUpdate(((OnOffState) payload).isOn());
-        } else if (payload instanceof UpdateRequestPayload) {
+        } else if (payload instanceof Notification) {
             handleUpdateRequest();
         } else {
             log.warn("BinaryActuator doesn't handle {} payloads", payload.getClass());

@@ -3,7 +3,7 @@ package com.tbot.ruler.messages;
 import com.tbot.ruler.exceptions.MessageException;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
-import com.tbot.ruler.messages.payloads.HeartBeatPayload;
+import com.tbot.ruler.model.Notification;
 import com.tbot.ruler.service.things.BindingsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -63,7 +63,7 @@ public class MessagePublishBrokerTest {
     @Test
     public void successfullyPublishesEnqueuedMessage() throws Exception {
         final String senderId = "mocked-sender-id";
-        final Message message = Message.builder().senderId(senderId).payload(new HeartBeatPayload()).build();
+        final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
         final MessageReceiver receiver = mock(MessageReceiver.class);
 
         when(bindingsService.findBindedMessageConsumerIds(eq(senderId)))
@@ -91,7 +91,7 @@ public class MessagePublishBrokerTest {
     @Test
     public void deliveryReportFailedWhenAllReceiversFail() throws Exception {
         final String senderId = "mocked-sender-id";
-        final Message message = Message.builder().senderId(senderId).payload(new HeartBeatPayload()).build();
+        final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
         final MessageReceiver receiver = Mockito.mock(MessageReceiver.class);
 
         when(bindingsService.findBindedMessageConsumerIds(eq(senderId)))
@@ -115,7 +115,7 @@ public class MessagePublishBrokerTest {
     @Test
     public void deliveryReportPartiallyFailedWhenSomeReceiversFail() throws Exception {
         final String senderId = "mocked-sender-id";
-        final Message message = Message.builder().senderId(senderId).payload(new HeartBeatPayload()).build();
+        final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
         final MessageReceiver receiver = Mockito.mock(MessageReceiver.class);
 
         when(bindingsService.findBindedMessageConsumerIds(eq(senderId)))
@@ -140,7 +140,7 @@ public class MessagePublishBrokerTest {
     @Test
     public void deliveryReportWhenNoReceiversFound() throws Exception {
         final String senderId = "mocked-sender-id";
-        final Message message = Message.builder().senderId(senderId).payload(new HeartBeatPayload()).build();
+        final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
 
         when(bindingsService.findBindedMessageConsumerIds(eq(senderId))).thenReturn(Collections.emptyList());
 

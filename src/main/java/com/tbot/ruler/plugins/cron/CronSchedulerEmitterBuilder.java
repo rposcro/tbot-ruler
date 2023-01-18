@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.cron;
 
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.messages.payloads.HeartBeatPayload;
+import com.tbot.ruler.model.Notification;
 import com.tbot.ruler.things.BasicEmitter;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
@@ -25,7 +25,7 @@ public class CronSchedulerEmitterBuilder {
     }
 
     private Runnable emissionTask(EmitterDTO emitterDTO, MessagePublisher messagePublisher) {
-        return () -> messagePublisher.publishMessage(messageToSend(emitterDTO.getId(), new HeartBeatPayload()));
+        return () -> messagePublisher.publishMessage(messageToSend(emitterDTO.getId(), Notification.HEARTBEAT));
     }
 
     private CronEmissionTrigger emissionTrigger(EmitterDTO emitterDTO, TimeZone timeZone) {

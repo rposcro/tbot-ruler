@@ -10,13 +10,13 @@ import java.time.ZonedDateTime;
 
 @Getter
 @Builder
-public class ReportEntry {
+public class ReportLog {
 
     @JsonSerialize(converter = ZonedDateTimeToStringConverter.class)
     private ZonedDateTime timestamp;
 
     @JsonEnumDefaultValue
-    private ReportEntryLevel entryLevel;
+    private ReportLogLevel logLevel;
 
     private String content;
 }

@@ -1,6 +1,6 @@
 package com.tbot.ruler.model;
 
-public enum ReportEntryLevel {
+public enum ReportLogLevel {
 
     TRIVIAL,
     REGULAR,
