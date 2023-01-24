@@ -67,7 +67,7 @@ public class JsonFileApplianceStateRepositoryTest {
         assertEquals(MeasureQuantity.Temperature, measure.getQuantity());
         assertEquals("C", measure.getUnit());
         assertEquals(139, measure.getValue());
-        assertEquals(2, measure.getPrecision());
+        assertEquals(2, measure.getDecimals());
 
         state = repository.findByKey("ah-oh").get();
         assertEquals("ah-oh", state.getKey());
@@ -104,7 +104,7 @@ public class JsonFileApplianceStateRepositoryTest {
                 .quantity(MeasureQuantity.Temperature)
                 .unit("C")
                 .value(value)
-                .precision((short) precision)
+                .decimals((short) precision)
                 .build();
     }
 }

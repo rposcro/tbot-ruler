@@ -18,4 +18,10 @@ public class RGBWColor {
     public static RGBWColor of(int red, int green, int blue, int white) {
         return new RGBWColor((short) red, (short) green, (short) blue, (short) white);
     }
+
+    @Override
+    public String toString() {
+        return String.format("RGBWColor { red: %s, green: %s, blue: %s, white: %s }",
+                red, green, blue, white);
+    }
 }

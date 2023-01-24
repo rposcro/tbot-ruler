@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Getter
 @AllArgsConstructor()
@@ -18,5 +17,10 @@ public class OnOffState {
     @JsonCreator
     public static OnOffState of(@JsonProperty("on") boolean on) {
         return on ? STATE_ON : STATE_OFF;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("OnOffState { on: %s }", on);
     }
 }

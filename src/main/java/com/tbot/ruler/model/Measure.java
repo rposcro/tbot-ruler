@@ -14,6 +14,12 @@ public class Measure {
 
     private MeasureQuantity quantity;
     private String unit;
+    private short decimals;
     private long value;
-    private short precision;
+
+    @Override
+    public String toString() {
+        return String.format("Measure { quantity: %s, unit: %s, decimals: %s, value: %s }",
+                quantity, unit, decimals, value);
+    }
 }

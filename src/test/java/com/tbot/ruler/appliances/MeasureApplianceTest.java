@@ -70,7 +70,7 @@ public class MeasureApplianceTest extends AbstractApplianceTest {
                 .quantity(MeasureQuantity.Temperature)
                 .unit("C")
                 .value(333)
-                .precision((short) 4)
+                .decimals((short) 4)
                 .build();
     }
 }

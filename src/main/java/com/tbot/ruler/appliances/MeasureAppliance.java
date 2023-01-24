@@ -6,9 +6,11 @@ import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.MessagePayload;
 import com.tbot.ruler.model.Measure;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Optional;
 
+@Slf4j
 public class MeasureAppliance extends AbstractAppliance<Measure> {
 
     private Optional<Measure> measureState;
@@ -44,5 +46,9 @@ public class MeasureAppliance extends AbstractAppliance<Measure> {
 
     private void setState(Measure measure) {
         this.measureState = Optional.of(measure);
+
+        if (log.isDebugEnabled()) {
+            log.debug("MeasureAppliance {} received measure {}", getId(), measure);
+        }
     }
 }

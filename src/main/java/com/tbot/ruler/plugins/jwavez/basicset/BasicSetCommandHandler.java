@@ -32,7 +32,7 @@ public class BasicSetCommandHandler extends JWaveZCommandHandler<BasicSet> {
         log.debug("Handling encapsulated basic set command");
         byte nodeId = commandEncapsulation.getSourceNodeId().getId();
         byte sourceEndpointId = commandEncapsulation.getSourceEndpointId();
-        byte commandValue = commandEncapsulation.getEncapsulatedCommandPayload()[0];
+        byte commandValue = commandEncapsulation.getEncapsulatedCommandPayload()[3];
 
         emitters.stream()
                 .filter(emitter -> emitter.acceptsCommand(nodeId, sourceEndpointId))

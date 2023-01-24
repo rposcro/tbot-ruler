@@ -53,7 +53,7 @@ public class JWaveZAgent {
         int retries = 0;
         while (this.jwzController == null && retries++ < reconnectAttempts) {
             try {
-                log.info("JWaveZ agent connection, attempt #{}", retries);
+                log.info("JWaveZ agent connection, device {}, attempt #{} of {}", device, retries, reconnectAttempts);
                 GeneralAsynchronousController jwzController = jwavezController(device);
                 jwzController.connect();
                 this.jwzController = jwzController;
