@@ -51,7 +51,7 @@ public class UpdateSwitchMultiLevelEmitterBuilder implements EmitterBuilder {
             reportHandler.registerEmitter(emitter);
             return emitter;
         } catch (IOException e) {
-            throw new PluginException("Could not parse collector's configuration!", e);
+            throw new PluginException("Could not parse emitter's configuration!", e);
         }
     }
 }

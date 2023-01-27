@@ -1,9 +1,9 @@
-package com.tbot.ruler.plugins.jwavez.updatecolor;
+package com.tbot.ruler.plugins.jwavez.updateswitchbinary;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
 import com.rposcro.jwavez.core.commands.types.CommandType;
-import com.rposcro.jwavez.core.commands.types.SwitchColorCommandType;
+import com.rposcro.jwavez.core.commands.types.SwitchBinaryCommandType;
 import com.tbot.ruler.plugins.jwavez.EmitterBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZAgent;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
@@ -14,15 +14,15 @@ import com.tbot.ruler.things.exceptions.PluginException;
 
 import java.io.IOException;
 
-public class UpdateColorEmitterBuilder implements EmitterBuilder {
+public class UpdateSwitchMultiLevelEmitterBuilder implements EmitterBuilder {
 
-    private static final String REFERENCE = "update-color";
+    private static final String REFERENCE = "update-switch-binary";
 
-    private final SwitchColorReportHandler reportHandler = new SwitchColorReportHandler();
+    private final SwitchBinaryReportHandler reportHandler = new SwitchBinaryReportHandler();
 
     @Override
     public CommandType getSupportedCommandType() {
-        return SwitchColorCommandType.SWITCH_COLOR_REPORT;
+        return SwitchBinaryCommandType.BINARY_SWITCH_REPORT;
     }
 
     @Override
@@ -38,9 +38,9 @@ public class UpdateColorEmitterBuilder implements EmitterBuilder {
     @Override
     public Emitter buildEmitter(JWaveZAgent agent, ThingBuilderContext builderContext, EmitterDTO emitterDTO) throws PluginException {
         try {
-            UpdateColorEmitterConfiguration configuration = new ObjectMapper().readerFor(UpdateColorEmitterConfiguration.class)
+            UpdateSwitchBinaryEmitterConfiguration configuration = new ObjectMapper().readerFor(UpdateSwitchBinaryEmitterConfiguration.class)
                     .readValue(emitterDTO.getConfigurationNode());
-            UpdateColorEmitter emitter = UpdateColorEmitter.builder()
+            UpdateSwitchBinaryEmitter emitter = UpdateSwitchBinaryEmitter.builder()
                     .id(emitterDTO.getId())
                     .name(emitterDTO.getName())
                     .description(emitterDTO.getDescription())
@@ -48,7 +48,7 @@ public class UpdateColorEmitterBuilder implements EmitterBuilder {
                     .messagePublisher(builderContext.getMessagePublisher())
                     .configuration(configuration)
                     .build();
-            reportHandler.registerEmitter(emitter);
+            reportHandler.registerEmitter(configuration.getNodeId(), configuration.getEndPointId(), emitter);
             return emitter;
         } catch (IOException e) {
             throw new PluginException("Could not parse emitter's configuration!", e);
