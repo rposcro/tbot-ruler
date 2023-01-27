@@ -8,17 +8,13 @@ import com.rposcro.jwavez.core.commands.types.MultiChannelCommandType;
 import com.rposcro.jwavez.core.handlers.SupportedCommandHandler;
 import com.rposcro.jwavez.core.utils.ImmutableBuffer;
 import com.rposcro.jwavez.serial.controllers.GeneralAsynchronousController;
-import com.rposcro.jwavez.serial.exceptions.SerialException;
 import com.rposcro.jwavez.serial.exceptions.SerialPortException;
 import com.rposcro.jwavez.serial.frames.callbacks.ZWaveCallback;
-import com.rposcro.jwavez.serial.frames.requests.SendDataRequest;
 import com.rposcro.jwavez.serial.handlers.InterceptableCallbackHandler;
 import com.rposcro.jwavez.serial.interceptors.ApplicationCommandInterceptor;
 import com.rposcro.jwavez.serial.rxtx.CallbackHandler;
 import com.rposcro.jwavez.serial.rxtx.ResponseHandler;
-import com.rposcro.jwavez.serial.rxtx.SerialRequest;
 import com.rposcro.jwavez.serial.utils.FrameUtil;
-import com.tbot.ruler.exceptions.MessageProcessingException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +30,7 @@ import static com.tbot.ruler.util.LogArgument.argument;
 public class JWaveZAgent {
 
     private String device;
-    private GeneralAsynchronousController jwzController;
+    private JWaveZCommandSender commandSender;
     private Map<CommandType, JWaveZCommandHandler<? extends ZWaveSupportedCommand>> commandHandlersMap;
 
     private final int reconnectAttempts;
@@ -47,16 +43,18 @@ public class JWaveZAgent {
         this.reconnectAttempts = configuration.getReconnectAttempts();
         this.reconnectDelay = configuration.getReconnectDelay();
         this.device = configuration.getModuleDevice();
+        this.commandSender = new JWaveZCommandSender();
     }
 
     public void connect() {
+        GeneralAsynchronousController jwzController = null;
         int retries = 0;
-        while (this.jwzController == null && retries++ < reconnectAttempts) {
+        while (jwzController == null && retries++ < reconnectAttempts) {
             try {
                 log.info("JWaveZ agent connection, device {}, attempt #{} of {}", device, retries, reconnectAttempts);
-                GeneralAsynchronousController jwzController = jwavezController(device);
+                jwzController = buildJwavezController(device);
                 jwzController.connect();
-                this.jwzController = jwzController;
+                commandSender.setJwzController(jwzController);
                 log.info("JWaveZ agent successfully connected to dongle device");
             } catch(SerialPortException e) {
                 log.error("Could not connect to ZWave dongle device, JWaveZ agent not active!", e);
@@ -69,23 +67,7 @@ public class JWaveZAgent {
         }
     }
 
-    public JWaveZCommandSender getCommandSender() {
-        return (nodeId, command) -> {
-            log.debug("Request frame sending: {}", argument(() -> bufferToString(command.getPayload())));
-
-            if (jwzController == null) {
-                throw new MessageProcessingException("JWaveZ controller is not active!");
-            }
-            try {
-                SerialRequest request = SendDataRequest.createSendDataRequest(nodeId, command, nextCallbackId());
-                jwzController.requestCallbackFlow(request);
-            } catch(SerialException e) {
-                throw new MessageProcessingException("Exception when sending command!", e);
-            }
-        };
-    }
-
-    private GeneralAsynchronousController jwavezController(String device) {
+    private GeneralAsynchronousController buildJwavezController(String device) {
         return GeneralAsynchronousController.builder()
             .dongleDevice(device)
             .callbackHandler(buildCallbackHandler())
@@ -127,8 +109,9 @@ public class JWaveZAgent {
                     commandHandler.handleEncapsulatedCommand(encapsulation);
                 }
             } catch(Exception e) {
-                log.error("Failed to handle encapsulated command " + encapsulation.getEncapsulatedCommandClass()
-                        + " with command type code " + encapsulation.getEncapsulatedCommandCode());
+                log.error(String.format("Failed to handle encapsulated command %s with command type code %s",
+                        encapsulation.getEncapsulatedCommandClass(), encapsulation.getEncapsulatedCommandCode())
+                        , e);
             }
         };
     }

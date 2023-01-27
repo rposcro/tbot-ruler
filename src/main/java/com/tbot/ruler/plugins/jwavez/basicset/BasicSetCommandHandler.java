@@ -1,7 +1,10 @@
 package com.tbot.ruler.plugins.jwavez.basicset;
 
+import com.rposcro.jwavez.core.commands.SupportedCommandParser;
 import com.rposcro.jwavez.core.commands.supported.basic.BasicSet;
 import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
+import com.rposcro.jwavez.core.commands.supported.sensormultilevel.SensorMultilevelReport;
+import com.rposcro.jwavez.core.utils.ImmutableBuffer;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
 import lombok.extern.slf4j.Slf4j;
 
@@ -12,9 +15,11 @@ import java.util.List;
 public class BasicSetCommandHandler extends JWaveZCommandHandler<BasicSet> {
 
     private List<BasicSetEmitter> emitters;
+    private SupportedCommandParser supportedCommandParser;
 
     public BasicSetCommandHandler() {
         this.emitters = new LinkedList<>();
+        this.supportedCommandParser = SupportedCommandParser.defaultParser();
     }
 
     @Override
@@ -32,11 +37,14 @@ public class BasicSetCommandHandler extends JWaveZCommandHandler<BasicSet> {
         log.debug("Handling encapsulated basic set command");
         byte nodeId = commandEncapsulation.getSourceNodeId().getId();
         byte sourceEndpointId = commandEncapsulation.getSourceEndpointId();
-        byte commandValue = commandEncapsulation.getEncapsulatedCommandPayload()[3];
+
+        BasicSet basicSet = supportedCommandParser.parseCommand(
+                ImmutableBuffer.overBuffer(commandEncapsulation.getEncapsulatedCommandPayload()),
+                commandEncapsulation.getSourceNodeId());
 
         emitters.stream()
                 .filter(emitter -> emitter.acceptsCommand(nodeId, sourceEndpointId))
-                .forEach(emitter -> emitter.acceptCommandValue(commandValue));
+                .forEach(emitter -> emitter.acceptCommandValue((byte) basicSet.getValue()));
     }
 
     public void registerEmitter(BasicSetEmitter emitter) {

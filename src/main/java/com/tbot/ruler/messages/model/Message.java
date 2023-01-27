@@ -23,6 +23,10 @@ public class Message {
         this.payload = payload;
     }
 
+    public boolean isPayloadAs(Class<?> clazz) {
+        return payload.getClass().isAssignableFrom(clazz);
+    }
+
     public <T> T getPayloadAs(Class<T> clazz) {
         try {
             return clazz.cast(this.payload);

@@ -89,7 +89,7 @@ public class JsonFileApplianceStateRepository implements ApplianceStateRepositor
         try {
             Class<?> stateClass = valueClassMap.get(className);
             if (stateClass == null) {
-                stateClass = ClassLoader.getSystemClassLoader().loadClass(className);
+                stateClass = this.getClass().getClassLoader().loadClass(className);
                 valueClassMap.put(className, stateClass);
             }
             return stateClass;

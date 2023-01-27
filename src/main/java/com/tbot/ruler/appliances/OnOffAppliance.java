@@ -41,7 +41,7 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             setState(deliveryReport.getOriginalMessage().getPayload());
-            getPersistenceService().persist(this.getId(), state);
+            getPersistenceService().persist(this.getId(), state.get());
         }
     }
 
