@@ -51,6 +51,7 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
             .actuators(buildActuators(builderContext, agent))
             .collectors(buildCollectors(builderContext, agent))
             .startUpTask(() -> agent.connect())
+            .triggerableTask(agent.getCommandSender())
             .build();
     }
 
