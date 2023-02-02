@@ -64,7 +64,8 @@ public class UpdateColorEmitter extends AbstractItem implements Emitter {
         if (configuration.getPollStateInterval() == 0) {
             return Optional.empty();
         }
-        return Optional.of(context -> new Date(System.currentTimeMillis() + pollIntervalMilliseconds));
+        return Optional.of(context -> context.getLastScheduledExecutionTime() == null ?
+                new Date() : new Date(System.currentTimeMillis() + pollIntervalMilliseconds));
     }
 
     @Override
