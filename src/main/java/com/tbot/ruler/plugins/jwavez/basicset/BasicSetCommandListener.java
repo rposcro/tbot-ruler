@@ -1,25 +1,24 @@
 package com.tbot.ruler.plugins.jwavez.basicset;
 
-import com.rposcro.jwavez.core.commands.SupportedCommandParser;
+import com.rposcro.jwavez.core.commands.JwzSupportedCommandParser;
 import com.rposcro.jwavez.core.commands.supported.basic.BasicSet;
 import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
-import com.rposcro.jwavez.core.commands.supported.sensormultilevel.SensorMultilevelReport;
-import com.rposcro.jwavez.core.utils.ImmutableBuffer;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
+import com.rposcro.jwavez.core.buffer.ImmutableBuffer;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
-public class BasicSetCommandHandler extends JWaveZCommandHandler<BasicSet> {
+public class BasicSetCommandListener extends JWaveZCommandListener<BasicSet> {
 
     private List<BasicSetEmitter> emitters;
-    private SupportedCommandParser supportedCommandParser;
+    private JwzSupportedCommandParser supportedCommandParser;
 
-    public BasicSetCommandHandler() {
+    public BasicSetCommandListener(JwzSupportedCommandParser supportedCommandParser) {
+        this.supportedCommandParser = supportedCommandParser;
         this.emitters = new LinkedList<>();
-        this.supportedCommandParser = SupportedCommandParser.defaultParser();
     }
 
     @Override
@@ -36,7 +35,7 @@ public class BasicSetCommandHandler extends JWaveZCommandHandler<BasicSet> {
     public void handleEncapsulatedCommand(MultiChannelCommandEncapsulation commandEncapsulation) {
         log.debug("Handling encapsulated basic set command");
         byte nodeId = commandEncapsulation.getSourceNodeId().getId();
-        byte sourceEndpointId = commandEncapsulation.getSourceEndpointId();
+        byte sourceEndpointId = commandEncapsulation.getSourceEndPointId();
 
         BasicSet basicSet = supportedCommandParser.parseCommand(
                 ImmutableBuffer.overBuffer(commandEncapsulation.getEncapsulatedCommandPayload()),

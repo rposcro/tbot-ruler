@@ -1,7 +1,8 @@
 package com.tbot.ruler.plugins.jwavez.switchcolor;
 
+import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
-import com.rposcro.jwavez.core.commands.controlled.builders.SwitchColorCommandBuilder;
+import com.rposcro.jwavez.core.commands.controlled.builders.switchcolor.SwitchColorCommandBuilder;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
@@ -21,11 +22,10 @@ public class SwitchColorCollector extends AbstractItem implements Collector {
 
     private final static String PERSISTENCE_KEY = "rgbw";
 
-    private SwitchColorCollectorConfiguration configuration;
-    private JWaveZCommandSender commandSender;
-
-    private final SwitchColorCommandBuilder commandBuilder = new SwitchColorCommandBuilder();
-    private ColorMode colorMode;
+    private final SwitchColorCollectorConfiguration configuration;
+    private final JWaveZCommandSender commandSender;
+    private final SwitchColorCommandBuilder commandBuilder;
+    private final ColorMode colorMode;
 
     @Builder
     public SwitchColorCollector(
@@ -33,12 +33,14 @@ public class SwitchColorCollector extends AbstractItem implements Collector {
             @NonNull String name,
             String description,
             @NonNull JWaveZCommandSender commandSender,
-            @NonNull SwitchColorCollectorConfiguration configuration
-    ) {
+            @NonNull SwitchColorCollectorConfiguration configuration,
+            @NonNull JwzApplicationSupport applicationSupport
+            ) {
         super(id, name, description);
         this.commandSender = commandSender;
         this.configuration = configuration;
         this.colorMode = colorMode(configuration.getColorMode());
+        this.commandBuilder = applicationSupport.controlledCommandFactory().switchColorCommandBuilder();
     }
 
     @Override
@@ -56,11 +58,11 @@ public class SwitchColorCollector extends AbstractItem implements Collector {
     private ZWaveControlledCommand buildCommand(RGBWColor payload) {
         switch(colorMode) {
             case RGB:
-                return commandBuilder.buildSetRGBCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) configuration.getSwitchDuration());
+                return commandBuilder.v1().buildSetRGBCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) configuration.getSwitchDuration());
             case RGBW_COLD:
-                return commandBuilder.buildSetColdRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
+                return commandBuilder.v1().buildSetColdRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
             case RGBW_WARM:
-                return commandBuilder.buildSetWarmRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
+                return commandBuilder.v1().buildSetWarmRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
             default:
                 throw new MessageProcessingException("Unknown ColorMode never seen before!");
         }

@@ -5,10 +5,9 @@ import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
 import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.commands.types.SwitchBinaryCommandType;
 import com.tbot.ruler.plugins.jwavez.EmitterBuilder;
-import com.tbot.ruler.plugins.jwavez.JWaveZAgent;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
+import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
 import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 
@@ -18,7 +17,13 @@ public class UpdateSwitchMultiLevelEmitterBuilder implements EmitterBuilder {
 
     private static final String REFERENCE = "update-switch-binary";
 
-    private final SwitchBinaryReportHandler reportHandler = new SwitchBinaryReportHandler();
+    private final SwitchBinaryReportListener reportHandler;
+    private final JWaveZThingContext thingContext;
+
+    public UpdateSwitchMultiLevelEmitterBuilder(JWaveZThingContext thingContext) {
+        this.thingContext = thingContext;
+        this.reportHandler = new SwitchBinaryReportListener(thingContext.getJwzApplicationSupport());
+    }
 
     @Override
     public CommandType getSupportedCommandType() {
@@ -26,7 +31,7 @@ public class UpdateSwitchMultiLevelEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public JWaveZCommandHandler<? extends ZWaveSupportedCommand> getSupportedCommandHandler() {
+    public JWaveZCommandListener<? extends ZWaveSupportedCommand> getSupportedCommandHandler() {
         return this.reportHandler;
     }
 
@@ -36,7 +41,7 @@ public class UpdateSwitchMultiLevelEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public Emitter buildEmitter(JWaveZAgent agent, ThingBuilderContext builderContext, EmitterDTO emitterDTO) throws PluginException {
+    public Emitter buildEmitter(EmitterDTO emitterDTO) throws PluginException {
         try {
             UpdateSwitchBinaryEmitterConfiguration configuration = new ObjectMapper().readerFor(UpdateSwitchBinaryEmitterConfiguration.class)
                     .readValue(emitterDTO.getConfigurationNode());
@@ -44,9 +49,10 @@ public class UpdateSwitchMultiLevelEmitterBuilder implements EmitterBuilder {
                     .id(emitterDTO.getId())
                     .name(emitterDTO.getName())
                     .description(emitterDTO.getDescription())
-                    .commandSender(agent.getCommandSender())
-                    .messagePublisher(builderContext.getMessagePublisher())
+                    .commandSender(thingContext.getJwzCommandSender())
+                    .messagePublisher(thingContext.getMessagePublisher())
                     .configuration(configuration)
+                    .applicationSupport(thingContext.getJwzApplicationSupport())
                     .build();
             reportHandler.registerEmitter(configuration.getNodeId(), configuration.getEndPointId(), emitter);
             return emitter;

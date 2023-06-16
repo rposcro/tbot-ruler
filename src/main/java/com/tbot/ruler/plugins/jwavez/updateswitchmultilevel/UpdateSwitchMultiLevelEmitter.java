@@ -1,6 +1,7 @@
 package com.tbot.ruler.plugins.jwavez.updateswitchmultilevel;
 
-import com.rposcro.jwavez.core.commands.controlled.builders.SwitchMultiLevelCommandBuilder;
+import com.rposcro.jwavez.core.JwzApplicationSupport;
+import com.rposcro.jwavez.core.commands.controlled.builders.switchmultilevel.SwitchMultiLevelCommandBuilder;
 import com.rposcro.jwavez.core.commands.supported.switchmultilevel.SwitchMultilevelReport;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.messages.MessagePublisher;
@@ -25,11 +26,11 @@ public class UpdateSwitchMultiLevelEmitter extends AbstractItem implements Emitt
 
     private final static int MIN_POLL_INTERVAL = 120;
 
-    private UpdateSwitchMultiLevelEmitterConfiguration configuration;
-    private MessagePublisher messagePublisher;
-    private JWaveZCommandSender commandSender;
+    private final UpdateSwitchMultiLevelEmitterConfiguration configuration;
+    private final MessagePublisher messagePublisher;
+    private final JWaveZCommandSender commandSender;
 
-    private final SwitchMultiLevelCommandBuilder commandBuilder = new SwitchMultiLevelCommandBuilder();
+    private final SwitchMultiLevelCommandBuilder commandBuilder;
     private long pollIntervalMilliseconds;
 
     @Builder
@@ -39,13 +40,15 @@ public class UpdateSwitchMultiLevelEmitter extends AbstractItem implements Emitt
             String description,
             @NonNull MessagePublisher messagePublisher,
             @NonNull JWaveZCommandSender commandSender,
-            @NonNull UpdateSwitchMultiLevelEmitterConfiguration configuration
-    ) {
+            @NonNull UpdateSwitchMultiLevelEmitterConfiguration configuration,
+            @NonNull JwzApplicationSupport applicationSupport
+            ) {
         super(id, name, description);
         this.messagePublisher = messagePublisher;
         this.commandSender = commandSender;
         this.configuration = configuration;
         this.pollIntervalMilliseconds = configuration.getPollStateInterval() <= 0 ? 0 : 1000 * Math.max(MIN_POLL_INTERVAL, configuration.getPollStateInterval());
+        this.commandBuilder = applicationSupport.controlledCommandFactory().switchMultiLevelCommandBuilder();
     }
 
     @Override
@@ -61,7 +64,7 @@ public class UpdateSwitchMultiLevelEmitter extends AbstractItem implements Emitt
     public Optional<Runnable> getTriggerableTask() {
         return Optional.of(() -> {
             log.debug("Sending multi level report request for node " + configuration.getNodeId());
-            commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.buildGetCommand());
+            commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
         });
     }
 

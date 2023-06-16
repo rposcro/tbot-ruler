@@ -1,8 +1,9 @@
 package com.tbot.ruler.plugins.jwavez.updateswitchbinary;
 
+import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
-import com.rposcro.jwavez.core.commands.controlled.builders.MultiChannelCommandBuilder;
-import com.rposcro.jwavez.core.commands.controlled.builders.SwitchBinaryCommandBuilder;
+import com.rposcro.jwavez.core.commands.controlled.builders.multichannel.MultiChannelCommandBuilder;
+import com.rposcro.jwavez.core.commands.controlled.builders.switchbinary.SwitchBinaryCommandBuilder;
 import com.rposcro.jwavez.core.commands.supported.binaryswitch.BinarySwitchReport;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.messages.MessagePublisher;
@@ -27,9 +28,9 @@ public class UpdateSwitchBinaryEmitter extends AbstractItem implements Emitter {
 
     private final static int MIN_POLL_INTERVAL = 120;
 
-    private UpdateSwitchBinaryEmitterConfiguration configuration;
-    private MessagePublisher messagePublisher;
-    private JWaveZCommandSender commandSender;
+    private final UpdateSwitchBinaryEmitterConfiguration configuration;
+    private final MessagePublisher messagePublisher;
+    private final JWaveZCommandSender commandSender;
 
     private final SwitchBinaryCommandBuilder commandBuilder;
     private final MultiChannelCommandBuilder multiChannelCommandBuilder;
@@ -43,7 +44,8 @@ public class UpdateSwitchBinaryEmitter extends AbstractItem implements Emitter {
             String description,
             @NonNull MessagePublisher messagePublisher,
             @NonNull JWaveZCommandSender commandSender,
-            @NonNull UpdateSwitchBinaryEmitterConfiguration configuration
+            @NonNull UpdateSwitchBinaryEmitterConfiguration configuration,
+            @NonNull JwzApplicationSupport applicationSupport
     ) {
         super(id, name, description);
         this.messagePublisher = messagePublisher;
@@ -51,8 +53,8 @@ public class UpdateSwitchBinaryEmitter extends AbstractItem implements Emitter {
         this.configuration = configuration;
         this.pollIntervalMilliseconds = configuration.getPollStateInterval() <= 0 ? 0 : 1000 * Math.max(MIN_POLL_INTERVAL, configuration.getPollStateInterval());
         this.multiChannelOn = configuration.getEndPointId() >= 0;
-        this.commandBuilder = new SwitchBinaryCommandBuilder();
-        this.multiChannelCommandBuilder = new MultiChannelCommandBuilder();
+        this.commandBuilder = applicationSupport.controlledCommandFactory().switchBinaryCommandBuilder();
+        this.multiChannelCommandBuilder = applicationSupport.controlledCommandFactory().multiChannelCommandBuilder();
     }
 
     @Override
@@ -70,12 +72,12 @@ public class UpdateSwitchBinaryEmitter extends AbstractItem implements Emitter {
             if (multiChannelOn) {
                 log.debug("Sending multi channel switch binary report request for node {} endPoint {}",
                         configuration.getNodeId(), configuration.getEndPointId());
-                ZWaveControlledCommand command = multiChannelCommandBuilder.encapsulateCommand(
-                        (byte) 1, (byte) configuration.getEndPointId(), commandBuilder.buildGetCommand());
+                ZWaveControlledCommand command = multiChannelCommandBuilder.v3().encapsulateCommand(
+                        (byte) 1, (byte) configuration.getEndPointId(), commandBuilder.v1().buildGetCommand());
                 commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), command);
             } else {
                 log.debug("Sending switch binary report request for node " + configuration.getNodeId());
-                commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.buildGetCommand());
+                commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
             }
         });
     }

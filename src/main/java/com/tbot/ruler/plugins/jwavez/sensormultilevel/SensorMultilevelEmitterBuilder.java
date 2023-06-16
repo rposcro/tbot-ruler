@@ -5,9 +5,8 @@ import com.rposcro.jwavez.core.commands.supported.sensormultilevel.SensorMultile
 import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.commands.types.SensorMultilevelCommandType;
 import com.tbot.ruler.plugins.jwavez.EmitterBuilder;
-import com.tbot.ruler.plugins.jwavez.JWaveZAgent;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
-import com.tbot.ruler.things.builder.ThingBuilderContext;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
+import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 
@@ -17,7 +16,14 @@ public class SensorMultilevelEmitterBuilder implements EmitterBuilder {
 
     private static final String REFERENCE = "sensor-multilevel";
 
-    private SensorMultilevelHandler sensorMultilevelHandler = new SensorMultilevelHandler();
+    private JWaveZThingContext thingContext;
+    private final SensorMultilevelListener sensorMultilevelHandler;
+
+    public SensorMultilevelEmitterBuilder(JWaveZThingContext thingContext) {
+        this.thingContext = thingContext;
+        this.sensorMultilevelHandler = new SensorMultilevelListener(
+                thingContext.getJwzApplicationSupport().supportedCommandParser());
+    }
 
     @Override
     public CommandType getSupportedCommandType() {
@@ -25,7 +31,7 @@ public class SensorMultilevelEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public JWaveZCommandHandler<SensorMultilevelReport> getSupportedCommandHandler() {
+    public JWaveZCommandListener<SensorMultilevelReport> getSupportedCommandHandler() {
         return sensorMultilevelHandler;
     }
 
@@ -35,7 +41,7 @@ public class SensorMultilevelEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public SensorMultilevelEmitter buildEmitter(JWaveZAgent jWaveZAgent, ThingBuilderContext context, EmitterDTO emitterDTO)
+    public SensorMultilevelEmitter buildEmitter(EmitterDTO emitterDTO)
     throws PluginException {
         try {
             SensorMultilevelConfiguration configuration = new ObjectMapper()
@@ -45,7 +51,7 @@ public class SensorMultilevelEmitterBuilder implements EmitterBuilder {
                     .id(emitterDTO.getId())
                     .name(emitterDTO.getName())
                     .description(emitterDTO.getDescription())
-                    .messagePublisher(context.getMessagePublisher())
+                    .messagePublisher(thingContext.getMessagePublisher())
                     .build();
 
             if (configuration.isMultiChannelOn()) {

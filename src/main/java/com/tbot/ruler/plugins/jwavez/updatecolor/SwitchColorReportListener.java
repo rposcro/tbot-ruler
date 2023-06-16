@@ -1,18 +1,18 @@
 package com.tbot.ruler.plugins.jwavez.updatecolor;
 
 import com.rposcro.jwavez.core.commands.supported.switchcolor.SwitchColorReport;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.LinkedList;
 import java.util.List;
 
 @Slf4j
-public class SwitchColorReportHandler extends JWaveZCommandHandler<SwitchColorReport> {
+public class SwitchColorReportListener extends JWaveZCommandListener<SwitchColorReport> {
 
     private List<UpdateColorEmitter> emitters;
 
-    public SwitchColorReportHandler() {
+    public SwitchColorReportListener() {
         this.emitters = new LinkedList<>();
     }
 

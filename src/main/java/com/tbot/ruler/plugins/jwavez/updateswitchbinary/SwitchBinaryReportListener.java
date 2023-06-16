@@ -1,24 +1,25 @@
 package com.tbot.ruler.plugins.jwavez.updateswitchbinary;
 
-import com.rposcro.jwavez.core.commands.SupportedCommandParser;
+import com.rposcro.jwavez.core.JwzApplicationSupport;
+import com.rposcro.jwavez.core.buffer.ImmutableBuffer;
+import com.rposcro.jwavez.core.commands.JwzSupportedCommandParser;
 import com.rposcro.jwavez.core.commands.supported.binaryswitch.BinarySwitchReport;
 import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
-import com.rposcro.jwavez.core.utils.ImmutableBuffer;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
 @Slf4j
-public class SwitchBinaryReportHandler extends JWaveZCommandHandler<BinarySwitchReport> {
+public class SwitchBinaryReportListener extends JWaveZCommandListener<BinarySwitchReport> {
 
-    private Map<String, UpdateSwitchBinaryEmitter> emitters;
-    private SupportedCommandParser commandParser;
+    private final Map<String, UpdateSwitchBinaryEmitter> emitters;
+    private final JwzSupportedCommandParser commandParser;
 
-    public SwitchBinaryReportHandler() {
+    public SwitchBinaryReportListener(JwzApplicationSupport applicationSupport) {
         this.emitters = new HashMap<>();
-        this.commandParser = SupportedCommandParser.defaultParser();
+        this.commandParser = applicationSupport.supportedCommandParser();
     }
 
     @Override
@@ -35,7 +36,7 @@ public class SwitchBinaryReportHandler extends JWaveZCommandHandler<BinarySwitch
     @Override
     public void handleEncapsulatedCommand(MultiChannelCommandEncapsulation commandEncapsulation) {
         log.info("Handling encapsulated switch binary report command");
-        String emittersKey = computeKey(commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndpointId());
+        String emittersKey = computeKey(commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndPointId());
         UpdateSwitchBinaryEmitter emitter = emitters.get(emittersKey);
 
         if (emitter != null) {

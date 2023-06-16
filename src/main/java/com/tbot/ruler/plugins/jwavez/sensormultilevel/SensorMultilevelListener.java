@@ -1,10 +1,10 @@
 package com.tbot.ruler.plugins.jwavez.sensormultilevel;
 
-import com.rposcro.jwavez.core.commands.SupportedCommandParser;
+import com.rposcro.jwavez.core.commands.JwzSupportedCommandParser;
 import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
 import com.rposcro.jwavez.core.commands.supported.sensormultilevel.SensorMultilevelReport;
-import com.rposcro.jwavez.core.utils.ImmutableBuffer;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
+import com.rposcro.jwavez.core.buffer.ImmutableBuffer;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
@@ -14,14 +14,14 @@ import java.util.Map;
 import java.util.Optional;
 
 @Slf4j
-public class SensorMultilevelHandler extends JWaveZCommandHandler<SensorMultilevelReport> {
+public class SensorMultilevelListener extends JWaveZCommandListener<SensorMultilevelReport> {
 
     private Map<String, List<SensorMultilevelEmitter>> emittersPerKey;
-    private SupportedCommandParser supportedCommandParser;
+    private JwzSupportedCommandParser supportedCommandParser;
 
-    public SensorMultilevelHandler() {
+    public SensorMultilevelListener(JwzSupportedCommandParser supportedCommandParser) {
+        this.supportedCommandParser = supportedCommandParser;
         this.emittersPerKey = new HashMap<>();
-        this.supportedCommandParser = SupportedCommandParser.defaultParser();
     }
 
     public void registerEmitter(byte sourceNodeId, SensorMultilevelEmitter emitter) {
@@ -45,7 +45,7 @@ public class SensorMultilevelHandler extends JWaveZCommandHandler<SensorMultilev
     @Override
     public void handleEncapsulatedCommand(MultiChannelCommandEncapsulation commandEncapsulation) {
         log.debug("Handling encapsulated scene activation command");
-        String emittersKey = computeKey(commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndpointId());
+        String emittersKey = computeKey(commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndPointId());
         List<SensorMultilevelEmitter> emitters = emittersPerKey.get(emittersKey);
 
         if (emitters != null) {

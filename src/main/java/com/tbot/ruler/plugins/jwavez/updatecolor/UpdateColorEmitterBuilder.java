@@ -5,10 +5,9 @@ import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
 import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.commands.types.SwitchColorCommandType;
 import com.tbot.ruler.plugins.jwavez.EmitterBuilder;
-import com.tbot.ruler.plugins.jwavez.JWaveZAgent;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
+import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
 import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 
@@ -18,7 +17,12 @@ public class UpdateColorEmitterBuilder implements EmitterBuilder {
 
     private static final String REFERENCE = "update-color";
 
-    private final SwitchColorReportHandler reportHandler = new SwitchColorReportHandler();
+    private final JWaveZThingContext thingContext;
+    private final SwitchColorReportListener reportHandler = new SwitchColorReportListener();
+
+    public UpdateColorEmitterBuilder(JWaveZThingContext thingContext) {
+        this.thingContext = thingContext;
+    }
 
     @Override
     public CommandType getSupportedCommandType() {
@@ -26,7 +30,7 @@ public class UpdateColorEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public JWaveZCommandHandler<? extends ZWaveSupportedCommand> getSupportedCommandHandler() {
+    public JWaveZCommandListener<? extends ZWaveSupportedCommand> getSupportedCommandHandler() {
         return this.reportHandler;
     }
 
@@ -36,7 +40,7 @@ public class UpdateColorEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public Emitter buildEmitter(JWaveZAgent agent, ThingBuilderContext builderContext, EmitterDTO emitterDTO) throws PluginException {
+    public Emitter buildEmitter(EmitterDTO emitterDTO) throws PluginException {
         try {
             UpdateColorEmitterConfiguration configuration = new ObjectMapper().readerFor(UpdateColorEmitterConfiguration.class)
                     .readValue(emitterDTO.getConfigurationNode());
@@ -44,9 +48,10 @@ public class UpdateColorEmitterBuilder implements EmitterBuilder {
                     .id(emitterDTO.getId())
                     .name(emitterDTO.getName())
                     .description(emitterDTO.getDescription())
-                    .commandSender(agent.getCommandSender())
-                    .messagePublisher(builderContext.getMessagePublisher())
+                    .commandSender(thingContext.getJwzCommandSender())
+                    .messagePublisher(thingContext.getMessagePublisher())
                     .configuration(configuration)
+                    .applicationSupport(thingContext.getJwzApplicationSupport())
                     .build();
             reportHandler.registerEmitter(emitter);
             return emitter;

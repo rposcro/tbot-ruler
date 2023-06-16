@@ -1,8 +1,9 @@
 package com.tbot.ruler.plugins.jwavez.switchbinary;
 
+import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
-import com.rposcro.jwavez.core.commands.controlled.builders.MultiChannelCommandBuilder;
-import com.rposcro.jwavez.core.commands.controlled.builders.SwitchBinaryCommandBuilder;
+import com.rposcro.jwavez.core.commands.controlled.builders.multichannel.MultiChannelCommandBuilder;
+import com.rposcro.jwavez.core.commands.controlled.builders.switchbinary.SwitchBinaryCommandBuilder;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
@@ -15,17 +16,16 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
-import java.util.function.BiConsumer;
 
 @Getter
 public class SwitchBinaryCollector extends AbstractItem implements Collector {
 
     private final static byte SOURCE_ENDPOINT_ID = 0;
 
-    @NonNull
-    private SwitchBinaryConfiguration configuration;
-    @NonNull
-    private JWaveZCommandSender commandSender;
+    private final SwitchBinaryConfiguration configuration;
+    private final JWaveZCommandSender commandSender;
+    private final SwitchBinaryCommandBuilder switchBinaryCommandBuilder;
+    private final MultiChannelCommandBuilder multiChannelCommandBuilder;
 
     @Builder
     public SwitchBinaryCollector(
@@ -33,21 +33,23 @@ public class SwitchBinaryCollector extends AbstractItem implements Collector {
             String name,
             String description,
             SwitchBinaryConfiguration configuration,
-            JWaveZCommandSender commandSender) {
+            JWaveZCommandSender commandSender,
+            JwzApplicationSupport applicationSupport) {
         super(id, name, description);
         this.configuration = configuration;
         this.commandSender = commandSender;
+        this.switchBinaryCommandBuilder = applicationSupport.controlledCommandFactory().switchBinaryCommandBuilder();
+        this.multiChannelCommandBuilder = applicationSupport.controlledCommandFactory().multiChannelCommandBuilder();
     }
 
     @Override
     public void acceptMessage(Message message) {
         try {
             OnOffState payload = message.getPayloadAs(OnOffState.class);
-            ZWaveControlledCommand command = new SwitchBinaryCommandBuilder()
-                    .buildSetCommandV1((byte) (payload.isOn() ? 255 : 0));
+            ZWaveControlledCommand command = switchBinaryCommandBuilder.v1().buildSetCommand((byte) (payload.isOn() ? 255 : 0));
 
             if (configuration.isMultiChannelOn()) {
-                command = new MultiChannelCommandBuilder().encapsulateCommand(SOURCE_ENDPOINT_ID, (byte) configuration.getDestinationEndPointId(), command);
+                command = multiChannelCommandBuilder.v3().encapsulateCommand(SOURCE_ENDPOINT_ID, (byte) configuration.getDestinationEndPointId(), command);
             }
 
             commandSender.enqueueCommand(new NodeId(configuration.getNodeId()), command);

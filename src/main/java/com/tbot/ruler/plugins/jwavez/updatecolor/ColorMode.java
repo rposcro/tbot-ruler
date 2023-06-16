@@ -1,14 +1,14 @@
 package com.tbot.ruler.plugins.jwavez.updatecolor;
 
-import com.rposcro.jwavez.core.constants.ColorComponent;
+import com.rposcro.jwavez.core.model.ColorComponent;
 import lombok.Getter;
 
 import java.util.stream.Stream;
 
-import static com.rposcro.jwavez.core.constants.ColorComponent.BLUE;
-import static com.rposcro.jwavez.core.constants.ColorComponent.GREEN;
-import static com.rposcro.jwavez.core.constants.ColorComponent.RED;
-import static com.rposcro.jwavez.core.constants.ColorComponent.WARM_WHITE;
+import static com.rposcro.jwavez.core.model.ColorComponent.BLUE;
+import static com.rposcro.jwavez.core.model.ColorComponent.GREEN;
+import static com.rposcro.jwavez.core.model.ColorComponent.RED;
+import static com.rposcro.jwavez.core.model.ColorComponent.WARM_WHITE;
 
 @Getter
 public enum ColorMode {

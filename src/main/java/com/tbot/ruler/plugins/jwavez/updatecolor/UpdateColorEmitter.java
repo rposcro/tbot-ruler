@@ -1,8 +1,9 @@
 package com.tbot.ruler.plugins.jwavez.updatecolor;
 
-import com.rposcro.jwavez.core.commands.controlled.builders.SwitchColorCommandBuilder;
+import com.rposcro.jwavez.core.JwzApplicationSupport;
+import com.rposcro.jwavez.core.commands.controlled.builders.switchcolor.SwitchColorCommandBuilder;
 import com.rposcro.jwavez.core.commands.supported.switchcolor.SwitchColorReport;
-import com.rposcro.jwavez.core.constants.ColorComponent;
+import com.rposcro.jwavez.core.model.ColorComponent;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.messages.MessagePublisher;
@@ -32,15 +33,15 @@ public class UpdateColorEmitter extends AbstractItem implements Emitter {
 
     private final static int MIN_POLL_INTERVAL = 120;
 
-    private UpdateColorEmitterConfiguration configuration;
-    private MessagePublisher messagePublisher;
-    private JWaveZCommandSender commandSender;
+    private final UpdateColorEmitterConfiguration configuration;
+    private final MessagePublisher messagePublisher;
+    private final JWaveZCommandSender commandSender;
 
-    private final SwitchColorCommandBuilder commandBuilder = new SwitchColorCommandBuilder();
-    private long pollIntervalMilliseconds;
-    private ColorMode colorMode;
+    private final SwitchColorCommandBuilder commandBuilder;
+    private final long pollIntervalMilliseconds;
+    private final ColorMode colorMode;
 
-    private HashMap<Integer, Integer> collectedComponentsReports = new HashMap<>();
+    private final HashMap<Integer, Integer> collectedComponentsReports = new HashMap<>();
 
     @Builder
     public UpdateColorEmitter(
@@ -49,7 +50,8 @@ public class UpdateColorEmitter extends AbstractItem implements Emitter {
             String description,
             @NonNull MessagePublisher messagePublisher,
             @NonNull JWaveZCommandSender commandSender,
-            @NonNull UpdateColorEmitterConfiguration configuration
+            @NonNull UpdateColorEmitterConfiguration configuration,
+            @NonNull JwzApplicationSupport applicationSupport
     ) {
         super(id, name, description);
         this.messagePublisher = messagePublisher;
@@ -57,6 +59,7 @@ public class UpdateColorEmitter extends AbstractItem implements Emitter {
         this.configuration = configuration;
         this.pollIntervalMilliseconds = configuration.getPollStateInterval() <= 0 ? 0 : 1000 * Math.max(MIN_POLL_INTERVAL, configuration.getPollStateInterval());
         this.colorMode = ColorMode.valueOf(configuration.getColorMode());
+        this.commandBuilder = applicationSupport.controlledCommandFactory().switchColorCommandBuilder();
     }
 
     @Override
@@ -75,7 +78,7 @@ public class UpdateColorEmitter extends AbstractItem implements Emitter {
             log.debug("Sending color components report request for node " + configuration.getNodeId());
             IntStream.of(colorMode.getComponentCodes()).forEach(componentCode -> {
                 try {
-                    commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.buildGetCommand((byte) componentCode));
+                    commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand((byte) componentCode));
                 } catch (MessageProcessingException e) {
                     log.warn("Failed to send request for color component {} from node {}", componentCode, configuration.getNodeId());
                 }
@@ -93,7 +96,7 @@ public class UpdateColorEmitter extends AbstractItem implements Emitter {
 
     public void acceptCommand(SwitchColorReport command) {
         log.debug("Color component {} report received for node {}", command.getColorComponentId(), command.getSourceNodeId().getId());
-        collectedComponentsReports.put((int) command.getColorComponentId(), (int) command.getColorValue());
+        collectedComponentsReports.put((int) command.getColorComponentId(), (int) command.getCurrentValue());
         log.debug("Current state is: " + collectedComponentsReports.keySet().stream().map(code -> "" + code).collect(Collectors.joining(", ")));
         if (allComponentsCollected()) {
             log.debug("All color components collected for node {}, sending color update message", configuration.getNodeId());
