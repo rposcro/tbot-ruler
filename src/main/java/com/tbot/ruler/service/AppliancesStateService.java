@@ -4,7 +4,7 @@ import com.tbot.ruler.appliances.Appliance;
 import com.tbot.ruler.exceptions.ServiceException;
 import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.exceptions.ServiceUnavailableException;
-import com.tbot.ruler.messages.SynchronousMessageSender;
+import com.tbot.ruler.messages.SynchronousMessagePublisher;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessagePayload;
@@ -21,31 +21,22 @@ import java.util.Optional;
 public class AppliancesStateService {
 
     @Autowired
-    private SynchronousMessageSender messageSender;
+    private SynchronousMessagePublisher messagePublisher;
 
     @Autowired
     private AppliancesService appliancesService;
 
-    public MessageDeliveryReport updateApplianceState(String applianceId, OnOffState onOffState) {
+    public MessageDeliveryReport updateApplianceState(String applianceId, Object requestedState) {
         Appliance appliance = appliancesService.applianceById(applianceId).orElseThrow(
             () -> new ServiceRequestException("No appliance id " + applianceId + " found")
         );
-        Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(new MessagePayload(onOffState));
-        return publishMessage(optionalForwardMessage);
-    }
-
-    public MessageDeliveryReport updateApplianceState(String applianceId, RGBWColor stateUpdate) {
-        Appliance appliance = appliancesService.applianceById(applianceId).orElseThrow(
-            () -> new ServiceRequestException("No appliance id " + applianceId + " found")
-        );
-        Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(
-                new MessagePayload(stateUpdate));
+        Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(new MessagePayload(requestedState));
         return publishMessage(optionalForwardMessage);
     }
 
     private MessageDeliveryReport publishMessage(Optional<Message> optionalForwardMessage) {
         MessageDeliveryReport report = optionalForwardMessage
-            .map(message -> messageSender.sendAndWaitForReport(message, 3000))
+            .map(message -> messagePublisher.publishAndWaitForReport(message, 3000))
             .orElseThrow(() -> new ServiceException("Unexpected missing delivery report without exception!"));
         if (!report.deliverySuccessful()) {
             throw new ServiceUnavailableException("Some or all items are unavailable for messaging", report.getFailedReceivers());

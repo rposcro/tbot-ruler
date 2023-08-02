@@ -19,16 +19,16 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class SynchronousMessageSenderTest {
+public class SynchronousMessagePublisherTest {
 
     @Mock
     private MessagePublisher messagePublisher;
 
-    private SynchronousMessageSender synchronousMessageSender;
+    private SynchronousMessagePublisher synchronousMessagePublisher;
 
     @BeforeEach
     public void setUp() {
-        this.synchronousMessageSender = SynchronousMessageSender.builder()
+        this.synchronousMessagePublisher = SynchronousMessagePublisher.builder()
                 .messagePublisher(messagePublisher)
                 .build();
     }
@@ -39,11 +39,11 @@ public class SynchronousMessageSenderTest {
         final MessageDeliveryReport deliveryReport = MessageDeliveryReport.builder().originalMessage(message).build();
 
         Mockito.doAnswer(args -> {
-            synchronousMessageSender.deliveryReportCompleted(deliveryReport);
+            synchronousMessagePublisher.deliveryReportCompleted(deliveryReport);
             return null;
         }).when(messagePublisher).publishMessage(eq(message));
 
-        MessageDeliveryReport returnedDeliveryReport = synchronousMessageSender.sendAndWaitForReport(message, 10);
+        MessageDeliveryReport returnedDeliveryReport = synchronousMessagePublisher.publishAndWaitForReport(message, 10);
 
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
         verify(messagePublisher, times(1)).publishMessage(messageCaptor.capture());
@@ -60,7 +60,7 @@ public class SynchronousMessageSenderTest {
         Mockito.doNothing().when(messagePublisher).publishMessage(eq(message));
 
         assertThrows(ServiceTimeoutException.class,
-                () -> synchronousMessageSender.sendAndWaitForReport(message, 10));
+                () -> synchronousMessagePublisher.publishAndWaitForReport(message, 10));
 
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
         verify(messagePublisher, times(1)).publishMessage(messageCaptor.capture());

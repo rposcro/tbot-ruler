@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Service
-    public class SynchronousMessageSender implements MessageDeliveryReportListener {
+    public class SynchronousMessagePublisher implements MessageDeliveryReportListener {
 
     private final static long DEFAULT_TIMEOUT = 60_000;
 
@@ -30,7 +30,7 @@ import java.util.stream.Stream;
 
     @Builder
     @Autowired
-    public SynchronousMessageSender(MessagePublisher messagePublisher) {
+    public SynchronousMessagePublisher(MessagePublisher messagePublisher) {
         this.messagePublisher = messagePublisher;
     }
 
@@ -55,11 +55,11 @@ import java.util.stream.Stream;
         }
     }
 
-    public MessageDeliveryReport sendAndWaitForReport(Message message) {
-        return sendAndWaitForReport(message, DEFAULT_TIMEOUT);
+    public MessageDeliveryReport publishAndWaitForReport(Message message) {
+        return publishAndWaitForReport(message, DEFAULT_TIMEOUT);
     }
 
-    public MessageDeliveryReport sendAndWaitForReport(Message message, long timeout) {
+    public MessageDeliveryReport publishAndWaitForReport(Message message, long timeout) {
         CompletableFuture<MessageDeliveryReport> future = settleFuture(message.getId());
 
         try {

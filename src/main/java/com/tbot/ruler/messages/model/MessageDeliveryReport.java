@@ -13,30 +13,37 @@ public class MessageDeliveryReport {
     private Message originalMessage;
     private Set<String> failedReceivers;
     private Set<String> successfulReceivers;
+    private boolean senderSuspended;
 
     @Builder(builderClassName = "DeliveryReportBuilder")
     public MessageDeliveryReport(
         @NonNull @Singular Set<String> failedReceivers,
         @NonNull @Singular Set<String> successfulReceivers,
-        @NonNull Message originalMessage) {
+        @NonNull Message originalMessage,
+        boolean senderSuspended) {
         this.failedReceivers = failedReceivers;
         this.successfulReceivers = successfulReceivers;
         this.originalMessage = originalMessage;
+        this.senderSuspended = senderSuspended;
+    }
+
+    public boolean isSenderSuspended() {
+        return senderSuspended;
     }
 
     public boolean noReceiversFound() {
-        return failedReceivers.isEmpty() && successfulReceivers.isEmpty();
+        return !senderSuspended && failedReceivers.isEmpty() && successfulReceivers.isEmpty();
     }
 
     public boolean deliverySuccessful() {
-        return failedReceivers.isEmpty() && !successfulReceivers.isEmpty();
+        return !senderSuspended && failedReceivers.isEmpty() && !successfulReceivers.isEmpty();
     }
 
     public boolean deliveryFailed() {
-        return !failedReceivers.isEmpty() && successfulReceivers.isEmpty();
+        return !senderSuspended && !failedReceivers.isEmpty() && successfulReceivers.isEmpty();
     }
 
     public boolean deliveryPartiallyFailed() {
-        return !failedReceivers.isEmpty() && !successfulReceivers.isEmpty();
+        return !senderSuspended && !failedReceivers.isEmpty() && !successfulReceivers.isEmpty();
     }
 }

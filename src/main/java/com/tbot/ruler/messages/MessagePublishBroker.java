@@ -18,12 +18,15 @@ public class MessagePublishBroker implements Runnable {
 
     private final MessageQueueComponent messageQueue;
     private final BindingsService bindingsService;
+    private final MessagePublicationManager messagePublicationManager;
 
     @Builder
     @Autowired
-    public MessagePublishBroker(MessageQueueComponent messageQueue, BindingsService bindingsService) {
+    public MessagePublishBroker(
+            MessageQueueComponent messageQueue, BindingsService bindingsService, MessagePublicationManager messagePublicationManager) {
         this.messageQueue = messageQueue;
         this.bindingsService = bindingsService;
+        this.messagePublicationManager = messagePublicationManager;
     }
 
     @Override
@@ -31,30 +34,33 @@ public class MessagePublishBroker implements Runnable {
         while(true) {
             try {
                 Message message = messageQueue.nextMessage();
-                MessageDeliveryReport deliveryReport = distributeMessage(message);
+                MessageDeliveryReport deliveryReport = dispatchMessage(message);
                 messageQueue.enqueueDeliveryReport(deliveryReport);
             } catch(Exception e) {
-                log.error("Message dispatching interrupted by unexpected internal error", e);
+                log.error("Dispatch interrupted by unexpected internal error", e);
             }
         }
     }
 
-    private MessageDeliveryReport distributeMessage(Message message) {
+    private MessageDeliveryReport dispatchMessage(Message message) {
         DeliveryReportBuilder reportBuilder = MessageDeliveryReport.builder().originalMessage(message);
         Collection<String> consumers = bindingsService.findBindedMessageConsumerIds(message.getSenderId());
 
-        if (consumers.isEmpty()) {
-            log.warn("No bindings found for messages from {}", message.getSenderId());
+        if (messagePublicationManager.isSenderSuspended(message.getSenderId())) {
+            log.info("Dispatch from {}: Suspended", message.getSenderId());
+            reportBuilder.senderSuspended(true);
+        } else if (consumers.isEmpty()) {
+            log.warn("Dispatch from {}: No bindings found", message.getSenderId());
         } else {
             consumers.stream()
                 .forEach(receiverId -> {
                     try {
-                        log.info("Dispatching message from {} to {}", message.getSenderId(), receiverId);
+                        log.info("Dispatch from {}: Delivering to {}", message.getSenderId(), receiverId);
                         this.deliverMessage(message, receiverId);
                         reportBuilder.successfulReceiver(receiverId);
                     } catch(MessageException e) {
                         reportBuilder.failedReceiver(receiverId);
-                        log.error("Consumer failed to process message from " + message.getSenderId() + " to " + receiverId, e);
+                        log.error("Dispatch from " + message.getSenderId() + ": Failed to deliver to " + receiverId, e);
                     }
                 });
         }

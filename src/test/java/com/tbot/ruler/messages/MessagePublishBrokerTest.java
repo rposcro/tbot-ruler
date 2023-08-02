@@ -37,6 +37,9 @@ public class MessagePublishBrokerTest {
     @Mock
     private BindingsService bindingsService;
 
+    @Mock
+    private MessagePublicationManager messagePublicationManager;
+
     private MessageQueueComponent messageQueueComponent;
 
     private MessagePublishBroker messagePublishBroker;
@@ -49,6 +52,7 @@ public class MessagePublishBrokerTest {
         this.messagePublishBroker = MessagePublishBroker.builder()
                 .messageQueue(messageQueueComponent)
                 .bindingsService(bindingsService)
+                .messagePublicationManager(messagePublicationManager)
                 .build();
 
         this.brokerExecutorService = Executors.newSingleThreadExecutor();
@@ -82,6 +86,7 @@ public class MessagePublishBrokerTest {
         assertEquals(message, messageCaptor.getAllValues().get(1));
 
         assertEquals(message, deliveryReport.getOriginalMessage());
+        assertFalse(deliveryReport.isSenderSuspended());
         assertTrue(deliveryReport.deliverySuccessful());
         assertFalse(deliveryReport.deliveryFailed());
         assertFalse(deliveryReport.deliveryPartiallyFailed());
@@ -106,6 +111,7 @@ public class MessagePublishBrokerTest {
         verify(receiver, times(2)).acceptMessage(eq(message));
 
         assertEquals(message, deliveryReport.getOriginalMessage());
+        assertFalse(deliveryReport.isSenderSuspended());
         assertFalse(deliveryReport.deliverySuccessful());
         assertTrue(deliveryReport.deliveryFailed());
         assertFalse(deliveryReport.deliveryPartiallyFailed());
@@ -131,6 +137,7 @@ public class MessagePublishBrokerTest {
         verify(receiver, times(2)).acceptMessage(eq(message));
 
         assertEquals(message, deliveryReport.getOriginalMessage());
+        assertFalse(deliveryReport.isSenderSuspended());
         assertFalse(deliveryReport.deliverySuccessful());
         assertFalse(deliveryReport.deliveryFailed());
         assertTrue(deliveryReport.deliveryPartiallyFailed());
@@ -148,9 +155,29 @@ public class MessagePublishBrokerTest {
         MessageDeliveryReport deliveryReport = messageQueueComponent.nextDeliveryReport(100);
 
         assertEquals(message, deliveryReport.getOriginalMessage());
+        assertFalse(deliveryReport.isSenderSuspended());
         assertFalse(deliveryReport.deliverySuccessful());
         assertFalse(deliveryReport.deliveryFailed());
         assertFalse(deliveryReport.deliveryPartiallyFailed());
         assertTrue(deliveryReport.noReceiversFound());
+    }
+
+    @Test
+    public void deliveryReportWhenSenderSuspended() throws Exception {
+        final String senderId = "mocked-sender-id";
+        final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
+
+        when(bindingsService.findBindedMessageConsumerIds(eq(senderId))).thenReturn(Collections.emptyList());
+        when(messagePublicationManager.isSenderSuspended(eq(senderId))).thenReturn(true);
+
+        messageQueueComponent.enqueueMessage(message);
+        MessageDeliveryReport deliveryReport = messageQueueComponent.nextDeliveryReport(100);
+
+        assertEquals(message, deliveryReport.getOriginalMessage());
+        assertTrue(deliveryReport.isSenderSuspended());
+        assertFalse(deliveryReport.deliverySuccessful());
+        assertFalse(deliveryReport.deliveryFailed());
+        assertFalse(deliveryReport.deliveryPartiallyFailed());
+        assertFalse(deliveryReport.noReceiversFound());
     }
 }
