@@ -7,7 +7,6 @@ import com.rposcro.jwavez.serial.SerialRequestFactory;
 import com.rposcro.jwavez.serial.exceptions.SerialException;
 import com.rposcro.jwavez.serial.rxtx.SerialRequest;
 import lombok.Builder;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.LinkedBlockingQueue;
@@ -41,7 +40,7 @@ public class JWaveZCommandSender implements Runnable {
         if (requestQueue.remainingCapacity() < 1 || !requestQueue.offer(request)) {
             log.warn("Request queue is full, dropped command {} for node {}", command.getClass(), nodeId.getId());
         } else {
-            log.debug("Enqueued command request {} from node {}",command.getClass(), nodeId.getId());
+            log.debug("Enqueued command request {} to node {}", command.getClass(), nodeId.getId());
         }
     }
 

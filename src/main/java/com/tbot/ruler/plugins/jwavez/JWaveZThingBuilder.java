@@ -33,7 +33,7 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
         JWaveZThingContext thingContext = JWaveZThingContext.builder()
                 .builderContext(builderContext)
                 .messagePublisher(builderContext.getMessagePublisher())
-                .jwzApplicationSupport(JwzApplicationSupport.builder().build())
+                .jwzApplicationSupport(JwzApplicationSupport.defaultSupport())
                 .jwzCommandSender(commandSender)
                 .build();
 

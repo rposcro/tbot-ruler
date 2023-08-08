@@ -68,9 +68,10 @@ public class PackageScanner {
 
     private <T> T instantiateClass(Class<T> clazz, Object... constructorArguments) {
         try {
-            Class<?>[] types = (Class<?>[]) Arrays.stream(constructorArguments)
-                    .map(Object::getClass)
-                    .toArray();
+            Class<?>[] types = new Class<?>[constructorArguments.length];
+            for (int i = 0; i < constructorArguments.length; i++) {
+                types[i] = constructorArguments[i].getClass();
+            }
             Constructor<T> constructor = clazz.getConstructor(types);
             return constructor.newInstance(constructorArguments);
         } catch (ReflectiveOperationException e) {

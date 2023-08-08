@@ -21,7 +21,7 @@ public class SceneActivationListener extends JWaveZCommandListener<SceneActivati
 
     @Override
     public void handleCommand(SceneActivationSet command) {
-        log.debug("Handling scene activation command");
+        log.debug("Handling scene activation set command");
         String emitterKey = SceneActivationEmitter.uniqueSceneKey(command.getSourceNodeId().getId(), (byte) command.getSceneId());
         Optional.ofNullable(emittersPerKey.get(emitterKey))
             .map(List::stream)

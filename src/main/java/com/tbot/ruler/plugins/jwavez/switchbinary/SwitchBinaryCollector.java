@@ -52,7 +52,7 @@ public class SwitchBinaryCollector extends AbstractItem implements Collector {
                 command = multiChannelCommandBuilder.v3().encapsulateCommand(SOURCE_ENDPOINT_ID, (byte) configuration.getDestinationEndPointId(), command);
             }
 
-            commandSender.enqueueCommand(new NodeId(configuration.getNodeId()), command);
+            commandSender.enqueueCommand(NodeId.forId(configuration.getNodeId()), command);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }

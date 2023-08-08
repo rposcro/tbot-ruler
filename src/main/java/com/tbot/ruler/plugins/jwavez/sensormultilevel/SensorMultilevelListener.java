@@ -34,7 +34,7 @@ public class SensorMultilevelListener extends JWaveZCommandListener<SensorMultil
 
     @Override
     public void handleCommand(SensorMultilevelReport report) {
-        log.debug("Handling scene activation command");
+        log.debug("Handling sensor multilevel report command");
         String emittersKey = computeKey(report.getSourceNodeId().getId());
         Optional.ofNullable(emittersPerKey.get(emittersKey))
             .map(List::stream)
@@ -44,7 +44,7 @@ public class SensorMultilevelListener extends JWaveZCommandListener<SensorMultil
 
     @Override
     public void handleEncapsulatedCommand(MultiChannelCommandEncapsulation commandEncapsulation) {
-        log.debug("Handling encapsulated scene activation command");
+        log.debug("Handling encapsulated sensor multilevel report command");
         String emittersKey = computeKey(commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndPointId());
         List<SensorMultilevelEmitter> emitters = emittersPerKey.get(emittersKey);
 

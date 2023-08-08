@@ -49,7 +49,7 @@ public class SwitchColorCollector extends AbstractItem implements Collector {
             RGBWColor payload = message.getPayloadAs(RGBWColor.class);
             log.debug(String.format("Color switch requested: r%s g%s b%s w%s", payload.getRed(), payload.getGreen(), payload.getBlue(), payload.getWhite()));
             ZWaveControlledCommand command = buildCommand(payload);
-            commandSender.enqueueCommand(new NodeId(configuration.getNodeId()), command);
+            commandSender.enqueueCommand(NodeId.forId(configuration.getNodeId()), command);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }

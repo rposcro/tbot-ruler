@@ -4,6 +4,7 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -23,6 +24,10 @@ public class MessagePublicationManager {
 
     public void unsuspendMessagesFrom(String senderId) {
         suspendedSenders.remove(senderId);
+    }
+
+    public Set<String> getSuspendedSenders() {
+        return Collections.unmodifiableSet(suspendedSenders);
     }
 
     public boolean isSenderSuspended(String senderId) {

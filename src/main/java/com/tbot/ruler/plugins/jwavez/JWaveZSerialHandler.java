@@ -38,6 +38,8 @@ public class JWaveZSerialHandler extends InterceptableCallbackHandler {
         applicationCommandInterceptor.registerCommandHandler(
                 MultiChannelCommandType.MULTI_CHANNEL_CMD_ENCAP,
                 new LoggingCommandListener(buildCommandEncapsulationListener()));
+
+        addCallbackInterceptor(applicationCommandInterceptor);
         addFrameBufferInterceptor(frameBufferInterceptor());
     }
 
