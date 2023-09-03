@@ -8,7 +8,7 @@ import java.time.ZoneId;
 
 @Builder
 @Getter
-public class SunEventLocale {
+public class SunLocale {
     private Location location;
     private ZoneId zoneId;
 }

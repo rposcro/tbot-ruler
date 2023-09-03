@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins.sunwatch;
+package com.tbot.ruler.plugins.sunwatch.sunevent;
 
 import com.tbot.ruler.things.thread.TaskTrigger;
 import com.tbot.ruler.things.thread.EmissionTriggerContext;

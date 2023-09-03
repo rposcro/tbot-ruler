@@ -15,7 +15,7 @@ public abstract class AbstractEmitterBuilder {
     protected static final String VALUE_ON = "on";
 
     public abstract String getReference();
-    public abstract Emitter buildEmitter(ThingBuilderContext builderContext, SunEventLocale eventLocale) throws PluginException;
+    public abstract Emitter buildEmitter(ThingBuilderContext builderContext, SunLocale eventLocale) throws PluginException;
 
     protected EmitterDTO findEmitterDTO(String emitterReference, ThingBuilderContext builderContext) throws PluginException {
         return builderContext.getThingDTO().getEmitters().stream()

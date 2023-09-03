@@ -1,5 +1,8 @@
-package com.tbot.ruler.plugins.sunwatch;
+package com.tbot.ruler.plugins.sunwatch.daytime;
 
+import com.tbot.ruler.plugins.sunwatch.AbstractEmitterBuilder;
+import com.tbot.ruler.plugins.sunwatch.SunCalculator;
+import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.things.BasicEmitter;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
@@ -16,7 +19,7 @@ public class DaytimeEmitterBuilder extends AbstractEmitterBuilder {
     }
 
     @Override
-    public Emitter buildEmitter(ThingBuilderContext builderContext, SunEventLocale eventLocale) throws PluginException {
+    public Emitter buildEmitter(ThingBuilderContext builderContext, SunLocale eventLocale) throws PluginException {
         EmitterDTO emitterDTO = findEmitterDTO(REFERENCE, builderContext);
         DaytimeEmitterConfiguration emitterConfiguration = parseEmitterConfiguration(emitterDTO, DaytimeEmitterConfiguration.class);
         SunCalculator sunCalculator = sunCalculator(emitterConfiguration, eventLocale);
@@ -47,7 +50,7 @@ public class DaytimeEmitterBuilder extends AbstractEmitterBuilder {
                 .build();
     }
 
-    private DaytimeEmissionTrigger emissionTrigger(DaytimeEmitterConfiguration configuration, SunEventLocale eventLocale, SunCalculator sunCalculator) {
+    private DaytimeEmissionTrigger emissionTrigger(DaytimeEmitterConfiguration configuration, SunLocale eventLocale, SunCalculator sunCalculator) {
         return DaytimeEmissionTrigger.builder()
                 .sunCalculator(sunCalculator)
                 .emissionIntervalMinutes(configuration.getEmissionInterval())
@@ -55,7 +58,7 @@ public class DaytimeEmitterBuilder extends AbstractEmitterBuilder {
                 .build();
     }
 
-    private SunCalculator sunCalculator(DaytimeEmitterConfiguration configuration, SunEventLocale eventLocale) {
+    private SunCalculator sunCalculator(DaytimeEmitterConfiguration configuration, SunLocale eventLocale) {
         return SunCalculator.builder()
                 .eventLocale(eventLocale)
                 .sunriseShiftMinutes(configuration.getSunriseShift())

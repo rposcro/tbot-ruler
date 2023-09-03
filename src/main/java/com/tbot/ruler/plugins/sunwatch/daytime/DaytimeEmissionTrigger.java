@@ -1,5 +1,6 @@
-package com.tbot.ruler.plugins.sunwatch;
+package com.tbot.ruler.plugins.sunwatch.daytime;
 
+import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import com.tbot.ruler.things.thread.EmissionTriggerContext;
 import lombok.Builder;

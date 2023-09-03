@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins.sunwatch;
+package com.tbot.ruler.plugins.sunwatch.daytime;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;

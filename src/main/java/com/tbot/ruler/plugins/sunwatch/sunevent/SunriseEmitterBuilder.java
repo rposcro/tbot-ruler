@@ -1,6 +1,9 @@
-package com.tbot.ruler.plugins.sunwatch;
+package com.tbot.ruler.plugins.sunwatch.sunevent;
 
 import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.plugins.sunwatch.AbstractEmitterBuilder;
+import com.tbot.ruler.plugins.sunwatch.SunCalculator;
+import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.things.BasicEmitter;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
@@ -8,12 +11,12 @@ import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 import com.tbot.ruler.things.thread.TaskTrigger;
 
-public class SunsetEmitterBuilder extends AbstractEmitterBuilder {
+public class SunriseEmitterBuilder extends AbstractEmitterBuilder {
 
-    private static final String REFERENCE = "sunset";
+    private static final String REFERENCE = "sunrise";
 
     private ThingBuilderContext builderContext;
-    private SunEventLocale eventLocale;
+    private SunLocale eventLocale;
 
     @Override
     public String getReference() {
@@ -21,19 +24,19 @@ public class SunsetEmitterBuilder extends AbstractEmitterBuilder {
     }
 
     @Override
-    public Emitter buildEmitter(ThingBuilderContext builderContext, SunEventLocale eventLocale) throws PluginException {
+    public Emitter buildEmitter(ThingBuilderContext builderContext, SunLocale eventLocale) throws PluginException {
         EmitterDTO emitterDTO = findEmitterDTO(REFERENCE, builderContext);
         SunEventEmitterConfiguration emitterConfiguration = parseEmitterConfiguration(emitterDTO, SunEventEmitterConfiguration.class);
         TaskTrigger emissionTrigger = emissionTrigger(emitterConfiguration);
         Runnable emissionTask = emissionTask(emitterDTO, emitterConfiguration);
 
         return BasicEmitter.builder()
-                .id(emitterDTO.getId())
-                .name(emitterDTO.getName())
-                .description(emitterDTO.getDescription())
-                .taskTrigger(emissionTrigger)
-                .triggerableTask(emissionTask)
-                .build();
+            .id(emitterDTO.getId())
+            .name(emitterDTO.getName())
+            .description(emitterDTO.getDescription())
+            .taskTrigger(emissionTrigger)
+            .triggerableTask(emissionTask)
+            .build();
     }
 
     private Runnable emissionTask(EmitterDTO emitterDTO, SunEventEmitterConfiguration emitterConfiguration) {
@@ -50,12 +53,12 @@ public class SunsetEmitterBuilder extends AbstractEmitterBuilder {
             .build();
     }
 
-    private SunEventTimer sunEvent(long shiftMinutes) {
+    private SunEventTimer sunEvent(long sunriseShift) {
         SunCalculator sunCalculator = SunCalculator.builder()
                 .eventLocale(eventLocale)
-                .sunriseShiftMinutes(0)
-                .sunsetShiftMinutes(shiftMinutes)
+                .sunriseShiftMinutes(sunriseShift)
+                .sunsetShiftMinutes(0)
                 .build();
-        return sunCalculator::sunsetForDate;
+        return sunCalculator::sunriseForDate;
     }
 }

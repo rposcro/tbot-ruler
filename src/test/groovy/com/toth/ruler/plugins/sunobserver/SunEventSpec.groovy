@@ -1,6 +1,7 @@
 package com.tbot.ruler.plugins.sunwatch
 
 import com.luckycatlabs.sunrisesunset.dto.Location
+import com.tbot.ruler.plugins.sunwatch.sunevent.SunEventTimer
 import spock.lang.Specification
 
 import java.time.LocalDate

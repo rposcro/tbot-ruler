@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins.sunwatch;
+package com.tbot.ruler.plugins.sunwatch.sunevent;
 
 import java.time.LocalDate;
 import java.time.ZoneId;

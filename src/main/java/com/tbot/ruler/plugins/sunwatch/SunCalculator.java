@@ -18,7 +18,7 @@ public class SunCalculator {
     private long sunsetShiftMinutes;
 
     @Builder
-    public SunCalculator(SunEventLocale eventLocale, long sunriseShiftMinutes, long sunsetShiftMinutes) {
+    public SunCalculator(SunLocale eventLocale, long sunriseShiftMinutes, long sunsetShiftMinutes) {
         TimeZone timeZone = TimeZone.getTimeZone(eventLocale.getZoneId());
         this.zoneId = eventLocale.getZoneId();
         this.calculator = new SunriseSunsetCalculator(eventLocale.getLocation(), timeZone);

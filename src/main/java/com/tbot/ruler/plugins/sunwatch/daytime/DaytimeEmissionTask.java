@@ -1,8 +1,9 @@
-package com.tbot.ruler.plugins.sunwatch;
+package com.tbot.ruler.plugins.sunwatch.daytime;
 
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.MessagePublisher;
+import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
