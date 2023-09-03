@@ -23,7 +23,7 @@ public class DaytimeEmitterBuilder extends AbstractEmitterBuilder {
         EmitterDTO emitterDTO = findEmitterDTO(REFERENCE, builderContext);
         DaytimeEmitterConfiguration emitterConfiguration = parseEmitterConfiguration(emitterDTO, DaytimeEmitterConfiguration.class);
         SunCalculator sunCalculator = sunCalculator(emitterConfiguration, eventLocale);
-        DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterConfiguration, eventLocale, sunCalculator);
+        DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterConfiguration, sunCalculator);
         DaytimeEmissionTask emissionTask = emissionTask(emitterDTO, builderContext, sunCalculator, emitterConfiguration);
 
         return BasicEmitter.builder()
@@ -50,11 +50,10 @@ public class DaytimeEmitterBuilder extends AbstractEmitterBuilder {
                 .build();
     }
 
-    private DaytimeEmissionTrigger emissionTrigger(DaytimeEmitterConfiguration configuration, SunLocale eventLocale, SunCalculator sunCalculator) {
+    private DaytimeEmissionTrigger emissionTrigger(DaytimeEmitterConfiguration configuration, SunCalculator sunCalculator) {
         return DaytimeEmissionTrigger.builder()
                 .sunCalculator(sunCalculator)
                 .emissionIntervalMinutes(configuration.getEmissionInterval())
-                .zoneId(eventLocale.getZoneId())
                 .build();
     }
 

@@ -7,14 +7,12 @@ import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.time.ZoneId;
 import java.util.Date;
 
 @Slf4j
 public class DaytimeEmissionTrigger implements TaskTrigger {
 
     private SunCalculator sunCalculator;
-    private ZoneId zoneId;
     private long emissionIntervalMinutes;
 
     private Date lastEmissionTime;
@@ -22,10 +20,8 @@ public class DaytimeEmissionTrigger implements TaskTrigger {
     @Builder
     public DaytimeEmissionTrigger(
             @NonNull SunCalculator sunCalculator,
-            @NonNull ZoneId zoneId,
             long emissionIntervalMinutes) {
         this.sunCalculator = sunCalculator;
-        this.zoneId = zoneId;
         this.emissionIntervalMinutes = emissionIntervalMinutes;
     }
 
