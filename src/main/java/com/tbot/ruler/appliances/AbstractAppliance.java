@@ -21,7 +21,7 @@ public abstract class AbstractAppliance<T> implements Appliance<T> {
 
     @Override
     public void acceptDeliveryReport(MessageDeliveryReport report) {
-        log.debug("Delivery report sender: {}, empty: {}, success: {}, failure: {}, part failure: {}",
+        log.debug("Delivery report sender: {}, no receivers: {}, success: {}, failure: {}, part failure: {}",
             id, report.noReceiversFound(), report.deliverySuccessful(), report.deliveryFailed(), report.deliveryPartiallyFailed());
     }
 }
