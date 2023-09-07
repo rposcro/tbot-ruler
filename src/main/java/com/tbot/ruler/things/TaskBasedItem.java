@@ -4,7 +4,7 @@ import com.tbot.ruler.things.thread.TaskTrigger;
 
 import java.util.Optional;
 
-public interface TaskBasedItem<T extends ItemId> extends Item<T> {
+public interface TaskBasedItem extends Item {
 
     default Optional<Runnable> getTriggerableTask() {
         return Optional.empty();

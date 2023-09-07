@@ -1,10 +1,9 @@
 package com.toth.ruler.message
 
-import com.tbot.ruler.message.DeliveryReport
-import com.tbot.ruler.message.Message
-import com.tbot.ruler.message.payloads.BooleanTogglePayload
-import com.tbot.ruler.things.EmitterId
-import com.tbot.ruler.things.ItemId
+import com.tbot.ruler.messages.model.MessageDeliveryReport
+import com.tbot.ruler.messages.model.Message
+import com.tbot.ruler.messages.model.payloads.BooleanTogglePayload
+
 import spock.lang.Specification
 import spock.lang.Unroll
 
@@ -13,7 +12,7 @@ class DeliveryReportSpec extends Specification {
     @Unroll
     def "reports: #testName"() {
         given:
-        DeliveryReport.DeliveryReportBuilder reportBuilder = DeliveryReport.builder()
+        MessageDeliveryReport.DeliveryReportBuilder reportBuilder = MessageDeliveryReport.builder()
             .originalMessage(Message.builder()
                 .senderId(new EmitterId("1234"))
                 .payload(BooleanTogglePayload.TOGGLE_PAYLOAD)
@@ -23,7 +22,7 @@ class DeliveryReportSpec extends Specification {
         successfulItems.stream().forEach({ item -> reportBuilder.successfulReceiver(new ItemId("" + item)) });
 
         when:
-        DeliveryReport report = reportBuilder.build();
+        MessageDeliveryReport report = reportBuilder.build();
 
         then:
         report.noReceiversFound() == noReceivers;

@@ -1,14 +1,12 @@
 package com.tbot.ruler.appliances;
 
+import com.tbot.ruler.model.BinaryStateClaim;
 import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePayload;
-import com.tbot.ruler.message.payloads.BooleanTogglePayload;
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
-import com.tbot.ruler.service.PersistenceService;
-import com.tbot.ruler.things.ApplianceId;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.model.MessagePayload;
+import com.tbot.ruler.service.ApplianceStatePersistenceService;
 import lombok.Getter;
 
 import java.util.Optional;
@@ -17,17 +15,13 @@ import static com.tbot.ruler.model.OnOffState.STATE_OFF;
 
 public class OnOffAppliance extends AbstractAppliance<OnOffState> {
 
-    private final static String PERSIST_KEY = "state";
-
-    public OnOffAppliance(ApplianceId id, PersistenceService persistenceService) {
-        super(id, persistenceService);
-        persistenceService.retrieve(this.getId(), PERSIST_KEY).ifPresent(
-            encState -> this.state = Optional.of(OnOffState.of(Boolean.parseBoolean(encState)))
-        );
-    }
-
     @Getter
-    private Optional<OnOffState> state = Optional.empty();
+    private Optional<OnOffState> state;
+
+    public OnOffAppliance(String id, ApplianceStatePersistenceService persistenceService) {
+        super(id, persistenceService);
+        state = persistenceService.retrieve(this.getId());
+    }
 
     @Override
     public void acceptMessage(Message message) {
@@ -35,33 +29,38 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
     }
 
     @Override
-    public Optional<Message> acceptDirectPayload(MessagePayload payload) {
+    public Optional<Message> acceptDirectPayload(MessagePayload messagePayload) {
         return Optional.of(Message.builder()
             .senderId(getId())
-            .payload(BooleanUpdatePayload.of(determineValue(payload)))
+            .payload(OnOffState.of(determineValue(messagePayload.getPayload())))
             .build());
     }
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             setState(deliveryReport.getOriginalMessage().getPayload());
-            getPersistenceService().persist(this.getId(), PERSIST_KEY, Boolean.toString(state.get().isOn()));
+            getPersistenceService().persist(this.getId(), state.get());
         }
     }
 
-    private void setState(MessagePayload messagePayload) {
-        this.state = Optional.of(OnOffState.of(determineValue(messagePayload)));
+    private void setState(Object payload) {
+        this.state = Optional.of(OnOffState.of(determineValue(payload)));
     }
 
-    private boolean determineValue(MessagePayload messagePayload) {
-        if (messagePayload instanceof BooleanTogglePayload) {
-            return !this.state.orElse(STATE_OFF).isOn();
-        } else if (messagePayload instanceof BooleanUpdatePayload) {
-            return ((BooleanUpdatePayload) messagePayload).isState();
+    private boolean determineValue(Object payload) {
+        if (payload instanceof BinaryStateClaim) {
+            BinaryStateClaim claim = (BinaryStateClaim) payload;
+            if (claim.isToggle()) {
+                return !this.state.orElse(STATE_OFF).isOn();
+            } else {
+                return claim.isSetOn();
+            }
+        } else if (payload instanceof OnOffState) {
+            return ((OnOffState) payload).isOn();
         } else {
-            throw new MessageUnsupportedException("Unsupported message payload of class " + messagePayload.getClass());
+            throw new MessageUnsupportedException("Unsupported message payload of class " + payload.getClass());
         }
     }
 }

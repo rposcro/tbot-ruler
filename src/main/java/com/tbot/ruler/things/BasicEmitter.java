@@ -1,6 +1,6 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.message.DeliveryReport;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;
@@ -10,22 +10,22 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @Getter
-public class BasicEmitter extends AbstractItem<EmitterId> implements Emitter {
+public class BasicEmitter extends AbstractItem implements Emitter {
 
     private Optional<Runnable> startUpTask;
     private Optional<Runnable> triggerableTask;
     private Optional<TaskTrigger> taskTrigger;
-    private Optional<Consumer<DeliveryReport>> reportListener;
+    private Optional<Consumer<MessageDeliveryReport>> reportListener;
 
     @Builder
     public BasicEmitter(
-        @NonNull EmitterId id,
+        @NonNull String id,
         @NonNull String name,
         String description,
         Runnable startUpTask,
         Runnable triggerableTask,
         TaskTrigger taskTrigger,
-        Consumer<DeliveryReport> reportListener
+        Consumer<MessageDeliveryReport> reportListener
     ) {
         super(id, name, description);
         this.triggerableTask = Optional.ofNullable(triggerableTask);
@@ -39,7 +39,7 @@ public class BasicEmitter extends AbstractItem<EmitterId> implements Emitter {
     }
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
         reportListener.ifPresent(listener -> listener.accept(deliveryReport));
     }
 }

@@ -38,7 +38,8 @@ ruler:
     thingsConfig:
         path: /config
     cache:
-        path: /cache
+        states:
+            path: /cache/states.json
     broker:
         emissionQueueLength: 200
         collectionQueueLength: 200

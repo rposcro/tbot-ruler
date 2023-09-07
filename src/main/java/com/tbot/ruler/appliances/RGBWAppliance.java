@@ -1,49 +1,41 @@
 package com.tbot.ruler.appliances;
 
 import com.tbot.ruler.model.RGBWColor;
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePayload;
-import com.tbot.ruler.message.payloads.RGBWUpdatePayload;
-import com.tbot.ruler.service.PersistenceService;
-import com.tbot.ruler.things.ApplianceId;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.model.MessagePayload;
+import com.tbot.ruler.service.ApplianceStatePersistenceService;
 
 import java.util.Optional;
 
 public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
 
-    private final static String CODING_SEPARATOR = "-";
-    private final static String PERSIST_KEY = "state";
+    private Optional<RGBWColor> colorState;
 
-    public RGBWAppliance(ApplianceId id, PersistenceService persistenceService) {
+    public RGBWAppliance(String id, ApplianceStatePersistenceService persistenceService) {
         super(id, persistenceService);
-        persistenceService.retrieve(this.getId(), PERSIST_KEY).ifPresent(
-            encState -> this.colorState = Optional.of(fromString(encState))
-        );
+        colorState = persistenceService.retrieve(this.getId());
     }
-
-    private Optional<RGBWColor> colorState = Optional.empty();
 
     @Override
     public void acceptMessage(Message message) {
-        setState(message.getPayload().ensureMessageType());
+        setState(message.getPayloadAs(RGBWColor.class));
     }
 
     @Override
-    public Optional<Message> acceptDirectPayload(MessagePayload payload) {
-        RGBWUpdatePayload forwardPayload = payload.ensureMessageType();
+    public Optional<Message> acceptDirectPayload(MessagePayload messagePayload) {
         return Optional.of(Message.builder()
             .senderId(getId())
-            .payload(forwardPayload)
+            .payload(messagePayload.getPayload())
             .build());
     }
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
-            setState(deliveryReport.getOriginalMessage().getPayload().ensureMessageType());
-            getPersistenceService().persist(this.getId(), PERSIST_KEY, toString(colorState.get()));
+            setState(deliveryReport.getOriginalMessage().getPayloadAs(RGBWColor.class));
+            getPersistenceService().persist(this.getId(), colorState.get());
         }
     }
 
@@ -52,23 +44,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
         return this.colorState;
     }
 
-    private MessagePayload setState(RGBWUpdatePayload rgbw) {
-        RGBWColor newState = RGBWColor.of(rgbw.getRed(), rgbw.getGreen(), rgbw.getBlue(), rgbw.getWhite());
-        this.colorState = Optional.of(newState);
-        return rgbw;
-    }
-
-    private String toString(RGBWColor state) {
-        return String.join(CODING_SEPARATOR, "" + state.getRed(), "" + state.getGreen(), "" + state.getBlue(), "" + state.getWhite());
-    }
-
-    private RGBWColor fromString(String encState) {
-        String[] components = encState.split(CODING_SEPARATOR);
-        return RGBWColor.of(
-            Integer.parseInt(components[0]),
-            Integer.parseInt(components[1]),
-            Integer.parseInt(components[2]),
-            Integer.parseInt(components[3])
-        );
+    private void setState(RGBWColor rgbw) {
+        this.colorState = Optional.of(rgbw);
     }
 }

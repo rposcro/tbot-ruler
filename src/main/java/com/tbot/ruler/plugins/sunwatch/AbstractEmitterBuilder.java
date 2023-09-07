@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.sunwatch;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
@@ -15,7 +15,7 @@ public abstract class AbstractEmitterBuilder {
     protected static final String VALUE_ON = "on";
 
     public abstract String getReference();
-    public abstract Emitter buildEmitter(ThingBuilderContext builderContext, SunEventLocale eventLocale) throws PluginException;
+    public abstract Emitter buildEmitter(ThingBuilderContext builderContext, SunLocale eventLocale) throws PluginException;
 
     protected EmitterDTO findEmitterDTO(String emitterReference, ThingBuilderContext builderContext) throws PluginException {
         return builderContext.getThingDTO().getEmitters().stream()
@@ -27,7 +27,7 @@ public abstract class AbstractEmitterBuilder {
     protected Message emitterMessage(EmitterDTO emitterDTO, String signalValue) {
         return Message.builder()
             .senderId(emitterDTO.getId())
-            .payload(BooleanUpdatePayload.of(VALUE_ON.equalsIgnoreCase(signalValue)))
+            .payload(OnOffState.of(VALUE_ON.equalsIgnoreCase(signalValue)))
             .build();
     }
 

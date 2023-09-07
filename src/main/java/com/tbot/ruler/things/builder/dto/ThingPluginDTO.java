@@ -8,6 +8,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class ThingPluginDTO {
+
     private String alias;
     private String builder;
     private List<String> emitters;

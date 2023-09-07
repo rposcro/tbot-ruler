@@ -4,9 +4,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.message.MessageSender;
+import com.tbot.ruler.messages.MessageSender;
 import com.tbot.ruler.things.*;
-import com.tbot.ruler.message.MessageReceiver;
+import com.tbot.ruler.messages.MessageReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -26,26 +26,26 @@ public class BindingsConfiguration {
     @Autowired
     private DTOConfiguration dtoConfiguration;
     @Autowired
-    private  Map<ApplianceId, Appliance> appliancesPerId;
+    private  Map<String, Appliance> appliancesPerId;
     @Autowired
-    private Map<ActuatorId, Actuator> actuatorsPerId;
+    private Map<String, Actuator> actuatorsPerId;
     @Autowired
-    private Map<CollectorId, Collector> collectorsPerId;
+    private Map<String, Collector> collectorsPerId;
     @Autowired
-    private Map<EmitterId, Emitter> emittersPerId;
+    private Map<String, Emitter> emittersPerId;
 
-    private Map<ItemId, MessageReceiver> receiversPerId;
-    private Map<ItemId, MessageSender> sendersPerId;
+    private Map<String, MessageReceiver> receiversPerId;
+    private Map<String, MessageSender> sendersPerId;
 
     @PostConstruct
     public void init() {
-        Map<ItemId, MessageReceiver> receiverMap = new HashMap<>();
+        Map<String, MessageReceiver> receiverMap = new HashMap<>();
         receiverMap.putAll(appliancesPerId);
         receiverMap.putAll(actuatorsPerId);
         receiverMap.putAll(collectorsPerId);
         this.receiversPerId = receiverMap;
 
-        Map<ItemId, MessageSender> senderMap = new HashMap<>();
+        Map<String, MessageSender> senderMap = new HashMap<>();
         senderMap.putAll(appliancesPerId);
         senderMap.putAll(actuatorsPerId);
         senderMap.putAll(emittersPerId);
@@ -53,8 +53,8 @@ public class BindingsConfiguration {
     }
 
     @Bean
-    public Map<ItemId, List<ItemId>> consumerIdsBySenderId() {
-        Map<ItemId, List<ItemId>> mappings = new HashMap<>();
+    public Map<String, List<String>> consumerIdsBySenderId() {
+        Map<String, List<String>> mappings = new HashMap<>();
         dtoConfiguration.bindingDTOs().stream()
             .forEach(bindingDTO -> {
                 mappings.computeIfAbsent(bindingDTO.getSenderId(), senderId -> new LinkedList())
@@ -65,8 +65,8 @@ public class BindingsConfiguration {
     }
 
     @Bean
-    public Map<ItemId, List<MessageReceiver>> consumersBySenderId() {
-        Map<ItemId, List<MessageReceiver>> mappings = new HashMap<>();
+    public Map<String, List<MessageReceiver>> consumersBySenderId() {
+        Map<String, List<MessageReceiver>> mappings = new HashMap<>();
 
         consumerIdsBySenderId().entrySet().stream()
             .forEach(entry -> {
@@ -80,12 +80,12 @@ public class BindingsConfiguration {
     }
 
     @Bean
-    public Map<ItemId, MessageReceiver> receiversPerId() {
+    public Map<String, MessageReceiver> receiversPerId() {
         return this.receiversPerId;
     }
 
     @Bean
-    public Map<ItemId, MessageSender> sendersPerId() {
+    public Map<String, MessageSender> sendersPerId() {
         return this.sendersPerId;
     }
 }

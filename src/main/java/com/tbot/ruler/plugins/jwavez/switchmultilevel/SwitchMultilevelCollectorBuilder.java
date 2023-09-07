@@ -2,8 +2,7 @@ package com.tbot.ruler.plugins.jwavez.switchmultilevel;
 
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.plugins.jwavez.CollectorBuilder;
-import com.tbot.ruler.plugins.jwavez.JWaveZAgent;
-import com.tbot.ruler.things.builder.ThingBuilderContext;
+import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
 import com.tbot.ruler.things.builder.dto.CollectorDTO;
 
 public class SwitchMultilevelCollectorBuilder implements CollectorBuilder {
@@ -13,20 +12,27 @@ public class SwitchMultilevelCollectorBuilder implements CollectorBuilder {
 
     private final static String REFERENCE = "switch-multilevel";
 
+    private final JWaveZThingContext thingContext;
+
+    public SwitchMultilevelCollectorBuilder(JWaveZThingContext thingContext) {
+        this.thingContext = thingContext;
+    }
+
     @Override
     public String getReference() {
         return REFERENCE;
     }
 
     @Override
-    public SwitchMultilevelCollector buildCollector(JWaveZAgent agent, ThingBuilderContext builderContext, CollectorDTO collectorDTO) {
+    public SwitchMultilevelCollector buildCollector(CollectorDTO collectorDTO) {
         return SwitchMultilevelCollector.builder()
-            .id(collectorDTO.getId())
-            .name(collectorDTO.getName())
-            .description(collectorDTO.getDescription())
-            .switchDuration((byte) collectorDTO.getIntParameter(SWITCH_PARAM_SWITCH_DURATION, 0))
-            .nodeId(new NodeId((byte) collectorDTO.getIntParameter(SWITCH_PARAM_NODE_ID)))
-            .commandSender(agent.getCommandSender())
-            .build();
+                .id(collectorDTO.getId())
+                .name(collectorDTO.getName())
+                .description(collectorDTO.getDescription())
+                .switchDuration((byte) collectorDTO.getIntParameter(SWITCH_PARAM_SWITCH_DURATION, 0))
+                .nodeId(new NodeId((byte) collectorDTO.getIntParameter(SWITCH_PARAM_NODE_ID)))
+                .commandSender(thingContext.getJwzCommandSender())
+                .applicationSupport(thingContext.getJwzApplicationSupport())
+                .build();
     }
 }

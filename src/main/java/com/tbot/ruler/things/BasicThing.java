@@ -10,9 +10,9 @@ import java.util.List;
 import java.util.Optional;
 
 @Getter
-public class BasicThing extends AbstractItem<ThingId> implements Thing {
+public class BasicThing extends AbstractItem implements Thing {
 
-    private ThingId id;
+    private String id;
     private String name;
     private String description;
     private List<? extends Emitter> emitters;
@@ -25,7 +25,7 @@ public class BasicThing extends AbstractItem<ThingId> implements Thing {
 
     @Builder
     public BasicThing(
-        @NonNull ThingId id,
+        @NonNull String id,
         @NonNull String name,
         String description,
         Runnable startUpTask,

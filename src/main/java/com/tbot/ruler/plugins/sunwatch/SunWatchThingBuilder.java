@@ -35,7 +35,7 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
     public Thing buildThing(ThingBuilderContext builderContext) throws PluginException {
         ThingDTO thingDTO = builderContext.getThingDTO();
         SunWatchThingConfiguration thingConfiguration = buildThingConfiguration(builderContext);
-        SunEventLocale sunEventLocale = sunEventLocale(thingConfiguration);
+        SunLocale sunEventLocale = sunLocale(thingConfiguration);
         log.debug("Building Sun Clock: {}, with locale: {}", thingDTO.getName(), sunEventLocale);
 
         List<Emitter> emitters = buildEmitters(builderContext, sunEventLocale);
@@ -65,7 +65,7 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
         }
     }
 
-    private List<Emitter> buildEmitters(ThingBuilderContext builderContext, SunEventLocale sunEventLocale)
+    private List<Emitter> buildEmitters(ThingBuilderContext builderContext, SunLocale sunEventLocale)
     throws PluginException {
         List<Emitter> emitters = new LinkedList<>();
         for (EmitterDTO emitterDTO : builderContext.getThingDTO().getEmitters()) {
@@ -74,7 +74,7 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
         return emitters;
     }
 
-    private Emitter buildEmitter(ThingBuilderContext builderContext, SunEventLocale sunEventLocale, EmitterDTO emitterDTO)
+    private Emitter buildEmitter(ThingBuilderContext builderContext, SunLocale sunEventLocale, EmitterDTO emitterDTO)
     throws PluginException {
         AbstractEmitterBuilder emitterBuilder = emitterBuilderMap.get(emitterDTO.getRef());
         if (emitterBuilder == null) {
@@ -83,8 +83,8 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
         return emitterBuilder.buildEmitter(builderContext, sunEventLocale);
     }
 
-    private SunEventLocale sunEventLocale(SunWatchThingConfiguration configuration) {
-        return SunEventLocale.builder()
+    private SunLocale sunLocale(SunWatchThingConfiguration configuration) {
+        return SunLocale.builder()
                 .location(thingLocation(configuration))
                 .zoneId(thingZoneId(configuration))
                 .build();

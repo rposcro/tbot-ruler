@@ -1,56 +1,58 @@
 package com.tbot.ruler.plugins.jwavez.switchbinary;
 
+import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
-import com.rposcro.jwavez.core.commands.controlled.builders.MultiChannelCommandBuilder;
-import com.rposcro.jwavez.core.commands.controlled.builders.SwitchBinaryCommandBuilder;
+import com.rposcro.jwavez.core.commands.controlled.builders.multichannel.MultiChannelCommandBuilder;
+import com.rposcro.jwavez.core.commands.controlled.builders.switchbinary.SwitchBinaryCommandBuilder;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.model.OnOffState;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Collector;
-import com.tbot.ruler.things.CollectorId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
-import java.util.function.BiConsumer;
 
 @Getter
-public class SwitchBinaryCollector extends AbstractItem<CollectorId> implements Collector {
+public class SwitchBinaryCollector extends AbstractItem implements Collector {
 
     private final static byte SOURCE_ENDPOINT_ID = 0;
 
-    @NonNull
-    private SwitchBinaryConfiguration configuration;
-    @NonNull
-    private BiConsumer<NodeId, ZWaveControlledCommand> commandSender;
+    private final SwitchBinaryConfiguration configuration;
+    private final JWaveZCommandSender commandSender;
+    private final SwitchBinaryCommandBuilder switchBinaryCommandBuilder;
+    private final MultiChannelCommandBuilder multiChannelCommandBuilder;
 
     @Builder
     public SwitchBinaryCollector(
-            CollectorId id,
+            String id,
             String name,
             String description,
             SwitchBinaryConfiguration configuration,
-            BiConsumer<NodeId, ZWaveControlledCommand> commandSender) {
+            JWaveZCommandSender commandSender,
+            JwzApplicationSupport applicationSupport) {
         super(id, name, description);
         this.configuration = configuration;
         this.commandSender = commandSender;
+        this.switchBinaryCommandBuilder = applicationSupport.controlledCommandFactory().switchBinaryCommandBuilder();
+        this.multiChannelCommandBuilder = applicationSupport.controlledCommandFactory().multiChannelCommandBuilder();
     }
 
     @Override
     public void acceptMessage(Message message) {
         try {
-            BooleanUpdatePayload payload = message.getPayload().ensureMessageType();
-            ZWaveControlledCommand command = new SwitchBinaryCommandBuilder()
-                    .buildSetCommandV1((byte) (payload.isState() ? 255 : 0));
+            OnOffState payload = message.getPayloadAs(OnOffState.class);
+            ZWaveControlledCommand command = switchBinaryCommandBuilder.v1().buildSetCommand((byte) (payload.isOn() ? 255 : 0));
 
             if (configuration.isMultiChannelOn()) {
-                command = new MultiChannelCommandBuilder().encapsulateCommand(SOURCE_ENDPOINT_ID, (byte) configuration.getDestinationEndPointId(), command);
+                command = multiChannelCommandBuilder.v3().encapsulateCommand(SOURCE_ENDPOINT_ID, (byte) configuration.getDestinationEndPointId(), command);
             }
 
-            commandSender.accept(new NodeId(configuration.getNodeId()), command);
+            commandSender.enqueueCommand(NodeId.forId(configuration.getNodeId()), command);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }

@@ -1,13 +1,11 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePublisher;
-import com.tbot.ruler.message.payloads.ReportPayload;
-import com.tbot.ruler.model.ReportEntry;
-import com.tbot.ruler.model.ReportEntryLevel;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.MessagePublisher;
+import com.tbot.ruler.model.ReportLog;
+import com.tbot.ruler.model.ReportLogLevel;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.rest.RestResponse;
-import com.tbot.ruler.things.ItemId;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -18,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 class  HealthCheckEmissionTask implements Runnable {
 
-    private ItemId emitterId;
+    private String emitterId;
     private MessagePublisher messagePublisher;
     private RestGetCommand healthCheckCommand;
 
@@ -26,7 +24,7 @@ class  HealthCheckEmissionTask implements Runnable {
 
     @Builder
     public HealthCheckEmissionTask(
-        @NonNull ItemId emitterId,
+        @NonNull String emitterId,
         @NonNull MessagePublisher messagePublisher,
         @NonNull RestGetCommand healthCheckCommand
     ) {
@@ -39,7 +37,7 @@ class  HealthCheckEmissionTask implements Runnable {
     @Override
     public void run() {
         try {
-            log.info("[EMISSION] Deputy health check for emitter {}", emitterId.getValue());
+            log.info("[EMISSION] Deputy health check for emitter {}", emitterId);
             RestResponse response = healthCheckCommand.sendGet();
             if (response.getStatusCode() == 200) {
                 handleHealthy();
@@ -56,29 +54,27 @@ class  HealthCheckEmissionTask implements Runnable {
     private void handleUnhealthy(Integer statusCode) {
         if (!isHealthy.isPresent() || isHealthy.get()) {
             isHealthy = Optional.of(false);
-            messagePublisher.acceptMessage(buildMessage(
+            messagePublisher.publishMessage(buildMessage(
                 "Deputy node unhealthy: " + (statusCode == null ? "Unreachable" : statusCode.toString()),
-                ReportEntryLevel.IMPORTANT));
+                ReportLogLevel.IMPORTANT));
         }
     }
 
     private void handleHealthy() {
         if (!isHealthy.isPresent() || !isHealthy.get()) {
             isHealthy = Optional.of(true);
-            messagePublisher.acceptMessage(buildMessage("Deputy node is healthy", ReportEntryLevel.REGULAR));
+            messagePublisher.publishMessage(buildMessage("Deputy node is healthy", ReportLogLevel.REGULAR));
         }
     }
 
-    private Message buildMessage(String message, ReportEntryLevel entryLevel) {
+    private Message buildMessage(String message, ReportLogLevel entryLevel) {
         return Message.builder()
             .senderId(emitterId)
-            .payload(ReportPayload.builder()
-                .reportEntry(ReportEntry.builder()
-                    .entryLevel(entryLevel)
+            .payload(ReportLog.builder()
+                    .logLevel(entryLevel)
                     .timestamp(ZonedDateTime.now())
-                    .message(message)
+                    .content(message)
                     .build())
-                .build())
             .build();
     }
 }

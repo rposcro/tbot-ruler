@@ -5,15 +5,14 @@ import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import com.tbot.ruler.things.ThingId;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class ThingDTO extends ConfigurableDTO {
+public class ThingDTO extends ConfigurableDTO implements ItemDTO {
 
-    private ThingId id;
+    private String id;
     private String name;
     private String description;
     @JsonProperty("plugin")

@@ -1,0 +1,3 @@
+### Gets list of senders suspended at the message broker
+# @name = SuspendedSenders
+GET http://{{host-tbot-ruler}}/broker/suspensions/senders

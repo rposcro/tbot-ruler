@@ -1,8 +1,8 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessageReceiver;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.MessageReceiver;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.NonNull;
 import java.util.Optional;
 
 @Getter
-public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator {
+public class BasicActuator extends AbstractItem implements Actuator {
 
     private Optional<MessageReceiver> messageReceiver;
     private Optional<Runnable> startUpTask;
@@ -20,7 +20,7 @@ public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator 
 
     @Builder
     public BasicActuator(
-        @NonNull ActuatorId id,
+        @NonNull String id,
         @NonNull String name,
         String description,
         Runnable startUpTask,
@@ -46,6 +46,6 @@ public class BasicActuator extends AbstractItem<ActuatorId> implements Actuator 
     }
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
     }
 }

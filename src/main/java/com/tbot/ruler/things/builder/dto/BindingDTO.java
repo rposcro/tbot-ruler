@@ -1,14 +1,15 @@
 package com.tbot.ruler.things.builder.dto;
 
-import com.tbot.ruler.things.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 import java.util.List;
 
-@Data
+@Getter
+@Setter
 public class BindingDTO {
 
     private String note;
-    private ItemId senderId;
-    private List<ItemId> consumerIds;
+    private String senderId;
+    private List<String> consumerIds;
 }

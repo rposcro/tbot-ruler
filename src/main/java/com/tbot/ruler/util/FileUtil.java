@@ -1,9 +1,9 @@
 package com.tbot.ruler.util;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.tbot.ruler.exceptions.RulerException;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
@@ -22,6 +22,9 @@ import java.util.stream.Stream;
 public class FileUtil {
 
     private static final int MAX_PACKAGE_SCANNING_DEPTH = 100;
+
+    @Autowired
+    private ObjectMapper objectMapper;
 
     public List<File> findJsonsInPackage(String packagePath) {
         return findJsonsInSubPackages(packagePath, 1)
@@ -48,9 +51,7 @@ public class FileUtil {
     public <T> T deserializeJsonFile(File jsonFile, Class<T> dtoClass) {
         try {
             logFile(jsonFile);
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.registerModule(new Jdk8Module());
-                return mapper.readValue(jsonFile, dtoClass);
+            return objectMapper.readValue(jsonFile, dtoClass);
         }
         catch(IOException e) {
             log.error(String.format("Failed to deserialize json: %s!", jsonFile.getAbsolutePath()), e);

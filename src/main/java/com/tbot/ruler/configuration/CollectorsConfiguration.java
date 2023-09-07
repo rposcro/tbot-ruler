@@ -1,7 +1,6 @@
 package com.tbot.ruler.configuration;
 
 import com.tbot.ruler.things.Collector;
-import com.tbot.ruler.things.CollectorId;
 import com.tbot.ruler.things.Thing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -28,7 +27,7 @@ public class CollectorsConfiguration {
     }
 
     @Bean
-    public Map<CollectorId, Collector> collectorsPerId() {
+    public Map<String, Collector> collectorsPerId() {
         return collectors().stream().collect(Collectors.toMap(Collector::getId, Function.identity()));
     }
 }

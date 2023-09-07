@@ -1,0 +1,3 @@
+### Gets about application response
+# @name = About
+GET http://{{host-tbot-ruler}}/

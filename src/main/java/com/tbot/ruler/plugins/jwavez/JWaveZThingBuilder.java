@@ -1,153 +1,74 @@
 package com.tbot.ruler.plugins.jwavez;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
-import com.rposcro.jwavez.core.commands.types.CommandType;
+import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicThing;
 import com.tbot.ruler.things.Collector;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.Thing;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.builder.dto.CollectorDTO;
 import com.tbot.ruler.things.builder.dto.ThingDTO;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.ThingPluginBuilder;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
-import com.tbot.ruler.util.PackageScanner;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 @Slf4j
 public class JWaveZThingBuilder implements ThingPluginBuilder {
 
-    private Map<String, ActuatorBuilder> actuatorBuilderMap;
-    private Map<String, EmitterBuilder> emitterBuilderMap;
-    private Map<String, CollectorBuilder> collectorBuilderMap;
-
-    public JWaveZThingBuilder() {
-        this.actuatorBuilderMap = findActuatorsBuilders();
-        this.emitterBuilderMap = findEmittersBuilders();
-        this.collectorBuilderMap = findCollectorsBuilders();
-    }
-
     @Override
     public Thing buildThing(ThingBuilderContext builderContext) throws PluginException {
-        JWaveZAgent agent = buildAgent(builderContext, commandHandlerMap());
+        JWaveZSerialHandler serialHandler = new JWaveZSerialHandler();
+        JWaveZSerialController serialController = JWaveZSerialController.builder()
+                .configuration(parseThingConfiguration(builderContext))
+                .callbackHandler(serialHandler)
+                .build();
+        JWaveZCommandSender commandSender = JWaveZCommandSender.builder()
+                .jwzController(serialController)
+                .build();
+
+        JWaveZThingContext thingContext = JWaveZThingContext.builder()
+                .builderContext(builderContext)
+                .messagePublisher(builderContext.getMessagePublisher())
+                .jwzApplicationSupport(JwzApplicationSupport.defaultSupport())
+                .jwzCommandSender(commandSender)
+                .build();
+
+        JWaveZThingItemsBuilder itemsBuilder = new JWaveZThingItemsBuilder(thingContext);
+        List<Emitter> emitters = itemsBuilder.buildEmitters(builderContext);
+        List<Collector> collectors = itemsBuilder.buildCollectors(builderContext);
+        List<Actuator> actuators = itemsBuilder.buildActuators(builderContext);
+        registerListeners(serialHandler, itemsBuilder);
+
         ThingDTO thingDTO = builderContext.getThingDTO();
 
         return BasicThing.builder()
             .id(thingDTO.getId())
             .name(thingDTO.getName())
             .description(thingDTO.getDescription())
-            .emitters(buildEmitters(builderContext, agent))
-            .actuators(buildActuators(builderContext, agent))
-            .collectors(buildCollectors(builderContext, agent))
-            .startUpTask(() -> agent.connect())
+            .emitters(emitters)
+            .collectors(collectors)
+            .actuators(actuators)
+            .startUpTask(() -> serialController.connect())
+            .triggerableTask(commandSender)
             .build();
     }
 
-    private Map<CommandType, JWaveZCommandHandler<? extends ZWaveSupportedCommand>> commandHandlerMap() {
-        Map<CommandType, JWaveZCommandHandler<? extends ZWaveSupportedCommand>> handlersMap = new HashMap<>();
-        actuatorBuilderMap.values().stream()
-                .forEach(builder -> handlersMap.put(builder.getSupportedCommandType(), builder.getSupportedCommandHandler()));
-        emitterBuilderMap.values().stream()
-                .forEach(builder -> handlersMap.put(builder.getSupportedCommandType(), builder.getSupportedCommandHandler()));
-        return handlersMap;
+    private void registerListeners(JWaveZSerialHandler serialHandler, JWaveZThingItemsBuilder itemsBuilder) {
+        itemsBuilder.getActuatorBuilderMap().values().stream()
+                .forEach(builder -> serialHandler.addCommandListener(builder.getSupportedCommandType(), builder.getSupportedCommandHandler()));
+        itemsBuilder.getEmitterBuilderMap().values().stream()
+                .forEach(builder -> serialHandler.addCommandListener(builder.getSupportedCommandType(), builder.getSupportedCommandHandler()));
     }
 
-    private Map<String, ActuatorBuilder> findActuatorsBuilders() {
-        Map<String, ActuatorBuilder> buildersMap = new HashMap<>();
-        PackageScanner packageScanner = new PackageScanner();
-        Set<Class<? extends ActuatorBuilder>> buildersClasses = packageScanner.findAllClassesOfType(ActuatorBuilder.class, "com.tbot.ruler.plugins.jwavez");
-        Set<? extends ActuatorBuilder> builders = packageScanner.instantiateAll(buildersClasses);
-        builders.stream().forEach(builder -> buildersMap.put(builder.getReference(), builder));
-        return buildersMap;
-    }
-
-    private Map<String, EmitterBuilder> findEmittersBuilders() {
-        Map<String, EmitterBuilder> buildersMap = new HashMap<>();
-        PackageScanner packageScanner = new PackageScanner();
-        Set<Class<? extends EmitterBuilder>> buildersClasses = packageScanner.findAllClassesOfType(EmitterBuilder.class, "com.tbot.ruler.plugins.jwavez");
-        Set<? extends EmitterBuilder> builders = packageScanner.instantiateAll(buildersClasses);
-        builders.stream().forEach(builder -> buildersMap.put(builder.getReference(), builder));
-        return buildersMap;
-    }
-
-    private Map<String, CollectorBuilder> findCollectorsBuilders() {
-        Map<String, CollectorBuilder> buildersMap = new HashMap<>();
-        PackageScanner packageScanner = new PackageScanner();
-        Set<Class<? extends CollectorBuilder>> buildersClasses = packageScanner.findAllClassesOfType(CollectorBuilder.class, "com.tbot.ruler.plugins.jwavez");
-        Set<? extends CollectorBuilder> builders = packageScanner.instantiateAll(buildersClasses);
-        builders.stream().forEach(builder -> buildersMap.put(builder.getReference(), builder));
-        return buildersMap;
-    }
-
-    private JWaveZAgent buildAgent(ThingBuilderContext builderContext, Map<CommandType, JWaveZCommandHandler<? extends ZWaveSupportedCommand>> commandHandlerMap)
-    throws PluginException {
-        return new JWaveZAgent(buildThingConfiguration(builderContext), commandHandlerMap);
-    }
-
-    private JWaveZThingConfiguration buildThingConfiguration(ThingBuilderContext builderContext) throws PluginException {
+    private JWaveZThingConfiguration parseThingConfiguration(ThingBuilderContext builderContext) throws PluginException {
         try {
             return new ObjectMapper().readerFor(JWaveZThingConfiguration.class).readValue(builderContext.getThingDTO().getConfigurationNode());
         } catch(IOException e) {
             throw new PluginException("Could not parse JWaveZ thing's configuration!", e);
         }
-    }
-
-    private List<Actuator> buildActuators(ThingBuilderContext builderContext, JWaveZAgent agent) throws PluginException {
-        List<Actuator> actuators = new LinkedList<>();
-        for (ActuatorDTO actuatorDTO : builderContext.getThingDTO().getActuators()) {
-            actuators.add(buildActuator(agent, builderContext, actuatorDTO));
-        }
-        return actuators;
-    }
-
-    private Actuator buildActuator(JWaveZAgent agent, ThingBuilderContext context, ActuatorDTO actuatorDTO) throws PluginException {
-        ActuatorBuilder actuatorBuilder = actuatorBuilderMap.get(actuatorDTO.getRef());
-        if (actuatorBuilder == null) {
-            throw new PluginException("Unknown actuator reference " + actuatorDTO.getRef() + ", skipping this DTO");
-        }
-        return actuatorBuilder.buildActuator(agent, context, actuatorDTO);
-    }
-
-    private List<Emitter> buildEmitters(ThingBuilderContext builderContext, JWaveZAgent agent) throws PluginException {
-        List<Emitter> emitters = new LinkedList<>();
-        for (EmitterDTO emitterDTO : builderContext.getThingDTO().getEmitters()) {
-            emitters.add(buildEmitter(agent, builderContext, emitterDTO));
-        }
-        return emitters;
-    }
-
-    private Emitter buildEmitter(JWaveZAgent agent, ThingBuilderContext context, EmitterDTO emitterDTO) throws PluginException {
-        EmitterBuilder emitterBuilder = emitterBuilderMap.get(emitterDTO.getRef());
-        if (emitterBuilder == null) {
-            throw new PluginException("Unknown emitter reference " + emitterDTO.getRef() + ", skipping this DTO");
-        }
-        return emitterBuilder.buildEmitter(agent, context, emitterDTO);
-    }
-
-    private List<Collector> buildCollectors(ThingBuilderContext builderContext, JWaveZAgent agent) throws PluginException {
-        List<Collector> collectors = new LinkedList<>();
-        for (CollectorDTO collectorDTO : builderContext.getThingDTO().getCollectors()) {
-            collectors.add(buildCollector(agent, builderContext, collectorDTO));
-        }
-        return collectors;
-    }
-
-    private Collector buildCollector(JWaveZAgent agent, ThingBuilderContext context, CollectorDTO collectorDTO) throws PluginException {
-        CollectorBuilder collectorBuilder = collectorBuilderMap.get(collectorDTO.getRef());
-        if (collectorBuilder == null) {
-            throw new PluginException("Unknown collector reference " + collectorDTO.getRef() + ", skipping this DTO");
-        }
-        return collectorBuilder.buildCollector(agent, context, collectorDTO);
     }
 }

@@ -5,10 +5,9 @@ import com.rposcro.jwavez.core.commands.supported.basic.BasicSet;
 import com.rposcro.jwavez.core.commands.types.BasicCommandType;
 import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.tbot.ruler.plugins.jwavez.EmitterBuilder;
-import com.tbot.ruler.plugins.jwavez.JWaveZAgent;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandHandler;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
+import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
 import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 
@@ -18,7 +17,13 @@ public class BasicSetEmitterBuilder implements EmitterBuilder {
 
     private static final String REFERENCE = "basic-set";
 
-    private BasicSetCommandHandler basicSetCommandHandler = new BasicSetCommandHandler();
+    private final JWaveZThingContext thingContext;
+    private final BasicSetCommandListener basicSetCommandHandler;
+
+    public BasicSetEmitterBuilder(JWaveZThingContext thingContext) {
+        this.thingContext = thingContext;
+        basicSetCommandHandler = new BasicSetCommandListener(thingContext.getJwzApplicationSupport().supportedCommandParser());
+    }
 
     @Override
     public CommandType getSupportedCommandType() {
@@ -26,7 +31,7 @@ public class BasicSetEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public JWaveZCommandHandler<BasicSet> getSupportedCommandHandler() {
+    public JWaveZCommandListener<BasicSet> getSupportedCommandHandler() {
         return basicSetCommandHandler;
     }
 
@@ -36,7 +41,7 @@ public class BasicSetEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public Emitter buildEmitter(JWaveZAgent agent, ThingBuilderContext builderContext, EmitterDTO emitterDTO) throws PluginException {
+    public Emitter buildEmitter(EmitterDTO emitterDTO) throws PluginException {
         try {
             BasicSetEmitterConfiguration configuration = new ObjectMapper().readerFor(BasicSetEmitterConfiguration.class).readValue(emitterDTO.getConfigurationNode());
             BasicSetEmitter emitter = BasicSetEmitter.builder()
@@ -44,7 +49,7 @@ public class BasicSetEmitterBuilder implements EmitterBuilder {
                     .name(emitterDTO.getName())
                     .description(emitterDTO.getDescription())
                     .configuration(configuration)
-                    .messagePublisher(builderContext.getMessagePublisher())
+                    .messagePublisher(thingContext.getMessagePublisher())
                     .build();
             basicSetCommandHandler.registerEmitter(emitter);
             return emitter;

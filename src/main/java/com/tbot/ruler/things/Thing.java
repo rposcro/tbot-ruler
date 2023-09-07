@@ -2,9 +2,9 @@ package com.tbot.ruler.things;
 
 import java.util.List;
 
-public interface Thing extends TaskBasedItem<ThingId> {
+public interface Thing extends TaskBasedItem {
 
-    ThingId getId();
+    String getId();
     String getName();
     String getDescription();
     List<? extends Emitter> getEmitters();

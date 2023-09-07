@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <link rel="stylesheet" type="text/css" href="css/console.css" />
-        <link rel="stylesheet" type="text/css" href="css/menu.css" />
+        <link rel="stylesheet" type="text/css" href="/css/console.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/menu.css"/>
     </head>
     <body>
-        <div th:replace="fragments:: header('Home')" />
+        <div th:replace="fragments:: header('Home')"/>
         <div class="desktop">
             <div class="section">
                 <table class="grid">
@@ -18,9 +18,15 @@
                     </tr>
                     <tr th:each="plugin: ${plugins}" class="grid-row">
                         <td th:text="${plugin.alias}"/>
-                        <td><span th:each="ref: ${plugin.emitters}">[[${ref}]]&nbsp;</span></td>
-                        <td><span th:each="ref: ${plugin.collectors}">[[${ref}]]&nbsp;</span></td>
-                        <td><span th:each="ref: ${plugin.actuators}">[[${ref}]]&nbsp;</span></td>
+                        <td>
+                            <div th:each="ref: ${plugin.emitters}">[[${ref}]]&nbsp;</div>
+                        </td>
+                        <td>
+                            <div th:each="ref: ${plugin.collectors}">[[${ref}]]&nbsp;</div>
+                        </td>
+                        <td>
+                            <div th:each="ref: ${plugin.actuators}">[[${ref}]]&nbsp;</div>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -38,12 +44,25 @@
                     </tr>
                     <tr th:each="thing: ${things}" class="grid-row">
                         <td th:text="${thing.name}"/>
-                        <td th:text="|${thing.id.value}|"/>
+                        <td th:text="|${thing.id}|"/>
                         <td th:text="${thing.pluginAlias}"/>
-                        <td><div th:each="emitter: ${thing.emitters}">[[${emitter.name}]] (of [[${emitter.ref}]])</div></td>
-                        <td><div th:each="collector: ${thing.collectors}">[[${collector.name}]] (of [[${collector.ref}]])</div></td>
-                        <td><div th:each="actuator: ${thing.actuators}">[[${actuator.name}]] (of [[${actuator.ref}]])</div></td>
-                        <td><div th:each="parameter: ${thing.configurationMap}">[[${parameter.key}]]: [[${parameter.value}]]</div></td>
+                        <td>
+                            <div th:each="emitter: ${thing.emitters}">[[${emitter.name}]] (of [[${emitter.ref}]])</div>
+                        </td>
+                        <td>
+                            <div th:each="collector: ${thing.collectors}">[[${collector.name}]] (of
+                                [[${collector.ref}]])
+                            </div>
+                        </td>
+                        <td>
+                            <div th:each="actuator: ${thing.actuators}">[[${actuator.name}]] (of [[${actuator.ref}]])
+                            </div>
+                        </td>
+                        <td>
+                            <div th:each="parameter: ${thing.configurationMap}">[[${parameter.key}]]:
+                                [[${parameter.value}]]
+                            </div>
+                        </td>
                     </tr>
                 </table>
             </div>
@@ -56,9 +75,9 @@
                         <td>Description</td>
                     </tr>
                     <tr th:each="appliance: ${appliances}" class="grid-row">
-                        <td><a th:href="@{'/console/appliances/' + ${appliance.id.value}}">[[${appliance.name}]]</a></td>
-                        <td th:text="${appliance.id.value}" />
-                        <td th:text="${appliance.description}" />
+                        <td><a th:href="@{'/console/appliances/' + ${appliance.id}}">[[${appliance.name}]]</a></td>
+                        <td th:text="${appliance.id}"/>
+                        <td th:text="${appliance.description}"/>
                     </tr>
                 </table>
             </div>

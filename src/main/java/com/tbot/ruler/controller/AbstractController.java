@@ -4,7 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 
 @Slf4j
-public class AbstractController implements ControllerConstants {
+public class AbstractController {
 
     protected ResponseEntity.BodyBuilder response(ResponseEntity.BodyBuilder builder) {
         return builder.header("Customer-Header", "Provided by TBot");

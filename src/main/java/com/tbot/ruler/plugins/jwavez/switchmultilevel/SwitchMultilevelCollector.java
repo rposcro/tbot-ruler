@@ -1,39 +1,74 @@
 package com.tbot.ruler.plugins.jwavez.switchmultilevel;
 
-import com.rposcro.jwavez.core.commands.controlled.builders.SwitchMultiLevelCommandBuilder;
+import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
+import com.rposcro.jwavez.core.commands.controlled.builders.switchmultilevel.SwitchMultiLevelCommandBuilder;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload;
+import com.tbot.ruler.exceptions.MessageUnsupportedException;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.model.BinaryStateClaim;
+import com.tbot.ruler.model.OnOffState;
+import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.Collector;
-import com.tbot.ruler.things.CollectorId;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
-import java.util.function.BiConsumer;
 
 @Getter
-@Builder
 public class SwitchMultilevelCollector implements Collector {
 
-    @NonNull private CollectorId id;
-    @NonNull private String name;
-    private String description;
+    private final String id;
+    private final String name;
+    private final String description;
 
-    private byte switchDuration;
-    @NonNull private NodeId nodeId;
-    @NonNull private BiConsumer<NodeId, ZWaveControlledCommand> commandSender;
+    private final byte switchDuration;
+    private final NodeId nodeId;
+    private final JWaveZCommandSender commandSender;
+
+    private final SwitchMultiLevelCommandBuilder commandBuilder;
+
+    @Builder
+    public SwitchMultilevelCollector(
+            @NonNull String id,
+            @NonNull String name,
+            String description,
+            byte switchDuration,
+            @NonNull NodeId nodeId,
+            @NonNull JWaveZCommandSender commandSender,
+            @NonNull JwzApplicationSupport applicationSupport) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.switchDuration = switchDuration;
+        this.nodeId = nodeId;
+        this.commandSender = commandSender;
+        this.commandBuilder = applicationSupport.controlledCommandFactory().switchMultiLevelCommandBuilder();
+    }
 
     @Override
     public void acceptMessage(Message message) {
         try {
-            BooleanUpdatePayload payload = message.getPayload().ensureMessageType();
-            ZWaveControlledCommand command = new SwitchMultiLevelCommandBuilder()
-                .buildSetCommand((byte) (payload.isState() ? 255 : 0), switchDuration);
-            commandSender.accept(nodeId, command);
+            boolean onFlag;
+
+            if (message.isPayloadAs(BinaryStateClaim.class)) {
+                BinaryStateClaim claim = message.getPayloadAs(BinaryStateClaim.class);
+                if (claim.isToggle()) {
+                    throw new MessageUnsupportedException("Cannot support toggle claim!");
+                }
+                onFlag = claim.isSetOn();
+            } else if (message.isPayloadAs(OnOffState.class)) {
+                OnOffState payload = message.getPayloadAs(OnOffState.class);
+                onFlag = payload.isOn();
+            } else {
+                throw new MessageUnsupportedException("Message of type " + message.getPayload().getClass() + " is not supported here!");
+            }
+
+            ZWaveControlledCommand command = onFlag ? commandBuilder.v2().buildSetMaximumCommand(switchDuration)
+                    : commandBuilder.v2().buildSetMinimumCommand(switchDuration);
+            commandSender.enqueueCommand(nodeId, command);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }

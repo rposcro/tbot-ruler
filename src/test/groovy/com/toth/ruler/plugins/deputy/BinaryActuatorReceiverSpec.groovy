@@ -2,18 +2,18 @@ package com.toth.ruler.plugins.deputy
 
 import com.tbot.ruler.exceptions.MessageProcessingException
 import com.tbot.ruler.exceptions.RestRequestException
-import com.tbot.ruler.message.Message
-import com.tbot.ruler.message.MessagePublisher
-import com.tbot.ruler.message.payloads.BooleanTogglePayload
-import com.tbot.ruler.message.payloads.BooleanUpdatePayload
-import com.tbot.ruler.message.payloads.UpdateRequestPayload
+import com.tbot.ruler.messages.model.Message
+import com.tbot.ruler.messages.MessagePublisher
+import com.tbot.ruler.messages.model.payloads.BooleanTogglePayload
+import com.tbot.ruler.messages.model.payloads.BooleanUpdatePayload
+import com.tbot.ruler.messages.model.payloads.UpdateRequestPayload
 import com.tbot.ruler.plugins.deputy.BinaryActuatorReceiver
 import com.tbot.ruler.plugins.deputy.model.BinOutState
 import com.tbot.ruler.rest.RestGetCommand
 import com.tbot.ruler.rest.RestPatchCommand
 import com.tbot.ruler.rest.RestResponse
-import com.tbot.ruler.things.ActuatorId
-import com.tbot.ruler.things.ApplianceId
+
+
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
 import spock.lang.Specification
@@ -91,7 +91,7 @@ class BinaryActuatorReceiverSpec extends Specification {
             state.setState(param);
             return new RestResponse<>(new ResponseEntity<>(state, HttpStatus.OK));
         };
-        1 * messagePublisher.acceptMessage({
+        1 * messagePublisher.publishMessage({
             it.senderId.equals(actuatorId) && it.payload.getClass() == BooleanUpdatePayload && it.payload.state == state
         });
 

@@ -1,30 +1,40 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.message.DeliveryReport;
-import com.tbot.ruler.message.Message;
+import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.things.thread.TaskTrigger;
+import lombok.Builder;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Optional;
 
-public abstract class AbstractActuator extends AbstractItem<ActuatorId> implements Actuator {
+@SuperBuilder
+public abstract class AbstractActuator extends AbstractItem implements Actuator {
 
-    protected AbstractActuator(ActuatorId id, String name, String description) {
+    @Builder.Default
+    private Optional<Runnable> startUpTask = Optional.empty();
+    @Builder.Default
+    private Optional<Runnable> triggerableTask = Optional.empty();
+    @Builder.Default
+    private Optional<TaskTrigger> taskTrigger = Optional.empty();
+
+    protected AbstractActuator(String id, String name, String description) {
         super(id, name, description);
     }
 
     @Override
+    public Optional<Runnable> getStartUpTask() {
+        return startUpTask;
+    }
+
+    @Override
     public Optional<Runnable> getTriggerableTask() {
-        return Optional.empty();
+        return triggerableTask;
     }
 
     @Override
     public Optional<TaskTrigger> getTaskTrigger() {
-        return Optional.empty();
-    }
-
-    @Override
-    public Optional<Runnable> getStartUpTask() {
-        return Optional.empty();
+        return taskTrigger;
     }
 
     @Override
@@ -32,6 +42,6 @@ public abstract class AbstractActuator extends AbstractItem<ActuatorId> implemen
     }
 
     @Override
-    public void acceptDeliveryReport(DeliveryReport deliveryReport) {
+    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
     }
 }

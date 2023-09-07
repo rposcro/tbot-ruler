@@ -2,7 +2,6 @@ package com.tbot.ruler.service;
 
 import com.tbot.ruler.appliances.Appliance;
 import com.tbot.ruler.configuration.AppliancesConfiguration;
-import com.tbot.ruler.things.ApplianceId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,7 +18,7 @@ public class AppliancesService {
         return appliancesConfiguration.appliances();
     }
 
-    public Optional<Appliance> applianceById(ApplianceId applianceId) {
+    public Optional<Appliance> applianceById(String applianceId) {
         return Optional.ofNullable(appliancesConfiguration.appliancesPerId().get(applianceId));
     }
 }

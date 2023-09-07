@@ -4,7 +4,9 @@ import org.reflections.Reflections;
 import org.reflections.util.ConfigurationBuilder;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Constructor;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -14,6 +16,12 @@ public class PackageScanner {
     public <T> Set<T> instantiateAll(Set<Class<? extends T>> classes) {
         return classes.stream()
                 .map(this::instantiateClass)
+                .collect(Collectors.toSet());
+    }
+
+    public <T> Set<T> instantiateAll(Set<Class<? extends T>> classes, Object... constructorArguments) {
+        return classes.stream()
+                .map(clazz -> instantiateClass(clazz, constructorArguments))
                 .collect(Collectors.toSet());
     }
 
@@ -54,6 +62,19 @@ public class PackageScanner {
         try {
             return clazz.newInstance();
         } catch (InstantiationException | IllegalAccessException e) {
+            throw new IllegalStateException("Cannot instantiateClass object of class: " + clazz, e);
+        }
+    }
+
+    private <T> T instantiateClass(Class<T> clazz, Object... constructorArguments) {
+        try {
+            Class<?>[] types = new Class<?>[constructorArguments.length];
+            for (int i = 0; i < constructorArguments.length; i++) {
+                types[i] = constructorArguments[i].getClass();
+            }
+            Constructor<T> constructor = clazz.getConstructor(types);
+            return constructor.newInstance(constructorArguments);
+        } catch (ReflectiveOperationException e) {
             throw new IllegalStateException("Cannot instantiateClass object of class: " + clazz, e);
         }
     }

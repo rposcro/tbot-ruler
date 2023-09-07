@@ -1,0 +1,4 @@
+### Suspends selected sender
+# @name = SuspendSender
+
+PATCH http://{{host-tbot-ruler}}/broker/suspensions/senders/emtr-da2069a7-1af7-4dd6-9954-5ca56df20e50/true

@@ -1,12 +1,10 @@
 package com.tbot.ruler.plugins.cron;
 
-import com.tbot.ruler.message.Message;
-import com.tbot.ruler.message.MessagePayload;
-import com.tbot.ruler.message.MessagePublisher;
-import com.tbot.ruler.message.payloads.HeartBeatPayload;
+import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.messages.MessagePublisher;
+import com.tbot.ruler.model.Notification;
 import com.tbot.ruler.things.BasicEmitter;
 import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.ItemId;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 
@@ -27,7 +25,7 @@ public class CronSchedulerEmitterBuilder {
     }
 
     private Runnable emissionTask(EmitterDTO emitterDTO, MessagePublisher messagePublisher) {
-        return () -> messagePublisher.acceptMessage(messageToSend(emitterDTO.getId(), new HeartBeatPayload()));
+        return () -> messagePublisher.publishMessage(messageToSend(emitterDTO.getId(), Notification.HEARTBEAT));
     }
 
     private CronEmissionTrigger emissionTrigger(EmitterDTO emitterDTO, TimeZone timeZone) {
@@ -35,7 +33,7 @@ public class CronSchedulerEmitterBuilder {
         return new CronEmissionTrigger(pattern, timeZone);
     }
 
-    private Message messageToSend(ItemId emitterId, MessagePayload messagePayload) {
+    private Message messageToSend(String emitterId, Object messagePayload) {
         return Message.builder()
             .senderId(emitterId)
             .payload(messagePayload)

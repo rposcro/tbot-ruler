@@ -1,12 +1,13 @@
 package com.tbot.ruler.things.builder.dto;
 
-import com.tbot.ruler.things.ApplianceId;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
-public class ApplianceDTO {
+@Getter
+@Setter
+public class ApplianceDTO implements ItemDTO {
     
-    private ApplianceId id;
+    private String id;
     private String type;
     private String name;
     private String description;

@@ -1,22 +1,13 @@
 package com.tbot.ruler.service.admin;
 
 import com.tbot.ruler.configuration.DTOConfiguration;
-import com.tbot.ruler.things.ActuatorId;
-import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.EmitterId;
-import com.tbot.ruler.things.ItemId;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import com.tbot.ruler.things.builder.dto.BindingDTO;
-import com.tbot.ruler.things.builder.dto.CollectorDTO;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
+import com.tbot.ruler.things.builder.dto.ItemDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -30,23 +21,43 @@ public class BindingsAdminService {
         return dtoConfiguration.bindingDTOs();
     }
 
-    public List<EmitterDTO> sendingEmittersForItem(ItemId itemId) {
-        List<EmitterDTO> emitters = dtoConfiguration.bindingDTOs().stream()
+    public List<ItemDTO> sendersForItem(String itemId) {
+        List<ItemDTO> senders = dtoConfiguration.bindingDTOs().stream()
                 .filter(binding -> binding.getConsumerIds().contains(itemId))
-                .filter(binding -> binding.getSenderId() instanceof EmitterId)
-                .map(binding -> (EmitterId) binding.getSenderId())
-                .map(emitterId -> dtoConfiguration.emitterDTOMap().get(emitterId))
+                .map(BindingDTO::getSenderId)
+                .map(this::findSenderDTO)
                 .collect(Collectors.toList());
-        return emitters;
+        return senders;
     }
 
-    public List<ActuatorDTO> sendingActuatorsForItem(ItemId itemId) {
-        List<ActuatorDTO> actuators = dtoConfiguration.bindingDTOs().stream()
-                .filter(binding -> binding.getConsumerIds().contains(itemId))
-                .filter(binding -> binding.getSenderId() instanceof ActuatorId)
-                .map(binding -> (ActuatorId) binding.getSenderId())
-                .map(actuatorId -> dtoConfiguration.actuatorDTOMap().get(actuatorId))
+    public List<ItemDTO> listenersForItem(String itemId) {
+        List<ItemDTO> listeners = dtoConfiguration.bindingDTOs().stream()
+                .filter(binding -> binding.getSenderId().equals(itemId))
+                .flatMap(binding -> binding.getConsumerIds().stream())
+                .map(this::findListenerDTO)
                 .collect(Collectors.toList());
-        return actuators;
+        return listeners;
+    }
+
+    private ItemDTO findSenderDTO(String itemId) {
+        ItemDTO itemDTO = dtoConfiguration.emitterDTOMap().get(itemId);
+        if (itemDTO == null) {
+            itemDTO = dtoConfiguration.actuatorDTOMap().get(itemId);
+        }
+        if (itemDTO == null) {
+            itemDTO = dtoConfiguration.applianceDTOMap().get(itemId);
+        }
+        return itemDTO;
+    }
+
+    private ItemDTO findListenerDTO(String itemId) {
+        ItemDTO itemDTO = dtoConfiguration.collectorDTOMap().get(itemId);
+        if (itemDTO == null) {
+            itemDTO = dtoConfiguration.actuatorDTOMap().get(itemId);
+        }
+        if (itemDTO == null) {
+            itemDTO = dtoConfiguration.applianceDTOMap().get(itemId);
+        }
+        return itemDTO;
     }
 }
