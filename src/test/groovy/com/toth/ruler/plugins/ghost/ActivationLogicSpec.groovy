@@ -1,7 +1,7 @@
 package com.toth.ruler.plugins.ghost
 
 
-import com.tbot.ruler.plugins.ghost.RandomActuatorConfiguration
+import com.tbot.ruler.plugins.ghost.randominterval.RandomActuatorConfiguration
 
 import spock.lang.Specification
 

@@ -1,5 +1,7 @@
-package com.tbot.ruler.plugins.ghost;
+package com.tbot.ruler.plugins.ghost.randominterval;
 
+import com.tbot.ruler.plugins.ghost.TimeRange;
+import com.tbot.ruler.plugins.ghost.randominterval.RandomActuatorConfiguration;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,8 +1,11 @@
 package com.tbot.ruler.plugins.ghost;
 
+import lombok.Getter;
+
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
+@Getter
 public class TimeRange {
 
     private LocalTime startTime;

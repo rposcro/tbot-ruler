@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins.ghost;
+package com.tbot.ruler.plugins.ghost.randominterval;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

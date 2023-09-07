@@ -8,7 +8,7 @@ import lombok.Setter;
 @Setter
 public class DaytimeEmitterConfiguration {
 
-    @JsonProperty(defaultValue = "0")
+    @JsonProperty(defaultValue = "5")
     private long emissionInterval;
     @JsonProperty(defaultValue = "0")
     private long sunriseShift;
