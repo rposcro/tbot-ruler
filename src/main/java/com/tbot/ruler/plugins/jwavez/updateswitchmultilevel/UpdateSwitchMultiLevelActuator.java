@@ -10,7 +10,7 @@ import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
-import com.tbot.ruler.things.Emitter;
+import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;
@@ -22,11 +22,11 @@ import java.util.Optional;
 
 @Slf4j
 @Getter
-public class UpdateSwitchMultiLevelEmitter extends AbstractItem implements Emitter {
+public class UpdateSwitchMultiLevelActuator extends AbstractItem implements Actuator {
 
     private final static int MIN_POLL_INTERVAL = 120;
 
-    private final UpdateSwitchMultiLevelEmitterConfiguration configuration;
+    private final UpdateSwitchMultiLevelConfiguration configuration;
     private final MessagePublisher messagePublisher;
     private final JWaveZCommandSender commandSender;
 
@@ -34,13 +34,13 @@ public class UpdateSwitchMultiLevelEmitter extends AbstractItem implements Emitt
     private long pollIntervalMilliseconds;
 
     @Builder
-    public UpdateSwitchMultiLevelEmitter(
+    public UpdateSwitchMultiLevelActuator(
             @NonNull String id,
             @NonNull String name,
             String description,
             @NonNull MessagePublisher messagePublisher,
             @NonNull JWaveZCommandSender commandSender,
-            @NonNull UpdateSwitchMultiLevelEmitterConfiguration configuration,
+            @NonNull UpdateSwitchMultiLevelConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
             ) {
         super(id, name, description);
@@ -81,5 +81,9 @@ public class UpdateSwitchMultiLevelEmitter extends AbstractItem implements Emitt
                 .senderId(this.getId())
                 .payload(OnOffState.of(command.getCurrentValue() != 0))
                 .build());
+    }
+
+    @Override
+    public void acceptMessage(Message message) {
     }
 }

@@ -12,7 +12,7 @@ import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
-import com.tbot.ruler.things.Emitter;
+import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,11 +24,11 @@ import java.util.Optional;
 
 @Slf4j
 @Getter
-public class UpdateSwitchBinaryEmitter extends AbstractItem implements Emitter {
+public class UpdateSwitchBinaryActuator extends AbstractItem implements Actuator {
 
     private final static int MIN_POLL_INTERVAL = 120;
 
-    private final UpdateSwitchBinaryEmitterConfiguration configuration;
+    private final UpdateSwitchBinaryConfiguration configuration;
     private final MessagePublisher messagePublisher;
     private final JWaveZCommandSender commandSender;
 
@@ -38,13 +38,13 @@ public class UpdateSwitchBinaryEmitter extends AbstractItem implements Emitter {
     private final boolean multiChannelOn;
 
     @Builder
-    public UpdateSwitchBinaryEmitter(
+    public UpdateSwitchBinaryActuator(
             @NonNull String id,
             @NonNull String name,
             String description,
             @NonNull MessagePublisher messagePublisher,
             @NonNull JWaveZCommandSender commandSender,
-            @NonNull UpdateSwitchBinaryEmitterConfiguration configuration,
+            @NonNull UpdateSwitchBinaryConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
     ) {
         super(id, name, description);
@@ -91,5 +91,9 @@ public class UpdateSwitchBinaryEmitter extends AbstractItem implements Emitter {
                 .senderId(this.getId())
                 .payload(OnOffState.of(report.getValue() != 0))
                 .build());
+    }
+
+    @Override
+    public void acceptMessage(Message message) {
     }
 }

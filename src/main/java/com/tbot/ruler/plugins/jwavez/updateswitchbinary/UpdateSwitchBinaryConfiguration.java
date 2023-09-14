@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins.jwavez.updatecolor;
+package com.tbot.ruler.plugins.jwavez.updateswitchbinary;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -6,12 +6,12 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateColorEmitterConfiguration {
+public class UpdateSwitchBinaryConfiguration {
 
     @JsonProperty(required = true)
     private int nodeId;
-    @JsonProperty(required = true)
-    private String colorMode;
+    @JsonProperty(defaultValue = "0")
+    private int endPointId;
     @JsonProperty(defaultValue = "0")
     private int pollStateInterval;
 }

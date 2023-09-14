@@ -6,14 +6,14 @@ import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.model.Measure;
 import com.tbot.ruler.model.MeasureQuantity;
-import com.tbot.ruler.things.Emitter;
+import com.tbot.ruler.things.Actuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
 @Getter
 @Builder
-public class SensorMultilevelEmitter implements Emitter {
+public class SensorMultilevelActuator implements Actuator {
 
     @NonNull
     private String id;
@@ -38,5 +38,9 @@ public class SensorMultilevelEmitter implements Emitter {
 
     @Override
     public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
+    }
+
+    @Override
+    public void acceptMessage(Message message) {
     }
 }

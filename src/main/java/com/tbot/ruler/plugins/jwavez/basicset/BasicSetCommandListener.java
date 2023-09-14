@@ -13,7 +13,7 @@ import java.util.List;
 @Slf4j
 public class BasicSetCommandListener extends JWaveZCommandListener<BasicSet> {
 
-    private List<BasicSetEmitter> emitters;
+    private List<BasicSetActuator> emitters;
     private JwzSupportedCommandParser supportedCommandParser;
 
     public BasicSetCommandListener(JwzSupportedCommandParser supportedCommandParser) {
@@ -46,7 +46,7 @@ public class BasicSetCommandListener extends JWaveZCommandListener<BasicSet> {
                 .forEach(emitter -> emitter.acceptCommandValue((byte) basicSet.getValue()));
     }
 
-    public void registerEmitter(BasicSetEmitter emitter) {
+    public void registerEmitter(BasicSetActuator emitter) {
         emitters.add(emitter);
     }
 }

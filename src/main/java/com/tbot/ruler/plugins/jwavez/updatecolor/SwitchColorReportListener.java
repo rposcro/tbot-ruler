@@ -10,7 +10,7 @@ import java.util.List;
 @Slf4j
 public class SwitchColorReportListener extends JWaveZCommandListener<SwitchColorReport> {
 
-    private List<UpdateColorEmitter> emitters;
+    private List<UpdateColorActuator> emitters;
 
     public SwitchColorReportListener() {
         this.emitters = new LinkedList<>();
@@ -25,7 +25,7 @@ public class SwitchColorReportListener extends JWaveZCommandListener<SwitchColor
                 .forEach(emitter -> emitter.acceptCommand(command));
     }
 
-    public void registerEmitter(UpdateColorEmitter emitter) {
+    public void registerEmitter(UpdateColorActuator emitter) {
         emitters.add(emitter);
     }
 }

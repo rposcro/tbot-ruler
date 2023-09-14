@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class BasicSetEmitterConfiguration {
+public class BasicSetConfiguration {
 
     @JsonProperty(required = true)
     private int nodeId;

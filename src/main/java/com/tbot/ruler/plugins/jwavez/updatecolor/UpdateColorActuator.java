@@ -12,7 +12,7 @@ import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.model.RGBWColor;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
-import com.tbot.ruler.things.Emitter;
+import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,11 +29,11 @@ import static java.lang.Byte.toUnsignedInt;
 
 @Slf4j
 @Getter
-public class UpdateColorEmitter extends AbstractItem implements Emitter {
+public class UpdateColorActuator extends AbstractItem implements Actuator {
 
     private final static int MIN_POLL_INTERVAL = 120;
 
-    private final UpdateColorEmitterConfiguration configuration;
+    private final UpdateColorConfiguration configuration;
     private final MessagePublisher messagePublisher;
     private final JWaveZCommandSender commandSender;
 
@@ -44,13 +44,13 @@ public class UpdateColorEmitter extends AbstractItem implements Emitter {
     private final HashMap<Integer, Integer> collectedComponentsReports = new HashMap<>();
 
     @Builder
-    public UpdateColorEmitter(
+    public UpdateColorActuator(
             @NonNull String id,
             @NonNull String name,
             String description,
             @NonNull MessagePublisher messagePublisher,
             @NonNull JWaveZCommandSender commandSender,
-            @NonNull UpdateColorEmitterConfiguration configuration,
+            @NonNull UpdateColorConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
     ) {
         super(id, name, description);
@@ -121,5 +121,9 @@ public class UpdateColorEmitter extends AbstractItem implements Emitter {
                         collectedComponentsReports.get(toUnsignedInt(ColorComponent.WARM_WHITE.getCode()))
                 ))
                 .build();
+    }
+
+    @Override
+    public void acceptMessage(Message message) {
     }
 }

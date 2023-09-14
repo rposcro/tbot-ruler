@@ -6,25 +6,25 @@ import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.MessagePublisher;
 import com.tbot.ruler.model.BinaryStateClaim;
 import com.tbot.ruler.things.AbstractItem;
-import com.tbot.ruler.things.Emitter;
+import com.tbot.ruler.things.Actuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
 @Getter
-public class BasicSetEmitter extends AbstractItem implements Emitter {
+public class BasicSetActuator extends AbstractItem implements Actuator {
 
     private MessagePublisher messagePublisher;
     private BasicSetValueMode valueMode;
-    private BasicSetEmitterConfiguration configuration;
+    private BasicSetConfiguration configuration;
 
     @Builder
-    public BasicSetEmitter(
+    public BasicSetActuator(
         @NonNull String id,
         @NonNull String name,
         String description,
         @NonNull MessagePublisher messagePublisher,
-        @NonNull BasicSetEmitterConfiguration configuration
+        @NonNull BasicSetConfiguration configuration
     ) {
         super(id, name, description);
         this.messagePublisher = messagePublisher;
@@ -64,5 +64,9 @@ public class BasicSetEmitter extends AbstractItem implements Emitter {
             default:
                 throw new MessageProcessingException("Unexpected implementation inconsistency!");
         }
+    }
+
+    @Override
+    public void acceptMessage(Message message) {
     }
 }

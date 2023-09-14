@@ -4,22 +4,22 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rposcro.jwavez.core.commands.supported.sensormultilevel.SensorMultilevelReport;
 import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.commands.types.SensorMultilevelCommandType;
-import com.tbot.ruler.plugins.jwavez.EmitterBuilder;
+import com.tbot.ruler.plugins.jwavez.ActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
 import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
+import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 
 import java.io.IOException;
 
-public class SensorMultilevelEmitterBuilder implements EmitterBuilder {
+public class SensorMultilevelBuilder implements ActuatorBuilder {
 
     private static final String REFERENCE = "sensor-multilevel";
 
     private JWaveZThingContext thingContext;
     private final SensorMultilevelListener sensorMultilevelHandler;
 
-    public SensorMultilevelEmitterBuilder(JWaveZThingContext thingContext) {
+    public SensorMultilevelBuilder(JWaveZThingContext thingContext) {
         this.thingContext = thingContext;
         this.sensorMultilevelHandler = new SensorMultilevelListener(
                 thingContext.getJwzApplicationSupport().supportedCommandParser());
@@ -41,16 +41,16 @@ public class SensorMultilevelEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public SensorMultilevelEmitter buildEmitter(EmitterDTO emitterDTO)
+    public SensorMultilevelActuator buildActuator(ActuatorDTO actuatorDTO)
     throws PluginException {
         try {
             SensorMultilevelConfiguration configuration = new ObjectMapper()
                     .readerFor(SensorMultilevelConfiguration.class)
-                    .readValue(emitterDTO.getConfigurationNode());
-            SensorMultilevelEmitter emitter = SensorMultilevelEmitter.builder()
-                    .id(emitterDTO.getId())
-                    .name(emitterDTO.getName())
-                    .description(emitterDTO.getDescription())
+                    .readValue(actuatorDTO.getConfigurationNode());
+            SensorMultilevelActuator emitter = SensorMultilevelActuator.builder()
+                    .id(actuatorDTO.getId())
+                    .name(actuatorDTO.getName())
+                    .description(actuatorDTO.getDescription())
                     .messagePublisher(thingContext.getMessagePublisher())
                     .build();
 
@@ -69,7 +69,7 @@ public class SensorMultilevelEmitterBuilder implements EmitterBuilder {
 
             return emitter;
         } catch (IOException e) {
-            throw new PluginException("Could not parse emitter's configuration!", e);
+            throw new PluginException("Could not parse actuator's configuration!", e);
         }
     }
 }

@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SwitchColorCollectorConfiguration {
+public class SwitchColorConfiguration {
 
     @JsonProperty(required = true)
     private int nodeId;

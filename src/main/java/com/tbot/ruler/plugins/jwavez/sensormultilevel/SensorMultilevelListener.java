@@ -16,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 public class SensorMultilevelListener extends JWaveZCommandListener<SensorMultilevelReport> {
 
-    private Map<String, List<SensorMultilevelEmitter>> emittersPerKey;
+    private Map<String, List<SensorMultilevelActuator>> emittersPerKey;
     private JwzSupportedCommandParser supportedCommandParser;
 
     public SensorMultilevelListener(JwzSupportedCommandParser supportedCommandParser) {
@@ -24,11 +24,11 @@ public class SensorMultilevelListener extends JWaveZCommandListener<SensorMultil
         this.emittersPerKey = new HashMap<>();
     }
 
-    public void registerEmitter(byte sourceNodeId, SensorMultilevelEmitter emitter) {
+    public void registerEmitter(byte sourceNodeId, SensorMultilevelActuator emitter) {
         emittersPerKey.computeIfAbsent(computeKey(sourceNodeId), key -> new LinkedList()).add(emitter);
     }
 
-    public void registerEmitter(byte sourceNodeId, byte sourceEndPointId, SensorMultilevelEmitter emitter) {
+    public void registerEmitter(byte sourceNodeId, byte sourceEndPointId, SensorMultilevelActuator emitter) {
         emittersPerKey.computeIfAbsent(computeKey(sourceNodeId, sourceEndPointId), key -> new LinkedList()).add(emitter);
     }
 
@@ -46,7 +46,7 @@ public class SensorMultilevelListener extends JWaveZCommandListener<SensorMultil
     public void handleEncapsulatedCommand(MultiChannelCommandEncapsulation commandEncapsulation) {
         log.debug("Handling encapsulated sensor multilevel report command");
         String emittersKey = computeKey(commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndPointId());
-        List<SensorMultilevelEmitter> emitters = emittersPerKey.get(emittersKey);
+        List<SensorMultilevelActuator> emitters = emittersPerKey.get(emittersKey);
 
         if (emitters != null) {
             SensorMultilevelReport report = supportedCommandParser.parseCommand(

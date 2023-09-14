@@ -11,14 +11,14 @@ import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.model.BinaryStateClaim;
 import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
-import com.tbot.ruler.things.Collector;
+import com.tbot.ruler.things.Actuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
 
 @Getter
-public class SwitchMultilevelCollector implements Collector {
+public class SwitchMultilevelActuator implements Actuator {
 
     private final String id;
     private final String name;
@@ -31,7 +31,7 @@ public class SwitchMultilevelCollector implements Collector {
     private final SwitchMultiLevelCommandBuilder commandBuilder;
 
     @Builder
-    public SwitchMultilevelCollector(
+    public SwitchMultilevelActuator(
             @NonNull String id,
             @NonNull String name,
             String description,

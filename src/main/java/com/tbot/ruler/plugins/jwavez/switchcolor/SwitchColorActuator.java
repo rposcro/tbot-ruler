@@ -10,7 +10,7 @@ import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.model.RGBWColor;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
-import com.tbot.ruler.things.Collector;
+import com.tbot.ruler.things.Actuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -18,22 +18,22 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class SwitchColorCollector extends AbstractItem implements Collector {
+public class SwitchColorActuator extends AbstractItem implements Actuator {
 
     private final static String PERSISTENCE_KEY = "rgbw";
 
-    private final SwitchColorCollectorConfiguration configuration;
+    private final SwitchColorConfiguration configuration;
     private final JWaveZCommandSender commandSender;
     private final SwitchColorCommandBuilder commandBuilder;
     private final ColorMode colorMode;
 
     @Builder
-    public SwitchColorCollector(
+    public SwitchColorActuator(
             @NonNull String id,
             @NonNull String name,
             String description,
             @NonNull JWaveZCommandSender commandSender,
-            @NonNull SwitchColorCollectorConfiguration configuration,
+            @NonNull SwitchColorConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
             ) {
         super(id, name, description);

@@ -4,23 +4,23 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
 import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.commands.types.SwitchBinaryCommandType;
-import com.tbot.ruler.plugins.jwavez.EmitterBuilder;
+import com.tbot.ruler.plugins.jwavez.ActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
 import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
-import com.tbot.ruler.things.Emitter;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
+import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 
 import java.io.IOException;
 
-public class UpdateSwitchMultiLevelEmitterBuilder implements EmitterBuilder {
+public class UpdateSwitchMultiLevelBuilder implements ActuatorBuilder {
 
     private static final String REFERENCE = "update-switch-binary";
 
     private final SwitchBinaryReportListener reportHandler;
     private final JWaveZThingContext thingContext;
 
-    public UpdateSwitchMultiLevelEmitterBuilder(JWaveZThingContext thingContext) {
+    public UpdateSwitchMultiLevelBuilder(JWaveZThingContext thingContext) {
         this.thingContext = thingContext;
         this.reportHandler = new SwitchBinaryReportListener(thingContext.getJwzApplicationSupport());
     }
@@ -41,14 +41,14 @@ public class UpdateSwitchMultiLevelEmitterBuilder implements EmitterBuilder {
     }
 
     @Override
-    public Emitter buildEmitter(EmitterDTO emitterDTO) throws PluginException {
+    public Actuator buildActuator(ActuatorDTO actuatorDTO) throws PluginException {
         try {
-            UpdateSwitchBinaryEmitterConfiguration configuration = new ObjectMapper().readerFor(UpdateSwitchBinaryEmitterConfiguration.class)
-                    .readValue(emitterDTO.getConfigurationNode());
-            UpdateSwitchBinaryEmitter emitter = UpdateSwitchBinaryEmitter.builder()
-                    .id(emitterDTO.getId())
-                    .name(emitterDTO.getName())
-                    .description(emitterDTO.getDescription())
+            UpdateSwitchBinaryConfiguration configuration = new ObjectMapper().readerFor(UpdateSwitchBinaryConfiguration.class)
+                    .readValue(actuatorDTO.getConfigurationNode());
+            UpdateSwitchBinaryActuator emitter = UpdateSwitchBinaryActuator.builder()
+                    .id(actuatorDTO.getId())
+                    .name(actuatorDTO.getName())
+                    .description(actuatorDTO.getDescription())
                     .commandSender(thingContext.getJwzCommandSender())
                     .messagePublisher(thingContext.getMessagePublisher())
                     .configuration(configuration)

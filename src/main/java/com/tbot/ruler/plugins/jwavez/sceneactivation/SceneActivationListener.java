@@ -13,22 +13,22 @@ import java.util.Optional;
 @Slf4j
 public class SceneActivationListener extends JWaveZCommandListener<SceneActivationSet> {
 
-    private Map<String, List<SceneActivationEmitter>> emittersPerKey;
+    private Map<String, List<SceneActivationActuator>> actuatorsPerKey;
 
     public SceneActivationListener() {
-        this.emittersPerKey = new HashMap<>();
+        this.actuatorsPerKey = new HashMap<>();
     }
 
     @Override
     public void handleCommand(SceneActivationSet command) {
         log.debug("Handling scene activation set command");
-        String emitterKey = SceneActivationEmitter.uniqueSceneKey(command.getSourceNodeId().getId(), (byte) command.getSceneId());
-        Optional.ofNullable(emittersPerKey.get(emitterKey))
+        String actuatorKey = SceneActivationActuator.uniqueSceneKey(command.getSourceNodeId().getId(), (byte) command.getSceneId());
+        Optional.ofNullable(actuatorsPerKey.get(actuatorKey))
             .map(List::stream)
-            .ifPresent(stream -> stream.forEach(SceneActivationEmitter::publishMessage));
+            .ifPresent(stream -> stream.forEach(SceneActivationActuator::publishMessage));
     }
 
-    public void registerEmitter(SceneActivationEmitter emitter) {
-        emittersPerKey.computeIfAbsent(emitter.getUniqueSceneKey(), key -> new LinkedList()).add(emitter);
+    public void registerActuator(SceneActivationActuator actuator) {
+        actuatorsPerKey.computeIfAbsent(actuator.getUniqueSceneKey(), key -> new LinkedList()).add(actuator);
     }
 }

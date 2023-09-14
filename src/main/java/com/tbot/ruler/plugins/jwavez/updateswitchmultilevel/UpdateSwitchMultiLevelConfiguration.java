@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins.jwavez.updateswitchbinary;
+package com.tbot.ruler.plugins.jwavez.updateswitchmultilevel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
@@ -6,12 +6,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateSwitchBinaryEmitterConfiguration {
+public class UpdateSwitchMultiLevelConfiguration {
 
     @JsonProperty(required = true)
     private int nodeId;
-    @JsonProperty(defaultValue = "0")
-    private int endPointId;
     @JsonProperty(defaultValue = "0")
     private int pollStateInterval;
 }

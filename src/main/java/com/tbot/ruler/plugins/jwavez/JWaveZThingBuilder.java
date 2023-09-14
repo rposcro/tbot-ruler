@@ -4,8 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicThing;
-import com.tbot.ruler.things.Collector;
-import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.things.builder.dto.ThingDTO;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
@@ -38,8 +36,6 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
                 .build();
 
         JWaveZThingItemsBuilder itemsBuilder = new JWaveZThingItemsBuilder(thingContext);
-        List<Emitter> emitters = itemsBuilder.buildEmitters(builderContext);
-        List<Collector> collectors = itemsBuilder.buildCollectors(builderContext);
         List<Actuator> actuators = itemsBuilder.buildActuators(builderContext);
         registerListeners(serialHandler, itemsBuilder);
 
@@ -49,8 +45,6 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
             .id(thingDTO.getId())
             .name(thingDTO.getName())
             .description(thingDTO.getDescription())
-            .emitters(emitters)
-            .collectors(collectors)
             .actuators(actuators)
             .startUpTask(() -> serialController.connect())
             .triggerableTask(commandSender)
@@ -59,8 +53,7 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
 
     private void registerListeners(JWaveZSerialHandler serialHandler, JWaveZThingItemsBuilder itemsBuilder) {
         itemsBuilder.getActuatorBuilderMap().values().stream()
-                .forEach(builder -> serialHandler.addCommandListener(builder.getSupportedCommandType(), builder.getSupportedCommandHandler()));
-        itemsBuilder.getEmitterBuilderMap().values().stream()
+                .filter(builder -> builder.getSupportedCommandType() != null && builder.getSupportedCommandHandler() != null)
                 .forEach(builder -> serialHandler.addCommandListener(builder.getSupportedCommandType(), builder.getSupportedCommandHandler()));
     }
 

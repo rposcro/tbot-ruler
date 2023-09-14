@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.jwavez.sceneactivation;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.model.BinaryStateClaim;
-import com.tbot.ruler.things.Emitter;
+import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.messages.MessagePublisher;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,7 +11,7 @@ import lombok.NonNull;
 
 @Getter
 @Builder(builderClassName = "_SceneActivationEmitterBuilder")
-public class SceneActivationEmitter implements Emitter {
+public class SceneActivationActuator implements Actuator {
 
     @NonNull
     private String id;
@@ -27,7 +27,7 @@ public class SceneActivationEmitter implements Emitter {
     @Builder.Default
     private String uniqueSceneKey = null;
 
-    public SceneActivationEmitter init() {
+    public SceneActivationActuator init() {
         this.uniqueSceneKey = uniqueSceneKey(sourceNodeId, sceneId);
         return this;
     }
@@ -45,5 +45,9 @@ public class SceneActivationEmitter implements Emitter {
 
     @Override
     public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
+    }
+
+    @Override
+    public void acceptMessage(Message message) {
     }
 }
