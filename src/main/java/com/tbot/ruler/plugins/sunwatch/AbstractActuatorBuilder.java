@@ -5,7 +5,7 @@ import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
+import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 
 import java.io.IOException;
@@ -17,25 +17,25 @@ public abstract class AbstractActuatorBuilder {
     public abstract String getReference();
     public abstract Actuator buildActuator(ThingBuilderContext builderContext, SunLocale eventLocale) throws PluginException;
 
-    protected EmitterDTO findEmitterDTO(String emitterReference, ThingBuilderContext builderContext) throws PluginException {
-        return builderContext.getThingDTO().getEmitters().stream()
-                .filter(emitterDTO -> emitterDTO.getRef().equals(emitterReference))
+    protected ActuatorDTO findActuatorDTO(String actuatorReference, ThingBuilderContext builderContext) throws PluginException {
+        return builderContext.getThingDTO().getActuators().stream()
+                .filter(dto -> dto.getRef().equals(actuatorReference))
                 .findFirst()
-                .orElseThrow(() -> new PluginException("Cannot find DTO for emitter reference " + emitterReference));
+                .orElseThrow(() -> new PluginException("Cannot find DTO for actuator reference " + actuatorReference));
     }
 
-    protected Message emitterMessage(EmitterDTO emitterDTO, String signalValue) {
+    protected Message emitterMessage(ActuatorDTO actuatorDTO, String signalValue) {
         return Message.builder()
-            .senderId(emitterDTO.getId())
+            .senderId(actuatorDTO.getId())
             .payload(OnOffState.of(VALUE_ON.equalsIgnoreCase(signalValue)))
             .build();
     }
 
-    protected <T> T parseEmitterConfiguration(EmitterDTO emitterDTO, Class<T> clazz) throws PluginException {
+    protected <T> T parseActuatorConfiguration(ActuatorDTO actuatorDTO, Class<T> clazz) throws PluginException {
         try {
-            return new ObjectMapper().readerFor(clazz).readValue(emitterDTO.getConfigurationNode());
+            return new ObjectMapper().readerFor(clazz).readValue(actuatorDTO.getConfigurationNode());
         } catch(IOException e) {
-            throw new PluginException("Could not parse SunWatch emitter's configuration!", e);
+            throw new PluginException("Could not parse SunWatch actuator's configuration!", e);
         }
     }
 }

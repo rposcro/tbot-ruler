@@ -15,7 +15,7 @@ import com.tbot.ruler.things.BasicThing;
 import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.ThingPluginBuilder;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
+import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 
 import com.tbot.ruler.things.builder.dto.ThingDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
@@ -68,17 +68,17 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
     private List<Actuator> buildActuators(ThingBuilderContext builderContext, SunLocale sunEventLocale)
     throws PluginException {
         List<Actuator> actuators = new LinkedList<>();
-        for (EmitterDTO emitterDTO : builderContext.getThingDTO().getEmitters()) {
-            actuators.add(buildActuator(builderContext, sunEventLocale, emitterDTO));
+        for (ActuatorDTO actuatorDTO : builderContext.getThingDTO().getActuators()) {
+            actuators.add(buildActuator(builderContext, sunEventLocale, actuatorDTO));
         }
         return actuators;
     }
 
-    private Actuator buildActuator(ThingBuilderContext builderContext, SunLocale sunEventLocale, EmitterDTO emitterDTO)
+    private Actuator buildActuator(ThingBuilderContext builderContext, SunLocale sunEventLocale, ActuatorDTO actuatorDTO)
     throws PluginException {
-        AbstractActuatorBuilder actuatorBuilder = emitterBuilderMap.get(emitterDTO.getRef());
+        AbstractActuatorBuilder actuatorBuilder = emitterBuilderMap.get(actuatorDTO.getRef());
         if (actuatorBuilder == null) {
-            throw new PluginException("Unknown actuator reference " + emitterDTO.getRef() + ", skipping this DTO");
+            throw new PluginException("Unknown actuator reference " + actuatorDTO.getRef() + ", skipping this DTO");
         }
         return actuatorBuilder.buildActuator(builderContext, sunEventLocale);
     }

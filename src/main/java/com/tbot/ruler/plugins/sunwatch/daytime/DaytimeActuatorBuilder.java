@@ -6,7 +6,7 @@ import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicActuator;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
+import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 
 public class DaytimeActuatorBuilder extends AbstractActuatorBuilder {
@@ -20,16 +20,16 @@ public class DaytimeActuatorBuilder extends AbstractActuatorBuilder {
 
     @Override
     public Actuator buildActuator(ThingBuilderContext builderContext, SunLocale eventLocale) throws PluginException {
-        EmitterDTO emitterDTO = findEmitterDTO(REFERENCE, builderContext);
-        DaytimeActuatorConfiguration emitterConfiguration = parseEmitterConfiguration(emitterDTO, DaytimeActuatorConfiguration.class);
+        ActuatorDTO actuatorDTO = findActuatorDTO(REFERENCE, builderContext);
+        DaytimeActuatorConfiguration emitterConfiguration = parseActuatorConfiguration(actuatorDTO, DaytimeActuatorConfiguration.class);
         SunCalculator sunCalculator = sunCalculator(emitterConfiguration, eventLocale);
         DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterConfiguration, sunCalculator);
-        DaytimeEmissionTask emissionTask = emissionTask(emitterDTO, builderContext, sunCalculator, emitterConfiguration);
+        DaytimeEmissionTask emissionTask = emissionTask(actuatorDTO, builderContext, sunCalculator, emitterConfiguration);
 
         return BasicActuator.builder()
-                .id(emitterDTO.getId())
-                .name(emitterDTO.getName())
-                .description(emitterDTO.getDescription())
+                .id(actuatorDTO.getId())
+                .name(actuatorDTO.getName())
+                .description(actuatorDTO.getDescription())
                 .startUpTask(emissionTask)
                 .triggerableTask(emissionTask)
                 .taskTrigger(emissionTrigger)
@@ -37,15 +37,15 @@ public class DaytimeActuatorBuilder extends AbstractActuatorBuilder {
     }
 
     private DaytimeEmissionTask emissionTask(
-            EmitterDTO emitterDTO,
+            ActuatorDTO actuatorDTO,
             ThingBuilderContext builderContext,
             SunCalculator sunCalculator,
             DaytimeActuatorConfiguration emitterConfiguration) {
         return DaytimeEmissionTask.builder()
-                .emitterId(emitterDTO.getId())
+                .emitterId(actuatorDTO.getId())
                 .messagePublisher(builderContext.getMessagePublisher())
-                .dayTimeMessage(emitterMessage(emitterDTO, emitterConfiguration.getDayTimeSignal()))
-                .nightTimeMessage(emitterMessage(emitterDTO, emitterConfiguration.getNightTimeSignal()))
+                .dayTimeMessage(emitterMessage(actuatorDTO, emitterConfiguration.getDayTimeSignal()))
+                .nightTimeMessage(emitterMessage(actuatorDTO, emitterConfiguration.getNightTimeSignal()))
                 .sunCalculator(sunCalculator)
                 .build();
     }
