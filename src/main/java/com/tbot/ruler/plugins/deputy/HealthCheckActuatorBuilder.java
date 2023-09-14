@@ -1,39 +1,39 @@
 package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.rest.RestGetCommand;
-import com.tbot.ruler.things.BasicEmitter;
-import com.tbot.ruler.things.Emitter;
+import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.things.BasicActuator;
+import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.thread.RegularEmissionTrigger;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.builder.dto.ThingDTO;
 
-class HealthCheckEmitterBuilder {
+class HealthCheckActuatorBuilder {
 
     private static final String PARAM_FREQUENCY = "frequency";
     private static final String DEFAULT_FREQUENCY = "15";
 
-    Emitter buildEmitter(ThingBuilderContext builderContext, EmitterDTO emitterDTO) {
-        return BasicEmitter.builder()
-            .id(emitterDTO.getId())
-            .name(emitterDTO.getName())
-            .description(emitterDTO.getDescription())
-            .triggerableTask(emissionTask(builderContext, emitterDTO))
-            .taskTrigger(emissionTrigger(emitterDTO))
+    Actuator buildActuator(ActuatorDTO actuatorDTO, ThingBuilderContext builderContext) {
+        return BasicActuator.builder()
+            .id(actuatorDTO.getId())
+            .name(actuatorDTO.getName())
+            .description(actuatorDTO.getDescription())
+            .triggerableTask(emissionTask(builderContext, actuatorDTO))
+            .taskTrigger(emissionTrigger(actuatorDTO))
             .build();
     }
 
-    private HealthCheckEmissionTask emissionTask(ThingBuilderContext builderContext, EmitterDTO emitterDTO) {
+    private HealthCheckEmissionTask emissionTask(ThingBuilderContext builderContext, ActuatorDTO actuatorDTO) {
         return HealthCheckEmissionTask.builder()
-            .emitterId(emitterDTO.getId())
+            .actuatorId(actuatorDTO.getId())
             .healthCheckCommand(restGetCommand(builderContext))
             .messagePublisher(builderContext.getMessagePublisher())
             .build();
     }
 
-    private RegularEmissionTrigger emissionTrigger(EmitterDTO emitterDTO) {
+    private RegularEmissionTrigger emissionTrigger(ActuatorDTO actuatorDTO) {
         return new RegularEmissionTrigger(
-                1000 * Long.parseLong(emitterDTO.getStringParameter(PARAM_FREQUENCY, DEFAULT_FREQUENCY)));
+                1000 * Long.parseLong(actuatorDTO.getStringParameter(PARAM_FREQUENCY, DEFAULT_FREQUENCY)));
     }
 
     private RestGetCommand restGetCommand(ThingBuilderContext builderContext) {

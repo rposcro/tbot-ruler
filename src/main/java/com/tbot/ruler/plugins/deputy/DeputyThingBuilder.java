@@ -7,11 +7,9 @@ import java.util.Collections;
 import java.util.List;
 
 import com.tbot.ruler.things.BasicThing;
-import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.ThingPluginBuilder;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
 
 import com.tbot.ruler.things.builder.dto.ThingDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -24,9 +22,9 @@ public class DeputyThingBuilder implements ThingPluginBuilder {
     static final String PARAM_PATH = "path";
 
     private static final String ACTUATOR_REF_BINOUT = "binary-output";
-    private static final String EMITTER_REF_HEALTHCHECK = "health-check";
+    private static final String ACTUATOR_REF_HEALTHCHECK = "health-check";
 
-    private HealthCheckEmitterBuilder healthCheckEmitterBuilder = new HealthCheckEmitterBuilder();
+    private HealthCheckActuatorBuilder healthCheckActuatorBuilder = new HealthCheckActuatorBuilder();
     private BinaryActuatorBuilder binOutActuatorBuilder = new BinaryActuatorBuilder();
 
     @Override
@@ -34,34 +32,16 @@ public class DeputyThingBuilder implements ThingPluginBuilder {
         ThingDTO thingDTO = builderContext.getThingDTO();
         log.debug("Building Deputy: " + thingDTO.getName());
 
-        List<Emitter> emitters = buildEmitters(builderContext);
         List<Actuator> actuators = buildActuators(builderContext);
 
         return BasicThing.builder()
             .id(thingDTO.getId())
             .name(thingDTO.getName())
             .description(thingDTO.getDescription())
-            .emitters(emitters)
             .actuators(actuators)
             .build();
     }
 
-    private List<Emitter> buildEmitters(ThingBuilderContext builderContext) {
-        ThingDTO thingDTO = builderContext.getThingDTO();
-        List<EmitterDTO> emitterDTOs = thingDTO.getEmitters();
-
-        if (emitterDTOs != null) {
-            List<Emitter> emitters = new ArrayList<>(emitterDTOs.size());
-            emitterDTOs.forEach(emitterDTO -> {
-                if (EMITTER_REF_HEALTHCHECK.equals(emitterDTO.getRef())) {
-                    emitters.add(healthCheckEmitterBuilder.buildEmitter(builderContext, emitterDTO));
-                }
-            });
-            return emitters;
-        }
-        return Collections.emptyList();
-    }
-    
     private List<Actuator> buildActuators(ThingBuilderContext builderContext) {
         ThingDTO thingDTO = builderContext.getThingDTO();
         List<ActuatorDTO> actuatorDTOs = thingDTO.getActuators();
@@ -71,6 +51,8 @@ public class DeputyThingBuilder implements ThingPluginBuilder {
             actuatorDTOs.forEach(actuatorDTO -> {
                 if (ACTUATOR_REF_BINOUT.equals(actuatorDTO.getRef())) {
                     actuators.add(binOutActuatorBuilder.buildActuator(thingDTO, actuatorDTO, builderContext));
+                } else if (ACTUATOR_REF_HEALTHCHECK.equals(actuatorDTO.getRef())) {
+                    actuators.add(healthCheckActuatorBuilder.buildActuator(actuatorDTO, builderContext));
                 }
             });
             return actuators;
