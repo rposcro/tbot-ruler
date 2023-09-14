@@ -40,10 +40,7 @@ public class BindingsAdminService {
     }
 
     private ItemDTO findSenderDTO(String itemId) {
-        ItemDTO itemDTO = dtoConfiguration.emitterDTOMap().get(itemId);
-        if (itemDTO == null) {
-            itemDTO = dtoConfiguration.actuatorDTOMap().get(itemId);
-        }
+        ItemDTO itemDTO = dtoConfiguration.actuatorDTOMap().get(itemId);
         if (itemDTO == null) {
             itemDTO = dtoConfiguration.applianceDTOMap().get(itemId);
         }
@@ -51,10 +48,7 @@ public class BindingsAdminService {
     }
 
     private ItemDTO findListenerDTO(String itemId) {
-        ItemDTO itemDTO = dtoConfiguration.collectorDTOMap().get(itemId);
-        if (itemDTO == null) {
-            itemDTO = dtoConfiguration.actuatorDTOMap().get(itemId);
-        }
+        ItemDTO itemDTO = dtoConfiguration.actuatorDTOMap().get(itemId);
         if (itemDTO == null) {
             itemDTO = dtoConfiguration.applianceDTOMap().get(itemId);
         }

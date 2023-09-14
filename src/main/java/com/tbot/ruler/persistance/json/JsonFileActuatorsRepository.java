@@ -3,8 +3,6 @@ package com.tbot.ruler.persistance.json;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.builder.dto.CollectorDTO;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.builder.dto.ThingDTO;
 import lombok.Builder;
 
@@ -43,41 +41,11 @@ public class JsonFileActuatorsRepository extends AbstractJsonFileRepository impl
         thingDTO.getActuators().stream()
                 .map(dto -> toEntity(dto, thingUuid))
                 .forEach(entity -> entities.add(entity));
-        thingDTO.getEmitters().stream()
-                .map(dto -> toEntity(dto, thingUuid))
-                .forEach(entity -> entities.add(entity));
-        thingDTO.getCollectors().stream()
-                .map(dto -> toEntity(dto, thingUuid))
-                .forEach(entity -> entities.add(entity));
 
         return entities;
     }
 
     private ActuatorEntity toEntity(ActuatorDTO dto, String thingUuid) {
-        return ActuatorEntity.builder()
-                .actuatorId(nextId())
-                .actuatorUuid(dto.getId())
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .reference(dto.getRef())
-                .thingUuid(thingUuid)
-                .configuration(dto.getConfigurationNode())
-                .build();
-    }
-
-    private ActuatorEntity toEntity(EmitterDTO dto, String thingUuid) {
-        return ActuatorEntity.builder()
-                .actuatorId(nextId())
-                .actuatorUuid(dto.getId())
-                .name(dto.getName())
-                .description(dto.getDescription())
-                .reference(dto.getRef())
-                .thingUuid(thingUuid)
-                .configuration(dto.getConfigurationNode())
-                .build();
-    }
-
-    private ActuatorEntity toEntity(CollectorDTO dto, String thingUuid) {
         return ActuatorEntity.builder()
                 .actuatorId(nextId())
                 .actuatorUuid(dto.getId())

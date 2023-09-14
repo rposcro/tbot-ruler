@@ -27,22 +27,6 @@ public class DTOValidator {
     }
 
     @EventListener
-    public void validateUniqueEmitterId(ApplicationReadyEvent event) {
-        validateDistinctIds(
-            "Emitters",
-            dtoConfiguration.emitterDTOs().stream()
-                .map(dto -> dto.getId()).collect(Collectors.toList()));
-    }
-
-    @EventListener
-    public void validateUniqueCollectorId(ApplicationReadyEvent event) {
-        validateDistinctIds(
-            "Collectors",
-            dtoConfiguration.collectorDTOs().stream()
-                .map(dto -> dto.getId()).collect(Collectors.toList()));
-    }
-
-    @EventListener
     public void validateUniqueActuatorId(ApplicationReadyEvent event) {
         validateDistinctIds(
             "Actuators",

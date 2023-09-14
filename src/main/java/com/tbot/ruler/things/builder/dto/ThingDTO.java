@@ -17,7 +17,5 @@ public class ThingDTO extends ConfigurableDTO implements ItemDTO {
     private String description;
     @JsonProperty("plugin")
     private String pluginAlias;
-    private List<EmitterDTO> emitters = Collections.emptyList();
-    private List<CollectorDTO> collectors = Collections.emptyList();
     private List<ActuatorDTO> actuators = Collections.emptyList();
 }

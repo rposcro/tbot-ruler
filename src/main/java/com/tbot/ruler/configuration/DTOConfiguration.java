@@ -7,8 +7,6 @@ import java.util.stream.Collectors;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import com.tbot.ruler.things.builder.dto.BindingDTO;
-import com.tbot.ruler.things.builder.dto.CollectorDTO;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.util.FileUtil;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,32 +57,6 @@ public class DTOConfiguration {
     public Map<String, ApplianceDTO> applianceDTOMap() {
         return applianceDTOs().stream()
             .collect(Collectors.toMap(ApplianceDTO::getId, Function.identity()));
-    }
-
-    @Bean
-    public List<EmitterDTO> emitterDTOs() {
-        return thingDTOs().stream()
-            .flatMap(thingDTO -> thingDTO.getEmitters().stream())
-            .collect(Collectors.toList());
-    }
-
-    @Bean
-    public Map<String, EmitterDTO> emitterDTOMap() {
-        return emitterDTOs().stream()
-            .collect(Collectors.toMap(EmitterDTO::getId, Function.identity()));
-    }
-
-    @Bean
-    public List<CollectorDTO> collectorDTOs() {
-        return thingDTOs().stream()
-            .flatMap(thingDTO -> thingDTO.getCollectors().stream())
-            .collect(Collectors.toList());
-    }
-
-    @Bean
-    public Map<String, CollectorDTO> collectorDTOMap() {
-        return collectorDTOs().stream()
-            .collect(Collectors.toMap(CollectorDTO::getId, Function.identity()));
     }
 
     @Bean

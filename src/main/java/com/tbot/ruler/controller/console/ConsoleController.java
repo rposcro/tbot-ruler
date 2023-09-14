@@ -6,8 +6,6 @@ import com.tbot.ruler.service.admin.PluginsAdminService;
 import com.tbot.ruler.service.admin.ThingsAdminService;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
-import com.tbot.ruler.things.builder.dto.CollectorDTO;
-import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.builder.dto.ThingDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,44 +59,6 @@ public class ConsoleController {
         mav.addObject("things", thingsAdminService.allThings());
         mav.addObject("senders", bindingsAdminService.sendersForItem(thingId));
         mav.addObject("listeners", bindingsAdminService.listenersForItem(thingId));
-        return mav;
-    }
-
-    @GetMapping(path = "emitters", produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView emitters() {
-        ModelAndView mav = new ModelAndView("emitters");
-        mav.addObject("emitters", thingsAdminService.allEmitters());
-        return mav;
-    }
-
-    @GetMapping(path = "emitters/{emitterId}", produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView emitterById(@PathVariable String emitterId) {
-        ModelAndView mav = new ModelAndView("emitters");
-        EmitterDTO emitterDTO = thingsAdminService.emitterDTOById(emitterId);
-        mav.addObject("emitterId", emitterId);
-        mav.addObject("emitter", emitterDTO);
-        mav.addObject("emitters", thingsAdminService.allEmitters());
-        mav.addObject("senders", bindingsAdminService.sendersForItem(emitterId));
-        mav.addObject("listeners", bindingsAdminService.listenersForItem(emitterId));
-        return mav;
-    }
-
-    @GetMapping(path = "collectors", produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView collectors() {
-        ModelAndView mav = new ModelAndView("collectors");
-        mav.addObject("collectors", thingsAdminService.allCollectors());
-        return mav;
-    }
-
-    @GetMapping(path = "collectors/{collectorId}", produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView collectorById(@PathVariable String collectorId) {
-        ModelAndView mav = new ModelAndView("collectors");
-        CollectorDTO collectorDTO = thingsAdminService.collectorDTOById(collectorId);
-        mav.addObject("collectorId", collectorId);
-        mav.addObject("collector", collectorDTO);
-        mav.addObject("collectors", thingsAdminService.allCollectors());
-        mav.addObject("senders", bindingsAdminService.sendersForItem(collectorId));
-        mav.addObject("listeners", bindingsAdminService.listenersForItem(collectorId));
         return mav;
     }
 
