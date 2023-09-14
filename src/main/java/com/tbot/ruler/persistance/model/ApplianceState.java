@@ -1,4 +1,4 @@
-package com.tbot.ruler.persistance;
+package com.tbot.ruler.persistance.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

@@ -1,7 +1,7 @@
 package com.tbot.ruler.configuration;
 
 import com.tbot.ruler.persistance.ApplianceStateRepository;
-import com.tbot.ruler.persistance.JsonFileApplianceStateRepository;
+import com.tbot.ruler.persistance.json.JsonFileApplianceStateRepository;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.TaskBasedItem;

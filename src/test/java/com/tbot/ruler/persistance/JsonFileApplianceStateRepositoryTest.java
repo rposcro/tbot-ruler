@@ -7,6 +7,8 @@ import com.tbot.ruler.model.Measure;
 import com.tbot.ruler.model.MeasureQuantity;
 import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.model.RGBWColor;
+import com.tbot.ruler.persistance.json.JsonFileApplianceStateRepository;
+import com.tbot.ruler.persistance.model.ApplianceState;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;

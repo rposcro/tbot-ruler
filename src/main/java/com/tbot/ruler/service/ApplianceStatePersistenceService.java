@@ -1,6 +1,6 @@
 package com.tbot.ruler.service;
 
-import com.tbot.ruler.persistance.ApplianceState;
+import com.tbot.ruler.persistance.model.ApplianceState;
 import com.tbot.ruler.persistance.ApplianceStateRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

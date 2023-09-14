@@ -1,10 +1,10 @@
-package com.tbot.ruler.persistance;
+package com.tbot.ruler.persistance.json;
 
-import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.module.paramnames.ParameterNamesModule;
 import com.tbot.ruler.exceptions.ServiceExecutionException;
+import com.tbot.ruler.persistance.model.ApplianceState;
+import com.tbot.ruler.persistance.ApplianceStateRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
