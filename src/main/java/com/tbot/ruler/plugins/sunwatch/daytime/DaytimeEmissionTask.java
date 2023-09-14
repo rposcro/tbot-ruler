@@ -1,6 +1,5 @@
 package com.tbot.ruler.plugins.sunwatch.daytime;
 
-import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.MessagePublisher;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
@@ -42,9 +41,5 @@ public class DaytimeEmissionTask implements Runnable {
             messagePublisher.publishMessage(isDaytime ? dayTimeMessage : nightTimeMessage);
             emissionLock.release();
         }
-    }
-
-    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
-        log.info("Received delivery report: " + deliveryReport.deliverySuccessful());
     }
 }

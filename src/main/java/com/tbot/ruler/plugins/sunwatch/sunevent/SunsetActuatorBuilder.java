@@ -1,17 +1,17 @@
 package com.tbot.ruler.plugins.sunwatch.sunevent;
 
 import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.plugins.sunwatch.AbstractEmitterBuilder;
+import com.tbot.ruler.plugins.sunwatch.AbstractActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
-import com.tbot.ruler.things.BasicEmitter;
-import com.tbot.ruler.things.Emitter;
+import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.things.BasicActuator;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.dto.EmitterDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 import com.tbot.ruler.things.thread.TaskTrigger;
 
-public class SunsetEmitterBuilder extends AbstractEmitterBuilder {
+public class SunsetActuatorBuilder extends AbstractActuatorBuilder {
 
     private static final String REFERENCE = "sunset";
 
@@ -24,13 +24,13 @@ public class SunsetEmitterBuilder extends AbstractEmitterBuilder {
     }
 
     @Override
-    public Emitter buildEmitter(ThingBuilderContext builderContext, SunLocale eventLocale) throws PluginException {
+    public Actuator buildActuator(ThingBuilderContext builderContext, SunLocale eventLocale) throws PluginException {
         EmitterDTO emitterDTO = findEmitterDTO(REFERENCE, builderContext);
-        SunEventEmitterConfiguration emitterConfiguration = parseEmitterConfiguration(emitterDTO, SunEventEmitterConfiguration.class);
+        SunEventActuatorConfiguration emitterConfiguration = parseEmitterConfiguration(emitterDTO, SunEventActuatorConfiguration.class);
         TaskTrigger emissionTrigger = emissionTrigger(emitterConfiguration);
         Runnable emissionTask = emissionTask(emitterDTO, emitterConfiguration);
 
-        return BasicEmitter.builder()
+        return BasicActuator.builder()
                 .id(emitterDTO.getId())
                 .name(emitterDTO.getName())
                 .description(emitterDTO.getDescription())
@@ -39,12 +39,12 @@ public class SunsetEmitterBuilder extends AbstractEmitterBuilder {
                 .build();
     }
 
-    private Runnable emissionTask(EmitterDTO emitterDTO, SunEventEmitterConfiguration emitterConfiguration) {
+    private Runnable emissionTask(EmitterDTO emitterDTO, SunEventActuatorConfiguration emitterConfiguration) {
         Message message = emitterMessage(emitterDTO, emitterConfiguration.getSignal());
         return () -> builderContext.getMessagePublisher().publishMessage(message);
     }
 
-    private TaskTrigger emissionTrigger(SunEventEmitterConfiguration emitterConfiguration) {
+    private TaskTrigger emissionTrigger(SunEventActuatorConfiguration emitterConfiguration) {
         SunEventTimer eventTimer = sunEvent(emitterConfiguration.getShift());
         return SunEventTrigger.builder()
             .timer(eventTimer)

@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SunEventEmitterConfiguration {
+public class SunEventActuatorConfiguration {
 
     @JsonProperty(defaultValue = "0")
     private long shift;

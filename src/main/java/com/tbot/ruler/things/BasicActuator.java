@@ -15,8 +15,8 @@ public class BasicActuator extends AbstractItem implements Actuator {
 
     private Optional<MessageReceiver> messageReceiver;
     private Optional<Runnable> startUpTask;
-    private Optional<Runnable> emissionTask;
-    private Optional<TaskTrigger> emissionTrigger;
+    private Optional<Runnable> triggerableTask;
+    private Optional<TaskTrigger> taskTrigger;
 
     @Builder
     public BasicActuator(
@@ -24,19 +24,19 @@ public class BasicActuator extends AbstractItem implements Actuator {
         @NonNull String name,
         String description,
         Runnable startUpTask,
-        Runnable emissionTask,
+        Runnable triggerableTask,
         TaskTrigger taskTrigger,
         MessageReceiver messageReceiver
     ) {
         super(id, name, description);
 
-        if (taskTrigger != null && emissionTask == null) {
+        if (taskTrigger != null && triggerableTask == null) {
             throw new IllegalArgumentException("Emission trigger is only allowed when emission task is specified!");
         }
 
         this.messageReceiver = Optional.ofNullable(messageReceiver);
-        this.emissionTask = Optional.ofNullable(emissionTask);
-        this.emissionTrigger = Optional.ofNullable(taskTrigger);
+        this.triggerableTask = Optional.ofNullable(triggerableTask);
+        this.taskTrigger = Optional.ofNullable(taskTrigger);
         this.startUpTask = Optional.ofNullable(startUpTask);
     }
 

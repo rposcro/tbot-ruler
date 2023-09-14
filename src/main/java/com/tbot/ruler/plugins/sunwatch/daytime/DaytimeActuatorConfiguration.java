@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class DaytimeEmitterConfiguration {
+public class DaytimeActuatorConfiguration {
 
     @JsonProperty(defaultValue = "5")
     private long emissionInterval;

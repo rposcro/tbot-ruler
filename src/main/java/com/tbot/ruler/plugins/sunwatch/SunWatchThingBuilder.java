@@ -10,8 +10,8 @@ import java.util.Set;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luckycatlabs.sunrisesunset.dto.Location;
+import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicThing;
-import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.things.builder.ThingBuilderContext;
 import com.tbot.ruler.things.builder.ThingPluginBuilder;
@@ -25,10 +25,10 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SunWatchThingBuilder implements ThingPluginBuilder {
 
-    private Map<String, AbstractEmitterBuilder> emitterBuilderMap;
+    private Map<String, AbstractActuatorBuilder> emitterBuilderMap;
 
     public SunWatchThingBuilder() {
-        emitterBuilderMap = findEmittersBuilders();
+        emitterBuilderMap = findActuatorsBuilders();
     }
 
     @Override
@@ -38,21 +38,21 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
         SunLocale sunEventLocale = sunLocale(thingConfiguration);
         log.debug("Building Sun Clock: {}, with locale: {}", thingDTO.getName(), sunEventLocale);
 
-        List<Emitter> emitters = buildEmitters(builderContext, sunEventLocale);
+        List<Actuator> actuators = buildActuators(builderContext, sunEventLocale);
 
         return BasicThing.builder()
             .id(thingDTO.getId())
             .name(thingDTO.getName())
             .description(thingDTO.getDescription())
-            .emitters(emitters)
+            .actuators(actuators)
             .build();
     }
 
-    private Map<String, AbstractEmitterBuilder> findEmittersBuilders() {
-        Map<String, AbstractEmitterBuilder> buildersMap = new HashMap<>();
+    private Map<String, AbstractActuatorBuilder> findActuatorsBuilders() {
+        Map<String, AbstractActuatorBuilder> buildersMap = new HashMap<>();
         PackageScanner packageScanner = new PackageScanner();
-        Set<Class<? extends AbstractEmitterBuilder>> buildersClasses = packageScanner.findAllClassesOfType(AbstractEmitterBuilder.class, "com.tbot.ruler.plugins.sunwatch");
-        Set<? extends AbstractEmitterBuilder> builders = packageScanner.instantiateAll(buildersClasses);
+        Set<Class<? extends AbstractActuatorBuilder>> buildersClasses = packageScanner.findAllClassesOfType(AbstractActuatorBuilder.class, "com.tbot.ruler.plugins.sunwatch");
+        Set<? extends AbstractActuatorBuilder> builders = packageScanner.instantiateAll(buildersClasses);
         builders.stream().forEach(builder -> buildersMap.put(builder.getReference(), builder));
         return buildersMap;
     }
@@ -65,22 +65,22 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
         }
     }
 
-    private List<Emitter> buildEmitters(ThingBuilderContext builderContext, SunLocale sunEventLocale)
+    private List<Actuator> buildActuators(ThingBuilderContext builderContext, SunLocale sunEventLocale)
     throws PluginException {
-        List<Emitter> emitters = new LinkedList<>();
+        List<Actuator> actuators = new LinkedList<>();
         for (EmitterDTO emitterDTO : builderContext.getThingDTO().getEmitters()) {
-            emitters.add(buildEmitter(builderContext, sunEventLocale, emitterDTO));
+            actuators.add(buildActuator(builderContext, sunEventLocale, emitterDTO));
         }
-        return emitters;
+        return actuators;
     }
 
-    private Emitter buildEmitter(ThingBuilderContext builderContext, SunLocale sunEventLocale, EmitterDTO emitterDTO)
+    private Actuator buildActuator(ThingBuilderContext builderContext, SunLocale sunEventLocale, EmitterDTO emitterDTO)
     throws PluginException {
-        AbstractEmitterBuilder emitterBuilder = emitterBuilderMap.get(emitterDTO.getRef());
-        if (emitterBuilder == null) {
-            throw new PluginException("Unknown emitter reference " + emitterDTO.getRef() + ", skipping this DTO");
+        AbstractActuatorBuilder actuatorBuilder = emitterBuilderMap.get(emitterDTO.getRef());
+        if (actuatorBuilder == null) {
+            throw new PluginException("Unknown actuator reference " + emitterDTO.getRef() + ", skipping this DTO");
         }
-        return emitterBuilder.buildEmitter(builderContext, sunEventLocale);
+        return actuatorBuilder.buildActuator(builderContext, sunEventLocale);
     }
 
     private SunLocale sunLocale(SunWatchThingConfiguration configuration) {
