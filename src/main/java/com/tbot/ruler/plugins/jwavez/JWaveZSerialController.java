@@ -23,7 +23,7 @@ public class JWaveZSerialController {
     private CallbackHandler callbackHandler;
 
     @Builder
-    public JWaveZSerialController(JWaveZThingConfiguration configuration, CallbackHandler callbackHandler) {
+    public JWaveZSerialController(JWaveZPluginConfiguration configuration, CallbackHandler callbackHandler) {
         this.reconnectAttempts = configuration.getReconnectAttempts();
         this.reconnectDelay = configuration.getReconnectDelay();
         this.device = configuration.getModuleDevice();

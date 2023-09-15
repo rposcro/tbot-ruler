@@ -6,7 +6,7 @@ import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 
-public interface ActuatorBuilder {
+public interface _ActuatorBuilder {
 
     CommandType getSupportedCommandType();
     JWaveZCommandListener<? extends ZWaveSupportedCommand> getSupportedCommandHandler();

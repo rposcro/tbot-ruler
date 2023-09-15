@@ -22,11 +22,11 @@ import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
 public class SunWatchPluginBuilder implements PluginBuilder {
 
-    private final Map<String, AbstractActuatorBuilder> buildersMap;
+    private final Map<String, SunWatchActuatorBuilder> buildersMap;
 
     public SunWatchPluginBuilder() {
-        buildersMap = findActuatorsBuilders(AbstractActuatorBuilder.class, "com.tbot.ruler.plugins.sunwatch").stream()
-                .collect(Collectors.toMap(AbstractActuatorBuilder::getReference, Function.identity()));
+        buildersMap = findActuatorsBuilders(SunWatchActuatorBuilder.class, "com.tbot.ruler.plugins.sunwatch").stream()
+                .collect(Collectors.toMap(SunWatchActuatorBuilder::getReference, Function.identity()));
     }
 
     @Override
@@ -55,7 +55,7 @@ public class SunWatchPluginBuilder implements PluginBuilder {
     }
 
     private Actuator buildActuator(ActuatorEntity actuatorEntity, PluginBuilderContext pluginBuilderContext, SunLocale sunLocale) {
-        AbstractActuatorBuilder actuatorBuilder = buildersMap.get(actuatorEntity.getReference());
+        SunWatchActuatorBuilder actuatorBuilder = buildersMap.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
             throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
         }

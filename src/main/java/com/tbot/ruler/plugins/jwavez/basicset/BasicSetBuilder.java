@@ -1,60 +1,35 @@
 package com.tbot.ruler.plugins.jwavez.basicset;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rposcro.jwavez.core.commands.supported.basic.BasicSet;
 import com.rposcro.jwavez.core.commands.types.BasicCommandType;
-import com.rposcro.jwavez.core.commands.types.CommandType;
-import com.tbot.ruler.plugins.jwavez.ActuatorBuilder;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
-import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
+import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
+import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.exceptions.PluginException;
 
-import java.io.IOException;
+import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
-public class BasicSetBuilder implements ActuatorBuilder {
+public class BasicSetBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "basic-set";
 
-    private final JWaveZThingContext thingContext;
-    private final BasicSetCommandListener basicSetCommandHandler;
+    private final JWaveZPluginContext pluginContext;
 
-    public BasicSetBuilder(JWaveZThingContext thingContext) {
-        this.thingContext = thingContext;
-        basicSetCommandHandler = new BasicSetCommandListener(thingContext.getJwzApplicationSupport().supportedCommandParser());
+    public BasicSetBuilder(JWaveZPluginContext pluginContext) {
+        super(REFERENCE, BasicCommandType.BASIC_SET, new BasicSetCommandListener(pluginContext.getJwzApplicationSupport().supportedCommandParser()));
+        this.pluginContext = pluginContext;
     }
 
     @Override
-    public CommandType getSupportedCommandType() {
-        return BasicCommandType.BASIC_SET;
-    }
-
-    @Override
-    public JWaveZCommandListener<BasicSet> getSupportedCommandHandler() {
-        return basicSetCommandHandler;
-    }
-
-    @Override
-    public String getReference() {
-        return REFERENCE;
-    }
-
-    @Override
-    public Actuator buildActuator(ActuatorDTO actuatorDTO) throws PluginException {
-        try {
-            BasicSetConfiguration configuration = new ObjectMapper().readerFor(BasicSetConfiguration.class).readValue(actuatorDTO.getConfigurationNode());
-            BasicSetActuator emitter = BasicSetActuator.builder()
-                    .id(actuatorDTO.getUuid())
-                    .name(actuatorDTO.getName())
-                    .description(actuatorDTO.getDescription())
-                    .configuration(configuration)
-                    .messagePublisher(thingContext.getMessagePublisher())
-                    .build();
-            basicSetCommandHandler.registerEmitter(emitter);
-            return emitter;
-        } catch (IOException e) {
-            throw new PluginException("Could not parse actuator's configuration!", e);
-        }
+    public Actuator buildActuator(ActuatorEntity actuatorEntity) {
+        BasicSetConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), BasicSetConfiguration.class);
+        BasicSetActuator emitter = BasicSetActuator.builder()
+                .id(actuatorEntity.getActuatorUuid())
+                .name(actuatorEntity.getName())
+                .description(actuatorEntity.getDescription())
+                .configuration(configuration)
+                .messagePublisher(pluginContext.getMessagePublisher())
+                .build();
+        ((BasicSetCommandListener) getSupportedCommandHandler()).registerEmitter(emitter);
+        return emitter;
     }
 }

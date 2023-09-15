@@ -8,14 +8,14 @@ import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.exceptions.PluginException;
 import lombok.Getter;
 
-public abstract class AbstractActuatorBuilder {
+public abstract class SunWatchActuatorBuilder {
 
     protected static final String VALUE_ON = "on";
 
     @Getter
     protected String reference;
 
-    protected AbstractActuatorBuilder(String reference) {
+    protected SunWatchActuatorBuilder(String reference) {
         this.reference = reference;
     }
 

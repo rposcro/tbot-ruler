@@ -2,15 +2,15 @@ package com.tbot.ruler.plugins.jwavez;
 
 import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.things.builder.ThingBuilderContext;
+import com.tbot.ruler.plugins.PluginBuilderContext;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class JWaveZThingContext {
+public class JWaveZPluginContext {
 
-    private final ThingBuilderContext builderContext;
+    private final PluginBuilderContext pluginBuilderContext;
     private final JwzApplicationSupport jwzApplicationSupport;
     private final JWaveZCommandSender jwzCommandSender;
     private final MessagePublisher messagePublisher;

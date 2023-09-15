@@ -2,16 +2,15 @@ package com.tbot.ruler.plugins.sunwatch.daytime;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.PluginBuilderContext;
-import com.tbot.ruler.plugins.sunwatch.AbstractActuatorBuilder;
+import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicActuator;
-import com.tbot.ruler.things.exceptions.PluginException;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
-public class DaytimeActuatorBuilder extends AbstractActuatorBuilder {
+public class DaytimeActuatorBuilder extends SunWatchActuatorBuilder {
 
     private static final String REFERENCE = "daytime";
 

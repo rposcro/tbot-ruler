@@ -28,14 +28,14 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
                 .jwzController(serialController)
                 .build();
 
-        JWaveZThingContext thingContext = JWaveZThingContext.builder()
+        _JWaveZThingContext thingContext = _JWaveZThingContext.builder()
                 .builderContext(builderContext)
                 .messagePublisher(builderContext.getMessagePublisher())
                 .jwzApplicationSupport(JwzApplicationSupport.defaultSupport())
                 .jwzCommandSender(commandSender)
                 .build();
 
-        JWaveZThingItemsBuilder itemsBuilder = new JWaveZThingItemsBuilder(thingContext);
+        _JWaveZThingItemsBuilder itemsBuilder = new _JWaveZThingItemsBuilder(thingContext);
         List<Actuator> actuators = itemsBuilder.buildActuators(builderContext);
         registerListeners(serialHandler, itemsBuilder);
 
@@ -51,15 +51,15 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
             .build();
     }
 
-    private void registerListeners(JWaveZSerialHandler serialHandler, JWaveZThingItemsBuilder itemsBuilder) {
+    private void registerListeners(JWaveZSerialHandler serialHandler, _JWaveZThingItemsBuilder itemsBuilder) {
         itemsBuilder.getActuatorBuilderMap().values().stream()
                 .filter(builder -> builder.getSupportedCommandType() != null && builder.getSupportedCommandHandler() != null)
                 .forEach(builder -> serialHandler.addCommandListener(builder.getSupportedCommandType(), builder.getSupportedCommandHandler()));
     }
 
-    private JWaveZThingConfiguration parseThingConfiguration(ThingBuilderContext builderContext) throws PluginException {
+    private JWaveZPluginConfiguration parseThingConfiguration(ThingBuilderContext builderContext) throws PluginException {
         try {
-            return new ObjectMapper().readerFor(JWaveZThingConfiguration.class).readValue(builderContext.getThingDTO().getConfigurationNode());
+            return new ObjectMapper().readerFor(JWaveZPluginConfiguration.class).readValue(builderContext.getThingDTO().getConfigurationNode());
         } catch(IOException e) {
             throw new PluginException("Could not parse JWaveZ thing's configuration!", e);
         }

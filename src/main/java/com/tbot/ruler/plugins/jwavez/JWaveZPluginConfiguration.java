@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class JWaveZThingConfiguration {
+public class JWaveZPluginConfiguration {
 
     @JsonProperty(required = true)
     private String moduleDevice;

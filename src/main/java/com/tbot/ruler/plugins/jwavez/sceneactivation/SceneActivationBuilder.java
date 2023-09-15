@@ -1,53 +1,39 @@
 package com.tbot.ruler.plugins.jwavez.sceneactivation;
 
-import com.rposcro.jwavez.core.commands.supported.sceneactivation.SceneActivationSet;
-import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.commands.types.SceneActivationCommandType;
-import com.tbot.ruler.plugins.jwavez.ActuatorBuilder;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
-import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
+import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
+import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 
-public class SceneActivationBuilder implements ActuatorBuilder {
+import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
+
+public class SceneActivationBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "scene-activation";
-    private static final String SCENE_PARAM_SOURCE_NODE = "source-node-id";
-    private static final String SCENE_PARAM_SCENE_ID = "scene-id";
 
-    private final JWaveZThingContext thingContext;
-    private final SceneActivationListener sceneActivationHandler = new SceneActivationListener();
+    private final JWaveZPluginContext pluginContext;
 
-    public SceneActivationBuilder(JWaveZThingContext thingContext) {
-        this.thingContext = thingContext;
+    public SceneActivationBuilder(JWaveZPluginContext pluginContext) {
+        super(
+                REFERENCE,
+                SceneActivationCommandType.SCENE_ACTIVATION_SET,
+                new SceneActivationListener());
+        this.pluginContext = pluginContext;
     }
 
     @Override
-    public CommandType getSupportedCommandType() {
-        return SceneActivationCommandType.SCENE_ACTIVATION_SET;
-    }
-
-    @Override
-    public JWaveZCommandListener<SceneActivationSet> getSupportedCommandHandler() {
-        return sceneActivationHandler;
-    }
-
-    @Override
-    public String getReference() {
-        return REFERENCE;
-    }
-
-    @Override
-    public SceneActivationActuator buildActuator(ActuatorDTO actuatorDTO) {
+    public SceneActivationActuator buildActuator(ActuatorEntity actuatorEntity) {
+        SceneActivationConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SceneActivationConfiguration.class);
         SceneActivationActuator actuator = SceneActivationActuator.builder()
-            .uuid(actuatorDTO.getUuid())
-            .name(actuatorDTO.getName())
-            .description(actuatorDTO.getDescription())
-            .messagePublisher(thingContext.getMessagePublisher())
-            .sceneId((byte) actuatorDTO.getIntParameter(SCENE_PARAM_SCENE_ID))
-            .sourceNodeId((byte) actuatorDTO.getIntParameter(SCENE_PARAM_SOURCE_NODE))
+            .uuid(actuatorEntity.getActuatorUuid())
+            .name(actuatorEntity.getName())
+            .description(actuatorEntity.getDescription())
+            .messagePublisher(pluginContext.getMessagePublisher())
+            .sceneId((byte) configuration.getSceneId())
+            .sourceNodeId((byte) configuration.getSourceNodeId())
             .build()
             .init();
-        sceneActivationHandler.registerActuator(actuator);
+        ((SceneActivationListener) getSupportedCommandHandler()).registerActuator(actuator);
         return actuator;
     }
 }

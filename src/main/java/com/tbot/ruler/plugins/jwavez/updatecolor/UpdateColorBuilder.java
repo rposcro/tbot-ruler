@@ -1,62 +1,40 @@
 package com.tbot.ruler.plugins.jwavez.updatecolor;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
-import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.commands.types.SwitchColorCommandType;
-import com.tbot.ruler.plugins.jwavez.ActuatorBuilder;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
-import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
+import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
+import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.exceptions.PluginException;
 
-import java.io.IOException;
+import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
-public class UpdateColorBuilder implements ActuatorBuilder {
+public class UpdateColorBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "update-color";
 
-    private final JWaveZThingContext thingContext;
-    private final SwitchColorReportListener reportHandler = new SwitchColorReportListener();
+    private final JWaveZPluginContext pluginContext;
 
-    public UpdateColorBuilder(JWaveZThingContext thingContext) {
-        this.thingContext = thingContext;
+    public UpdateColorBuilder(JWaveZPluginContext pluginContext) {
+        super(
+                REFERENCE,
+                SwitchColorCommandType.SWITCH_COLOR_REPORT,
+                new SwitchColorReportListener());
+        this.pluginContext = pluginContext;
     }
 
     @Override
-    public CommandType getSupportedCommandType() {
-        return SwitchColorCommandType.SWITCH_COLOR_REPORT;
-    }
-
-    @Override
-    public JWaveZCommandListener<? extends ZWaveSupportedCommand> getSupportedCommandHandler() {
-        return this.reportHandler;
-    }
-
-    @Override
-    public String getReference() {
-        return REFERENCE;
-    }
-
-    @Override
-    public Actuator buildActuator(ActuatorDTO actuatorDTO) throws PluginException {
-        try {
-            UpdateColorConfiguration configuration = new ObjectMapper().readerFor(UpdateColorConfiguration.class)
-                    .readValue(actuatorDTO.getConfigurationNode());
-            UpdateColorActuator emitter = UpdateColorActuator.builder()
-                    .id(actuatorDTO.getUuid())
-                    .name(actuatorDTO.getName())
-                    .description(actuatorDTO.getDescription())
-                    .commandSender(thingContext.getJwzCommandSender())
-                    .messagePublisher(thingContext.getMessagePublisher())
-                    .configuration(configuration)
-                    .applicationSupport(thingContext.getJwzApplicationSupport())
-                    .build();
-            reportHandler.registerEmitter(emitter);
-            return emitter;
-        } catch (IOException e) {
-            throw new PluginException("Could not parse actuator's configuration!", e);
-        }
+    public Actuator buildActuator(ActuatorEntity actuatorEntity) {
+        UpdateColorConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(),  UpdateColorConfiguration.class);
+        UpdateColorActuator emitter = UpdateColorActuator.builder()
+                .id(actuatorEntity.getActuatorUuid())
+                .name(actuatorEntity.getName())
+                .description(actuatorEntity.getDescription())
+                .commandSender(pluginContext.getJwzCommandSender())
+                .messagePublisher(pluginContext.getMessagePublisher())
+                .configuration(configuration)
+                .applicationSupport(pluginContext.getJwzApplicationSupport())
+                .build();
+        ((SwitchColorReportListener) getSupportedCommandHandler()).registerEmitter(emitter);
+        return emitter;
     }
 }

@@ -1,51 +1,34 @@
 package com.tbot.ruler.plugins.jwavez.switchmultilevel;
 
-import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
-import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.model.NodeId;
-import com.tbot.ruler.plugins.jwavez.ActuatorBuilder;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
-import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
+import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
+import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 
-public class SwitchMultilevelActuatorBuilder implements ActuatorBuilder {
+import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
-    private static final String SWITCH_PARAM_NODE_ID = "nodeId";
-    private static final String SWITCH_PARAM_SWITCH_DURATION = "switchDuration";
+public class SwitchMultilevelActuatorBuilder extends JWaveZActuatorBuilder {
 
     private final static String REFERENCE = "switch-multilevel";
 
-    private final JWaveZThingContext thingContext;
+    private final JWaveZPluginContext pluginContext;
 
-    public SwitchMultilevelActuatorBuilder(JWaveZThingContext thingContext) {
-        this.thingContext = thingContext;
+    public SwitchMultilevelActuatorBuilder(JWaveZPluginContext pluginContext) {
+        super(REFERENCE);
+        this.pluginContext = pluginContext;
     }
 
     @Override
-    public String getReference() {
-        return REFERENCE;
-    }
-
-    @Override
-    public SwitchMultilevelActuator buildActuator(ActuatorDTO actuatorDTO) {
+    public SwitchMultilevelActuator buildActuator(ActuatorEntity actuatorEntity) {
+        SwitchMultilevelConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SwitchMultilevelConfiguration.class);
         return SwitchMultilevelActuator.builder()
-                .uuid(actuatorDTO.getUuid())
-                .name(actuatorDTO.getName())
-                .description(actuatorDTO.getDescription())
-                .switchDuration((byte) actuatorDTO.getIntParameter(SWITCH_PARAM_SWITCH_DURATION, 0))
-                .nodeId(new NodeId((byte) actuatorDTO.getIntParameter(SWITCH_PARAM_NODE_ID)))
-                .commandSender(thingContext.getJwzCommandSender())
-                .applicationSupport(thingContext.getJwzApplicationSupport())
+                .uuid(actuatorEntity.getActuatorUuid())
+                .name(actuatorEntity.getName())
+                .description(actuatorEntity.getDescription())
+                .switchDuration((byte) configuration.getSwitchDuration())
+                .nodeId(new NodeId((byte) configuration.getNodeId()))
+                .commandSender(pluginContext.getJwzCommandSender())
+                .applicationSupport(pluginContext.getJwzApplicationSupport())
                 .build();
-    }
-
-    @Override
-    public CommandType getSupportedCommandType() {
-        return null;
-    }
-
-    @Override
-    public JWaveZCommandListener<? extends ZWaveSupportedCommand> getSupportedCommandHandler() {
-        return null;
     }
 }

@@ -14,13 +14,20 @@ public class PluginsUtil {
         try {
             return new ObjectMapper().readerFor(clazz).readValue(jsonNode);
         } catch(IOException e) {
-            throw new PluginException("Could not parse SunWatch actuator's configuration!", e);
+            throw new PluginException("Could not parse configuration for class " + clazz, e);
         }
     }
 
     public static <T> Set<T> findActuatorsBuilders(Class<T> builderSuperClass, String... packages) {
         PackageScanner packageScanner = new PackageScanner();
         Set<Class<? extends T>> buildersClasses = packageScanner.findAllClassesOfType(builderSuperClass, packages);
+        Set<T> builders = packageScanner.instantiateAll(buildersClasses);
+        return builders;
+    }
+
+    public static <T> Set<T> findActuatorsBuilders(Class<T> builderSuperClass, String basePackage, Object... arguments) {
+        PackageScanner packageScanner = new PackageScanner();
+        Set<Class<? extends T>> buildersClasses = packageScanner.findAllClassesOfType(builderSuperClass, basePackage);
         Set<T> builders = packageScanner.instantiateAll(buildersClasses);
         return builders;
     }

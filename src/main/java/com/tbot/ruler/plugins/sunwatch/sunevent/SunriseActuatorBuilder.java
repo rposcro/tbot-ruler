@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.sunwatch.sunevent;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.PluginBuilderContext;
-import com.tbot.ruler.plugins.sunwatch.AbstractActuatorBuilder;
+import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.things.Actuator;
@@ -12,7 +12,7 @@ import com.tbot.ruler.things.thread.TaskTrigger;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
-public class SunriseActuatorBuilder extends AbstractActuatorBuilder {
+public class SunriseActuatorBuilder extends SunWatchActuatorBuilder {
 
     private static final String REFERENCE = "sunrise";
 

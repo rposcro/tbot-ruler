@@ -1,75 +1,51 @@
 package com.tbot.ruler.plugins.jwavez.sensormultilevel;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.rposcro.jwavez.core.commands.supported.sensormultilevel.SensorMultilevelReport;
-import com.rposcro.jwavez.core.commands.types.CommandType;
 import com.rposcro.jwavez.core.commands.types.SensorMultilevelCommandType;
-import com.tbot.ruler.plugins.jwavez.ActuatorBuilder;
-import com.tbot.ruler.plugins.jwavez.JWaveZCommandListener;
-import com.tbot.ruler.plugins.jwavez.JWaveZThingContext;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.exceptions.PluginException;
+import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
+import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 
-import java.io.IOException;
+import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
-public class SensorMultilevelBuilder implements ActuatorBuilder {
+public class SensorMultilevelBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "sensor-multilevel";
 
-    private JWaveZThingContext thingContext;
-    private final SensorMultilevelListener sensorMultilevelHandler;
+    private final JWaveZPluginContext pluginContext;
 
-    public SensorMultilevelBuilder(JWaveZThingContext thingContext) {
-        this.thingContext = thingContext;
-        this.sensorMultilevelHandler = new SensorMultilevelListener(
-                thingContext.getJwzApplicationSupport().supportedCommandParser());
+    public SensorMultilevelBuilder(JWaveZPluginContext pluginContext) {
+        super(
+                REFERENCE,
+                SensorMultilevelCommandType.SENSOR_MULTILEVEL_REPORT,
+                new SensorMultilevelListener(
+                        pluginContext.getJwzApplicationSupport().supportedCommandParser())
+        );
+        this.pluginContext = pluginContext;
     }
 
     @Override
-    public CommandType getSupportedCommandType() {
-        return SensorMultilevelCommandType.SENSOR_MULTILEVEL_REPORT;
-    }
+    public SensorMultilevelActuator buildActuator(ActuatorEntity actuatorEntity) {
+        SensorMultilevelConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SensorMultilevelConfiguration.class);
+        SensorMultilevelActuator actuator = SensorMultilevelActuator.builder()
+                .uuid(actuatorEntity.getActuatorUuid())
+                .name(actuatorEntity.getName())
+                .description(actuatorEntity.getDescription())
+                .messagePublisher(pluginContext.getMessagePublisher())
+                .build();
 
-    @Override
-    public JWaveZCommandListener<SensorMultilevelReport> getSupportedCommandHandler() {
-        return sensorMultilevelHandler;
-    }
-
-    @Override
-    public String getReference() {
-        return REFERENCE;
-    }
-
-    @Override
-    public SensorMultilevelActuator buildActuator(ActuatorDTO actuatorDTO)
-    throws PluginException {
-        try {
-            SensorMultilevelConfiguration configuration = new ObjectMapper()
-                    .readerFor(SensorMultilevelConfiguration.class)
-                    .readValue(actuatorDTO.getConfigurationNode());
-            SensorMultilevelActuator emitter = SensorMultilevelActuator.builder()
-                    .uuid(actuatorDTO.getUuid())
-                    .name(actuatorDTO.getName())
-                    .description(actuatorDTO.getDescription())
-                    .messagePublisher(thingContext.getMessagePublisher())
-                    .build();
-
-            if (configuration.isMultiChannelOn()) {
-                sensorMultilevelHandler.registerEmitter(
-                        (byte) configuration.getSourceNodeId(),
-                        (byte) configuration.getSourceEndPointId(),
-                        emitter
-                );
-            } else {
-                sensorMultilevelHandler.registerEmitter(
-                        (byte) configuration.getSourceNodeId(),
-                        emitter
-                );
-            }
-
-            return emitter;
-        } catch (IOException e) {
-            throw new PluginException("Could not parse actuator's configuration!", e);
+        if (configuration.isMultiChannelOn()) {
+            ((SensorMultilevelListener) getSupportedCommandHandler()).registerEmitter(
+                    (byte) configuration.getSourceNodeId(),
+                    (byte) configuration.getSourceEndPointId(),
+                    actuator
+            );
+        } else {
+            ((SensorMultilevelListener) getSupportedCommandHandler()).registerEmitter(
+                    (byte) configuration.getSourceNodeId(),
+                    actuator
+            );
         }
+
+        return actuator;
     }
 }
