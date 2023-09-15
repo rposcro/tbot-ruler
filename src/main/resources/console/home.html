@@ -12,18 +12,10 @@
                     <caption class="grid-title">Plugins</caption>
                     <tr class="grid-header">
                         <td>Alias</td>
-                        <td>Emitters</td>
-                        <td>Collectors</td>
                         <td>Actuators</td>
                     </tr>
                     <tr th:each="plugin: ${plugins}" class="grid-row">
                         <td th:text="${plugin.alias}"/>
-                        <td>
-                            <div th:each="ref: ${plugin.emitters}">[[${ref}]]&nbsp;</div>
-                        </td>
-                        <td>
-                            <div th:each="ref: ${plugin.collectors}">[[${ref}]]&nbsp;</div>
-                        </td>
                         <td>
                             <div th:each="ref: ${plugin.actuators}">[[${ref}]]&nbsp;</div>
                         </td>
@@ -37,8 +29,6 @@
                         <td>Name</td>
                         <td>Id</td>
                         <td>Plugin</td>
-                        <td>Emitters</td>
-                        <td>Collectors</td>
                         <td>Actuators</td>
                         <td>Properties</td>
                     </tr>
@@ -46,14 +36,6 @@
                         <td th:text="${thing.name}"/>
                         <td th:text="|${thing.id}|"/>
                         <td th:text="${thing.pluginAlias}"/>
-                        <td>
-                            <div th:each="emitter: ${thing.emitters}">[[${emitter.name}]] (of [[${emitter.ref}]])</div>
-                        </td>
-                        <td>
-                            <div th:each="collector: ${thing.collectors}">[[${collector.name}]] (of
-                                [[${collector.ref}]])
-                            </div>
-                        </td>
                         <td>
                             <div th:each="actuator: ${thing.actuators}">[[${actuator.name}]] (of [[${actuator.ref}]])
                             </div>

@@ -29,10 +29,6 @@ public class BindingsConfiguration {
     private  Map<String, Appliance> appliancesPerId;
     @Autowired
     private Map<String, Actuator> actuatorsPerId;
-    @Autowired
-    private Map<String, Collector> collectorsPerId;
-    @Autowired
-    private Map<String, Emitter> emittersPerId;
 
     private Map<String, MessageReceiver> receiversPerId;
     private Map<String, MessageSender> sendersPerId;
@@ -42,13 +38,11 @@ public class BindingsConfiguration {
         Map<String, MessageReceiver> receiverMap = new HashMap<>();
         receiverMap.putAll(appliancesPerId);
         receiverMap.putAll(actuatorsPerId);
-        receiverMap.putAll(collectorsPerId);
         this.receiversPerId = receiverMap;
 
         Map<String, MessageSender> senderMap = new HashMap<>();
         senderMap.putAll(appliancesPerId);
         senderMap.putAll(actuatorsPerId);
-        senderMap.putAll(emittersPerId);
         this.sendersPerId = senderMap;
     }
 

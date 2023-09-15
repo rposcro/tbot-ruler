@@ -3,7 +3,6 @@ package com.tbot.ruler.configuration;
 import com.tbot.ruler.persistance.ApplianceStateRepository;
 import com.tbot.ruler.persistance.json.JsonFileApplianceStateRepository;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.Emitter;
 import com.tbot.ruler.things.TaskBasedItem;
 import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.things.thread.EmissionTriggerContext;
@@ -27,9 +26,6 @@ import java.util.stream.Collectors;
 @Slf4j
 @Configuration
 public class TasksConfiguration {
-
-    @Autowired
-    private List<Emitter> emitters;
 
     @Autowired
     private List<Actuator> actuators;
@@ -100,8 +96,7 @@ public class TasksConfiguration {
     }
 
     private List<TaskBasedItem> taskBasedItems() {
-        ArrayList<TaskBasedItem> items = new ArrayList<>(emitters.size() + actuators.size() + things.size());
-        items.addAll(emitters);
+        ArrayList<TaskBasedItem> items = new ArrayList<>(actuators.size() + things.size());
         items.addAll(actuators);
         items.addAll(things);
         return items;

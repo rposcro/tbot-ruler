@@ -13,7 +13,6 @@ import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.Collector;
 import lombok.Builder;
 import lombok.Getter;
 
