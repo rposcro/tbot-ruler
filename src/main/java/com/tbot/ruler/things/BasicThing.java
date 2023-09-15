@@ -12,7 +12,7 @@ import java.util.Optional;
 @Getter
 public class BasicThing extends AbstractItem implements Thing {
 
-    private String id;
+    private String uuid;
     private String name;
     private String description;
     private List<? extends Actuator> actuators;
@@ -23,7 +23,7 @@ public class BasicThing extends AbstractItem implements Thing {
 
     @Builder
     public BasicThing(
-        @NonNull String id,
+        @NonNull String uuid,
         @NonNull String name,
         String description,
         Runnable startUpTask,
@@ -31,7 +31,7 @@ public class BasicThing extends AbstractItem implements Thing {
         TaskTrigger taskTrigger,
         List<? extends Actuator> actuators
     ) {
-        super(id, name, description);
+        super(uuid, name, description);
 
         if (taskTrigger != null && triggerableTask == null) {
             throw new IllegalArgumentException("Emission trigger is only allowed when emission task is specified!");

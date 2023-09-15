@@ -15,6 +15,6 @@ public class SingleIntervalActuator extends AbstractActuator {
     @Override
     public void acceptMessage(Message message) {
         singleIntervalStateAgent.setActive(message.getPayloadAs(OnOffState.class).isOn());
-        log.info("Actuator {} active flag changed to {}", this.getId(), singleIntervalStateAgent.isActive());
+        log.info("Actuator {} active flag changed to {}", this.getUuid(), singleIntervalStateAgent.isActive());
     }
 }

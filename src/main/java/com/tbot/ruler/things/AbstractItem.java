@@ -10,7 +10,7 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 public abstract class AbstractItem implements Item {
 
-    private String id;
+    private String uuid;
     private String name;
     private String description;
 }

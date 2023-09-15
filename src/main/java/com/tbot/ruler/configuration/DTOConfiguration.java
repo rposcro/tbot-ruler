@@ -56,7 +56,7 @@ public class DTOConfiguration {
     @Bean
     public Map<String, ApplianceDTO> applianceDTOMap() {
         return applianceDTOs().stream()
-            .collect(Collectors.toMap(ApplianceDTO::getId, Function.identity()));
+            .collect(Collectors.toMap(ApplianceDTO::getUuid, Function.identity()));
     }
 
     @Bean
@@ -69,7 +69,7 @@ public class DTOConfiguration {
     @Bean
     public Map<String, ActuatorDTO> actuatorDTOMap() {
         return actuatorDTOs().stream()
-            .collect(Collectors.toMap(ActuatorDTO::getId, Function.identity()));
+            .collect(Collectors.toMap(ActuatorDTO::getUuid, Function.identity()));
     }
 
     @Bean
@@ -86,7 +86,7 @@ public class DTOConfiguration {
     @Bean
     public Map<String, ThingDTO> thingDTOMap() {
         return thingDTOs().stream()
-            .collect(Collectors.toMap(ThingDTO::getId, Function.identity()));
+            .collect(Collectors.toMap(ThingDTO::getUuid, Function.identity()));
     }
 
     @Bean

@@ -35,7 +35,7 @@ public class ReportApplianceTest extends AbstractApplianceTest {
 
     @Test
     public void initialApplianceStateIsCorrect() {
-        assertEquals(APPLIANCE_ID, appliance.getId());
+        assertEquals(APPLIANCE_ID, appliance.getUuid());
         assertTrue(appliance.getState().isPresent());
     }
 
@@ -55,7 +55,7 @@ public class ReportApplianceTest extends AbstractApplianceTest {
         appliance.acceptMessage(mockMessage(payload1));
         appliance.acceptMessage(mockMessage(payload2));
 
-        assertEquals(APPLIANCE_ID, appliance.getId());
+        assertEquals(APPLIANCE_ID, appliance.getUuid());
         assertTrue(appliance.getState().isPresent());
         assertEquals(2, appliance.getState().get().size());
         assertEquals(payload1, appliance.getState().get().get(0));

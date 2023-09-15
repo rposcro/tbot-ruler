@@ -2,7 +2,7 @@ package com.tbot.ruler.things.builder.dto;
 
 public interface ItemDTO {
 
-    String getId();
+    String getUuid();
     String getName();
     String getDescription();
 

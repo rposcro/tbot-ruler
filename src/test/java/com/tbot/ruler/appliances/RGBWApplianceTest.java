@@ -36,7 +36,7 @@ public class RGBWApplianceTest extends AbstractApplianceTest {
 
     @Test
     public void initialApplianceStateIsCorrect() {
-        assertEquals(APPLIANCE_ID, appliance.getId());
+        assertEquals(APPLIANCE_ID, appliance.getUuid());
         assertFalse(appliance.getState().isPresent());
     }
 
@@ -47,7 +47,7 @@ public class RGBWApplianceTest extends AbstractApplianceTest {
 
         appliance.acceptMessage(message);
 
-        assertEquals(APPLIANCE_ID, appliance.getId());
+        assertEquals(APPLIANCE_ID, appliance.getUuid());
         assertTrue(appliance.getState().isPresent());
         assertEquals(payload, appliance.getState().get());
     }

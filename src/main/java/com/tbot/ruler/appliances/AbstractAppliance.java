@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 public abstract class AbstractAppliance<T> implements Appliance<T> {
 
     @NonNull
-    private String id;
+    private String uuid;
 
     @NonNull
     private ApplianceStatePersistenceService persistenceService;
@@ -22,6 +22,6 @@ public abstract class AbstractAppliance<T> implements Appliance<T> {
     @Override
     public void acceptDeliveryReport(MessageDeliveryReport report) {
         log.debug("Delivery report sender: {}, no receivers: {}, success: {}, failure: {}, part failure: {}",
-            id, report.noReceiversFound(), report.deliverySuccessful(), report.deliveryFailed(), report.deliveryPartiallyFailed());
+                uuid, report.noReceiversFound(), report.deliverySuccessful(), report.deliveryFailed(), report.deliveryPartiallyFailed());
     }
 }

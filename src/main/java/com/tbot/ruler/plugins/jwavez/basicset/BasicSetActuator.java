@@ -45,7 +45,7 @@ public class BasicSetActuator extends AbstractItem implements Actuator {
 
     public void acceptCommandValue(byte commandValue) {
         messagePublisher.publishMessage(Message.builder()
-                .senderId(this.getId())
+                .senderId(this.getUuid())
                 .payload(messagePayload(commandValue))
                 .build());
     }

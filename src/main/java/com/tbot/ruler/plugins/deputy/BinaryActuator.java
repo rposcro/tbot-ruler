@@ -22,7 +22,7 @@ public class BinaryActuator extends AbstractActuator {
 
     @Builder
     public BinaryActuator(ActuatorDTO actuatorDTO, BinaryActuatorChannel binaryChannel, MessagePublisher messagePublisher) {
-        super(actuatorDTO.getId(), actuatorDTO.getName(), actuatorDTO.getDescription());
+        super(actuatorDTO.getUuid(), actuatorDTO.getName(), actuatorDTO.getDescription());
         this.binaryChannel = binaryChannel;
         this.messagePublisher = messagePublisher;
     }
@@ -57,7 +57,7 @@ public class BinaryActuator extends AbstractActuator {
     private void handleUpdateRequest() {
         expectedState = binaryChannel.requestState();
         Message message = Message.builder()
-            .senderId(getId())
+            .senderId(getUuid())
             .payload(OnOffState.of(expectedState))
             .build();
         messagePublisher.publishMessage(message);

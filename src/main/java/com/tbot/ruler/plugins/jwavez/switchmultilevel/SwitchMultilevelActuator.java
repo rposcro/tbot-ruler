@@ -16,11 +16,10 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
-
 @Getter
 public class SwitchMultilevelActuator implements Actuator {
 
-    private final String id;
+    private final String uuid;
     private final String name;
     private final String description;
 
@@ -32,14 +31,14 @@ public class SwitchMultilevelActuator implements Actuator {
 
     @Builder
     public SwitchMultilevelActuator(
-            @NonNull String id,
+            @NonNull String uuid,
             @NonNull String name,
             String description,
             byte switchDuration,
             @NonNull NodeId nodeId,
             @NonNull JWaveZCommandSender commandSender,
             @NonNull JwzApplicationSupport applicationSupport) {
-        this.id = id;
+        this.uuid = uuid;
         this.name = name;
         this.description = description;
         this.switchDuration = switchDuration;

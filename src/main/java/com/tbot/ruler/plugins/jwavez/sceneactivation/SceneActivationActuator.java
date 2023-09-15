@@ -14,7 +14,7 @@ import lombok.NonNull;
 public class SceneActivationActuator implements Actuator {
 
     @NonNull
-    private String id;
+    private String uuid;
     @NonNull
     private String name;
     @NonNull
@@ -34,7 +34,7 @@ public class SceneActivationActuator implements Actuator {
 
     public void publishMessage() {
         messagePublisher.publishMessage(Message.builder()
-                .senderId(id)
+                .senderId(uuid)
                 .payload(BinaryStateClaim.TOGGLE)
                 .build());
     }

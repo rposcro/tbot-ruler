@@ -34,7 +34,7 @@
                     </tr>
                     <tr th:each="thing: ${things}" class="grid-row">
                         <td th:text="${thing.name}"/>
-                        <td th:text="|${thing.id}|"/>
+                        <td th:text="|${thing.uuid}|"/>
                         <td th:text="${thing.pluginAlias}"/>
                         <td>
                             <div th:each="actuator: ${thing.actuators}">[[${actuator.name}]] (of [[${actuator.ref}]])
@@ -57,8 +57,8 @@
                         <td>Description</td>
                     </tr>
                     <tr th:each="appliance: ${appliances}" class="grid-row">
-                        <td><a th:href="@{'/console/appliances/' + ${appliance.id}}">[[${appliance.name}]]</a></td>
-                        <td th:text="${appliance.id}"/>
+                        <td><a th:href="@{'/console/appliances/' + ${appliance.uuid}}">[[${appliance.name}]]</a></td>
+                        <td th:text="${appliance.uuid}"/>
                         <td th:text="${appliance.description}"/>
                     </tr>
                 </table>

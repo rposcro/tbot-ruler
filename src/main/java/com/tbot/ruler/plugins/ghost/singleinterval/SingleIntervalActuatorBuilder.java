@@ -28,14 +28,14 @@ public class SingleIntervalActuatorBuilder implements GhostActuatorBuilder {
         SingleIntervalStateAgent stateAgent = new SingleIntervalStateAgent();
         Optional<Runnable> emissionTask = Optional.of(SingleIntervalEmissionTask.builder()
                 .configuration(configuration)
-                .emitterId(actuatorDTO.getId())
+                .emitterId(actuatorDTO.getUuid())
                 .messagePublisher(messagePublisher)
                 .zoneId(ZoneId.of(ghostThingConfiguration.getTimeZone()))
                 .stateAgent(stateAgent)
                 .build());
 
         return SingleIntervalActuator.builder()
-                .id(actuatorDTO.getId())
+                .uuid(actuatorDTO.getUuid())
                 .name(actuatorDTO.getName())
                 .description(actuatorDTO.getDescription())
                 .singleIntervalStateAgent(stateAgent)

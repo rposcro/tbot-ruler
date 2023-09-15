@@ -16,7 +16,7 @@ import lombok.NonNull;
 public class SensorMultilevelActuator implements Actuator {
 
     @NonNull
-    private String id;
+    private String uuid;
     @NonNull
     private String name;
     @NonNull
@@ -26,7 +26,7 @@ public class SensorMultilevelActuator implements Actuator {
 
     public void publishMessage(SensorMultilevelReport report) {
         messagePublisher.publishMessage(Message.builder()
-                .senderId(id)
+                .senderId(uuid)
                 .payload(Measure.builder()
                         .quantity(MeasureQuantity.Temperature)
                         .unit("\u00baC")

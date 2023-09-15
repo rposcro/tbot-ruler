@@ -20,7 +20,7 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
 
     public OnOffAppliance(String id, ApplianceStatePersistenceService persistenceService) {
         super(id, persistenceService);
-        state = persistenceService.retrieve(this.getId());
+        state = persistenceService.retrieve(this.getUuid());
     }
 
     @Override
@@ -31,7 +31,7 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
     @Override
     public Optional<Message> acceptDirectPayload(MessagePayload messagePayload) {
         return Optional.of(Message.builder()
-            .senderId(getId())
+            .senderId(getUuid())
             .payload(OnOffState.of(determineValue(messagePayload.getPayload())))
             .build());
     }
@@ -41,7 +41,7 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             setState(deliveryReport.getOriginalMessage().getPayload());
-            getPersistenceService().persist(this.getId(), state.get());
+            getPersistenceService().persist(this.getUuid(), state.get());
         }
     }
 

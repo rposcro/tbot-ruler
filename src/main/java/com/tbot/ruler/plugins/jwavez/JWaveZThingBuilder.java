@@ -42,7 +42,7 @@ public class JWaveZThingBuilder implements ThingPluginBuilder {
         ThingDTO thingDTO = builderContext.getThingDTO();
 
         return BasicThing.builder()
-            .id(thingDTO.getId())
+            .uuid(thingDTO.getUuid())
             .name(thingDTO.getName())
             .description(thingDTO.getDescription())
             .actuators(actuators)

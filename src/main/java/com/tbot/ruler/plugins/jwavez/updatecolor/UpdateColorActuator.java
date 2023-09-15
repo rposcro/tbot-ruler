@@ -113,7 +113,7 @@ public class UpdateColorActuator extends AbstractItem implements Actuator {
 
     private Message generateMessage() {
         return Message.builder()
-                .senderId(this.getId())
+                .senderId(this.getUuid())
                 .payload(RGBWColor.of(
                         collectedComponentsReports.get(toUnsignedInt(ColorComponent.RED.getCode())),
                         collectedComponentsReports.get(toUnsignedInt(ColorComponent.GREEN.getCode())),

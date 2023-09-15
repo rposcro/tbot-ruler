@@ -20,7 +20,7 @@ public class BasicActuator extends AbstractItem implements Actuator {
 
     @Builder
     public BasicActuator(
-        @NonNull String id,
+        @NonNull String uuid,
         @NonNull String name,
         String description,
         Runnable startUpTask,
@@ -28,7 +28,7 @@ public class BasicActuator extends AbstractItem implements Actuator {
         TaskTrigger taskTrigger,
         MessageReceiver messageReceiver
     ) {
-        super(id, name, description);
+        super(uuid, name, description);
 
         if (taskTrigger != null && triggerableTask == null) {
             throw new IllegalArgumentException("Emission trigger is only allowed when emission task is specified!");

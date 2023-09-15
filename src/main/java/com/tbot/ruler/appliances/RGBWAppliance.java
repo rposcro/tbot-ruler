@@ -14,7 +14,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
 
     public RGBWAppliance(String id, ApplianceStatePersistenceService persistenceService) {
         super(id, persistenceService);
-        colorState = persistenceService.retrieve(this.getId());
+        colorState = persistenceService.retrieve(this.getUuid());
     }
 
     @Override
@@ -25,7 +25,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
     @Override
     public Optional<Message> acceptDirectPayload(MessagePayload messagePayload) {
         return Optional.of(Message.builder()
-            .senderId(getId())
+            .senderId(getUuid())
             .payload(messagePayload.getPayload())
             .build());
     }
@@ -35,7 +35,7 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             setState(deliveryReport.getOriginalMessage().getPayloadAs(RGBWColor.class));
-            getPersistenceService().persist(this.getId(), colorState.get());
+            getPersistenceService().persist(this.getUuid(), colorState.get());
         }
     }
 

@@ -33,7 +33,7 @@ public class SwitchColorBuilder implements ActuatorBuilder {
             SwitchColorConfiguration configuration = new ObjectMapper().readerFor(SwitchColorConfiguration.class)
                     .readValue(actuatorDTO.getConfigurationNode());
             return SwitchColorActuator.builder()
-                    .id(actuatorDTO.getId())
+                    .id(actuatorDTO.getUuid())
                     .name(actuatorDTO.getName())
                     .description(actuatorDTO.getDescription())
                     .commandSender(thingContext.getJwzCommandSender())

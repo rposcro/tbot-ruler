@@ -45,7 +45,7 @@ public class BasicSetBuilder implements ActuatorBuilder {
         try {
             BasicSetConfiguration configuration = new ObjectMapper().readerFor(BasicSetConfiguration.class).readValue(actuatorDTO.getConfigurationNode());
             BasicSetActuator emitter = BasicSetActuator.builder()
-                    .id(actuatorDTO.getId())
+                    .id(actuatorDTO.getUuid())
                     .name(actuatorDTO.getName())
                     .description(actuatorDTO.getDescription())
                     .configuration(configuration)

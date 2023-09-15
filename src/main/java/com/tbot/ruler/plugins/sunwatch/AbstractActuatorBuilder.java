@@ -26,7 +26,7 @@ public abstract class AbstractActuatorBuilder {
 
     protected Message emitterMessage(ActuatorDTO actuatorDTO, String signalValue) {
         return Message.builder()
-            .senderId(actuatorDTO.getId())
+            .senderId(actuatorDTO.getUuid())
             .payload(OnOffState.of(VALUE_ON.equalsIgnoreCase(signalValue)))
             .build();
     }

@@ -45,7 +45,7 @@ public class UpdateColorBuilder implements ActuatorBuilder {
             UpdateColorConfiguration configuration = new ObjectMapper().readerFor(UpdateColorConfiguration.class)
                     .readValue(actuatorDTO.getConfigurationNode());
             UpdateColorActuator emitter = UpdateColorActuator.builder()
-                    .id(actuatorDTO.getId())
+                    .id(actuatorDTO.getUuid())
                     .name(actuatorDTO.getName())
                     .description(actuatorDTO.getDescription())
                     .commandSender(thingContext.getJwzCommandSender())

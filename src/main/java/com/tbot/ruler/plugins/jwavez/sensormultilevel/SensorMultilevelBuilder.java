@@ -48,7 +48,7 @@ public class SensorMultilevelBuilder implements ActuatorBuilder {
                     .readerFor(SensorMultilevelConfiguration.class)
                     .readValue(actuatorDTO.getConfigurationNode());
             SensorMultilevelActuator emitter = SensorMultilevelActuator.builder()
-                    .id(actuatorDTO.getId())
+                    .uuid(actuatorDTO.getUuid())
                     .name(actuatorDTO.getName())
                     .description(actuatorDTO.getDescription())
                     .messagePublisher(thingContext.getMessagePublisher())

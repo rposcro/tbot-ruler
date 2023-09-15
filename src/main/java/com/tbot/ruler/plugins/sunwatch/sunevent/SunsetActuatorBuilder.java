@@ -31,7 +31,7 @@ public class SunsetActuatorBuilder extends AbstractActuatorBuilder {
         Runnable emissionTask = emissionTask(actuatorDTO, emitterConfiguration);
 
         return BasicActuator.builder()
-                .id(actuatorDTO.getId())
+                .uuid(actuatorDTO.getUuid())
                 .name(actuatorDTO.getName())
                 .description(actuatorDTO.getDescription())
                 .taskTrigger(emissionTrigger)

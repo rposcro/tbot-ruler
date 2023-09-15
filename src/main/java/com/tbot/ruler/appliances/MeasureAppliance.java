@@ -17,7 +17,7 @@ public class MeasureAppliance extends AbstractAppliance<Measure> {
 
     public MeasureAppliance(String id, ApplianceStatePersistenceService persistenceService) {
         super(id, persistenceService);
-        this.measureState = persistenceService.retrieve(this.getId());
+        this.measureState = persistenceService.retrieve(this.getUuid());
     }
 
     @Override
@@ -35,7 +35,7 @@ public class MeasureAppliance extends AbstractAppliance<Measure> {
         super.acceptDeliveryReport(deliveryReport);
         if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
             setState(deliveryReport.getOriginalMessage().getPayloadAs(Measure.class));
-            getPersistenceService().persist(this.getId(), measureState.get());
+            getPersistenceService().persist(this.getUuid(), measureState.get());
         }
     }
 
@@ -48,7 +48,7 @@ public class MeasureAppliance extends AbstractAppliance<Measure> {
         this.measureState = Optional.of(measure);
 
         if (log.isDebugEnabled()) {
-            log.debug("MeasureAppliance {} received measure {}", getId(), measure);
+            log.debug("MeasureAppliance {} received measure {}", getUuid(), measure);
         }
     }
 }

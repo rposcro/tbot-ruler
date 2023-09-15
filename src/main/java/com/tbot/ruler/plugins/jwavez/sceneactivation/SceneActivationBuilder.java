@@ -39,7 +39,7 @@ public class SceneActivationBuilder implements ActuatorBuilder {
     @Override
     public SceneActivationActuator buildActuator(ActuatorDTO actuatorDTO) {
         SceneActivationActuator actuator = SceneActivationActuator.builder()
-            .id(actuatorDTO.getId())
+            .uuid(actuatorDTO.getUuid())
             .name(actuatorDTO.getName())
             .description(actuatorDTO.getDescription())
             .messagePublisher(thingContext.getMessagePublisher())

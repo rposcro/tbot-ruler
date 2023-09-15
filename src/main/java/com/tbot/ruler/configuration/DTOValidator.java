@@ -23,7 +23,7 @@ public class DTOValidator {
     public void validateUniqueThingId(ApplicationReadyEvent event) {
         validateDistinctIds(
             "Things",
-            dtoConfiguration.thingDTOs().stream().map(dto -> dto.getId()).collect(Collectors.toList()));
+            dtoConfiguration.thingDTOs().stream().map(dto -> dto.getUuid()).collect(Collectors.toList()));
     }
 
     @EventListener
@@ -31,7 +31,7 @@ public class DTOValidator {
         validateDistinctIds(
             "Actuators",
             dtoConfiguration.actuatorDTOs().stream()
-                .map(dto -> dto.getId()).collect(Collectors.toList()));
+                .map(dto -> dto.getUuid()).collect(Collectors.toList()));
     }
 
     private void validateDistinctIds(String entityName, List<String> ids) {

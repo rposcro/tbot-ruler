@@ -16,7 +16,7 @@ public class CronSchedulerActuatorBuilder {
 
     public Actuator buildEmitter(ThingBuilderContext builderContext, ActuatorDTO actuatorDTO, TimeZone timeZone) {
         return BasicActuator.builder()
-            .id(actuatorDTO.getId())
+            .uuid(actuatorDTO.getUuid())
             .name(actuatorDTO.getName())
             .description(actuatorDTO.getDescription())
             .triggerableTask(emissionTask(actuatorDTO, builderContext.getMessagePublisher()))
@@ -25,7 +25,7 @@ public class CronSchedulerActuatorBuilder {
     }
 
     private Runnable emissionTask(ActuatorDTO actuatorDTO, MessagePublisher messagePublisher) {
-        return () -> messagePublisher.publishMessage(messageToSend(actuatorDTO.getId(), Notification.HEARTBEAT));
+        return () -> messagePublisher.publishMessage(messageToSend(actuatorDTO.getUuid(), Notification.HEARTBEAT));
     }
 
     private CronEmissionTrigger emissionTrigger(ActuatorDTO actuatorDTO, TimeZone timeZone) {

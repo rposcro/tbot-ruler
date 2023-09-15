@@ -45,7 +45,7 @@ public class UpdateSwitchMultiLevelBuilder implements ActuatorBuilder {
             UpdateSwitchMultiLevelConfiguration configuration = new ObjectMapper().readerFor(UpdateSwitchMultiLevelConfiguration.class)
                     .readValue(actuatorDTO.getConfigurationNode());
             UpdateSwitchMultiLevelActuator actuator = UpdateSwitchMultiLevelActuator.builder()
-                    .id(actuatorDTO.getId())
+                    .id(actuatorDTO.getUuid())
                     .name(actuatorDTO.getName())
                     .description(actuatorDTO.getDescription())
                     .commandSender(thingContext.getJwzCommandSender())

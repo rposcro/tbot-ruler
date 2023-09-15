@@ -46,7 +46,7 @@ public class AppliancesConfiguration {
     @Bean
     public Map<String, Appliance> appliancesPerId() {
         return appliances().stream()
-            .collect(Collectors.toMap(appliance -> appliance.getId(), Function.identity()));
+            .collect(Collectors.toMap(appliance -> appliance.getUuid(), Function.identity()));
     }
 
     private Optional<Appliance> fromDTO(ApplianceDTO dto) {
@@ -59,10 +59,10 @@ public class AppliancesConfiguration {
             if (constructor == null) {
                 throw new NullPointerException("Appliance constructor for class " + dto.getType() + " could not be found!");
             }
-            Appliance appliance = constructor.newInstance(dto.getId(), persistenceService);
+            Appliance appliance = constructor.newInstance(dto.getUuid(), persistenceService);
             return Optional.of(appliance);
         } catch(ReflectiveOperationException | SecurityException e) {
-            log.error("Incorrect appliance class type: " + dto.getType() + ", skipping appliance: " + dto.getId());
+            log.error("Incorrect appliance class type: " + dto.getType() + ", skipping appliance: " + dto.getUuid());
             return Optional.empty();
         }
     }

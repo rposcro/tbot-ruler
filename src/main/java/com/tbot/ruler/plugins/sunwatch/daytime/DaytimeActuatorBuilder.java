@@ -27,7 +27,7 @@ public class DaytimeActuatorBuilder extends AbstractActuatorBuilder {
         DaytimeEmissionTask emissionTask = emissionTask(actuatorDTO, builderContext, sunCalculator, emitterConfiguration);
 
         return BasicActuator.builder()
-                .id(actuatorDTO.getId())
+                .uuid(actuatorDTO.getUuid())
                 .name(actuatorDTO.getName())
                 .description(actuatorDTO.getDescription())
                 .startUpTask(emissionTask)
@@ -42,7 +42,7 @@ public class DaytimeActuatorBuilder extends AbstractActuatorBuilder {
             SunCalculator sunCalculator,
             DaytimeActuatorConfiguration emitterConfiguration) {
         return DaytimeEmissionTask.builder()
-                .emitterId(actuatorDTO.getId())
+                .emitterId(actuatorDTO.getUuid())
                 .messagePublisher(builderContext.getMessagePublisher())
                 .dayTimeMessage(emitterMessage(actuatorDTO, emitterConfiguration.getDayTimeSignal()))
                 .nightTimeMessage(emitterMessage(actuatorDTO, emitterConfiguration.getNightTimeSignal()))

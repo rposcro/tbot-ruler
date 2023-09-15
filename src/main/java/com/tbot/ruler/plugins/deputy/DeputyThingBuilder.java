@@ -35,7 +35,7 @@ public class DeputyThingBuilder implements ThingPluginBuilder {
         List<Actuator> actuators = buildActuators(builderContext);
 
         return BasicThing.builder()
-            .id(thingDTO.getId())
+            .uuid(thingDTO.getUuid())
             .name(thingDTO.getName())
             .description(thingDTO.getDescription())
             .actuators(actuators)

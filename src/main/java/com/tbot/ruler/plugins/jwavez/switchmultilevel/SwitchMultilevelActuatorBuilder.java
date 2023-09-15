@@ -29,7 +29,7 @@ public class SwitchMultilevelActuatorBuilder implements ActuatorBuilder {
     @Override
     public SwitchMultilevelActuator buildActuator(ActuatorDTO actuatorDTO) {
         return SwitchMultilevelActuator.builder()
-                .id(actuatorDTO.getId())
+                .uuid(actuatorDTO.getUuid())
                 .name(actuatorDTO.getName())
                 .description(actuatorDTO.getDescription())
                 .switchDuration((byte) actuatorDTO.getIntParameter(SWITCH_PARAM_SWITCH_DURATION, 0))

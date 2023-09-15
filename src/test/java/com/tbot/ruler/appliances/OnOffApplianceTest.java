@@ -40,7 +40,7 @@ public class OnOffApplianceTest extends AbstractApplianceTest {
 
     @Test
     public void initialApplianceStateIsCorrect() {
-        assertEquals(APPLIANCE_ID, appliance.getId());
+        assertEquals(APPLIANCE_ID, appliance.getUuid());
         assertFalse(appliance.getState().isPresent());
     }
 
@@ -53,7 +53,7 @@ public class OnOffApplianceTest extends AbstractApplianceTest {
 
         appliance.acceptMessage(message);
 
-        assertEquals(APPLIANCE_ID, appliance.getId());
+        assertEquals(APPLIANCE_ID, appliance.getUuid());
         assertTrue(appliance.getState().isPresent());
         assertEquals(expectedStateValue, appliance.getState().get().isOn());
     }
@@ -66,7 +66,7 @@ public class OnOffApplianceTest extends AbstractApplianceTest {
 
         appliance.acceptMessage(message);
 
-        assertEquals(APPLIANCE_ID, appliance.getId());
+        assertEquals(APPLIANCE_ID, appliance.getUuid());
         assertTrue(appliance.getState().isPresent());
         assertEquals(expectedStateValue, appliance.getState().get().isOn());
     }

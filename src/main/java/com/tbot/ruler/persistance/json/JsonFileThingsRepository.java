@@ -45,7 +45,7 @@ public class JsonFileThingsRepository extends AbstractJsonFileRepository impleme
     private ThingEntity toEntity(ThingDTO dto, String pluginUuid) {
         return ThingEntity.builder()
                 .thingId(nextId())
-                .thingUuid(dto.getId())
+                .thingUuid(dto.getUuid())
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .pluginUuid(pluginUuid)

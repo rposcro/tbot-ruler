@@ -25,7 +25,7 @@
             </tr>
             <tr th:each="sender: ${senders}" class="grid-row">
                 <td>[[${sender.name}]]</td>
-                <td>[[${sender.id}]]</td>
+                <td>[[${sender.uuid}]]</td>
                 <td>[[${sender.description}]]</td>
             </tr>
         </table>
@@ -40,7 +40,7 @@
             </tr>
             <tr th:each="listener: ${listeners}" class="grid-row">
                 <td>[[${listener.name}]]</td>
-                <td>[[${listener.id}]]</td>
+                <td>[[${listener.uuid}]]</td>
                 <td>[[${listener.description}]]</td>
             </tr>
         </table>

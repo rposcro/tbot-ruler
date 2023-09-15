@@ -32,7 +32,7 @@ public class SwitchBinaryBuilder implements ActuatorBuilder {
             SwitchBinaryConfiguration configuration = new ObjectMapper().readerFor(SwitchBinaryConfiguration.class).readValue(actuatorDTO.getConfigurationNode());
 
             return SwitchBinaryActuator.builder()
-                    .id(actuatorDTO.getId())
+                    .id(actuatorDTO.getUuid())
                     .name(actuatorDTO.getName())
                     .description(actuatorDTO.getDescription())
                     .commandSender(thingContext.getJwzCommandSender())

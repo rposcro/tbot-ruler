@@ -12,7 +12,7 @@ import lombok.Setter;
 @Setter
 public class ThingDTO extends ConfigurableDTO implements ItemDTO {
 
-    private String id;
+    private String uuid;
     private String name;
     private String description;
     @JsonProperty("plugin")

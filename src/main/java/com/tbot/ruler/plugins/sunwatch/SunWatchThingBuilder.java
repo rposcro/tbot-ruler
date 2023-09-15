@@ -41,7 +41,7 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
         List<Actuator> actuators = buildActuators(builderContext, sunEventLocale);
 
         return BasicThing.builder()
-            .id(thingDTO.getId())
+            .uuid(thingDTO.getUuid())
             .name(thingDTO.getName())
             .description(thingDTO.getDescription())
             .actuators(actuators)

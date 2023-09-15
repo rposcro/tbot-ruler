@@ -39,7 +39,7 @@ public class ThingsConfiguration {
         
         thingDTOs.forEach(thingDTO -> {
             try {
-                log.info("Building thing: {} {} {}", thingDTO.getId(), thingDTO.getName(), thingDTO.getPluginAlias());
+                log.info("Building thing: {} {} {}", thingDTO.getUuid(), thingDTO.getName(), thingDTO.getPluginAlias());
                 Thing thing = buildThing(thingDTO, pluginPerAlias);
                 things.add(thing);
             } catch(ReflectiveOperationException e) {

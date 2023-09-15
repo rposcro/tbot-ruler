@@ -13,5 +13,5 @@ public interface Appliance<T> extends Item, MessageReceiver, MessageSender {
     Optional<Message> acceptDirectPayload(MessagePayload payload);
     Optional<T> getState();
     @Override
-    String getId();
+    String getUuid();
 }

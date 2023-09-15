@@ -48,7 +48,7 @@ public class JsonFileActuatorsRepository extends AbstractJsonFileRepository impl
     private ActuatorEntity toEntity(ActuatorDTO dto, String thingUuid) {
         return ActuatorEntity.builder()
                 .actuatorId(nextId())
-                .actuatorUuid(dto.getId())
+                .actuatorUuid(dto.getUuid())
                 .name(dto.getName())
                 .description(dto.getDescription())
                 .reference(dto.getRef())

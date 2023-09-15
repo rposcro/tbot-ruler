@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class ActuatorDTO extends ConfigurableDTO implements ItemDTO {
 
-    private String id;
+    private String uuid;
     private String ref;
     private String name;
     private String description;

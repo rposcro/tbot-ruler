@@ -15,7 +15,7 @@ class HealthCheckActuatorBuilder {
 
     Actuator buildActuator(ActuatorDTO actuatorDTO, ThingBuilderContext builderContext) {
         return BasicActuator.builder()
-            .id(actuatorDTO.getId())
+            .uuid(actuatorDTO.getUuid())
             .name(actuatorDTO.getName())
             .description(actuatorDTO.getDescription())
             .triggerableTask(emissionTask(builderContext, actuatorDTO))
@@ -25,7 +25,7 @@ class HealthCheckActuatorBuilder {
 
     private HealthCheckEmissionTask emissionTask(ThingBuilderContext builderContext, ActuatorDTO actuatorDTO) {
         return HealthCheckEmissionTask.builder()
-            .actuatorId(actuatorDTO.getId())
+            .actuatorId(actuatorDTO.getUuid())
             .healthCheckCommand(restGetCommand(builderContext))
             .messagePublisher(builderContext.getMessagePublisher())
             .build();

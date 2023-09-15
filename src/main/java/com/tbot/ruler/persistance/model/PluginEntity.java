@@ -14,7 +14,6 @@ import java.util.List;
 @AllArgsConstructor
 public class PluginEntity {
 
-    @NonNull
     @JsonProperty(required = true)
     private long pluginId;
 

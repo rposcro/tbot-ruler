@@ -38,7 +38,7 @@ public class GhostThingBuilder implements ThingPluginBuilder {
         List<Actuator> actuators = buildActuators(builderContext, thingConfiguration);
 
         return BasicThing.builder()
-            .id(thingDTO.getId())
+            .uuid(thingDTO.getUuid())
             .name(thingDTO.getName())
             .description(thingDTO.getDescription())
             .actuators(actuators)

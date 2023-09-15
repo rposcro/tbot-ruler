@@ -78,7 +78,7 @@ public class UpdateSwitchMultiLevelActuator extends AbstractItem implements Actu
 
     public void acceptCommand(SwitchMultilevelReport command) {
         messagePublisher.publishMessage(Message.builder()
-                .senderId(this.getId())
+                .senderId(this.getUuid())
                 .payload(OnOffState.of(command.getCurrentValue() != 0))
                 .build());
     }

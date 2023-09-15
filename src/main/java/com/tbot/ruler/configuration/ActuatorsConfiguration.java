@@ -28,6 +28,6 @@ public class ActuatorsConfiguration {
 
     @Bean
     public Map<String, Actuator> actuatorsPerId() {
-        return actuators().stream().collect(Collectors.toMap(Actuator::getId, Function.identity()));
+        return actuators().stream().collect(Collectors.toMap(Actuator::getUuid, Function.identity()));
     }
 }

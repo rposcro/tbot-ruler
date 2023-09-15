@@ -88,7 +88,7 @@ public class UpdateSwitchBinaryActuator extends AbstractItem implements Actuator
 
     public void acceptCommand(BinarySwitchReport report) {
         messagePublisher.publishMessage(Message.builder()
-                .senderId(this.getId())
+                .senderId(this.getUuid())
                 .payload(OnOffState.of(report.getValue() != 0))
                 .build());
     }

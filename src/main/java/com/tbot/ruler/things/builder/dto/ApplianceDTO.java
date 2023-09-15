@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class ApplianceDTO implements ItemDTO {
     
-    private String id;
+    private String uuid;
     private String type;
     private String name;
     private String description;

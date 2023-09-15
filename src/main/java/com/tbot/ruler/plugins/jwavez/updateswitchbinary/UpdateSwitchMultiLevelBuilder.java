@@ -46,7 +46,7 @@ public class UpdateSwitchMultiLevelBuilder implements ActuatorBuilder {
             UpdateSwitchBinaryConfiguration configuration = new ObjectMapper().readerFor(UpdateSwitchBinaryConfiguration.class)
                     .readValue(actuatorDTO.getConfigurationNode());
             UpdateSwitchBinaryActuator emitter = UpdateSwitchBinaryActuator.builder()
-                    .id(actuatorDTO.getId())
+                    .id(actuatorDTO.getUuid())
                     .name(actuatorDTO.getName())
                     .description(actuatorDTO.getDescription())
                     .commandSender(thingContext.getJwzCommandSender())
