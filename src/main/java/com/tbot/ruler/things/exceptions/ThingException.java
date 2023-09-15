@@ -1,6 +1,6 @@
 package com.tbot.ruler.things.exceptions;
 
-public class ThingException extends Exception {
+public class ThingException extends RuntimeException {
 
     public ThingException(Throwable t) {
         super(t);

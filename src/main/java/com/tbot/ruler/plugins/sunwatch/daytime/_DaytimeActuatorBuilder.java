@@ -1,35 +1,35 @@
 package com.tbot.ruler.plugins.sunwatch.daytime;
 
-import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.PluginBuilderContext;
-import com.tbot.ruler.plugins.sunwatch.AbstractActuatorBuilder;
+import com.tbot.ruler.plugins.sunwatch._AbstractActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicActuator;
+import com.tbot.ruler.things.builder.ThingBuilderContext;
+import com.tbot.ruler.things.builder.dto.ActuatorDTO;
 import com.tbot.ruler.things.exceptions.PluginException;
 
-import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
-
-public class DaytimeActuatorBuilder extends AbstractActuatorBuilder {
+public class _DaytimeActuatorBuilder extends _AbstractActuatorBuilder {
 
     private static final String REFERENCE = "daytime";
 
-    public DaytimeActuatorBuilder() {
-        super(REFERENCE);
+    @Override
+    public String getReference() {
+        return REFERENCE;
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, PluginBuilderContext builderContext, SunLocale eventLocale) {
-        DaytimeActuatorConfiguration emitterConfiguration = parseConfiguration(actuatorEntity.getConfiguration(), DaytimeActuatorConfiguration.class);
+    public Actuator buildActuator(ThingBuilderContext builderContext, SunLocale eventLocale) throws PluginException {
+        ActuatorDTO actuatorDTO = findActuatorDTO(REFERENCE, builderContext);
+        DaytimeActuatorConfiguration emitterConfiguration = parseActuatorConfiguration(actuatorDTO, DaytimeActuatorConfiguration.class);
         SunCalculator sunCalculator = sunCalculator(emitterConfiguration, eventLocale);
         DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterConfiguration, sunCalculator);
-        DaytimeEmissionTask emissionTask = emissionTask(actuatorEntity, builderContext, sunCalculator, emitterConfiguration);
+        DaytimeEmissionTask emissionTask = emissionTask(actuatorDTO, builderContext, sunCalculator, emitterConfiguration);
 
         return BasicActuator.builder()
-                .uuid(actuatorEntity.getActuatorUuid())
-                .name(actuatorEntity.getName())
-                .description(actuatorEntity.getDescription())
+                .uuid(actuatorDTO.getUuid())
+                .name(actuatorDTO.getName())
+                .description(actuatorDTO.getDescription())
                 .startUpTask(emissionTask)
                 .triggerableTask(emissionTask)
                 .taskTrigger(emissionTrigger)
@@ -37,15 +37,15 @@ public class DaytimeActuatorBuilder extends AbstractActuatorBuilder {
     }
 
     private DaytimeEmissionTask emissionTask(
-            ActuatorEntity actuatorEntity,
-            PluginBuilderContext pluginBuilderContext,
+            ActuatorDTO actuatorDTO,
+            ThingBuilderContext builderContext,
             SunCalculator sunCalculator,
             DaytimeActuatorConfiguration emitterConfiguration) {
         return DaytimeEmissionTask.builder()
-                .emitterId(actuatorEntity.getActuatorUuid())
-                .messagePublisher(pluginBuilderContext.getMessagePublisher())
-                .dayTimeMessage(emitterMessage(actuatorEntity, emitterConfiguration.getDayTimeSignal()))
-                .nightTimeMessage(emitterMessage(actuatorEntity, emitterConfiguration.getNightTimeSignal()))
+                .emitterId(actuatorDTO.getUuid())
+                .messagePublisher(builderContext.getMessagePublisher())
+                .dayTimeMessage(emitterMessage(actuatorDTO, emitterConfiguration.getDayTimeSignal()))
+                .nightTimeMessage(emitterMessage(actuatorDTO, emitterConfiguration.getNightTimeSignal()))
                 .sunCalculator(sunCalculator)
                 .build();
     }

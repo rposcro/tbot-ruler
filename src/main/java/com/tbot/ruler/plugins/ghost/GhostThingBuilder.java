@@ -23,7 +23,7 @@ import java.util.Set;
 @Slf4j
 public class GhostThingBuilder implements ThingPluginBuilder {
 
-    private Map<String, GhostActuatorBuilder> actuatorBuilderMap;
+    private Map<String, _GhostActuatorBuilder> actuatorBuilderMap;
 
     public GhostThingBuilder() {
         actuatorBuilderMap = findActuatorsBuilders();
@@ -45,11 +45,11 @@ public class GhostThingBuilder implements ThingPluginBuilder {
             .build();
     }
 
-    private Map<String, GhostActuatorBuilder> findActuatorsBuilders() {
-        Map<String, GhostActuatorBuilder> buildersMap = new HashMap<>();
+    private Map<String, _GhostActuatorBuilder> findActuatorsBuilders() {
+        Map<String, _GhostActuatorBuilder> buildersMap = new HashMap<>();
         PackageScanner packageScanner = new PackageScanner();
-        Set<Class<? extends GhostActuatorBuilder>> buildersClasses = packageScanner.findAllClassesOfType(GhostActuatorBuilder.class, "com.tbot.ruler.plugins.ghost");
-        Set<? extends GhostActuatorBuilder> builders = packageScanner.instantiateAll(buildersClasses);
+        Set<Class<? extends _GhostActuatorBuilder>> buildersClasses = packageScanner.findAllClassesOfType(_GhostActuatorBuilder.class, "com.tbot.ruler.plugins.ghost");
+        Set<? extends _GhostActuatorBuilder> builders = packageScanner.instantiateAll(buildersClasses);
         builders.stream().forEach(builder -> buildersMap.put(builder.getReference(), builder));
         return buildersMap;
     }
@@ -73,7 +73,7 @@ public class GhostThingBuilder implements ThingPluginBuilder {
 
     private Actuator buildActuator(ActuatorDTO actuatorDTO, MessagePublisher messagePublisher, GhostThingConfiguration thingConfiguration)
     throws PluginException {
-        GhostActuatorBuilder actuatorBuilder = actuatorBuilderMap.get(actuatorDTO.getRef());
+        _GhostActuatorBuilder actuatorBuilder = actuatorBuilderMap.get(actuatorDTO.getRef());
         if (actuatorBuilder == null) {
             throw new PluginException("Unknown actuator reference " + actuatorDTO.getRef() + ", skipping this DTO");
         }

@@ -25,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class SunWatchThingBuilder implements ThingPluginBuilder {
 
-    private Map<String, AbstractActuatorBuilder> emitterBuilderMap;
+    private Map<String, _AbstractActuatorBuilder> emitterBuilderMap;
 
     public SunWatchThingBuilder() {
         emitterBuilderMap = findActuatorsBuilders();
@@ -48,11 +48,11 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
             .build();
     }
 
-    private Map<String, AbstractActuatorBuilder> findActuatorsBuilders() {
-        Map<String, AbstractActuatorBuilder> buildersMap = new HashMap<>();
+    private Map<String, _AbstractActuatorBuilder> findActuatorsBuilders() {
+        Map<String, _AbstractActuatorBuilder> buildersMap = new HashMap<>();
         PackageScanner packageScanner = new PackageScanner();
-        Set<Class<? extends AbstractActuatorBuilder>> buildersClasses = packageScanner.findAllClassesOfType(AbstractActuatorBuilder.class, "com.tbot.ruler.plugins.sunwatch");
-        Set<? extends AbstractActuatorBuilder> builders = packageScanner.instantiateAll(buildersClasses);
+        Set<Class<? extends _AbstractActuatorBuilder>> buildersClasses = packageScanner.findAllClassesOfType(_AbstractActuatorBuilder.class, "com.tbot.ruler.plugins.sunwatch");
+        Set<? extends _AbstractActuatorBuilder> builders = packageScanner.instantiateAll(buildersClasses);
         builders.stream().forEach(builder -> buildersMap.put(builder.getReference(), builder));
         return buildersMap;
     }
@@ -76,7 +76,7 @@ public class SunWatchThingBuilder implements ThingPluginBuilder {
 
     private Actuator buildActuator(ThingBuilderContext builderContext, SunLocale sunEventLocale, ActuatorDTO actuatorDTO)
     throws PluginException {
-        AbstractActuatorBuilder actuatorBuilder = emitterBuilderMap.get(actuatorDTO.getRef());
+        _AbstractActuatorBuilder actuatorBuilder = emitterBuilderMap.get(actuatorDTO.getRef());
         if (actuatorBuilder == null) {
             throw new PluginException("Unknown actuator reference " + actuatorDTO.getRef() + ", skipping this DTO");
         }

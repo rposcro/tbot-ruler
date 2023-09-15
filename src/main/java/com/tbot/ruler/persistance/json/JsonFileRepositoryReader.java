@@ -82,6 +82,7 @@ public class JsonFileRepositoryReader {
 
     public ThingDTO getThingDTO(String uuid) {
         return dtoWrappers.stream()
+                .filter(wrapper -> wrapper.things != null)
                 .flatMap(wrapper -> wrapper.things.stream())
                 .filter(thing -> uuid.equals(thing.getUuid()))
                 .findFirst()

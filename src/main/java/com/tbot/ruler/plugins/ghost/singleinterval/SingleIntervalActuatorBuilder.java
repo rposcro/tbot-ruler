@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.plugins.ghost.GhostActuatorBuilder;
+import com.tbot.ruler.plugins.ghost._GhostActuatorBuilder;
 import com.tbot.ruler.plugins.ghost.GhostThingConfiguration;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.builder.dto.ActuatorDTO;
@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.time.ZoneId;
 import java.util.Optional;
 
-public class SingleIntervalActuatorBuilder implements GhostActuatorBuilder {
+public class SingleIntervalActuatorBuilder implements _GhostActuatorBuilder {
 
     private static final String REFERENCE = "single-interval";
 

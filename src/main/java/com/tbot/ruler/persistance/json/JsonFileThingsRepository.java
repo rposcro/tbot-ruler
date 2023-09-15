@@ -13,11 +13,13 @@ import java.util.stream.Collectors;
 
 public class JsonFileThingsRepository extends AbstractJsonFileRepository implements ThingsRepository {
 
+    private final JsonFileActuatorsRepository actuatorsRepository;
     private final JsonFileRepositoryReader repositoryReader;
     private final Map<String, List<ThingEntity>> entitiesMap;
 
     @Builder
-    public JsonFileThingsRepository(JsonFileRepositoryReader repositoryReader) {
+    public JsonFileThingsRepository(JsonFileActuatorsRepository actuatorsRepository, JsonFileRepositoryReader repositoryReader) {
+        this.actuatorsRepository = actuatorsRepository;
         this.repositoryReader = repositoryReader;
         this.entitiesMap = new HashMap<>();
     }
@@ -50,6 +52,7 @@ public class JsonFileThingsRepository extends AbstractJsonFileRepository impleme
                 .description(dto.getDescription())
                 .pluginUuid(pluginUuid)
                 .configuration(dto.getConfigurationNode())
+                .actuators(actuatorsRepository.findByThingUuid(dto.getUuid()))
                 .build();
     }
 }
