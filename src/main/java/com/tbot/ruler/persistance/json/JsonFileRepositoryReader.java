@@ -88,6 +88,16 @@ public class JsonFileRepositoryReader {
                 .orElse(null);
     }
 
+    public List<BindingDTO> getBindingDTOs() {
+        Set<String> aliases = new HashSet<>();
+        List<BindingDTO> dtos = dtoWrappers.stream()
+                .filter(wrapper -> wrapper.bindings != null)
+                .flatMap(wrapper -> wrapper.bindings.stream())
+                .collect(Collectors.toList());
+        log.info("Found and read {} thing DTOs", dtos.size());
+        return dtos;
+    }
+
     @Data
     private static class WrapperDTO {
         private List<ThingPluginDTO> plugins;

@@ -2,7 +2,6 @@ package com.tbot.ruler.things.builder.dto;
 
 import java.util.List;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -15,7 +14,5 @@ public class ThingPluginDTO extends ConfigurableDTO {
     private String builder;
     private String builderClass;
 
-    private List<String> emitters;
-    private List<String> collectors;
     private List<String> actuators;
 }
