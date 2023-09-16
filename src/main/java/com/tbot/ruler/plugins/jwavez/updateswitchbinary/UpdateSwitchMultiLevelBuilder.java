@@ -12,20 +12,14 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "update-switch-binary";
 
-    private final JWaveZPluginContext pluginContext;
-
-    public UpdateSwitchMultiLevelBuilder(JWaveZPluginContext pluginContext) {
-        super(
-                REFERENCE,
-                SwitchBinaryCommandType.BINARY_SWITCH_REPORT,
-                new SwitchBinaryReportListener(pluginContext.getJwzApplicationSupport()));
-        this.pluginContext = pluginContext;
+    public UpdateSwitchMultiLevelBuilder() {
+        super(REFERENCE);
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
         UpdateSwitchBinaryConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), UpdateSwitchBinaryConfiguration.class);
-        UpdateSwitchBinaryActuator emitter = UpdateSwitchBinaryActuator.builder()
+        UpdateSwitchBinaryActuator actuator = UpdateSwitchBinaryActuator.builder()
                 .id(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
@@ -34,7 +28,11 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
                 .configuration(configuration)
                 .applicationSupport(pluginContext.getJwzApplicationSupport())
                 .build();
-        ((SwitchBinaryReportListener) getSupportedCommandHandler()).registerEmitter(configuration.getNodeId(), configuration.getEndPointId(), emitter);
-        return emitter;
+
+        SwitchBinaryReportListener listener = new SwitchBinaryReportListener(pluginContext.getJwzApplicationSupport());
+        pluginContext.getJwzSerialHandler().addCommandListener(SwitchBinaryCommandType.BINARY_SWITCH_REPORT, listener);
+        listener.registerActuator(configuration.getNodeId(), configuration.getEndPointId(), actuator);
+
+        return actuator;
     }
 }

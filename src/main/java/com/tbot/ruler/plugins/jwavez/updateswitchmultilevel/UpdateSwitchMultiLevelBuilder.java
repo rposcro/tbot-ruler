@@ -12,19 +12,12 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "update-switch-multilevel";
 
-    private final JWaveZPluginContext pluginContext;
-
-    public UpdateSwitchMultiLevelBuilder(JWaveZPluginContext pluginContext) {
-        super(
-                REFERENCE,
-                SwitchMultiLevelCommandType.SWITCH_MULTILEVEL_REPORT,
-                new SwitchMultiLevelReportListener()
-        );
-        this.pluginContext = pluginContext;
+    public UpdateSwitchMultiLevelBuilder() {
+        super(REFERENCE);
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
         UpdateSwitchMultiLevelConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), UpdateSwitchMultiLevelConfiguration.class);
         UpdateSwitchMultiLevelActuator actuator = UpdateSwitchMultiLevelActuator.builder()
                 .id(actuatorEntity.getActuatorUuid())
@@ -35,7 +28,11 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
                 .configuration(configuration)
                 .applicationSupport(pluginContext.getJwzApplicationSupport())
                 .build();
-        ((SwitchMultiLevelReportListener) getSupportedCommandHandler()).registerEmitter(actuator);
+
+        SwitchMultiLevelReportListener listener = new SwitchMultiLevelReportListener();
+        pluginContext.getJwzSerialHandler().addCommandListener(SwitchMultiLevelCommandType.SWITCH_MULTILEVEL_REPORT, listener);
+        listener.registerEmitter(actuator);
+
         return actuator;
     }
 }

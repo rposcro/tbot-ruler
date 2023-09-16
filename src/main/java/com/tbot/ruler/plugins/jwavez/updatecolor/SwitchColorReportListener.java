@@ -25,7 +25,7 @@ public class SwitchColorReportListener extends JWaveZCommandListener<SwitchColor
                 .forEach(emitter -> emitter.acceptCommand(command));
     }
 
-    public void registerEmitter(UpdateColorActuator emitter) {
+    public void registerActuator(UpdateColorActuator emitter) {
         emitters.add(emitter);
     }
 }

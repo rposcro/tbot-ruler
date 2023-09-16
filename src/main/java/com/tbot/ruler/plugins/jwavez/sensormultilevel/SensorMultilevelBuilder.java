@@ -11,20 +11,12 @@ public class SensorMultilevelBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "sensor-multilevel";
 
-    private final JWaveZPluginContext pluginContext;
-
     public SensorMultilevelBuilder(JWaveZPluginContext pluginContext) {
-        super(
-                REFERENCE,
-                SensorMultilevelCommandType.SENSOR_MULTILEVEL_REPORT,
-                new SensorMultilevelListener(
-                        pluginContext.getJwzApplicationSupport().supportedCommandParser())
-        );
-        this.pluginContext = pluginContext;
+        super(REFERENCE);
     }
 
     @Override
-    public SensorMultilevelActuator buildActuator(ActuatorEntity actuatorEntity) {
+    public SensorMultilevelActuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
         SensorMultilevelConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SensorMultilevelConfiguration.class);
         SensorMultilevelActuator actuator = SensorMultilevelActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
@@ -33,14 +25,18 @@ public class SensorMultilevelBuilder extends JWaveZActuatorBuilder {
                 .messagePublisher(pluginContext.getMessagePublisher())
                 .build();
 
+        SensorMultilevelListener listener = new SensorMultilevelListener(
+                pluginContext.getJwzApplicationSupport().supportedCommandParser());
+        pluginContext.getJwzSerialHandler().addCommandListener(SensorMultilevelCommandType.SENSOR_MULTILEVEL_REPORT, listener);
+
         if (configuration.isMultiChannelOn()) {
-            ((SensorMultilevelListener) getSupportedCommandHandler()).registerEmitter(
+            listener.registerActuator(
                     (byte) configuration.getSourceNodeId(),
                     (byte) configuration.getSourceEndPointId(),
                     actuator
             );
         } else {
-            ((SensorMultilevelListener) getSupportedCommandHandler()).registerEmitter(
+            listener.registerActuator(
                     (byte) configuration.getSourceNodeId(),
                     actuator
             );

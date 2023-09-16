@@ -47,7 +47,7 @@ public class SwitchBinaryReportListener extends JWaveZCommandListener<BinarySwit
         }
     }
 
-    public void registerEmitter(int nodeId, int endPointId, UpdateSwitchBinaryActuator emitter) {
+    public void registerActuator(int nodeId, int endPointId, UpdateSwitchBinaryActuator emitter) {
         emitters.put(endPointId == 0 ? computeKey((byte) nodeId) : computeKey((byte) nodeId, (byte) endPointId), emitter);
     }
 

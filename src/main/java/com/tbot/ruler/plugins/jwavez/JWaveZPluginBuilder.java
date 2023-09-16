@@ -22,40 +22,46 @@ import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
 public class JWaveZPluginBuilder implements PluginBuilder {
 
+    private final Map<String, JWaveZActuatorBuilder> actuatorsBuilders;
+
+    public JWaveZPluginBuilder() {
+        this.actuatorsBuilders = findActuatorsBuilders(
+                JWaveZActuatorBuilder.class, "com.tbot.ruler.plugins.jwavez").stream()
+                .collect(Collectors.toMap(JWaveZActuatorBuilder::getReference, Function.identity()));
+    }
+
     @Override
     public Plugin buildPlugin(PluginBuilderContext builderContext) {
         JWaveZPluginContext pluginContext = preparePluginContext(builderContext);
-        Map<String, JWaveZActuatorBuilder> buildersMap = findActuatorsBuilders(
-                JWaveZActuatorBuilder.class, "com.tbot.ruler.plugins.jwavez", pluginContext)
-                .stream()
-                .collect(Collectors.toMap(JWaveZActuatorBuilder::getReference, Function.identity()));
 
         return BasicPlugin.builder()
                 .uuid(builderContext.getPluginEntity().getPluginUuid())
                 .name(builderContext.getPluginEntity().getName())
                 .things(builderContext.getPluginEntity().getThings().stream()
-                        .map(thingEntity -> buildThing(thingEntity, buildersMap))
+                        .map(thingEntity -> buildThing(thingEntity, pluginContext))
                         .collect(Collectors.toList()))
+                .startUpTask(() -> pluginContext.getJwzSerialController().connect())
+                .triggerableTask(pluginContext.getJwzCommandSender())
                 .build();
     }
 
-    private Thing buildThing(ThingEntity thingEntity, Map<String, JWaveZActuatorBuilder> actuatorsBuilders) {
+    private Thing buildThing(ThingEntity thingEntity, JWaveZPluginContext pluginContext) {
         return BasicThing.builder()
                 .uuid(thingEntity.getThingUuid())
                 .name(thingEntity.getName())
                 .description(thingEntity.getDescription())
                 .actuators(thingEntity.getActuators().stream()
-                        .map(actuatorEntity -> buildActuator(actuatorEntity, actuatorsBuilders))
+                        .map(actuatorEntity -> buildActuator(actuatorEntity, pluginContext))
                         .collect(Collectors.toList()))
                 .build();
     }
 
-    private Actuator buildActuator(ActuatorEntity actuatorEntity, Map<String, JWaveZActuatorBuilder> actuatorsBuilders) {
+    private Actuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
         JWaveZActuatorBuilder actuatorBuilder = actuatorsBuilders.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
             throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
         }
-        return actuatorBuilder.buildActuator(actuatorEntity);
+        return actuatorBuilder.buildActuator(actuatorEntity, pluginContext);
     }
 
     private JWaveZPluginContext preparePluginContext(PluginBuilderContext builderContext) {
@@ -73,6 +79,7 @@ public class JWaveZPluginBuilder implements PluginBuilder {
                 .pluginBuilderContext(builderContext)
                 .messagePublisher(builderContext.getMessagePublisher())
                 .jwzApplicationSupport(JwzApplicationSupport.defaultSupport())
+                .jwzSerialHandler(serialHandler)
                 .jwzCommandSender(commandSender)
                 .build();
     }

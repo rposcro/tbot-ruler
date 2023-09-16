@@ -11,15 +11,12 @@ public class SwitchMultilevelActuatorBuilder extends JWaveZActuatorBuilder {
 
     private final static String REFERENCE = "switch-multilevel";
 
-    private final JWaveZPluginContext pluginContext;
-
-    public SwitchMultilevelActuatorBuilder(JWaveZPluginContext pluginContext) {
+    public SwitchMultilevelActuatorBuilder() {
         super(REFERENCE);
-        this.pluginContext = pluginContext;
     }
 
     @Override
-    public SwitchMultilevelActuator buildActuator(ActuatorEntity actuatorEntity) {
+    public SwitchMultilevelActuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
         SwitchMultilevelConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SwitchMultilevelConfiguration.class);
         return SwitchMultilevelActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())

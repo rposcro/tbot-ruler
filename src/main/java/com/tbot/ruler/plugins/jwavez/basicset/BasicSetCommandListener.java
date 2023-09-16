@@ -46,7 +46,7 @@ public class BasicSetCommandListener extends JWaveZCommandListener<BasicSet> {
                 .forEach(emitter -> emitter.acceptCommandValue((byte) basicSet.getValue()));
     }
 
-    public void registerEmitter(BasicSetActuator emitter) {
+    public void registerActuator(BasicSetActuator emitter) {
         emitters.add(emitter);
     }
 }

@@ -12,6 +12,8 @@ public class JWaveZPluginContext {
 
     private final PluginBuilderContext pluginBuilderContext;
     private final JwzApplicationSupport jwzApplicationSupport;
+    private final JWaveZSerialController jwzSerialController;
+    private final JWaveZSerialHandler jwzSerialHandler;
     private final JWaveZCommandSender jwzCommandSender;
     private final MessagePublisher messagePublisher;
 }

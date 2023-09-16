@@ -24,11 +24,11 @@ public class SensorMultilevelListener extends JWaveZCommandListener<SensorMultil
         this.emittersPerKey = new HashMap<>();
     }
 
-    public void registerEmitter(byte sourceNodeId, SensorMultilevelActuator emitter) {
+    public void registerActuator(byte sourceNodeId, SensorMultilevelActuator emitter) {
         emittersPerKey.computeIfAbsent(computeKey(sourceNodeId), key -> new LinkedList()).add(emitter);
     }
 
-    public void registerEmitter(byte sourceNodeId, byte sourceEndPointId, SensorMultilevelActuator emitter) {
+    public void registerActuator(byte sourceNodeId, byte sourceEndPointId, SensorMultilevelActuator emitter) {
         emittersPerKey.computeIfAbsent(computeKey(sourceNodeId, sourceEndPointId), key -> new LinkedList()).add(emitter);
     }
 
