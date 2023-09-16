@@ -11,7 +11,6 @@ public class ThingPluginDTO extends ConfigurableDTO {
 
     private String alias;
     private String uuid;
-    private String builder;
     private String builderClass;
 
     private List<String> actuators;

@@ -86,7 +86,7 @@ public class PluginsConfiguration {
 
     private PluginBuilder instantiateBuilder(PluginEntity pluginEntity) throws ReflectiveOperationException {
         String builderClassName = pluginEntity.getBuilderClass();
-        Class<?> builderClass = _ThingsConfiguration.class.getClassLoader().loadClass(builderClassName);
+        Class<?> builderClass = PluginsConfiguration.class.getClassLoader().loadClass(builderClassName);
         return (PluginBuilder) builderClass.newInstance();
     }
 }
