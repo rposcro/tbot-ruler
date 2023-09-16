@@ -6,5 +6,6 @@ import java.util.List;
 
 public interface BindingsRepository {
 
+    List<BindingEntity> findAll();
     List<BindingEntity> findBySenderUuid(String senderUuid);
 }

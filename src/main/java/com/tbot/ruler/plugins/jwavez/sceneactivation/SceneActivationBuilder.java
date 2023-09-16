@@ -11,7 +11,7 @@ public class SceneActivationBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "scene-activation";
 
-    public SceneActivationBuilder(JWaveZPluginContext pluginContext) {
+    public SceneActivationBuilder() {
         super(REFERENCE);
     }
 

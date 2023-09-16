@@ -22,6 +22,14 @@ public class JsonFileBindingsRepository extends AbstractJsonFileRepository imple
     }
 
     @Override
+    public List<BindingEntity> findAll() {
+        return repositoryReader.getBindingDTOs().stream()
+                .map(this::toEntities)
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+    }
+
+    @Override
     public List<BindingEntity> findBySenderUuid(String senderUuid) {
         List<BindingEntity> entities = entitiesMap.get(senderUuid);
 

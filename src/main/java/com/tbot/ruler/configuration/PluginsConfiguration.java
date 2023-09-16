@@ -6,6 +6,8 @@ import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.PluginBuilder;
 import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.things.service.ServiceProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,8 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -28,6 +32,25 @@ public class PluginsConfiguration {
 
     @Autowired
     private MessagePublisher messagePublisher;
+
+    @Bean
+    public List<Actuator> actuators() {
+        return things().stream()
+                .flatMap(thing -> thing.getActuators().stream())
+                .collect(Collectors.toList());
+    }
+
+    @Bean
+    public Map<String, Actuator> actuatorsPerId() {
+        return actuators().stream().collect(Collectors.toMap(Actuator::getUuid, Function.identity()));
+    }
+
+    @Bean
+    public List<Thing> things() {
+        return plugins().stream()
+                .flatMap(plugin -> plugin.getThings().stream())
+                .collect(Collectors.toList());
+    }
 
     @Bean
     public List<Plugin> plugins() {
@@ -63,7 +86,7 @@ public class PluginsConfiguration {
 
     private PluginBuilder instantiateBuilder(PluginEntity pluginEntity) throws ReflectiveOperationException {
         String builderClassName = pluginEntity.getBuilderClass();
-        Class<?> builderClass = ThingsConfiguration.class.getClassLoader().loadClass(builderClassName);
+        Class<?> builderClass = _ThingsConfiguration.class.getClassLoader().loadClass(builderClassName);
         return (PluginBuilder) builderClass.newInstance();
     }
 }

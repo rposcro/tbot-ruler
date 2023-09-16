@@ -10,7 +10,7 @@ public class SwitchBinaryBuilder extends JWaveZActuatorBuilder {
 
     private final static String REFERENCE = "switch-binary";
 
-    public SwitchBinaryBuilder(JWaveZPluginContext pluginContext) {
+    public SwitchBinaryBuilder() {
         super(REFERENCE);
     }
 

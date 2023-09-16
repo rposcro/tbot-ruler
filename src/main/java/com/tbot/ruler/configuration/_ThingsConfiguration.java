@@ -23,17 +23,17 @@ import com.tbot.ruler.things.builder.dto.ThingPluginDTO;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@Configuration
-public class ThingsConfiguration {
+//@Configuration
+public class _ThingsConfiguration {
     
-    @Autowired
+//    @Autowired
     private ServiceProvider serviceProvider;
 
-    @Autowired
+//    @Autowired
     private MessagePublisher messagePublisher;
 
     @Bean
-    public List<Thing> things(List<ThingDTO> thingDTOs, List<ThingPluginDTO> pluginDTOs) {
+    public List<Thing> _things(List<ThingDTO> thingDTOs, List<ThingPluginDTO> pluginDTOs) {
         Map<String, ThingPluginDTO> pluginPerAlias = pluginPerAlias(pluginDTOs);
         List<Thing> things = new ArrayList<>(thingDTOs.size());
         
@@ -72,7 +72,7 @@ public class ThingsConfiguration {
     @SuppressWarnings("unchecked")
     private ThingPluginBuilder instantiateBuilder(ThingPluginDTO pluginDTO) throws ReflectiveOperationException {
         String builderClassName = pluginDTO.getBuilder();
-        Class<?> builderClass = ThingsConfiguration.class.getClassLoader().loadClass(builderClassName);
+        Class<?> builderClass = _ThingsConfiguration.class.getClassLoader().loadClass(builderClassName);
         Object builder = builderClass.newInstance();
         return (ThingPluginBuilder) builder;
     }

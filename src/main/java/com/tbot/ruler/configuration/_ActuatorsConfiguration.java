@@ -11,10 +11,10 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-@Configuration
-public class ActuatorsConfiguration {
+//@Configuration
+public class _ActuatorsConfiguration {
 
-    @Autowired
+//    @Autowired
     private List<Thing> things;
 
     @Bean

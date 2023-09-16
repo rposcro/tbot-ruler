@@ -35,6 +35,7 @@ public class JsonFilePluginsRepository extends AbstractJsonFileRepository implem
                 .pluginUuid(pluginDTO.getUuid())
                 .builderClass(pluginDTO.getBuilderClass())
                 .name(pluginDTO.getAlias())
+                .configuration(pluginDTO.getConfigurationNode())
                 .things(thingsRepository.findByPluginUuid(pluginDTO.getUuid()))
                 .build();
     }

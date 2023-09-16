@@ -1,6 +1,6 @@
 package com.tbot.ruler.service.things;
 
-import com.tbot.ruler.configuration.ActuatorsConfiguration;
+import com.tbot.ruler.configuration.PluginsConfiguration;
 import com.tbot.ruler.things.Actuator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,9 +9,9 @@ import org.springframework.stereotype.Service;
 public class ThingsService {
 
     @Autowired
-    private ActuatorsConfiguration actuatorsConfiguration;
+    private PluginsConfiguration pluginsConfiguration;
 
     public Actuator actuatorById(String actuatorId) {
-        return actuatorsConfiguration.actuatorsPerId().get(actuatorId);
+        return pluginsConfiguration.actuatorsPerId().get(actuatorId);
     }
 }

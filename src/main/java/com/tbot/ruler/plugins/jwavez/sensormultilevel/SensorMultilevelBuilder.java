@@ -11,7 +11,7 @@ public class SensorMultilevelBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "sensor-multilevel";
 
-    public SensorMultilevelBuilder(JWaveZPluginContext pluginContext) {
+    public SensorMultilevelBuilder() {
         super(REFERENCE);
     }
 
