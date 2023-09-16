@@ -1,14 +1,15 @@
 package com.tbot.ruler.configuration;
 
 import java.util.*;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import com.tbot.ruler.appliances.Appliance;
 import com.tbot.ruler.messages.MessageSender;
+import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.things.*;
 import com.tbot.ruler.messages.MessageReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -20,40 +21,35 @@ import javax.annotation.PostConstruct;
 @Configuration
 public class BindingsConfiguration {
 
-    @Value("${ruler.thingsConfig.path}")
-    private String configPath;
-
     @Autowired
-    private DTOConfiguration dtoConfiguration;
+    private BindingsRepository bindingsRepository;
     @Autowired
-    private  Map<String, Appliance> appliancesPerId;
+    private List<Appliance> appliances;
     @Autowired
-    private Map<String, Actuator> actuatorsPerId;
+    private List<Actuator> actuators;
 
     private Map<String, MessageReceiver> receiversPerId;
     private Map<String, MessageSender> sendersPerId;
 
     @PostConstruct
     public void init() {
-        Map<String, MessageReceiver> receiverMap = new HashMap<>();
-        receiverMap.putAll(appliancesPerId);
-        receiverMap.putAll(actuatorsPerId);
-        this.receiversPerId = receiverMap;
+        this.receiversPerId = new HashMap<>();
+        receiversPerId.putAll(appliances.stream().collect(Collectors.toMap(Appliance::getUuid, Function.identity())));
+        receiversPerId.putAll(actuators.stream().collect(Collectors.toMap(Actuator::getUuid, Function.identity())));
 
-        Map<String, MessageSender> senderMap = new HashMap<>();
-        senderMap.putAll(appliancesPerId);
-        senderMap.putAll(actuatorsPerId);
-        this.sendersPerId = senderMap;
+        this.sendersPerId = new HashMap<>();
+        sendersPerId.putAll(appliances.stream().collect(Collectors.toMap(Appliance::getUuid, Function.identity())));
+        sendersPerId.putAll(actuators.stream().collect(Collectors.toMap(Actuator::getUuid, Function.identity())));
     }
 
     @Bean
     public Map<String, List<String>> consumerIdsBySenderId() {
         Map<String, List<String>> mappings = new HashMap<>();
-        dtoConfiguration.bindingDTOs().stream()
-            .forEach(bindingDTO -> {
-                mappings.computeIfAbsent(bindingDTO.getSenderId(), senderId -> new LinkedList())
-                    .addAll(bindingDTO.getConsumerIds());
-            });
+        bindingsRepository.findAll().stream()
+                        .forEach(entity -> {
+                            mappings.computeIfAbsent(entity.getSenderUuid(), senderId -> new LinkedList())
+                                    .add(entity.getReceiverUuid());
+                        });
         log.debug(String.format("Item ids bindings: %s", mappings));
         return mappings;
     }

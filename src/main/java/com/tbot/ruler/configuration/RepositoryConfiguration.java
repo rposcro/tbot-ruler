@@ -1,6 +1,7 @@
 package com.tbot.ruler.configuration;
 
 import com.tbot.ruler.persistance.json.JsonFileActuatorsRepository;
+import com.tbot.ruler.persistance.json.JsonFileBindingsRepository;
 import com.tbot.ruler.persistance.json.JsonFilePluginsRepository;
 import com.tbot.ruler.persistance.json.JsonFileRepositoryReader;
 import com.tbot.ruler.persistance.json.JsonFileThingsRepository;
@@ -46,6 +47,13 @@ public class RepositoryConfiguration {
         return JsonFilePluginsRepository.builder()
                 .repositoryReader(repositoryReader)
                 .thingsRepository(thingsRepository)
+                .build();
+    }
+
+    @Bean
+    public JsonFileBindingsRepository bindingsRepository(JsonFileRepositoryReader repositoryReader) {
+        return JsonFileBindingsRepository.builder()
+                .repositoryReader(repositoryReader)
                 .build();
     }
 }
