@@ -1,5 +1,6 @@
 package com.tbot.ruler.persistance.json;
 
+import com.tbot.ruler.exceptions.ConfigurationException;
 import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import com.tbot.ruler.things.builder.dto.BindingDTO;
 import com.tbot.ruler.things.builder.dto.ThingDTO;
@@ -33,6 +34,7 @@ public class JsonFileRepositoryReader {
         dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/things", WrapperDTO.class));
         dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/appliances", WrapperDTO.class));
         dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/bindings", WrapperDTO.class));
+        validateUuids();
     }
 
     public List<ApplianceDTO> getApplianceDTOs() {
@@ -97,6 +99,20 @@ public class JsonFileRepositoryReader {
                 .collect(Collectors.toList());
         log.info("Found and read {} thing DTOs", dtos.size());
         return dtos;
+    }
+
+    private void validateUuids() {
+        Set<String> uuids = new HashSet<>();
+        getPluginDTOs().stream().forEach(dto -> considerUuid(uuids, dto.getUuid()));
+        getThingDTOs().stream().forEach(dto -> considerUuid(uuids, dto.getUuid()));
+        getApplianceDTOs().stream().forEach(dto -> considerUuid(uuids, dto.getUuid()));
+    }
+
+    private void considerUuid(Set<String> uuids, String uuid) {
+        if (uuids.contains(uuid)) {
+            throw new ConfigurationException("Repeated uuid: " + uuid);
+        }
+        uuids.add(uuid);
     }
 
     @Data

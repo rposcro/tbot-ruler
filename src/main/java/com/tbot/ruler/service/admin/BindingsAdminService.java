@@ -1,6 +1,8 @@
 package com.tbot.ruler.service.admin;
 
 import com.tbot.ruler.configuration.DTOConfiguration;
+import com.tbot.ruler.persistance.BindingsRepository;
+import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.things.builder.dto.BindingDTO;
 import com.tbot.ruler.things.builder.dto.ItemDTO;
 import lombok.extern.slf4j.Slf4j;
@@ -15,10 +17,13 @@ import java.util.stream.Collectors;
 public class BindingsAdminService {
 
     @Autowired
+    private BindingsRepository bindingsRepository;
+
+    @Autowired
     private DTOConfiguration dtoConfiguration;
 
-    public List<BindingDTO> allBindings() {
-        return dtoConfiguration.bindingDTOs();
+    public List<BindingEntity> allBindings() {
+        return bindingsRepository.findAll();
     }
 
     public List<ItemDTO> sendersForItem(String itemId) {
@@ -30,7 +35,7 @@ public class BindingsAdminService {
         return senders;
     }
 
-    public List<ItemDTO> listenersForItem(String itemId) {
+    public List<ItemDTO> receiversForItem(String itemId) {
         List<ItemDTO> listeners = dtoConfiguration.bindingDTOs().stream()
                 .filter(binding -> binding.getSenderId().equals(itemId))
                 .flatMap(binding -> binding.getConsumerIds().stream())

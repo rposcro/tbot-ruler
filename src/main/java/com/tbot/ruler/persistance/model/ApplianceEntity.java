@@ -1,7 +1,6 @@
 package com.tbot.ruler.persistance.model;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,7 +17,7 @@ public class ApplianceEntity {
     private String applianceUuid;
 
     @JsonProperty(required = true)
-    private String applianceClass;
+    private String applianceType;
 
     @JsonProperty(required = true)
     private String name;

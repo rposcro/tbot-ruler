@@ -47,7 +47,7 @@ public class AppliancesController extends AbstractController {
     }
 
     private ApplianceResponse fromAppliance(Appliance appliance) {
-        ApplianceDTO dto = adminService.applianceDTOById(appliance.getUuid());
+        ApplianceDTO dto = adminService.applianceByUuid(appliance.getUuid());
         return ApplianceResponse.builder()
             .id(appliance.getUuid())
             .name(dto.getName())

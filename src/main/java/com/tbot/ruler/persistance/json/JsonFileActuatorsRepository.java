@@ -10,28 +10,57 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class JsonFileActuatorsRepository extends AbstractJsonFileRepository implements ActuatorsRepository {
 
     private final JsonFileRepositoryReader repositoryReader;
-    private final Map<String, List<ActuatorEntity>> entitiesMap;
+
+    private final List<ActuatorEntity> actuators;
+    private final Map<String, ActuatorEntity> actuatorsByUuid;
+    private final Map<String, List<ActuatorEntity>> actuatorsByThingUuid;
 
     @Builder
     public JsonFileActuatorsRepository(JsonFileRepositoryReader repositoryReader) {
         this.repositoryReader = repositoryReader;
-        this.entitiesMap = new HashMap<>();
+        this.actuators = new LinkedList<>();
+        this.actuatorsByUuid = new HashMap<>();
+        this.actuatorsByThingUuid = new HashMap<>();
+    }
+
+    @Override
+    public Optional<ActuatorEntity> findByUuid(String actuatorUuid) {
+        ensureAll();
+        return Optional.ofNullable(actuatorsByUuid.get(actuatorUuid));
+    }
+
+    @Override
+    public List<ActuatorEntity> findAll() {
+        return actuators;
     }
 
     @Override
     public List<ActuatorEntity> findByThingUuid(String thingUuid) {
-        List<ActuatorEntity> entities = entitiesMap.get(thingUuid);
+        List<ActuatorEntity> entities = actuatorsByThingUuid.get(thingUuid);
 
         if (entities == null) {
             entities = readActuatorsForThing(thingUuid);
-            entitiesMap.put(thingUuid, entities);
+            actuatorsByThingUuid.put(thingUuid, entities);
         }
 
         return entities;
+    }
+
+    private void ensureAll() {
+        if (actuators.isEmpty()) {
+            repositoryReader.getThingDTOs().stream()
+                    .map(ThingDTO::getUuid)
+                    .flatMap(pluginUuid -> findByThingUuid(pluginUuid).stream())
+                    .forEach(actuatorEntity -> {
+                        actuators.add(actuatorEntity);
+                        actuatorsByUuid.put(actuatorEntity.getThingUuid(), actuatorEntity);
+                    });
+        }
     }
 
     private List<ActuatorEntity> readActuatorsForThing(String thingUuid) {

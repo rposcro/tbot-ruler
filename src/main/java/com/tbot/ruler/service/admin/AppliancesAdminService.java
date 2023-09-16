@@ -1,7 +1,7 @@
 package com.tbot.ruler.service.admin;
 
-import com.tbot.ruler.configuration.DTOConfiguration;
-import com.tbot.ruler.things.builder.dto.ApplianceDTO;
+import com.tbot.ruler.persistance.AppliancesRepository;
+import com.tbot.ruler.persistance.model.ApplianceEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,13 +11,13 @@ import java.util.List;
 public class AppliancesAdminService {
 
     @Autowired
-    private DTOConfiguration dtoConfiguration;
+    private AppliancesRepository appliancesRepository;
 
-    public List<ApplianceDTO> allAppliances() {
-        return dtoConfiguration.applianceDTOs();
+    public List<ApplianceEntity> allAppliances() {
+        return appliancesRepository.findAll();
     }
 
-    public ApplianceDTO applianceDTOById(String applianceId) {
-        return dtoConfiguration.applianceDTOMap().get(applianceId);
+    public ApplianceEntity applianceByUuid(String applianceUuid) {
+        return appliancesRepository.findByUuid(applianceUuid).orElse(null);
     }
 }

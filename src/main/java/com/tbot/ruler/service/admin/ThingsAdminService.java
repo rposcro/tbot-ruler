@@ -1,39 +1,35 @@
 package com.tbot.ruler.service.admin;
 
-import com.tbot.ruler.configuration.DTOConfiguration;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.builder.dto.ThingDTO;
+import com.tbot.ruler.persistance.ActuatorsRepository;
+import com.tbot.ruler.persistance.ThingsRepository;
+import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.persistance.model.ThingEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 @Service
 public class ThingsAdminService {
 
     @Autowired
-    private DTOConfiguration dtoConfiguration;
+    private ThingsRepository thingsRepository;
+    @Autowired
+    private ActuatorsRepository actuatorsRepository;
 
-    public List<ThingDTO> allThings() {
-        return dtoConfiguration.thingDTOs();
+    public List<ThingEntity> allThings() {
+        return thingsRepository.findAll();
     }
 
-    public ThingDTO thingDTOById(String thingId) {
-        return dtoConfiguration.thingDTOMap().get(thingId);
+    public ThingEntity thingByUuid(String thingUuid) {
+        return thingsRepository.findByUuid(thingUuid).orElse(null);
     }
 
-    public Map<String, List<ThingDTO>> thingsByPlugin() {
-        return dtoConfiguration.thingDTOs().stream()
-            .collect(Collectors.groupingBy(ThingDTO::getPluginAlias));
+    public List<ActuatorEntity> allActuators() {
+        return actuatorsRepository.findAll();
     }
 
-    public List<ActuatorDTO> allActuators() {
-        return dtoConfiguration.actuatorDTOs();
-    }
-
-    public ActuatorDTO actuatorDTOById(String actuatorId) {
-        return dtoConfiguration.actuatorDTOMap().get(actuatorId);
+    public ActuatorEntity actuatorByUuid(String actuatorUuid) {
+        return actuatorsRepository.findByUuid(actuatorUuid).orElse(null);
     }
 }
