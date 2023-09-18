@@ -14,7 +14,6 @@ public class BasicPlugin implements Plugin {
 
     private String uuid;
     private String name;
-    @Builder.Default
     private List<? extends Thing> things = Collections.emptyList();
 
     private Optional<Runnable> startUpTask;
@@ -31,7 +30,7 @@ public class BasicPlugin implements Plugin {
             TaskTrigger taskTrigger) {
         this.uuid = uuid;
         this.name = name;
-        this.things = things;
+        this.things = things != null ?  things : Collections.emptyList();
         this.startUpTask = Optional.ofNullable(startUpTask);
         this.triggerableTask = Optional.ofNullable(triggerableTask);
         this.taskTrigger = Optional.ofNullable(taskTrigger);

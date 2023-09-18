@@ -1,12 +1,12 @@
 package com.tbot.ruler.controller.console;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.persistance.model.ApplianceEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.service.admin.AppliancesAdminService;
 import com.tbot.ruler.service.admin.BindingsAdminService;
 import com.tbot.ruler.service.admin.PluginsAdminService;
 import com.tbot.ruler.service.admin.ThingsAdminService;
-import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -49,15 +49,15 @@ public class ConsoleController {
         return mav;
     }
 
-    @GetMapping(path = "things/{thingId}", produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView thingById(@PathVariable String thingId) {
+    @GetMapping(path = "things/{thingUuid}", produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView thingById(@PathVariable String thingUuid) {
         ModelAndView mav = new ModelAndView("things");
-        ThingEntity thingEntity = thingsAdminService.thingByUuid(thingId);
-        mav.addObject("thingId", thingId);
+        ThingEntity thingEntity = thingsAdminService.thingByUuid(thingUuid);
+        mav.addObject("thingId", thingUuid);
         mav.addObject("thing", thingEntity);
         mav.addObject("things", thingsAdminService.allThings());
-        mav.addObject("senders", bindingsAdminService.sendersForItem(thingId));
-        mav.addObject("listeners", bindingsAdminService.receiversForItem(thingId));
+        mav.addObject("senders", bindingsAdminService.sendersForItem(thingUuid));
+        mav.addObject("listeners", bindingsAdminService.receiversForItem(thingUuid));
         return mav;
     }
 
@@ -87,15 +87,15 @@ public class ConsoleController {
         return mav;
     }
 
-    @GetMapping(path = "appliances/{applianceId}", produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView applianceById(@PathVariable String applianceId) {
+    @GetMapping(path = "appliances/{applianceUuid}", produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView applianceById(@PathVariable String applianceUuid) {
         ModelAndView mav = new ModelAndView("appliances");
-        ApplianceDTO applianceDTO = appliancesAdminService.applianceByUuid(applianceId);
-        mav.addObject("applianceId", applianceId);
-        mav.addObject("appliance", applianceDTO);
+        ApplianceEntity applianceEntity = appliancesAdminService.applianceByUuid(applianceUuid);
+        mav.addObject("applianceId", applianceUuid);
+        mav.addObject("appliance", applianceEntity);
         mav.addObject("appliances", appliancesAdminService.allAppliances());
-        mav.addObject("senders", bindingsAdminService.sendersForItem(applianceId));
-        mav.addObject("listeners", bindingsAdminService.receiversForItem(applianceId));
+        mav.addObject("senders", bindingsAdminService.sendersForItem(applianceUuid));
+        mav.addObject("listeners", bindingsAdminService.receiversForItem(applianceUuid));
         return mav;
     }
 

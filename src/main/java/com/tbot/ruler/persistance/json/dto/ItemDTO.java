@@ -1,4 +1,4 @@
-package com.tbot.ruler.things.builder.dto;
+package com.tbot.ruler.persistance.json.dto;
 
 public interface ItemDTO {
 

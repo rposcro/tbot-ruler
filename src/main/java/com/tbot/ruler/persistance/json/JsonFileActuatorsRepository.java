@@ -2,8 +2,8 @@ package com.tbot.ruler.persistance.json;
 
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.builder.dto.ThingDTO;
+import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
+import com.tbot.ruler.persistance.json.dto.ThingDTO;
 import lombok.Builder;
 
 import java.util.HashMap;

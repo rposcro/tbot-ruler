@@ -5,7 +5,7 @@ import com.tbot.ruler.messages.MessagePublisher;
 import com.tbot.ruler.model.Notification;
 import com.tbot.ruler.model.OnOffState;
 import com.tbot.ruler.things.AbstractActuator;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
+import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.things.thread.RegularEmissionTrigger;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;

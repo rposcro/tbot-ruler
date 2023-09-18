@@ -1,10 +1,10 @@
 package com.tbot.ruler.persistance.json;
 
 import com.tbot.ruler.exceptions.ConfigurationException;
-import com.tbot.ruler.things.builder.dto.ApplianceDTO;
-import com.tbot.ruler.things.builder.dto.BindingDTO;
-import com.tbot.ruler.things.builder.dto.ThingDTO;
-import com.tbot.ruler.things.builder.dto.ThingPluginDTO;
+import com.tbot.ruler.persistance.json.dto.ApplianceDTO;
+import com.tbot.ruler.persistance.json.dto.BindingDTO;
+import com.tbot.ruler.persistance.json.dto.ThingDTO;
+import com.tbot.ruler.persistance.json.dto.ThingPluginDTO;
 import com.tbot.ruler.util.FileUtil;
 import lombok.Builder;
 import lombok.Data;

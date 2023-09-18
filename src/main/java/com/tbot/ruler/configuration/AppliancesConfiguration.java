@@ -2,7 +2,7 @@ package com.tbot.ruler.configuration;
 
 import com.tbot.ruler.appliances.Appliance;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
-import com.tbot.ruler.things.builder.dto.ApplianceDTO;
+import com.tbot.ruler.persistance.json.dto.ApplianceDTO;
 import com.tbot.ruler.util.PackageScanner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

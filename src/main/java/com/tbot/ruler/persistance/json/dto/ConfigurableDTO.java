@@ -1,4 +1,4 @@
-package com.tbot.ruler.things.builder.dto;
+package com.tbot.ruler.persistance.json.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;

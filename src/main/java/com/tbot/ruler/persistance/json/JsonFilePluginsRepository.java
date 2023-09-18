@@ -2,7 +2,7 @@ package com.tbot.ruler.persistance.json;
 
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.model.PluginEntity;
-import com.tbot.ruler.things.builder.dto.ThingPluginDTO;
+import com.tbot.ruler.persistance.json.dto.ThingPluginDTO;
 import lombok.Builder;
 
 import java.util.Collections;

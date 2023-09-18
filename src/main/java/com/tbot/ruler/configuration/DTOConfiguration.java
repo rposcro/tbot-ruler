@@ -4,9 +4,9 @@ import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.builder.dto.ApplianceDTO;
-import com.tbot.ruler.things.builder.dto.BindingDTO;
+import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
+import com.tbot.ruler.persistance.json.dto.ApplianceDTO;
+import com.tbot.ruler.persistance.json.dto.BindingDTO;
 import com.tbot.ruler.util.FileUtil;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.tbot.ruler.things.builder.dto.ThingDTO;
-import com.tbot.ruler.things.builder.dto.ThingPluginDTO;
+import com.tbot.ruler.persistance.json.dto.ThingDTO;
+import com.tbot.ruler.persistance.json.dto.ThingPluginDTO;
 
 import lombok.extern.slf4j.Slf4j;
 

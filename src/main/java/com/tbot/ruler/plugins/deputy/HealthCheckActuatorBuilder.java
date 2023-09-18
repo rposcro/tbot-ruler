@@ -1,19 +1,18 @@
 package com.tbot.ruler.plugins.deputy;
 
+import com.tbot.ruler.plugins.PluginBuilderContext;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicActuator;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
+import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.things.thread.RegularEmissionTrigger;
-import com.tbot.ruler.things.builder.ThingBuilderContext;
-import com.tbot.ruler.things.builder.dto.ThingDTO;
 
 class HealthCheckActuatorBuilder {
 
     private static final String PARAM_FREQUENCY = "frequency";
     private static final String DEFAULT_FREQUENCY = "15";
 
-    Actuator buildActuator(ActuatorDTO actuatorDTO, ThingBuilderContext builderContext) {
+    Actuator buildActuator(ActuatorDTO actuatorDTO, PluginBuilderContext builderContext) {
         return BasicActuator.builder()
             .uuid(actuatorDTO.getUuid())
             .name(actuatorDTO.getName())
@@ -23,7 +22,7 @@ class HealthCheckActuatorBuilder {
             .build();
     }
 
-    private HealthCheckEmissionTask emissionTask(ThingBuilderContext builderContext, ActuatorDTO actuatorDTO) {
+    private HealthCheckEmissionTask emissionTask(PluginBuilderContext builderContext, ActuatorDTO actuatorDTO) {
         return HealthCheckEmissionTask.builder()
             .actuatorId(actuatorDTO.getUuid())
             .healthCheckCommand(restGetCommand(builderContext))
@@ -36,12 +35,13 @@ class HealthCheckActuatorBuilder {
                 1000 * Long.parseLong(actuatorDTO.getStringParameter(PARAM_FREQUENCY, DEFAULT_FREQUENCY)));
     }
 
-    private RestGetCommand restGetCommand(ThingBuilderContext builderContext) {
-        ThingDTO thingDTO = builderContext.getThingDTO();
-        return builderContext.getServices().getRestService().builderForGet()
-                .host(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_HOST))
-                .port(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_PORT))
-                .path(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_PATH))
-                .build();
+    private RestGetCommand restGetCommand(PluginBuilderContext builderContext) {
+        return null;
+//        ThingDTO thingDTO = builderContext.getThingDTO();
+//        return builderContext.getServices().getRestService().builderForGet()
+//                .host(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_HOST))
+//                .port(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_PORT))
+//                .path(thingDTO.getStringParameter(DeputyThingBuilder.PARAM_PATH))
+//                .build();
     }
 }

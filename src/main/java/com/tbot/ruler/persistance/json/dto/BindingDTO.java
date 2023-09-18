@@ -1,4 +1,4 @@
-package com.tbot.ruler.things.builder.dto;
+package com.tbot.ruler.persistance.json.dto;
 
 import lombok.Getter;
 import lombok.Setter;

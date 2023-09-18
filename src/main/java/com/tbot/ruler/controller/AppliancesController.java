@@ -3,9 +3,9 @@ package com.tbot.ruler.controller;
 import com.tbot.ruler.appliances.Appliance;
 import com.tbot.ruler.controller.payload.ApplianceResponse;
 import com.tbot.ruler.exceptions.ServiceException;
+import com.tbot.ruler.persistance.model.ApplianceEntity;
 import com.tbot.ruler.service.AppliancesService;
 import com.tbot.ruler.service.admin.AppliancesAdminService;
-import com.tbot.ruler.things.builder.dto.ApplianceDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -47,11 +47,11 @@ public class AppliancesController extends AbstractController {
     }
 
     private ApplianceResponse fromAppliance(Appliance appliance) {
-        ApplianceDTO dto = adminService.applianceByUuid(appliance.getUuid());
+        ApplianceEntity entity = adminService.applianceByUuid(appliance.getUuid());
         return ApplianceResponse.builder()
             .id(appliance.getUuid())
-            .name(dto.getName())
-            .description(dto.getDescription())
+            .name(entity.getName())
+            .description(entity.getDescription())
             .stateValue(appliance.getState().orElse(null))
             .build();
     }

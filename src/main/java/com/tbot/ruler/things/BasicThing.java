@@ -15,8 +15,7 @@ public class BasicThing extends AbstractItem implements Thing {
     private String uuid;
     private String name;
     private String description;
-    @Builder.Default
-    private List<? extends Actuator> actuators = Collections.emptyList();
+    private List<? extends Actuator> actuators;
 
     private Optional<Runnable> startUpTask;
     private Optional<Runnable> triggerableTask;

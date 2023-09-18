@@ -2,7 +2,7 @@ package com.tbot.ruler.persistance.json;
 
 import com.tbot.ruler.persistance.AppliancesRepository;
 import com.tbot.ruler.persistance.model.ApplianceEntity;
-import com.tbot.ruler.things.builder.dto.ApplianceDTO;
+import com.tbot.ruler.persistance.json.dto.ApplianceDTO;
 import lombok.Builder;
 
 import java.util.HashMap;
