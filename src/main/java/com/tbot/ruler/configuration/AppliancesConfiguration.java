@@ -1,8 +1,9 @@
 package com.tbot.ruler.configuration;
 
 import com.tbot.ruler.appliances.Appliance;
+import com.tbot.ruler.persistance.AppliancesRepository;
+import com.tbot.ruler.persistance.model.ApplianceEntity;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
-import com.tbot.ruler.persistance.json.dto.ApplianceDTO;
 import com.tbot.ruler.util.PackageScanner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class AppliancesConfiguration {
 
     @Autowired
-    private List<ApplianceDTO> applianceDTOList;
+    private AppliancesRepository appliancesRepository;
 
     @Autowired
     ApplianceStatePersistenceService persistenceService;
@@ -36,33 +37,33 @@ public class AppliancesConfiguration {
 
     @Bean
     public List<Appliance> appliances() {
-        return applianceDTOList.stream()
-            .map(this::fromDTO)
+        return appliancesRepository.findAll().stream()
+            .map(this::fromEntity)
             .filter(Optional::isPresent)
             .map(Optional::get)
             .collect(Collectors.toList());
     }
 
     @Bean
-    public Map<String, Appliance> appliancesPerId() {
+    public Map<String, Appliance> appliancesPerUuid() {
         return appliances().stream()
             .collect(Collectors.toMap(appliance -> appliance.getUuid(), Function.identity()));
     }
 
-    private Optional<Appliance> fromDTO(ApplianceDTO dto) {
+    private Optional<Appliance> fromEntity(ApplianceEntity entity) {
         try {
-            Class<? extends Appliance> clazz = applianceClassesMap().get(dto.getType());
+            Class<? extends Appliance> clazz = applianceClassesMap().get(entity.getApplianceType());
             if (clazz == null) {
-                throw new NullPointerException("Appliance class " + dto.getType() + " could not be found!");
+                throw new NullPointerException("Appliance class " + entity.getApplianceType() + " could not be found!");
             }
             Constructor<? extends Appliance> constructor = clazz.getConstructor(String.class, ApplianceStatePersistenceService.class);
             if (constructor == null) {
-                throw new NullPointerException("Appliance constructor for class " + dto.getType() + " could not be found!");
+                throw new NullPointerException("Appliance constructor for class " + entity.getApplianceType() + " could not be found!");
             }
-            Appliance appliance = constructor.newInstance(dto.getUuid(), persistenceService);
+            Appliance appliance = constructor.newInstance(entity.getApplianceUuid(), persistenceService);
             return Optional.of(appliance);
         } catch(ReflectiveOperationException | SecurityException e) {
-            log.error("Incorrect appliance class type: " + dto.getType() + ", skipping appliance: " + dto.getUuid());
+            log.error("Incorrect appliance class type: " + entity.getApplianceType() + ", skipping appliance: " + entity.getApplianceUuid());
             return Optional.empty();
         }
     }

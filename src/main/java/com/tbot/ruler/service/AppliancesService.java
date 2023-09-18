@@ -19,6 +19,6 @@ public class AppliancesService {
     }
 
     public Optional<Appliance> applianceById(String applianceId) {
-        return Optional.ofNullable(appliancesConfiguration.appliancesPerId().get(applianceId));
+        return Optional.ofNullable(appliancesConfiguration.appliancesPerUuid().get(applianceId));
     }
 }

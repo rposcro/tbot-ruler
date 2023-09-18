@@ -56,8 +56,8 @@ public class ConsoleController {
         mav.addObject("thingId", thingUuid);
         mav.addObject("thing", thingEntity);
         mav.addObject("things", thingsAdminService.allThings());
-        mav.addObject("senders", bindingsAdminService.sendersForItem(thingUuid));
-        mav.addObject("listeners", bindingsAdminService.receiversForItem(thingUuid));
+        mav.addObject("senders", bindingsAdminService.sendersForReceiver(thingUuid));
+        mav.addObject("listeners", bindingsAdminService.receiversForSender(thingUuid));
         return mav;
     }
 
@@ -75,8 +75,8 @@ public class ConsoleController {
         mav.addObject("actuatorId", actuatorId);
         mav.addObject("actuator", actuatorEntity);
         mav.addObject("actuators", thingsAdminService.allActuators());
-        mav.addObject("senders", bindingsAdminService.sendersForItem(actuatorId));
-        mav.addObject("listeners", bindingsAdminService.receiversForItem(actuatorId));
+        mav.addObject("senders", bindingsAdminService.sendersForReceiver(actuatorId));
+        mav.addObject("listeners", bindingsAdminService.receiversForSender(actuatorId));
         return mav;
     }
 
@@ -94,8 +94,8 @@ public class ConsoleController {
         mav.addObject("applianceId", applianceUuid);
         mav.addObject("appliance", applianceEntity);
         mav.addObject("appliances", appliancesAdminService.allAppliances());
-        mav.addObject("senders", bindingsAdminService.sendersForItem(applianceUuid));
-        mav.addObject("listeners", bindingsAdminService.receiversForItem(applianceUuid));
+        mav.addObject("senders", bindingsAdminService.sendersForReceiver(applianceUuid));
+        mav.addObject("listeners", bindingsAdminService.receiversForSender(applianceUuid));
         return mav;
     }
 
