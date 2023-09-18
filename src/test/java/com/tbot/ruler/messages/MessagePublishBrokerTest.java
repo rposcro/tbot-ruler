@@ -70,10 +70,10 @@ public class MessagePublishBrokerTest {
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
         final MessageReceiver receiver = mock(MessageReceiver.class);
 
-        when(bindingsService.findBindedMessageConsumerIds(eq(senderId)))
+        when(bindingsService.findReceiversUuidsBySenderUuid(eq(senderId)))
                 .thenReturn(Stream.of("receiver-1", "receiver-2").collect(Collectors.toList()));
-        when(bindingsService.messageReceiverById(eq("receiver-1"))).thenReturn(receiver);
-        when(bindingsService.messageReceiverById(eq("receiver-2"))).thenReturn(receiver);
+        when(bindingsService.findReceiverByUuid(eq("receiver-1"))).thenReturn(receiver);
+        when(bindingsService.findReceiverByUuid(eq("receiver-2"))).thenReturn(receiver);
 
         messageQueueComponent.enqueueMessage(message);
         MessageDeliveryReport deliveryReport = messageQueueComponent.nextDeliveryReport(100);
@@ -99,10 +99,10 @@ public class MessagePublishBrokerTest {
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
         final MessageReceiver receiver = Mockito.mock(MessageReceiver.class);
 
-        when(bindingsService.findBindedMessageConsumerIds(eq(senderId)))
+        when(bindingsService.findReceiversUuidsBySenderUuid(eq(senderId)))
                 .thenReturn(Stream.of("receiver-1", "receiver-2").collect(Collectors.toList()));
-        when(bindingsService.messageReceiverById(eq("receiver-1"))).thenReturn(receiver);
-        when(bindingsService.messageReceiverById(eq("receiver-2"))).thenReturn(receiver);
+        when(bindingsService.findReceiverByUuid(eq("receiver-1"))).thenReturn(receiver);
+        when(bindingsService.findReceiverByUuid(eq("receiver-2"))).thenReturn(receiver);
         doThrow(new MessageException("terefere")).when(receiver).acceptMessage(eq(message));
 
         messageQueueComponent.enqueueMessage(message);
@@ -124,10 +124,10 @@ public class MessagePublishBrokerTest {
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
         final MessageReceiver receiver = Mockito.mock(MessageReceiver.class);
 
-        when(bindingsService.findBindedMessageConsumerIds(eq(senderId)))
+        when(bindingsService.findReceiversUuidsBySenderUuid(eq(senderId)))
                 .thenReturn(Stream.of("receiver-1", "receiver-2").collect(Collectors.toList()));
-        when(bindingsService.messageReceiverById(eq("receiver-1"))).thenReturn(receiver);
-        when(bindingsService.messageReceiverById(eq("receiver-2"))).thenReturn(receiver);
+        when(bindingsService.findReceiverByUuid(eq("receiver-1"))).thenReturn(receiver);
+        when(bindingsService.findReceiverByUuid(eq("receiver-2"))).thenReturn(receiver);
 
         doNothing().doThrow(new MessageException("terefere")).when(receiver).acceptMessage(eq(message));
 
@@ -149,7 +149,7 @@ public class MessagePublishBrokerTest {
         final String senderId = "mocked-sender-id";
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
 
-        when(bindingsService.findBindedMessageConsumerIds(eq(senderId))).thenReturn(Collections.emptyList());
+        when(bindingsService.findReceiversUuidsBySenderUuid(eq(senderId))).thenReturn(Collections.emptyList());
 
         messageQueueComponent.enqueueMessage(message);
         MessageDeliveryReport deliveryReport = messageQueueComponent.nextDeliveryReport(100);
@@ -167,7 +167,7 @@ public class MessagePublishBrokerTest {
         final String senderId = "mocked-sender-id";
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
 
-        when(bindingsService.findBindedMessageConsumerIds(eq(senderId))).thenReturn(Collections.emptyList());
+        when(bindingsService.findReceiversUuidsBySenderUuid(eq(senderId))).thenReturn(Collections.emptyList());
         when(messagePublicationManager.isSenderSuspended(eq(senderId))).thenReturn(true);
 
         messageQueueComponent.enqueueMessage(message);

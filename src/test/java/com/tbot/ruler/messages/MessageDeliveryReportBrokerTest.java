@@ -62,7 +62,7 @@ public class MessageDeliveryReportBrokerTest {
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
         final MessageDeliveryReport report = MessageDeliveryReport.builder().originalMessage(message).build();
 
-        when(bindingsService.messageSenderById(eq(senderId))).thenReturn(sender);
+        when(bindingsService.findSenderByUuid(eq(senderId))).thenReturn(sender);
 
         messageQueueComponent.enqueueDeliveryReport(report);
 

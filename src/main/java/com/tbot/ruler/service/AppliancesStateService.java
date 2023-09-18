@@ -8,8 +8,6 @@ import com.tbot.ruler.messages.SynchronousMessagePublisher;
 import com.tbot.ruler.messages.model.MessageDeliveryReport;
 import com.tbot.ruler.messages.model.Message;
 import com.tbot.ruler.messages.model.MessagePayload;
-import com.tbot.ruler.model.OnOffState;
-import com.tbot.ruler.model.RGBWColor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,7 +25,7 @@ public class AppliancesStateService {
     private AppliancesService appliancesService;
 
     public MessageDeliveryReport updateApplianceState(String applianceId, Object requestedState) {
-        Appliance appliance = appliancesService.applianceById(applianceId).orElseThrow(
+        Appliance appliance = appliancesService.findApplianceByUuid(applianceId).orElseThrow(
             () -> new ServiceRequestException("No appliance id " + applianceId + " found")
         );
         Optional<Message> optionalForwardMessage = appliance.acceptDirectPayload(new MessagePayload(requestedState));

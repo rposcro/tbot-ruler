@@ -1,7 +1,7 @@
 package com.tbot.ruler.service;
 
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.configuration.AppliancesConfiguration;
+import com.tbot.ruler.service.things.AppliancesLifetimeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +12,13 @@ import java.util.Optional;
 public class AppliancesService {
 
     @Autowired
-    private AppliancesConfiguration appliancesConfiguration;
+    private AppliancesLifetimeService appliancesLifetimeService;
 
-    public List<Appliance> allAppliances() {
-        return appliancesConfiguration.appliances();
+    public List<Appliance> findAllAppliances() {
+        return appliancesLifetimeService.getAllAppliances();
     }
 
-    public Optional<Appliance> applianceById(String applianceId) {
-        return Optional.ofNullable(appliancesConfiguration.appliancesPerUuid().get(applianceId));
+    public Optional<Appliance> findApplianceByUuid(String applianceUuid) {
+        return Optional.ofNullable(appliancesLifetimeService.getApplianceByUuid(applianceUuid));
     }
 }

@@ -44,7 +44,7 @@ public class MessagePublishBroker implements Runnable {
 
     private MessageDeliveryReport dispatchMessage(Message message) {
         DeliveryReportBuilder reportBuilder = MessageDeliveryReport.builder().originalMessage(message);
-        Collection<String> consumers = bindingsService.findBindedMessageConsumerIds(message.getSenderId());
+        Collection<String> consumers = bindingsService.findReceiversUuidsBySenderUuid(message.getSenderId());
 
         if (messagePublicationManager.isSenderSuspended(message.getSenderId())) {
             log.info("Dispatch from {}: Suspended", message.getSenderId());
@@ -69,7 +69,7 @@ public class MessagePublishBroker implements Runnable {
     }
 
     private void deliverMessage(Message message, String receiverId) {
-        MessageReceiver messageReceiver = bindingsService.messageReceiverById(receiverId);
+        MessageReceiver messageReceiver = bindingsService.findReceiverByUuid(receiverId);
         messageReceiver.acceptMessage(message);
     }
 }

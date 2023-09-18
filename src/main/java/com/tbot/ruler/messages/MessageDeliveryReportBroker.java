@@ -42,7 +42,7 @@ public class MessageDeliveryReportBroker implements Runnable {
     }
 
     private void deliverReport(MessageDeliveryReport deliveryReport) {
-        MessageSender messageSender = bindingsService.messageSenderById(deliveryReport.getOriginalMessage().getSenderId());
+        MessageSender messageSender = bindingsService.findSenderByUuid(deliveryReport.getOriginalMessage().getSenderId());
         messageSender.acceptDeliveryReport(deliveryReport);
         deliveryListeners.forEach(listener -> listener.deliveryReportCompleted(deliveryReport));
     }

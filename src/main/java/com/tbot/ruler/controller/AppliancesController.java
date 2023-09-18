@@ -30,7 +30,7 @@ public class AppliancesController extends AbstractController {
 
     @GetMapping(value = "")
     public ResponseEntity<List<ApplianceResponse>> getAll() {
-        List<ApplianceResponse> entities = appliancesService.allAppliances().stream()
+        List<ApplianceResponse> entities = appliancesService.findAllAppliances().stream()
             .map(this::fromAppliance)
             .collect(Collectors.toList());
         return response(ResponseEntity.ok())
@@ -39,7 +39,7 @@ public class AppliancesController extends AbstractController {
 
     @GetMapping(value = "/{applianceId}")
     public ResponseEntity<ApplianceResponse> getAppliance(@PathVariable("applianceId") String applianceId) {
-        Appliance appliance = appliancesService.applianceById(applianceId)
+        Appliance appliance = appliancesService.findApplianceByUuid(applianceId)
             .orElseThrow(() -> new ServiceException("Unexpected missing delivery report without exception!"));
         ApplianceResponse entity = fromAppliance(appliance);
         return response(ResponseEntity.ok())

@@ -1,58 +1,48 @@
-package com.tbot.ruler.configuration;
+package com.tbot.ruler.service.things;
 
 import com.tbot.ruler.appliances.Appliance;
-import com.tbot.ruler.persistance.AppliancesRepository;
 import com.tbot.ruler.persistance.model.ApplianceEntity;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
 import com.tbot.ruler.util.PackageScanner;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Constructor;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Configuration
-public class AppliancesConfiguration {
+@Component
+public class ApplianceFactory {
 
     @Autowired
-    private AppliancesRepository appliancesRepository;
+    private ApplianceStatePersistenceService persistenceService;
 
-    @Autowired
-    ApplianceStatePersistenceService persistenceService;
+    private Map<String, Class<? extends Appliance>> applianceClassesMap;
 
-    @Bean
-    public Map<String, Class<? extends Appliance>> applianceClassesMap() {
+    public ApplianceFactory() {
         PackageScanner scanner = new PackageScanner();
         Set<Class<? extends Appliance>> classes = scanner.findAllClassesOfType(Appliance.class, "com.tbot.ruler.appliances");
-        return classes.stream().collect(Collectors.toMap(clazz -> clazz.getSimpleName(), clazz -> clazz));
+        this.applianceClassesMap = classes.stream().collect(Collectors.toMap(clazz -> clazz.getSimpleName(), clazz -> clazz));
     }
 
-    @Bean
-    public List<Appliance> appliances() {
-        return appliancesRepository.findAll().stream()
-            .map(this::fromEntity)
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(Collectors.toList());
+    public List<Appliance> buildAppliances(List<ApplianceEntity> applianceEntities) {
+        List<Appliance> appliances = new LinkedList<>();
+        return applianceEntities.stream()
+                .map(this::buildAppliance)
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .collect(Collectors.toList());
     }
 
-    @Bean
-    public Map<String, Appliance> appliancesPerUuid() {
-        return appliances().stream()
-            .collect(Collectors.toMap(appliance -> appliance.getUuid(), Function.identity()));
-    }
-
-    private Optional<Appliance> fromEntity(ApplianceEntity entity) {
+    private Optional<Appliance> buildAppliance(ApplianceEntity entity) {
         try {
-            Class<? extends Appliance> clazz = applianceClassesMap().get(entity.getApplianceType());
+            Class<? extends Appliance> clazz = applianceClassesMap.get(entity.getApplianceType());
             if (clazz == null) {
                 throw new NullPointerException("Appliance class " + entity.getApplianceType() + " could not be found!");
             }
