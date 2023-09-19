@@ -1,12 +1,9 @@
 package com.tbot.ruler.service.things;
 
-import com.tbot.ruler.configuration.PluginsConfiguration;
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.Thing;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PostMapping;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;

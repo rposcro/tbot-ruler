@@ -1,6 +1,5 @@
 package com.tbot.ruler.service.things;
 
-import com.tbot.ruler.configuration.PluginsConfiguration;
 import com.tbot.ruler.messages.MessagePublisher;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.plugins.Plugin;
@@ -50,7 +49,7 @@ public class PluginFactory {
 
     private PluginBuilder instantiateBuilder(PluginEntity pluginEntity) throws ReflectiveOperationException {
         String builderClassName = pluginEntity.getBuilderClass();
-        Class<?> builderClass = PluginsConfiguration.class.getClassLoader().loadClass(builderClassName);
+        Class<?> builderClass = this.getClass().getClassLoader().loadClass(builderClassName);
         return (PluginBuilder) builderClass.newInstance();
     }
 

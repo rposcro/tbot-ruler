@@ -2,9 +2,8 @@ package com.tbot.ruler.configuration;
 
 import com.tbot.ruler.persistance.ApplianceStateRepository;
 import com.tbot.ruler.persistance.json.JsonFileApplianceStateRepository;
-import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.service.things.ThingsLifetimeService;
 import com.tbot.ruler.things.TaskBasedItem;
-import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.things.thread.EmissionTriggerContext;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.extern.slf4j.Slf4j;
@@ -16,8 +15,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
@@ -28,10 +27,7 @@ import java.util.stream.Collectors;
 public class TasksConfiguration {
 
     @Autowired
-    private List<Actuator> actuators;
-
-    @Autowired
-    private List<Thing> things;
+    private ThingsLifetimeService thingsLifetimeService;
 
     @Autowired
     private ApplianceStateRepository applianceStateRepository;
@@ -96,9 +92,10 @@ public class TasksConfiguration {
     }
 
     private List<TaskBasedItem> taskBasedItems() {
-        ArrayList<TaskBasedItem> items = new ArrayList<>(actuators.size() + things.size());
-        items.addAll(actuators);
-        items.addAll(things);
+        LinkedList<TaskBasedItem> items = new LinkedList<>();
+        items.addAll(thingsLifetimeService.getAllPlugins());
+        items.addAll(thingsLifetimeService.getAllThings());
+        items.addAll(thingsLifetimeService.getAllActuators());
         return items;
     }
 

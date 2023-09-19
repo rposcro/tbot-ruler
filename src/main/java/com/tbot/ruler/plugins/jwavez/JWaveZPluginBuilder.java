@@ -79,6 +79,7 @@ public class JWaveZPluginBuilder implements PluginBuilder {
                 .pluginBuilderContext(builderContext)
                 .messagePublisher(builderContext.getMessagePublisher())
                 .jwzApplicationSupport(JwzApplicationSupport.defaultSupport())
+                .jwzSerialController(serialController)
                 .jwzSerialHandler(serialHandler)
                 .jwzCommandSender(commandSender)
                 .build();
