@@ -12,6 +12,7 @@ import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicThing;
 import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.exceptions.PluginException;
+import com.tbot.ruler.threads.Task;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -40,8 +41,8 @@ public class JWaveZPluginBuilder implements PluginBuilder {
                 .things(builderContext.getPluginEntity().getThings().stream()
                         .map(thingEntity -> buildThing(thingEntity, pluginContext))
                         .collect(Collectors.toList()))
-                .startUpTask(() -> pluginContext.getJwzSerialController().connect())
-                .triggerableTask(pluginContext.getJwzCommandSender())
+                .asynchronousTask(Task.startUpTask(() -> pluginContext.getJwzSerialController().connect()))
+                .asynchronousTask(Task.continuousTask(pluginContext.getJwzCommandSender()))
                 .build();
     }
 

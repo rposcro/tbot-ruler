@@ -2,39 +2,25 @@ package com.tbot.ruler.things;
 
 import com.tbot.ruler.broker.model.MessageDeliveryReport;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.threads.TaskTrigger;
-import lombok.Builder;
-import lombok.experimental.SuperBuilder;
+import com.tbot.ruler.threads.Task;
+import lombok.Getter;
 
-import java.util.Optional;
+import java.util.Collection;
+import java.util.Collections;
 
-@SuperBuilder
 public abstract class AbstractActuator extends AbstractItem implements Actuator {
 
-    @Builder.Default
-    private Optional<Runnable> startUpTask = Optional.empty();
-    @Builder.Default
-    private Optional<Runnable> triggerableTask = Optional.empty();
-    @Builder.Default
-    private Optional<TaskTrigger> taskTrigger = Optional.empty();
+    @Getter
+    private final Collection<Task> asynchronousTasks;
 
-    protected AbstractActuator(String id, String name, String description) {
-        super(id, name, description);
+    protected AbstractActuator(String uuid, String name, String description) {
+        super(uuid, name, description);
+        this.asynchronousTasks = Collections.emptyList();
     }
 
-    @Override
-    public Optional<Runnable> getStartUpTask() {
-        return startUpTask;
-    }
-
-    @Override
-    public Optional<Runnable> getTriggerableTask() {
-        return triggerableTask;
-    }
-
-    @Override
-    public Optional<TaskTrigger> getTaskTrigger() {
-        return taskTrigger;
+    protected AbstractActuator(String uuid, String name, String description, Collection<Task> asynchronousTasks) {
+        super(uuid, name, description);
+        this.asynchronousTasks = asynchronousTasks;
     }
 
     @Override

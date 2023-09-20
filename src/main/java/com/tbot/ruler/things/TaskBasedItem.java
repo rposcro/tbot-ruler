@@ -1,20 +1,11 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.threads.TaskTrigger;
+import com.tbot.ruler.threads.Task;
 
-import java.util.Optional;
+import java.util.Collection;
+import java.util.Collections;
 
 public interface TaskBasedItem extends Item {
 
-    default Optional<Runnable> getTriggerableTask() {
-        return Optional.empty();
-    }
-
-    default Optional<TaskTrigger> getTaskTrigger() {
-        return Optional.empty();
-    }
-
-    default Optional<Runnable> getStartUpTask() {
-        return Optional.empty();
-    }
+    default Collection<Task> getAsynchronousTasks() { return Collections.emptyList(); }
 }

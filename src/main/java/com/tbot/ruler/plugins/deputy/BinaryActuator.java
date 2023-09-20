@@ -6,35 +6,41 @@ import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.things.AbstractActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
+import com.tbot.ruler.things.AbstractItem;
+import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.threads.RegularEmissionTrigger;
+import com.tbot.ruler.threads.Task;
 import com.tbot.ruler.threads.TaskTrigger;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Optional;
 
 @Slf4j
-public class BinaryActuator extends AbstractActuator {
+public class BinaryActuator extends AbstractItem implements Actuator {
 
-    private BinaryActuatorChannel binaryChannel;
-    private MessagePublisher messagePublisher;
+
+    private final BinaryActuatorChannel binaryChannel;
+    private final MessagePublisher messagePublisher;
+    private final Collection<Task> asynchronousTasks;
+
     private boolean expectedState;
 
     @Builder
-    public BinaryActuator(ActuatorDTO actuatorDTO, BinaryActuatorChannel binaryChannel, MessagePublisher messagePublisher) {
-        super(actuatorDTO.getUuid(), actuatorDTO.getName(), actuatorDTO.getDescription());
+    public BinaryActuator(
+            @NonNull String id,
+            @NonNull String name,
+            String description,
+            @NonNull BinaryActuatorChannel binaryChannel,
+            @NonNull MessagePublisher messagePublisher) {
+        super(id, name, description);
         this.binaryChannel = binaryChannel;
         this.messagePublisher = messagePublisher;
-    }
-
-    @Override
-    public Optional<TaskTrigger> getTaskTrigger() {
-        return Optional.of(new RegularEmissionTrigger(600_1000));
-    }
-
-    @Override
-    public Optional<Runnable> getTriggerableTask() {
-        return Optional.of(() -> binaryChannel.updateState(expectedState));
+        this.asynchronousTasks = Collections.singleton(Task.triggerableTask(
+                () -> binaryChannel.updateState(expectedState), 600_000));
     }
 
     @Override

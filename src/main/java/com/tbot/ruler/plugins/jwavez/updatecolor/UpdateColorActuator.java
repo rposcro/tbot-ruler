@@ -13,15 +13,15 @@ import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.threads.TaskTrigger;
+import com.tbot.ruler.threads.Task;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Date;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -40,6 +40,8 @@ public class UpdateColorActuator extends AbstractItem implements Actuator {
     private final SwitchColorCommandBuilder commandBuilder;
     private final long pollIntervalMilliseconds;
     private final ColorMode colorMode;
+
+    private final Collection<Task> asynchronousTasks;
 
     private final HashMap<Integer, Integer> collectedComponentsReports = new HashMap<>();
 
@@ -60,30 +62,7 @@ public class UpdateColorActuator extends AbstractItem implements Actuator {
         this.pollIntervalMilliseconds = configuration.getPollStateInterval() <= 0 ? 0 : 1000 * Math.max(MIN_POLL_INTERVAL, configuration.getPollStateInterval());
         this.colorMode = ColorMode.valueOf(configuration.getColorMode());
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchColorCommandBuilder();
-    }
-
-    @Override
-    public Optional<TaskTrigger> getTaskTrigger() {
-        if (configuration.getPollStateInterval() == 0) {
-            return Optional.empty();
-        }
-        return Optional.of(context -> context.getLastScheduledExecutionTime() == null ?
-                new Date() : new Date(System.currentTimeMillis() + pollIntervalMilliseconds));
-    }
-
-    @Override
-    public Optional<Runnable> getTriggerableTask() {
-        return Optional.of(() -> {
-            this.collectedComponentsReports.clear();
-            log.debug("Sending color components report request for node " + configuration.getNodeId());
-            IntStream.of(colorMode.getComponentCodes()).forEach(componentCode -> {
-                try {
-                    commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand((byte) componentCode));
-                } catch (MessageProcessingException e) {
-                    log.warn("Failed to send request for color component {} from node {}", componentCode, configuration.getNodeId());
-                }
-            });
-        });
+        this.asynchronousTasks = asynchronousTasks();
     }
 
     @Override
@@ -125,5 +104,24 @@ public class UpdateColorActuator extends AbstractItem implements Actuator {
 
     @Override
     public void acceptMessage(Message message) {
+    }
+
+    private Collection<Task> asynchronousTasks() {
+        if (configuration.getPollStateInterval() == 0) {
+            return Collections.emptySet();
+        } else {
+            Runnable runnable = () -> {
+                this.collectedComponentsReports.clear();
+                log.debug("Sending color components report request for node " + configuration.getNodeId());
+                IntStream.of(colorMode.getComponentCodes()).forEach(componentCode -> {
+                    try {
+                        commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand((byte) componentCode));
+                    } catch (MessageProcessingException e) {
+                        log.warn("Failed to send request for color component {} from node {}", componentCode, configuration.getNodeId());
+                    }
+                });
+            };
+            return Collections.singleton(Task.triggerableTask(runnable, pollIntervalMilliseconds));
+        }
     }
 }

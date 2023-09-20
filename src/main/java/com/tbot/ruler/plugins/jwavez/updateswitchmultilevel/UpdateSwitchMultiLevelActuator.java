@@ -11,14 +11,14 @@ import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.threads.TaskTrigger;
+import com.tbot.ruler.threads.Task;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.Collection;
+import java.util.Collections;
 
 @Slf4j
 @Getter
@@ -31,7 +31,9 @@ public class UpdateSwitchMultiLevelActuator extends AbstractItem implements Actu
     private final JWaveZCommandSender commandSender;
 
     private final SwitchMultiLevelCommandBuilder commandBuilder;
-    private long pollIntervalMilliseconds;
+    private final long pollIntervalMilliseconds;
+
+    private final Collection<Task> asynchronousTasks;
 
     @Builder
     public UpdateSwitchMultiLevelActuator(
@@ -49,23 +51,7 @@ public class UpdateSwitchMultiLevelActuator extends AbstractItem implements Actu
         this.configuration = configuration;
         this.pollIntervalMilliseconds = configuration.getPollStateInterval() <= 0 ? 0 : 1000 * Math.max(MIN_POLL_INTERVAL, configuration.getPollStateInterval());
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchMultiLevelCommandBuilder();
-    }
-
-    @Override
-    public Optional<TaskTrigger> getTaskTrigger() {
-        if (configuration.getPollStateInterval() == 0) {
-            return Optional.empty();
-        }
-        return Optional.of(context -> context.getLastScheduledExecutionTime() == null ?
-                new Date() : new Date(System.currentTimeMillis() + pollIntervalMilliseconds));
-    }
-
-    @Override
-    public Optional<Runnable> getTriggerableTask() {
-        return Optional.of(() -> {
-            log.debug("Sending multi level report request for node " + configuration.getNodeId());
-            commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
-        });
+        this.asynchronousTasks = asynchronousTasks();
     }
 
     @Override
@@ -85,5 +71,17 @@ public class UpdateSwitchMultiLevelActuator extends AbstractItem implements Actu
 
     @Override
     public void acceptMessage(Message message) {
+    }
+
+    private Collection<Task> asynchronousTasks() {
+        if (configuration.getPollStateInterval() == 0) {
+            return Collections.emptySet();
+        } else {
+            Runnable runnable = () -> {
+                log.debug("Sending multi level report request for node " + configuration.getNodeId());
+                commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
+            };
+            return Collections.singleton(Task.triggerableTask(runnable, pollIntervalMilliseconds));
+        }
     }
 }

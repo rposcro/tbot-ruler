@@ -7,6 +7,7 @@ import com.tbot.ruler.plugins.PluginBuilderContext;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
+import com.tbot.ruler.threads.Task;
 
 import java.util.TimeZone;
 
@@ -16,12 +17,13 @@ public class CronSchedulerActuatorBuilder {
 
     public Actuator buildEmitter(PluginBuilderContext builderContext, ActuatorDTO actuatorDTO, TimeZone timeZone) {
         return BasicActuator.builder()
-            .uuid(actuatorDTO.getUuid())
-            .name(actuatorDTO.getName())
-            .description(actuatorDTO.getDescription())
-            .triggerableTask(emissionTask(actuatorDTO, builderContext.getMessagePublisher()))
-            .taskTrigger(emissionTrigger(actuatorDTO, timeZone))
-            .build();
+                .uuid(actuatorDTO.getUuid())
+                .name(actuatorDTO.getName())
+                .description(actuatorDTO.getDescription())
+                .asynchronousTask(Task.triggerableTask(
+                        emissionTask(actuatorDTO, builderContext.getMessagePublisher()),
+                        emissionTrigger(actuatorDTO, timeZone)))
+                .build();
     }
 
     private Runnable emissionTask(ActuatorDTO actuatorDTO, MessagePublisher messagePublisher) {

@@ -14,11 +14,12 @@ public class BinaryActuatorBuilder {
     private static final String PATH_BINOUT_TEMPLATE = "binary-outputs/%s";
 
     public Actuator buildActuator(ThingDTO thingDTO, ActuatorDTO actuatorDTO, PluginBuilderContext builderContext) {
-        return BinaryActuator.builder()
-            .actuatorDTO(actuatorDTO)
-            .binaryChannel(binChannel(thingDTO, actuatorDTO, builderContext))
-            .messagePublisher(builderContext.getMessagePublisher())
-            .build();
+        return null;
+//        return BinaryActuator.builder()
+//            .id(actuatorDTO)
+//            .binaryChannel(binChannel(thingDTO, actuatorDTO, builderContext))
+//            .messagePublisher(builderContext.getMessagePublisher())
+//            .build();
     }
 
     private BinaryActuatorChannel binChannel(ThingDTO thingDTO, ActuatorDTO actuatorDTO, PluginBuilderContext builderContext) {

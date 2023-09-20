@@ -1,38 +1,33 @@
 package com.tbot.ruler.plugins;
 
 import com.tbot.ruler.things.Thing;
-import com.tbot.ruler.threads.TaskTrigger;
+import com.tbot.ruler.threads.Task;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.Singular;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
+
+import static com.tbot.ruler.util.CollectionsUtil.orEmpty;
 
 @Getter
 public class BasicPlugin implements Plugin {
 
-    private String uuid;
-    private String name;
-    private List<? extends Thing> things = Collections.emptyList();
-
-    private Optional<Runnable> startUpTask;
-    private Optional<Runnable> triggerableTask;
-    private Optional<TaskTrigger> taskTrigger;
+    private final String uuid;
+    private final String name;
+    private final List<? extends Thing> things;
+    private final Collection<Task> asynchronousTasks;
 
     @Builder
     public BasicPlugin(
             String uuid,
             String name,
             List<? extends Thing> things,
-            Runnable startUpTask,
-            Runnable triggerableTask,
-            TaskTrigger taskTrigger) {
+            @Singular Collection<Task> asynchronousTasks) {
         this.uuid = uuid;
         this.name = name;
-        this.things = things != null ?  things : Collections.emptyList();
-        this.startUpTask = Optional.ofNullable(startUpTask);
-        this.triggerableTask = Optional.ofNullable(triggerableTask);
-        this.taskTrigger = Optional.ofNullable(taskTrigger);
+        this.things = orEmpty(things);
+        this.asynchronousTasks = orEmpty(asynchronousTasks);
     }
 }

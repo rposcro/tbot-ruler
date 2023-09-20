@@ -8,6 +8,7 @@ import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicActuator;
+import com.tbot.ruler.threads.Task;
 import com.tbot.ruler.threads.TaskTrigger;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
@@ -31,8 +32,7 @@ public class SunsetActuatorBuilder extends SunWatchActuatorBuilder {
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
-                .taskTrigger(emissionTrigger)
-                .triggerableTask(emissionTask)
+                .asynchronousTask(Task.triggerableTask(emissionTask, emissionTrigger))
                 .build();
     }
 

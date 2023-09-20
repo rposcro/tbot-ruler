@@ -5,6 +5,7 @@ import com.tbot.ruler.persistance.json.JsonFileApplianceStateRepository;
 import com.tbot.ruler.service.things.ThingsLifetimeService;
 import com.tbot.ruler.things.TaskBasedItem;
 import com.tbot.ruler.threads.EmissionTriggerContext;
+import com.tbot.ruler.threads.Task;
 import com.tbot.ruler.threads.TaskTrigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +21,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Executors;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Configuration
@@ -33,7 +33,7 @@ public class TasksConfiguration {
     private ApplianceStateRepository applianceStateRepository;
 
     @Bean(destroyMethod = "shutdown")
-    public ThreadPoolTaskScheduler periodicEmittersScheduler() {
+    public ThreadPoolTaskScheduler triggerableTasksScheduler() {
         ThreadPoolTaskScheduler scheduler = new ThreadPoolTaskScheduler();
         scheduler.setPoolSize(10);
         scheduler.setWaitForTasksToCompleteOnShutdown(false);
@@ -42,13 +42,13 @@ public class TasksConfiguration {
     }
 
     @Bean
-    public ConcurrentTaskExecutor continuousEmittersExecutor() {
+    public ConcurrentTaskExecutor continuousTasksExecutor() {
         ConcurrentTaskExecutor executor = new ConcurrentTaskExecutor(Executors.newCachedThreadPool());
         return executor;
     }
 
     @Bean
-    public ConcurrentTaskExecutor startUpExecutor() {
+    public ConcurrentTaskExecutor startUpTasksExecutor() {
         ConcurrentTaskExecutor executor = new ConcurrentTaskExecutor(Executors.newScheduledThreadPool(2));
         return executor;
     }
@@ -56,7 +56,7 @@ public class TasksConfiguration {
     @EventListener
     public void launchPersistenceFlushThread(ApplicationReadyEvent event) {
         if (applianceStateRepository instanceof JsonFileApplianceStateRepository) {
-            periodicEmittersScheduler().schedule(
+            triggerableTasksScheduler().schedule(
                     () -> ((JsonFileApplianceStateRepository) applianceStateRepository).flush(),
                     context -> new Date(Optional.ofNullable(context.lastCompletionTime()).orElse(new Date()).getTime() + 60_000)
             );
@@ -65,30 +65,34 @@ public class TasksConfiguration {
     }
 
     @EventListener
-    public void launchTaskBasedItemThreads(ApplicationReadyEvent event) {
+    public void launchTaskBasedItemsThreads(ApplicationReadyEvent event) {
         List<TaskBasedItem> taskBasedItems = taskBasedItems();
-        startUpTasks(taskBasedItems)
-            .stream()
-            .forEach(task -> startUpExecutor().execute(task));
+        taskBasedItems.stream()
+                .flatMap(item -> item.getAsynchronousTasks().stream())
+                .filter(Task::runOnStartUp)
+                .map(Task::getRunnable)
+                .forEach(runnable -> startUpTasksExecutor().execute(runnable));
 
-        periodicItems(taskBasedItems).forEach(
-            (item) -> {
-                Runnable task = item.getTriggerableTask().get();
-                TaskTrigger trigger = item.getTaskTrigger().get();
-                periodicEmittersScheduler().schedule(
-                    task,
-                    context -> {
-                        Date nextEmissionTime = trigger.nextEmissionTime(new EmissionTriggerContext(context.lastScheduledExecutionTime()));
-                        log.info("Next emission time for {} is {}", task, nextEmissionTime);
-                        return nextEmissionTime;
-                    });
-            }
-        );
+        taskBasedItems.stream()
+                .flatMap(item -> item.getAsynchronousTasks().stream())
+                .filter(Task::runContinuously)
+                .map(Task::getRunnable)
+                .forEach(runnable -> continuousTasksExecutor().execute(runnable));
 
-        continuousItems(taskBasedItems)
-            .stream()
-            .map(item -> (Runnable) item.getTriggerableTask().get())
-            .forEach(task -> continuousEmittersExecutor().execute(task));
+        taskBasedItems.stream()
+                .flatMap(item -> item.getAsynchronousTasks().stream())
+                .filter(Task::runOnTrigger)
+                .forEach(task -> {
+                    Runnable runnable = task.getRunnable();
+                    TaskTrigger trigger = task.getTaskTrigger();
+                    triggerableTasksScheduler().schedule(
+                            runnable,
+                            context -> {
+                                Date nextEmissionTime = trigger.nextEmissionTime(new EmissionTriggerContext(context.lastScheduledExecutionTime()));
+                                log.info("Next emission time for {} is {}", task, nextEmissionTime);
+                                return nextEmissionTime;
+                            });
+                });
     }
 
     private List<TaskBasedItem> taskBasedItems() {
@@ -97,24 +101,5 @@ public class TasksConfiguration {
         items.addAll(thingsLifetimeService.getAllThings());
         items.addAll(thingsLifetimeService.getAllActuators());
         return items;
-    }
-
-    private List<Runnable> startUpTasks(List<TaskBasedItem> items) {
-        return items.stream()
-            .filter(item -> item.getStartUpTask().isPresent())
-            .map(item -> (Runnable) item.getStartUpTask().get())
-            .collect(Collectors.toList());
-    }
-
-    private List<TaskBasedItem> periodicItems(List<TaskBasedItem> items) {
-        return items.stream()
-            .filter(item -> item.getTriggerableTask().isPresent() && item.getTaskTrigger().isPresent())
-            .collect(Collectors.toList());
-    }
-
-    private List<TaskBasedItem> continuousItems(List<TaskBasedItem> items) {
-        return items.stream()
-            .filter(item -> item.getTriggerableTask().isPresent() && !item.getTaskTrigger().isPresent())
-            .collect(Collectors.toList());
     }
 }

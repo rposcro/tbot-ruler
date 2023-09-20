@@ -13,14 +13,14 @@ import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.threads.TaskTrigger;
+import com.tbot.ruler.threads.Task;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Date;
-import java.util.Optional;
+import java.util.Collection;
+import java.util.Collections;
 
 @Slf4j
 @Getter
@@ -36,6 +36,8 @@ public class UpdateSwitchBinaryActuator extends AbstractItem implements Actuator
     private final MultiChannelCommandBuilder multiChannelCommandBuilder;
     private final long pollIntervalMilliseconds;
     private final boolean multiChannelOn;
+
+    private final Collection<Task> asynchronousTasks;
 
     @Builder
     public UpdateSwitchBinaryActuator(
@@ -55,31 +57,7 @@ public class UpdateSwitchBinaryActuator extends AbstractItem implements Actuator
         this.multiChannelOn = configuration.getEndPointId() >= 0;
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchBinaryCommandBuilder();
         this.multiChannelCommandBuilder = applicationSupport.controlledCommandFactory().multiChannelCommandBuilder();
-    }
-
-    @Override
-    public Optional<TaskTrigger> getTaskTrigger() {
-        if (configuration.getPollStateInterval() == 0) {
-            return Optional.empty();
-        }
-        return Optional.of(context -> context.getLastScheduledExecutionTime() == null ?
-                new Date() : new Date(System.currentTimeMillis() + pollIntervalMilliseconds));
-    }
-
-    @Override
-    public Optional<Runnable> getTriggerableTask() {
-        return Optional.of(() -> {
-            if (multiChannelOn) {
-                log.debug("Sending multi channel switch binary report request for node {} endPoint {}",
-                        configuration.getNodeId(), configuration.getEndPointId());
-                ZWaveControlledCommand command = multiChannelCommandBuilder.v3().encapsulateCommand(
-                        (byte) 1, (byte) configuration.getEndPointId(), commandBuilder.v1().buildGetCommand());
-                commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), command);
-            } else {
-                log.debug("Sending switch binary report request for node " + configuration.getNodeId());
-                commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
-            }
-        });
+        this.asynchronousTasks = asynchronousTasks();
     }
 
     @Override
@@ -95,5 +73,25 @@ public class UpdateSwitchBinaryActuator extends AbstractItem implements Actuator
 
     @Override
     public void acceptMessage(Message message) {
+    }
+
+    private Collection<Task> asynchronousTasks() {
+        if (configuration.getPollStateInterval() == 0) {
+            return Collections.emptySet();
+        } else {
+            Runnable runnable = () -> {
+                if (multiChannelOn) {
+                    log.debug("Sending multi channel switch binary report request for node {} endPoint {}",
+                            configuration.getNodeId(), configuration.getEndPointId());
+                    ZWaveControlledCommand command = multiChannelCommandBuilder.v3().encapsulateCommand(
+                            (byte) 1, (byte) configuration.getEndPointId(), commandBuilder.v1().buildGetCommand());
+                    commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), command);
+                } else {
+                    log.debug("Sending switch binary report request for node " + configuration.getNodeId());
+                    commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
+                }
+            };
+            return Collections.singleton(Task.triggerableTask(runnable, pollIntervalMilliseconds));
+        }
     }
 }

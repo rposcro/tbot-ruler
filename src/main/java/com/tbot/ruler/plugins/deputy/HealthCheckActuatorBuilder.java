@@ -6,6 +6,7 @@ import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.threads.RegularEmissionTrigger;
+import com.tbot.ruler.threads.Task;
 
 class HealthCheckActuatorBuilder {
 
@@ -14,12 +15,13 @@ class HealthCheckActuatorBuilder {
 
     Actuator buildActuator(ActuatorDTO actuatorDTO, PluginBuilderContext builderContext) {
         return BasicActuator.builder()
-            .uuid(actuatorDTO.getUuid())
-            .name(actuatorDTO.getName())
-            .description(actuatorDTO.getDescription())
-            .triggerableTask(emissionTask(builderContext, actuatorDTO))
-            .taskTrigger(emissionTrigger(actuatorDTO))
-            .build();
+                .uuid(actuatorDTO.getUuid())
+                .name(actuatorDTO.getName())
+                .description(actuatorDTO.getDescription())
+                .asynchronousTask(Task.triggerableTask(
+                        emissionTask(builderContext, actuatorDTO),
+                        emissionTrigger(actuatorDTO)))
+                .build();
     }
 
     private HealthCheckEmissionTask emissionTask(PluginBuilderContext builderContext, ActuatorDTO actuatorDTO) {
