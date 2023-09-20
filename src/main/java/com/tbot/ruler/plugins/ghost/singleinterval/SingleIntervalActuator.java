@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.ghost.singleinterval;
 
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.model.OnOffState;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.things.AbstractActuator;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;

@@ -4,7 +4,7 @@ import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.exceptions.PluginException;
+import com.tbot.ruler.exceptions.PluginException;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 

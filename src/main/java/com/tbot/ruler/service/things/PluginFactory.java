@@ -1,6 +1,6 @@
 package com.tbot.ruler.service.things;
 
-import com.tbot.ruler.messages.MessagePublisher;
+import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.PluginBuilder;

@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tbot.ruler.things.exceptions.PluginException;
+import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.util.PackageScanner;
 
 import java.io.IOException;

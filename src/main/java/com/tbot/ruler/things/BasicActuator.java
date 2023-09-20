@@ -1,8 +1,8 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.messages.model.MessageDeliveryReport;
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.MessageReceiver;
+import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.MessageReceiver;
 import com.tbot.ruler.things.thread.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;

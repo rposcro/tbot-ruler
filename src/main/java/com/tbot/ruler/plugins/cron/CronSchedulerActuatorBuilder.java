@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.cron;
 
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.model.Notification;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.MessagePublisher;
+import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.plugins.PluginBuilderContext;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicActuator;

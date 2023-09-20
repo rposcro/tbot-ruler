@@ -10,7 +10,7 @@ import com.tbot.ruler.plugins.PluginBuilderContext;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicThing;
 import com.tbot.ruler.things.Thing;
-import com.tbot.ruler.things.exceptions.PluginException;
+import com.tbot.ruler.exceptions.PluginException;
 
 import java.time.ZoneId;
 import java.util.Map;

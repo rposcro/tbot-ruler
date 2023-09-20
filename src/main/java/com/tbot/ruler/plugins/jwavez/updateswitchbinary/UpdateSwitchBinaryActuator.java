@@ -6,10 +6,10 @@ import com.rposcro.jwavez.core.commands.controlled.builders.multichannel.MultiCh
 import com.rposcro.jwavez.core.commands.controlled.builders.switchbinary.SwitchBinaryCommandBuilder;
 import com.rposcro.jwavez.core.commands.supported.binaryswitch.BinarySwitchReport;
 import com.rposcro.jwavez.core.model.NodeId;
-import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.model.MessageDeliveryReport;
-import com.tbot.ruler.model.OnOffState;
+import com.tbot.ruler.broker.MessagePublisher;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Actuator;

@@ -1,9 +1,9 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.model.ReportLog;
-import com.tbot.ruler.model.ReportLogLevel;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.MessagePublisher;
+import com.tbot.ruler.broker.payload.ReportLog;
+import com.tbot.ruler.broker.payload.ReportLogLevel;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.rest.RestResponse;
 import lombok.Builder;

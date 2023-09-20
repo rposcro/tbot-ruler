@@ -1,10 +1,10 @@
 package com.tbot.ruler.plugins.jwavez.sceneactivation;
 
-import com.tbot.ruler.messages.model.MessageDeliveryReport;
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.model.BinaryStateClaim;
+import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.BinaryStateClaim;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.messages.MessagePublisher;
+import com.tbot.ruler.broker.MessagePublisher;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;

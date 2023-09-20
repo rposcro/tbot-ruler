@@ -1,10 +1,10 @@
 package com.tbot.ruler.appliances;
 
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.model.MessagePayload;
-import com.tbot.ruler.model.ReportLog;
-import com.tbot.ruler.model.ReportLogLevel;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.model.MessagePayload;
+import com.tbot.ruler.broker.payload.ReportLog;
+import com.tbot.ruler.broker.payload.ReportLogLevel;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

@@ -1,8 +1,8 @@
 package com.tbot.ruler.service.things;
 
 import com.tbot.ruler.exceptions.ConfigurationException;
-import com.tbot.ruler.messages.MessageSender;
-import com.tbot.ruler.messages.MessageReceiver;
+import com.tbot.ruler.broker.MessageSender;
+import com.tbot.ruler.broker.MessageReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

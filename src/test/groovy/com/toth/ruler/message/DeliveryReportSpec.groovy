@@ -1,8 +1,8 @@
 package com.toth.ruler.message
 
-import com.tbot.ruler.messages.model.MessageDeliveryReport
-import com.tbot.ruler.messages.model.Message
-import com.tbot.ruler.messages.model.payloads.BooleanTogglePayload
+import com.tbot.ruler.broker.model.MessageDeliveryReport
+import com.tbot.ruler.broker.model.Message
+import com.tbot.ruler.broker.model.payloads.BooleanTogglePayload
 
 import spock.lang.Specification
 import spock.lang.Unroll

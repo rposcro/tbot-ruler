@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.sunwatch.sunevent;
 
-import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.PluginBuilderContext;
 import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;

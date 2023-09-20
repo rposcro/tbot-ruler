@@ -1,6 +1,6 @@
 package com.tbot.ruler.appliances;
 
-import com.tbot.ruler.messages.model.Message;
+import com.tbot.ruler.broker.model.Message;
 
 import java.util.UUID;
 

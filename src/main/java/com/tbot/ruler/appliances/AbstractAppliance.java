@@ -1,6 +1,6 @@
 package com.tbot.ruler.appliances;
 
-import com.tbot.ruler.messages.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessageDeliveryReport;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;

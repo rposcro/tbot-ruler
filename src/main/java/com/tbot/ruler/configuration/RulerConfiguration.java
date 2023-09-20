@@ -1,7 +1,7 @@
 package com.tbot.ruler.configuration;
 
-import com.tbot.ruler.messages.MessageDeliveryReportBroker;
-import com.tbot.ruler.messages.MessagePublishBroker;
+import com.tbot.ruler.broker.MessageDeliveryReportBroker;
+import com.tbot.ruler.broker.MessagePublishBroker;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;

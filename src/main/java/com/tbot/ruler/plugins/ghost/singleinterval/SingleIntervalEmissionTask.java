@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.ghost.singleinterval;
 
-import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.model.OnOffState;
+import com.tbot.ruler.broker.MessagePublisher;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.ghost.DateTimeRange;
 import lombok.Builder;
 import lombok.Getter;

@@ -1,10 +1,10 @@
 package com.tbot.ruler.appliances;
 
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.model.MessagePayload;
-import com.tbot.ruler.messages.MessageSender;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.model.MessagePayload;
+import com.tbot.ruler.broker.MessageSender;
 import com.tbot.ruler.things.Item;
-import com.tbot.ruler.messages.MessageReceiver;
+import com.tbot.ruler.broker.MessageReceiver;
 
 import java.util.Optional;
 

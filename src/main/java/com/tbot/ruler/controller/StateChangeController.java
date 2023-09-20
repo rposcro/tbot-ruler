@@ -1,8 +1,8 @@
 package com.tbot.ruler.controller;
 
-import com.tbot.ruler.messages.model.MessageDeliveryReport;
-import com.tbot.ruler.model.OnOffState;
-import com.tbot.ruler.model.RGBWColor;
+import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.service.AppliancesStateService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

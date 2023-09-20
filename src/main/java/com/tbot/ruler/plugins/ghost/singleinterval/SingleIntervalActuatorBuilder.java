@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.ghost.singleinterval;
 
-import com.tbot.ruler.messages.MessagePublisher;
+import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.ghost.GhostActuatorBuilder;
 import com.tbot.ruler.plugins.ghost.GhostThingConfiguration;
