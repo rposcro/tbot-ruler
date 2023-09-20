@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.cron;
 
-import com.tbot.ruler.things.thread.TaskTrigger;
-import com.tbot.ruler.things.thread.EmissionTriggerContext;
+import com.tbot.ruler.threads.TaskTrigger;
+import com.tbot.ruler.threads.EmissionTriggerContext;
 import org.springframework.scheduling.support.CronSequenceGenerator;
 
 import java.util.Date;

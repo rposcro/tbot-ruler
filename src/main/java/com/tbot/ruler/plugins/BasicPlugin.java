@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins;
 
 import com.tbot.ruler.things.Thing;
-import com.tbot.ruler.things.thread.TaskTrigger;
+import com.tbot.ruler.threads.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;
 

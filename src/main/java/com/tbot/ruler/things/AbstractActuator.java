@@ -2,7 +2,7 @@ package com.tbot.ruler.things;
 
 import com.tbot.ruler.broker.model.MessageDeliveryReport;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.things.thread.TaskTrigger;
+import com.tbot.ruler.threads.TaskTrigger;
 import lombok.Builder;
 import lombok.experimental.SuperBuilder;
 

@@ -5,7 +5,7 @@ import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.ghost.GhostActuatorBuilder;
 import com.tbot.ruler.plugins.ghost.GhostThingConfiguration;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.thread.RegularEmissionTrigger;
+import com.tbot.ruler.threads.RegularEmissionTrigger;
 
 import java.time.ZoneId;
 import java.util.Optional;

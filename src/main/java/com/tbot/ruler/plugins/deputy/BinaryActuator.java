@@ -6,8 +6,8 @@ import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.things.AbstractActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
-import com.tbot.ruler.things.thread.RegularEmissionTrigger;
-import com.tbot.ruler.things.thread.TaskTrigger;
+import com.tbot.ruler.threads.RegularEmissionTrigger;
+import com.tbot.ruler.threads.TaskTrigger;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 

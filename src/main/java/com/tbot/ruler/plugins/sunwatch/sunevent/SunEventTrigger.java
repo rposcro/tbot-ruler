@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.sunwatch.sunevent;
 
-import com.tbot.ruler.things.thread.TaskTrigger;
-import com.tbot.ruler.things.thread.EmissionTriggerContext;
+import com.tbot.ruler.threads.TaskTrigger;
+import com.tbot.ruler.threads.EmissionTriggerContext;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 

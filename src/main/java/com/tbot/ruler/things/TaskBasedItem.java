@@ -1,6 +1,6 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.things.thread.TaskTrigger;
+import com.tbot.ruler.threads.TaskTrigger;
 
 import java.util.Optional;
 

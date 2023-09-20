@@ -13,7 +13,7 @@ import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.thread.TaskTrigger;
+import com.tbot.ruler.threads.TaskTrigger;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
