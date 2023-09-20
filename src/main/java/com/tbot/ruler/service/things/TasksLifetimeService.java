@@ -1,9 +1,9 @@
 package com.tbot.ruler.service.things;
 
 import com.tbot.ruler.things.TaskBasedItem;
-import com.tbot.ruler.threads.EmissionTriggerContext;
-import com.tbot.ruler.threads.Task;
-import com.tbot.ruler.threads.TaskTrigger;
+import com.tbot.ruler.task.EmissionTriggerContext;
+import com.tbot.ruler.task.Task;
+import com.tbot.ruler.task.TaskTrigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

@@ -4,20 +4,15 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.broker.payload.OnOffState;
-import com.tbot.ruler.things.AbstractActuator;
-import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.things.AbstractItem;
 import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.threads.RegularEmissionTrigger;
-import com.tbot.ruler.threads.Task;
-import com.tbot.ruler.threads.TaskTrigger;
+import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Optional;
 
 @Slf4j
 public class BinaryActuator extends AbstractItem implements Actuator {

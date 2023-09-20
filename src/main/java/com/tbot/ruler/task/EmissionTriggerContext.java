@@ -1,4 +1,4 @@
-package com.tbot.ruler.threads;
+package com.tbot.ruler.task;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

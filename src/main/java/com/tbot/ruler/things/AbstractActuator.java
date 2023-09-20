@@ -2,7 +2,7 @@ package com.tbot.ruler.things;
 
 import com.tbot.ruler.broker.model.MessageDeliveryReport;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.threads.Task;
+import com.tbot.ruler.task.Task;
 import lombok.Getter;
 
 import java.util.Collection;

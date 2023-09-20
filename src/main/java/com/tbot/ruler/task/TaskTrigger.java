@@ -1,4 +1,4 @@
-package com.tbot.ruler.threads;
+package com.tbot.ruler.task;
 
 import java.util.Date;
 

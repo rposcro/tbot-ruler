@@ -1,6 +1,6 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.threads.Task;
+import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;

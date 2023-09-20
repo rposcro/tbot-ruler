@@ -12,7 +12,7 @@ import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicThing;
 import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.exceptions.PluginException;
-import com.tbot.ruler.threads.Task;
+import com.tbot.ruler.task.Task;
 
 import java.util.Map;
 import java.util.function.Function;

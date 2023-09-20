@@ -5,8 +5,8 @@ import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.things.Actuator;
 import com.tbot.ruler.things.BasicActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
-import com.tbot.ruler.threads.RegularEmissionTrigger;
-import com.tbot.ruler.threads.Task;
+import com.tbot.ruler.task.RegularEmissionTrigger;
+import com.tbot.ruler.task.Task;
 
 class HealthCheckActuatorBuilder {
 
