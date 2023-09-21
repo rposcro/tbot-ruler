@@ -1,0 +1,14 @@
+### Sends broker message
+# @name = SendBrokerMessage
+
+POST http://{{host-tbot-ruler}}/broker/messages
+Content-Type: application/json
+
+{
+    "widgetUuid": "wdgt-test",
+    "receiverUuid": "coll-0fc4a5f7-1477-4081-94a8-2882931ec10a",
+    "payloadType": "OnOff",
+    "payload": {
+        "on": "true"
+    }
+}

@@ -6,4 +6,7 @@ public interface MessageDeliveryReportListener {
 
     default void deliveryReportCompleted(MessageDeliveryReport deliveryReport) {
     }
+
+    default void deliveryReportSkipped(MessageDeliveryReport deliveryReport) {
+    }
 }

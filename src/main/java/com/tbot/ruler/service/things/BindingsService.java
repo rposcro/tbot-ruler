@@ -1,6 +1,5 @@
 package com.tbot.ruler.service.things;
 
-import com.tbot.ruler.exceptions.ConfigurationException;
 import com.tbot.ruler.broker.MessageSender;
 import com.tbot.ruler.broker.MessageReceiver;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,19 +24,11 @@ public class BindingsService {
     }
 
     public MessageReceiver findReceiverByUuid(String receiverUuid) {
-        MessageReceiver messageReceiver = actuatorOrAppliance(receiverUuid);
-        if (messageReceiver == null) {
-            throw new ConfigurationException("Configuration inconsistent, no receiver found for uuid " + receiverUuid);
-        }
-        return messageReceiver;
+        return actuatorOrAppliance(receiverUuid);
     }
 
     public MessageSender findSenderByUuid(String senderUuid) {
-        MessageSender messageSender = actuatorOrAppliance(senderUuid);
-        if (messageSender == null) {
-            throw new ConfigurationException("Configuration inconsistent, no sender found for uuid " + messageSender);
-        }
-        return messageSender;
+        return actuatorOrAppliance(senderUuid);
     }
 
     private <T> T actuatorOrAppliance(String uuid) {

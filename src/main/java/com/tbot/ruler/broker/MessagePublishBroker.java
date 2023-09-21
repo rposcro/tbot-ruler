@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
+import java.util.Collections;
 
 @Slf4j
 @Service
@@ -44,15 +45,15 @@ public class MessagePublishBroker implements Runnable {
 
     private MessageDeliveryReport dispatchMessage(Message message) {
         DeliveryReportBuilder reportBuilder = MessageDeliveryReport.builder().originalMessage(message);
-        Collection<String> consumers = bindingsService.findReceiversUuidsBySenderUuid(message.getSenderId());
+        Collection<String> receivers = extractReceivers(message);
 
         if (messagePublicationManager.isSenderSuspended(message.getSenderId())) {
             log.info("Dispatch from {}: Suspended", message.getSenderId());
             reportBuilder.senderSuspended(true);
-        } else if (consumers.isEmpty()) {
+        } else if (receivers.isEmpty()) {
             log.warn("Dispatch from {}: No bindings found", message.getSenderId());
         } else {
-            consumers.stream()
+            receivers.stream()
                 .forEach(receiverId -> {
                     try {
                         log.info("Dispatch from {}: Delivering to {}", message.getSenderId(), receiverId);
@@ -66,6 +67,14 @@ public class MessagePublishBroker implements Runnable {
         }
 
         return reportBuilder.build();
+    }
+
+    private Collection<String> extractReceivers(Message message) {
+        if (message.getReceiverId() != null) {
+            return Collections.singleton(message.getReceiverId());
+        } else {
+            return bindingsService.findReceiversUuidsBySenderUuid(message.getSenderId());
+        }
     }
 
     private void deliverMessage(Message message, String receiverId) {

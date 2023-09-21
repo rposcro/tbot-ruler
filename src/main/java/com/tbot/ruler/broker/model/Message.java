@@ -12,14 +12,16 @@ public class Message {
 
     private final static AtomicLong idSequence = new AtomicLong(1);
 
-    private final long id = idSequence.getAndIncrement();
-
-    private String senderId;
-    private Object payload;
+    private final long id;
+    private final String senderId;
+    private final String receiverId;
+    private final Object payload;
 
     @Builder
-    public Message(@NonNull String senderId, @NonNull Object payload) {
+    public Message(@NonNull String senderId, String receiverId, @NonNull Object payload) {
+        this.id = idSequence.getAndIncrement();
         this.senderId = senderId;
+        this.receiverId = receiverId;
         this.payload = payload;
     }
 

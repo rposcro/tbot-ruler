@@ -20,7 +20,7 @@ import java.util.stream.Stream;
 
 @Slf4j
 @Service
-    public class SynchronousMessagePublisher implements MessageDeliveryReportListener {
+public class SynchronousMessagePublisher implements MessageDeliveryReportListener {
 
     private final static long DEFAULT_TIMEOUT = 60_000;
 
@@ -32,27 +32,6 @@ import java.util.stream.Stream;
     @Autowired
     public SynchronousMessagePublisher(MessagePublisher messagePublisher) {
         this.messagePublisher = messagePublisher;
-    }
-
-    @Override
-    public void deliveryReportCompleted(MessageDeliveryReport deliveryReport) {
-        long originalMessageId = deliveryReport.getOriginalMessage().getId();
-        Object mapped = futuresMap.remove(originalMessageId);
-
-        if (mapped != null) {
-            Stream<CompletableFuture<MessageDeliveryReport>> futureStream;
-
-            if (mapped instanceof CompletableFuture) {
-                futureStream = Stream.of((CompletableFuture<MessageDeliveryReport>) mapped);
-            } else if (mapped instanceof Set) {
-                futureStream = ((Set<CompletableFuture<MessageDeliveryReport>>) mapped).stream();
-            } else {
-                log.warn("Wrong type of futures map entry: {} for original message id", mapped.getClass(), originalMessageId);
-                futureStream = Stream.empty();
-            }
-
-            futureStream.forEach(future -> deliverReport(future, deliveryReport));
-        }
     }
 
     public MessageDeliveryReport publishAndWaitForReport(Message message) {
@@ -71,6 +50,36 @@ import java.util.stream.Stream;
         } catch(Exception e) {
             removeFuture(message.getId(), future);
             throw new ServiceExecutionException("Delivery report could not be received", e);
+        }
+    }
+
+    @Override
+    public void deliveryReportCompleted(MessageDeliveryReport publicationReport) {
+        handlePublicationReport(publicationReport);
+    }
+
+    @Override
+    public void deliveryReportSkipped(MessageDeliveryReport publicationReport) {
+        handlePublicationReport(publicationReport);
+    }
+
+    private void handlePublicationReport(MessageDeliveryReport publicationReport) {
+        long originalMessageId = publicationReport.getOriginalMessage().getId();
+        Object mapped = futuresMap.remove(originalMessageId);
+
+        if (mapped != null) {
+            Stream<CompletableFuture<MessageDeliveryReport>> futureStream;
+
+            if (mapped instanceof CompletableFuture) {
+                futureStream = Stream.of((CompletableFuture<MessageDeliveryReport>) mapped);
+            } else if (mapped instanceof Set) {
+                futureStream = ((Set<CompletableFuture<MessageDeliveryReport>>) mapped).stream();
+            } else {
+                log.warn("Wrong type of futures map entry: {} for original message id", mapped.getClass(), originalMessageId);
+                futureStream = Stream.empty();
+            }
+
+            futureStream.forEach(future -> deliverReport(future, publicationReport));
         }
     }
 
