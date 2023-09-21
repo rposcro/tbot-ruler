@@ -2,10 +2,10 @@ package com.tbot.ruler.service.things;
 
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.persistance.model.PluginEntity;
-import com.tbot.ruler.plugins.Plugin;
+import com.tbot.ruler.subjects.Plugin;
 import com.tbot.ruler.plugins.PluginBuilder;
 import com.tbot.ruler.plugins.PluginBuilderContext;
-import com.tbot.ruler.things.service.ServiceProvider;
+import com.tbot.ruler.subjects.service.ServiceProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;

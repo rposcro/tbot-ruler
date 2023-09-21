@@ -11,14 +11,14 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
-import com.tbot.ruler.things.AbstractItem;
-import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.subjects.AbstractSubject;
+import com.tbot.ruler.subjects.Actuator;
 import lombok.Builder;
 import lombok.Getter;
 
 
 @Getter
-public class SwitchBinaryActuator extends AbstractItem implements Actuator {
+public class SwitchBinaryActuator extends AbstractSubject implements Actuator {
 
     private final static byte SOURCE_ENDPOINT_ID = 0;
 

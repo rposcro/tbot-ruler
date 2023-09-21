@@ -9,8 +9,8 @@ import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
-import com.tbot.ruler.things.AbstractItem;
-import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.subjects.AbstractSubject;
+import com.tbot.ruler.subjects.Actuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -18,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class SwitchColorActuator extends AbstractItem implements Actuator {
+public class SwitchColorActuator extends AbstractSubject implements Actuator {
 
     private final static String PERSISTENCE_KEY = "rgbw";
 

@@ -15,8 +15,8 @@ public class MeasureAppliance extends AbstractAppliance<Measure> {
 
     private Optional<Measure> measureState;
 
-    public MeasureAppliance(String id, ApplianceStatePersistenceService persistenceService) {
-        super(id, persistenceService);
+    public MeasureAppliance(String id, String name, ApplianceStatePersistenceService persistenceService) {
+        super(id, name, persistenceService);
         this.measureState = persistenceService.retrieve(this.getUuid());
     }
 

@@ -11,8 +11,8 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
-import com.tbot.ruler.things.AbstractItem;
-import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.subjects.AbstractSubject;
+import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,7 +29,7 @@ import static java.lang.Byte.toUnsignedInt;
 
 @Slf4j
 @Getter
-public class UpdateColorActuator extends AbstractItem implements Actuator {
+public class UpdateColorActuator extends AbstractSubject implements Actuator {
 
     private final static int MIN_POLL_INTERVAL = 120;
 

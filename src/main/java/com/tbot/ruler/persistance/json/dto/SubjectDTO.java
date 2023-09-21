@@ -1,6 +1,6 @@
 package com.tbot.ruler.persistance.json.dto;
 
-public interface ItemDTO {
+public interface SubjectDTO {
 
     String getUuid();
     String getName();

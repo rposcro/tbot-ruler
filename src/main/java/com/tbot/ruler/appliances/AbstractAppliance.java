@@ -17,6 +17,9 @@ public abstract class AbstractAppliance<T> implements Appliance<T> {
     private String uuid;
 
     @NonNull
+    private String name;
+
+    @NonNull
     private ApplianceStatePersistenceService persistenceService;
 
     @Override

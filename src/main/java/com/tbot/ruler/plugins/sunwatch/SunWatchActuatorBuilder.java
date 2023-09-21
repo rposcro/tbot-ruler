@@ -4,7 +4,7 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.PluginBuilderContext;
-import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.exceptions.PluginException;
 import lombok.Getter;
 

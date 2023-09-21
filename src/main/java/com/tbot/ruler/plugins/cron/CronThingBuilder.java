@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.cron;
 
 import com.tbot.ruler.plugins.PluginBuilderContext;
-import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.Thing;
+import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.Thing;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
 import lombok.extern.slf4j.Slf4j;
 

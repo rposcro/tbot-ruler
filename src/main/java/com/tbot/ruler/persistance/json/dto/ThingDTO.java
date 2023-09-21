@@ -10,7 +10,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ThingDTO extends ConfigurableDTO implements ItemDTO {
+public class ThingDTO extends ConfigurableDTO implements SubjectDTO {
 
     private String uuid;
     private String name;

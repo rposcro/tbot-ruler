@@ -18,8 +18,8 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
     @Getter
     private Optional<OnOffState> state;
 
-    public OnOffAppliance(String id, ApplianceStatePersistenceService persistenceService) {
-        super(id, persistenceService);
+    public OnOffAppliance(String id, String name, ApplianceStatePersistenceService persistenceService) {
+        super(id, name, persistenceService);
         state = persistenceService.retrieve(this.getUuid());
     }
 

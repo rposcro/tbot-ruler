@@ -11,8 +11,8 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
-import com.tbot.ruler.things.AbstractItem;
-import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.subjects.AbstractSubject;
+import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,7 +24,7 @@ import java.util.Collections;
 
 @Slf4j
 @Getter
-public class UpdateSwitchBinaryActuator extends AbstractItem implements Actuator {
+public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actuator {
 
     private final static int MIN_POLL_INTERVAL = 120;
 

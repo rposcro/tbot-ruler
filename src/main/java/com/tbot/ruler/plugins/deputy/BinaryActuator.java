@@ -4,8 +4,8 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.broker.payload.OnOffState;
-import com.tbot.ruler.things.AbstractItem;
-import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.subjects.AbstractSubject;
+import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.NonNull;
@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.Collections;
 
 @Slf4j
-public class BinaryActuator extends AbstractItem implements Actuator {
+public class BinaryActuator extends AbstractSubject implements Actuator {
 
 
     private final BinaryActuatorChannel binaryChannel;

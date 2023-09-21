@@ -1,4 +1,4 @@
-package com.tbot.ruler.things.service;
+package com.tbot.ruler.subjects.service;
 
 import com.tbot.ruler.rest.RestService;
 

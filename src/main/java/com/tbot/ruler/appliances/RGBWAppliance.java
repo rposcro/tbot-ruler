@@ -12,8 +12,8 @@ public class RGBWAppliance extends AbstractAppliance<RGBWColor> {
 
     private Optional<RGBWColor> colorState;
 
-    public RGBWAppliance(String id, ApplianceStatePersistenceService persistenceService) {
-        super(id, persistenceService);
+    public RGBWAppliance(String id, String name, ApplianceStatePersistenceService persistenceService) {
+        super(id, name, persistenceService);
         colorState = persistenceService.retrieve(this.getUuid());
     }
 

@@ -1,26 +1,19 @@
-package com.tbot.ruler.things;
+package com.tbot.ruler.subjects;
 
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.task.Task;
-import lombok.Getter;
 
 import java.util.Collection;
-import java.util.Collections;
 
-public abstract class AbstractActuator extends AbstractItem implements Actuator {
-
-    @Getter
-    private final Collection<Task> asynchronousTasks;
+public abstract class AbstractActuator extends AbstractSubject implements Actuator {
 
     protected AbstractActuator(String uuid, String name, String description) {
-        super(uuid, name, description);
-        this.asynchronousTasks = Collections.emptyList();
+        this(uuid, name, description, null);
     }
 
     protected AbstractActuator(String uuid, String name, String description, Collection<Task> asynchronousTasks) {
-        super(uuid, name, description);
-        this.asynchronousTasks = asynchronousTasks;
+        super(uuid, name, description, asynchronousTasks);
     }
 
     @Override

@@ -31,7 +31,7 @@ public class RGBWApplianceTest extends AbstractApplianceTest {
 
     @BeforeEach
     public void setUp() {
-        this.appliance = new RGBWAppliance(APPLIANCE_ID, persistenceService);
+        this.appliance = new RGBWAppliance(APPLIANCE_ID, "", persistenceService);
     }
 
     @Test

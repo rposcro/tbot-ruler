@@ -1,7 +1,7 @@
 package com.tbot.ruler.service.things;
 
 import com.tbot.ruler.persistance.PluginsRepository;
-import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.subjects.Actuator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

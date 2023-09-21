@@ -9,8 +9,8 @@ import java.util.stream.Stream;
 
 public class CollectionsUtil {
 
-    public static <T> Set<T> asSet(T... items) {
-        return Stream.of(items).collect(Collectors.toSet());
+    public static <T> Set<T> asSet(T... ts) {
+        return Stream.of(ts).collect(Collectors.toSet());
     }
 
     public static <T> Collection<T> orEmpty(Collection<T> collection) {

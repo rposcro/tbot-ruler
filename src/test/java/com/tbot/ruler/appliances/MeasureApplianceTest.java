@@ -29,7 +29,7 @@ public class MeasureApplianceTest extends AbstractApplianceTest {
 
     @BeforeEach
     public void setUp() {
-        this.appliance = new MeasureAppliance(APPLIANCE_ID, persistenceService);
+        this.appliance = new MeasureAppliance(APPLIANCE_ID, "", persistenceService);
     }
 
     @Test

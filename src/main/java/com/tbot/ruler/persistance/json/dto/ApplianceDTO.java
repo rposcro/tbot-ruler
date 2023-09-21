@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ApplianceDTO implements ItemDTO {
+public class ApplianceDTO implements SubjectDTO {
     
     private String uuid;
     private String type;

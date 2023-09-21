@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class ActuatorDTO extends ConfigurableDTO implements ItemDTO {
+public class ActuatorDTO extends ConfigurableDTO implements SubjectDTO {
 
     private String uuid;
     private String ref;

@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
-import com.tbot.ruler.things.AbstractActuator;
+import com.tbot.ruler.subjects.AbstractActuator;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.NonNull;

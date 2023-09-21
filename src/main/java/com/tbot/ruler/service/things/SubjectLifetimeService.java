@@ -1,9 +1,9 @@
 package com.tbot.ruler.service.things;
 
 import com.tbot.ruler.persistance.PluginsRepository;
-import com.tbot.ruler.plugins.Plugin;
-import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.Thing;
+import com.tbot.ruler.subjects.Plugin;
+import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.Thing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
@@ -19,7 +19,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @Scope("singleton")
-public class ThingsLifetimeService {
+public class SubjectLifetimeService {
 
     @Autowired
     private PluginsRepository pluginsRepository;

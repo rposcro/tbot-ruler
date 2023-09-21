@@ -3,13 +3,13 @@ package com.tbot.ruler.plugins.sunwatch;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
-import com.tbot.ruler.plugins.BasicPlugin;
-import com.tbot.ruler.plugins.Plugin;
+import com.tbot.ruler.subjects.BasicPlugin;
+import com.tbot.ruler.subjects.Plugin;
 import com.tbot.ruler.plugins.PluginBuilder;
 import com.tbot.ruler.plugins.PluginBuilderContext;
-import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.BasicThing;
-import com.tbot.ruler.things.Thing;
+import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.BasicThing;
+import com.tbot.ruler.subjects.Thing;
 import com.tbot.ruler.exceptions.PluginException;
 
 import java.time.ZoneId;

@@ -4,7 +4,7 @@ import com.tbot.ruler.plugins.PluginBuilderContext;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.rest.RestPatchCommand;
 import com.tbot.ruler.rest.RestService;
-import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
 

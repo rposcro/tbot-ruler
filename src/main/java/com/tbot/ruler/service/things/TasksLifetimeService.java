@@ -1,6 +1,6 @@
 package com.tbot.ruler.service.things;
 
-import com.tbot.ruler.things.TaskBasedItem;
+import com.tbot.ruler.subjects.Subject;
 import com.tbot.ruler.task.EmissionTriggerContext;
 import com.tbot.ruler.task.Task;
 import com.tbot.ruler.task.TaskTrigger;
@@ -22,7 +22,7 @@ import java.util.List;
 public class TasksLifetimeService {
 
     @Autowired
-    private ThingsLifetimeService thingsLifetimeService;
+    private SubjectLifetimeService subjectLifetimeService;
     @Autowired
     private ThreadPoolTaskScheduler triggerableTasksScheduler;
     @Autowired
@@ -32,21 +32,21 @@ public class TasksLifetimeService {
 
     @PostConstruct
     public void init() {
-        List<TaskBasedItem> taskBasedItems = taskBasedItems();
-        taskBasedItems.stream()
-                .flatMap(item -> item.getAsynchronousTasks().stream())
+        List<Subject> subjects = subjects();
+        subjects.stream()
+                .flatMap(subject -> subject.getAsynchronousTasks().stream())
                 .filter(Task::runOnStartUp)
                 .map(Task::getRunnable)
                 .forEach(runnable -> startUpTasksExecutor.execute(runnable));
 
-        taskBasedItems.stream()
-                .flatMap(item -> item.getAsynchronousTasks().stream())
+        subjects.stream()
+                .flatMap(subject -> subject.getAsynchronousTasks().stream())
                 .filter(Task::runContinuously)
                 .map(Task::getRunnable)
                 .forEach(runnable -> continuousTasksExecutor.execute(runnable));
 
-        taskBasedItems.stream()
-                .flatMap(item -> item.getAsynchronousTasks().stream())
+        subjects.stream()
+                .flatMap(subject -> subject.getAsynchronousTasks().stream())
                 .filter(Task::runOnTrigger)
                 .forEach(task -> {
                     Runnable runnable = task.getRunnable();
@@ -61,11 +61,11 @@ public class TasksLifetimeService {
                 });
     }
 
-    private List<TaskBasedItem> taskBasedItems() {
-        LinkedList<TaskBasedItem> items = new LinkedList<>();
-        items.addAll(thingsLifetimeService.getAllPlugins());
-        items.addAll(thingsLifetimeService.getAllThings());
-        items.addAll(thingsLifetimeService.getAllActuators());
-        return items;
+    private List<Subject> subjects() {
+        LinkedList<Subject> subjects = new LinkedList<>();
+        subjects.addAll(subjectLifetimeService.getAllPlugins());
+        subjects.addAll(subjectLifetimeService.getAllThings());
+        subjects.addAll(subjectLifetimeService.getAllActuators());
+        return subjects;
     }
 }

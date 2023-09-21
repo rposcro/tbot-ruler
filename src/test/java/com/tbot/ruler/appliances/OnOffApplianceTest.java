@@ -27,6 +27,7 @@ import static org.junit.Assert.assertTrue;
 public class OnOffApplianceTest extends AbstractApplianceTest {
 
     private final static String APPLIANCE_ID = "appliance-id";
+    private final static String APPLIANCE_NAME = "appliance-name";
 
     @Mock
     private ApplianceStatePersistenceService persistenceService;
@@ -35,7 +36,7 @@ public class OnOffApplianceTest extends AbstractApplianceTest {
 
     @BeforeEach
     public void setUp() {
-        this.appliance = new OnOffAppliance(APPLIANCE_ID, persistenceService);
+        this.appliance = new OnOffAppliance(APPLIANCE_ID, APPLIANCE_NAME, persistenceService);
     }
 
     @Test

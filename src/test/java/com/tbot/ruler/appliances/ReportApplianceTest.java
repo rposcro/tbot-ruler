@@ -22,6 +22,7 @@ import static org.junit.Assert.assertTrue;
 public class ReportApplianceTest extends AbstractApplianceTest {
 
     private final static String APPLIANCE_ID = "appliance-id";
+    private final static String APPLIANCE_NAME = "appliance-name";
 
     @Mock
     private ApplianceStatePersistenceService persistenceService;
@@ -30,12 +31,13 @@ public class ReportApplianceTest extends AbstractApplianceTest {
 
     @BeforeEach
     public void setUp() {
-        this.appliance = new ReportAppliance(APPLIANCE_ID, persistenceService);
+        this.appliance = new ReportAppliance(APPLIANCE_ID, APPLIANCE_NAME, persistenceService);
     }
 
     @Test
     public void initialApplianceStateIsCorrect() {
         assertEquals(APPLIANCE_ID, appliance.getUuid());
+        assertEquals(APPLIANCE_NAME, appliance.getName());
         assertTrue(appliance.getState().isPresent());
     }
 
@@ -56,6 +58,7 @@ public class ReportApplianceTest extends AbstractApplianceTest {
         appliance.acceptMessage(mockMessage(payload2));
 
         assertEquals(APPLIANCE_ID, appliance.getUuid());
+        assertEquals(APPLIANCE_NAME, appliance.getName());
         assertTrue(appliance.getState().isPresent());
         assertEquals(2, appliance.getState().get().size());
         assertEquals(payload1, appliance.getState().get().get(0));

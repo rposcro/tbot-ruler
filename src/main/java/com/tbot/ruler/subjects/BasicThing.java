@@ -1,4 +1,4 @@
-package com.tbot.ruler.things;
+package com.tbot.ruler.subjects;
 
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
@@ -12,10 +12,9 @@ import java.util.List;
 import static com.tbot.ruler.util.CollectionsUtil.orEmpty;
 
 @Getter
-public class BasicThing extends AbstractItem implements Thing {
+public class BasicThing extends AbstractSubject implements Thing {
 
     private final List<? extends Actuator> actuators;
-    private final Collection<Task> asynchronousTasks;
 
     @Builder
     public BasicThing(
@@ -25,8 +24,7 @@ public class BasicThing extends AbstractItem implements Thing {
         @Singular List<? extends Actuator> actuators,
         @Singular Collection<Task> asynchronousTasks
     ) {
-        super(uuid, name, description);
+        super(uuid, name, description, asynchronousTasks);
         this.actuators = orEmpty(actuators);
-        this.asynchronousTasks = orEmpty(asynchronousTasks);
     }
 }

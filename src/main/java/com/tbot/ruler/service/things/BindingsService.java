@@ -14,7 +14,7 @@ public class BindingsService {
     private BindingsLifetimeService bindingsLifetimeService;
 
     @Autowired
-    private ThingsLifetimeService thingsLifetimeService;
+    private SubjectLifetimeService subjectLifetimeService;
 
     @Autowired
     private AppliancesLifetimeService appliancesLifetimeService;
@@ -32,10 +32,10 @@ public class BindingsService {
     }
 
     private <T> T actuatorOrAppliance(String uuid) {
-        T item = (T) thingsLifetimeService.getActuatorByUuid(uuid);
-        if (item == null) {
-            item = (T) appliancesLifetimeService.getApplianceByUuid(uuid);
+        T subject = (T) subjectLifetimeService.getActuatorByUuid(uuid);
+        if (subject == null) {
+            subject = (T) appliancesLifetimeService.getApplianceByUuid(uuid);
         }
-        return item;
+        return subject;
     }
 }

@@ -4,7 +4,7 @@ import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.ghost.GhostActuatorBuilder;
 import com.tbot.ruler.plugins.ghost.GhostThingConfiguration;
-import com.tbot.ruler.things.Actuator;
+import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.task.Task;
 
 import java.time.ZoneId;

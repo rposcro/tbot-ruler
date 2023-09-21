@@ -18,8 +18,8 @@ public class ReportAppliance extends AbstractAppliance<List<ReportLog>> {
     private final Semaphore lock = new Semaphore(1);
     private ConcurrentLinkedQueue<ReportLog> reportLogs;
 
-    public ReportAppliance(String id, ApplianceStatePersistenceService persistenceService) {
-        super(id, persistenceService);
+    public ReportAppliance(String id, String name, ApplianceStatePersistenceService persistenceService) {
+        super(id, name, persistenceService);
         this.reportLogs = new ConcurrentLinkedQueue<>();
     }
 

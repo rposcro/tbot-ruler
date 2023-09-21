@@ -1,11 +1,19 @@
-package com.tbot.ruler.things;
+package com.tbot.ruler.subjects;
 
 import com.tbot.ruler.task.Task;
 
 import java.util.Collection;
 import java.util.Collections;
 
-public interface TaskBasedItem extends Item {
+public interface Subject {
+
+    String getUuid();
+    String getName();
+
+    default String getDescription() {
+        return "";
+    }
 
     default Collection<Task> getAsynchronousTasks() { return Collections.emptyList(); }
+
 }

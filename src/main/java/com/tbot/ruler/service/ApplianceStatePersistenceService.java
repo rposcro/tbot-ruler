@@ -15,9 +15,9 @@ public class ApplianceStatePersistenceService {
     @Autowired
     private ApplianceStateRepository applianceStateRepository;
 
-    public void persist(String itemId, Object value) {
+    public void persist(String subjectId, Object value) {
         applianceStateRepository.save(ApplianceState.builder()
-                .key(itemId)
+                .key(subjectId)
                 .valueClass(value.getClass())
                 .value(value)
                 .build());

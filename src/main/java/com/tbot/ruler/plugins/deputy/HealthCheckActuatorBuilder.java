@@ -2,8 +2,8 @@ package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.plugins.PluginBuilderContext;
 import com.tbot.ruler.rest.RestGetCommand;
-import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.BasicActuator;
+import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.BasicActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.task.RegularEmissionTrigger;
 import com.tbot.ruler.task.Task;

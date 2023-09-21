@@ -65,3 +65,11 @@ create table `bindings`
     sender_uuid     varchar(64)     not null,
     receiver_uuid   varchar(64)     not null
 );
+
+drop table if exists `states`;
+
+create table `subject_states`
+(
+    subject_uuid    varchar(64) not null unique,
+    state           json        not null
+)

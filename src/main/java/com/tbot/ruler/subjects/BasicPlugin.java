@@ -1,6 +1,5 @@
-package com.tbot.ruler.plugins;
+package com.tbot.ruler.subjects;
 
-import com.tbot.ruler.things.Thing;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,12 +11,9 @@ import java.util.List;
 import static com.tbot.ruler.util.CollectionsUtil.orEmpty;
 
 @Getter
-public class BasicPlugin implements Plugin {
+public class BasicPlugin extends AbstractSubject implements Plugin {
 
-    private final String uuid;
-    private final String name;
     private final List<? extends Thing> things;
-    private final Collection<Task> asynchronousTasks;
 
     @Builder
     public BasicPlugin(
@@ -25,9 +21,7 @@ public class BasicPlugin implements Plugin {
             String name,
             List<? extends Thing> things,
             @Singular Collection<Task> asynchronousTasks) {
-        this.uuid = uuid;
-        this.name = name;
+        super(uuid, name, "", asynchronousTasks);
         this.things = orEmpty(things);
-        this.asynchronousTasks = orEmpty(asynchronousTasks);
     }
 }

@@ -32,7 +32,6 @@ public class ApplianceFactory {
     }
 
     public List<Appliance> buildAppliances(List<ApplianceEntity> applianceEntities) {
-        List<Appliance> appliances = new LinkedList<>();
         return applianceEntities.stream()
                 .map(this::buildAppliance)
                 .filter(Optional::isPresent)
@@ -46,11 +45,11 @@ public class ApplianceFactory {
             if (clazz == null) {
                 throw new NullPointerException("Appliance class " + entity.getApplianceType() + " could not be found!");
             }
-            Constructor<? extends Appliance> constructor = clazz.getConstructor(String.class, ApplianceStatePersistenceService.class);
+            Constructor<? extends Appliance> constructor = clazz.getConstructor(String.class, String.class, ApplianceStatePersistenceService.class);
             if (constructor == null) {
                 throw new NullPointerException("Appliance constructor for class " + entity.getApplianceType() + " could not be found!");
             }
-            Appliance appliance = constructor.newInstance(entity.getApplianceUuid(), persistenceService);
+            Appliance appliance = constructor.newInstance(entity.getApplianceUuid(), entity.getName(), persistenceService);
             return Optional.of(appliance);
         } catch(ReflectiveOperationException | SecurityException e) {
             log.error("Incorrect appliance class type: " + entity.getApplianceType() + ", skipping appliance: " + entity.getApplianceUuid());
