@@ -3,7 +3,7 @@ package com.tbot.ruler.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.broker.SynchronousMessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.controller.payload.BrokerMessagePayloadType;
@@ -34,10 +34,10 @@ public class BrokerMessageController extends AbstractController {
     }
 
     @PostMapping
-    public ResponseEntity<MessageDeliveryReport> sendMessage(@RequestBody BrokerMessageRequest messageRequest) {
+    public ResponseEntity<MessagePublicationReport> sendMessage(@RequestBody BrokerMessageRequest messageRequest) {
         log.debug("Requested sending message {}", messageRequest);
         Message message = toMessage(messageRequest);
-        MessageDeliveryReport report = messagePublisher.publishAndWaitForReport(message);
+        MessagePublicationReport report = messagePublisher.publishAndWaitForReport(message);
         return response(ResponseEntity.ok()).body(report);
     }
 

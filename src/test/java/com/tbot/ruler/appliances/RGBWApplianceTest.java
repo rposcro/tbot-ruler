@@ -2,7 +2,7 @@ package com.tbot.ruler.appliances;
 
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.MessagePayload;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
@@ -71,10 +71,10 @@ public class RGBWApplianceTest extends AbstractApplianceTest {
         assertEquals(APPLIANCE_ID, forwardMessage.get().getSenderId());
         assertEquals(payload, forwardMessage.get().getPayload());
 
-        MessageDeliveryReport deliveryReport = MessageDeliveryReport.builder()
+        MessagePublicationReport publicationReport = MessagePublicationReport.builder()
                 .originalMessage(forwardMessage.get())
                 .build();
-        appliance.acceptDeliveryReport(deliveryReport);
+        appliance.acceptPublicationReport(publicationReport);
 
         assertTrue(appliance.getState().isPresent());
         assertEquals(payload, appliance.getState().get());

@@ -1,7 +1,7 @@
 package com.tbot.ruler.broker;
 
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.service.things.BindingsService;
 import org.junit.jupiter.api.AfterEach;
@@ -23,24 +23,24 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class MessageDeliveryReportBrokerTest {
+public class MessagePublicationReportBrokerTest {
 
     @Mock
     private BindingsService bindingsService;
 
     @Mock
-    private MessageDeliveryReportListener messageDeliveryListener;
+    private MessagePublicationReportListener messageDeliveryListener;
 
     private MessageQueueComponent messageQueueComponent;
 
-    private MessageDeliveryReportBroker messageDeliveryBroker;
+    private MessagePublicationReportBroker messageDeliveryBroker;
 
     private ExecutorService brokerExecutorService;
 
     @BeforeEach
     public void setUp() {
         this.messageQueueComponent = new MessageQueueComponent(2);
-        this.messageDeliveryBroker = MessageDeliveryReportBroker.builder()
+        this.messageDeliveryBroker = MessagePublicationReportBroker.builder()
                 .messageQueue(messageQueueComponent)
                 .bindingsService(bindingsService)
                 .deliveryListener(messageDeliveryListener)
@@ -60,16 +60,16 @@ public class MessageDeliveryReportBrokerTest {
         final String senderId = "mocked-sender-id";
         final MessageSender sender = mock(MessageSender.class);
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
-        final MessageDeliveryReport report = MessageDeliveryReport.builder().originalMessage(message).build();
+        final MessagePublicationReport report = MessagePublicationReport.builder().originalMessage(message).build();
 
         when(bindingsService.findSenderByUuid(eq(senderId))).thenReturn(sender);
 
-        messageQueueComponent.enqueueDeliveryReport(report);
+        messageQueueComponent.enqueueReport(report);
 
-        ArgumentCaptor<MessageDeliveryReport> senderReportCaptor = ArgumentCaptor.forClass(MessageDeliveryReport.class);
-        verify(sender, timeout(100).times(1)).acceptDeliveryReport(senderReportCaptor.capture());
-        ArgumentCaptor<MessageDeliveryReport> listenerReportCaptor = ArgumentCaptor.forClass(MessageDeliveryReport.class);
-        verify(sender, timeout(100).times(1)).acceptDeliveryReport(listenerReportCaptor.capture());
+        ArgumentCaptor<MessagePublicationReport> senderReportCaptor = ArgumentCaptor.forClass(MessagePublicationReport.class);
+        verify(sender, timeout(100).times(1)).acceptPublicationReport(senderReportCaptor.capture());
+        ArgumentCaptor<MessagePublicationReport> listenerReportCaptor = ArgumentCaptor.forClass(MessagePublicationReport.class);
+        verify(sender, timeout(100).times(1)).acceptPublicationReport(listenerReportCaptor.capture());
 
         assertEquals(1, senderReportCaptor.getAllValues().size());
         assertEquals(report, senderReportCaptor.getValue());

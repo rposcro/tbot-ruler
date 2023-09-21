@@ -1,6 +1,6 @@
 package com.tbot.ruler.broker;
 
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.service.things.BindingsService;
 import lombok.Builder;
 import lombok.Singular;
@@ -12,18 +12,18 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class MessageDeliveryReportBroker implements Runnable {
+public class MessagePublicationReportBroker implements Runnable {
 
     private MessageQueueComponent messageQueue;
     private BindingsService bindingsService;
-    private List<MessageDeliveryReportListener> deliveryListeners;
+    private List<MessagePublicationReportListener> deliveryListeners;
 
     @Builder
     @Autowired
-    public MessageDeliveryReportBroker(
+    public MessagePublicationReportBroker(
             MessageQueueComponent messageQueue,
             BindingsService bindingsService,
-            @Singular List<MessageDeliveryReportListener> deliveryListeners) {
+            @Singular List<MessagePublicationReportListener> deliveryListeners) {
         this.messageQueue = messageQueue;
         this.bindingsService = bindingsService;
         this.deliveryListeners = deliveryListeners;
@@ -33,22 +33,22 @@ public class MessageDeliveryReportBroker implements Runnable {
     public void run() {
         while(true) {
             try {
-                MessageDeliveryReport deliveryReport = messageQueue.nextDeliveryReport();
-                deliverReport(deliveryReport);
+                MessagePublicationReport publicationReport = messageQueue.nextReport();
+                deliverReport(publicationReport);
             } catch(Exception e) {
                 log.error("Message delivery report broker interrupted by unexpected internal error", e);
             }
         }
     }
 
-    private void deliverReport(MessageDeliveryReport deliveryReport) {
-        MessageSender messageSender = bindingsService.findSenderByUuid(deliveryReport.getOriginalMessage().getSenderId());
+    private void deliverReport(MessagePublicationReport publicationReport) {
+        MessageSender messageSender = bindingsService.findSenderByUuid(publicationReport.getOriginalMessage().getSenderId());
 
         if (messageSender != null) {
-            messageSender.acceptDeliveryReport(deliveryReport);
-            deliveryListeners.forEach(listener -> listener.deliveryReportCompleted(deliveryReport));
+            messageSender.acceptPublicationReport(publicationReport);
+            deliveryListeners.forEach(listener -> listener.publicationReportDelivered(publicationReport));
         } else {
-            deliveryListeners.forEach(listener -> listener.deliveryReportSkipped(deliveryReport));
+            deliveryListeners.forEach(listener -> listener.publicationReportSkipped(publicationReport));
         }
     }
 }

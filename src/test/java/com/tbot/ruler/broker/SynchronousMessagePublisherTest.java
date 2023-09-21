@@ -2,7 +2,7 @@ package com.tbot.ruler.broker;
 
 import com.tbot.ruler.exceptions.ServiceTimeoutException;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.Notification;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -36,21 +36,21 @@ public class SynchronousMessagePublisherTest {
     @Test
     public void successfullySendsMessageAndReceivesReport() {
         final Message message = Message.builder().senderId("sender-id").payload(Notification.HEARTBEAT).build();
-        final MessageDeliveryReport deliveryReport = MessageDeliveryReport.builder().originalMessage(message).build();
+        final MessagePublicationReport publicationReport = MessagePublicationReport.builder().originalMessage(message).build();
 
         Mockito.doAnswer(args -> {
-            synchronousMessagePublisher.deliveryReportCompleted(deliveryReport);
+            synchronousMessagePublisher.publicationReportDelivered(publicationReport);
             return null;
         }).when(messagePublisher).publishMessage(eq(message));
 
-        MessageDeliveryReport returnedDeliveryReport = synchronousMessagePublisher.publishAndWaitForReport(message, 10);
+        MessagePublicationReport returnedpublicationReport = synchronousMessagePublisher.publishAndWaitForReport(message, 10);
 
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
         verify(messagePublisher, times(1)).publishMessage(messageCaptor.capture());
 
         assertEquals(1, messageCaptor.getAllValues().size());
         assertEquals(message, messageCaptor.getValue());
-        assertEquals(deliveryReport, returnedDeliveryReport);
+        assertEquals(publicationReport, returnedpublicationReport);
     }
 
     @Test

@@ -1,6 +1,6 @@
 package com.tbot.ruler.broker;
 
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,13 +15,13 @@ import java.util.concurrent.TimeUnit;
 public class MessageQueueComponent {
 
     private LinkedBlockingQueue<Message> messageQueue;
-    private LinkedBlockingQueue<MessageDeliveryReport> deliveryReportQueue;
+    private LinkedBlockingQueue<MessagePublicationReport> reportQueue;
 
     @Autowired
     public MessageQueueComponent(@Value("${ruler.broker.messageQueueLength:50}") int queueSize) {
         log.info("Message queue length set to {}", queueSize);
         messageQueue = new LinkedBlockingQueue<>(queueSize);
-        deliveryReportQueue = new LinkedBlockingQueue<>(queueSize);
+        reportQueue = new LinkedBlockingQueue<>(queueSize);
     }
 
     protected void enqueueMessage(Message message) {
@@ -30,9 +30,9 @@ public class MessageQueueComponent {
                 message.getSenderId(), message.getPayload().getClass().getSimpleName());
     }
 
-    protected void enqueueDeliveryReport(MessageDeliveryReport deliveryReport) {
-        this.deliveryReportQueue.add(deliveryReport);
-        log.debug("Enqueued delivery report for {}", deliveryReport.getOriginalMessage().getSenderId());
+    protected void enqueueReport(MessagePublicationReport publicationReport) {
+        this.reportQueue.add(publicationReport);
+        log.debug("Enqueued delivery report for {}", publicationReport.getOriginalMessage().getSenderId());
     }
 
     protected Message nextMessage() throws InterruptedException {
@@ -43,11 +43,11 @@ public class MessageQueueComponent {
         return messageQueue.poll(timeout, TimeUnit.MILLISECONDS);
     }
 
-    protected MessageDeliveryReport nextDeliveryReport() throws InterruptedException {
-        return deliveryReportQueue.take();
+    protected MessagePublicationReport nextReport() throws InterruptedException {
+        return reportQueue.take();
     }
 
-    protected MessageDeliveryReport nextDeliveryReport(long timeout) throws InterruptedException {
-        return deliveryReportQueue.poll(timeout, TimeUnit.MILLISECONDS);
+    protected MessagePublicationReport nextReport(long timeout) throws InterruptedException {
+        return reportQueue.poll(timeout, TimeUnit.MILLISECONDS);
     }
 }

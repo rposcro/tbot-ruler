@@ -2,7 +2,7 @@ package com.tbot.ruler.appliances;
 
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.MessagePayload;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
 import com.tbot.ruler.broker.payload.OnOffState;
@@ -93,10 +93,10 @@ public class OnOffApplianceTest extends AbstractApplianceTest {
         assertEquals(OnOffState.class, forwardMessage.get().getPayload().getClass());
         assertEquals(expectedStateValue, forwardMessage.get().getPayloadAs(OnOffState.class).isOn());
 
-        MessageDeliveryReport deliveryReport = MessageDeliveryReport.builder()
+        MessagePublicationReport publicationReport = MessagePublicationReport.builder()
                 .originalMessage(forwardMessage.get())
                 .build();
-        appliance.acceptDeliveryReport(deliveryReport);
+        appliance.acceptPublicationReport(publicationReport);
 
         assertTrue(appliance.getState().isPresent());
         assertEquals(expectedStateValue, appliance.getState().get().isOn());
@@ -116,10 +116,10 @@ public class OnOffApplianceTest extends AbstractApplianceTest {
         assertEquals(OnOffState.class, forwardMessage.get().getPayload().getClass());
         assertEquals(expectedStateValue, forwardMessage.get().getPayloadAs(OnOffState.class).isOn());
 
-        MessageDeliveryReport deliveryReport = MessageDeliveryReport.builder()
+        MessagePublicationReport publicationReport = MessagePublicationReport.builder()
                 .originalMessage(forwardMessage.get())
                 .build();
-        appliance.acceptDeliveryReport(deliveryReport);
+        appliance.acceptPublicationReport(publicationReport);
 
         assertTrue(appliance.getState().isPresent());
         assertEquals(expectedStateValue, appliance.getState().get().isOn());

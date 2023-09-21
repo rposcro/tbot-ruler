@@ -1,6 +1,6 @@
 package com.tbot.ruler.controller;
 
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.service.AppliancesStateService;
@@ -22,20 +22,20 @@ public class StateChangeController extends AbstractController {
     private AppliancesStateService appliancesStateService;
 
     @PatchMapping(value = "/{applianceId}/state/on-off")
-    public ResponseEntity<MessageDeliveryReport> changeBinaryState(
+    public ResponseEntity<MessagePublicationReport> changeBinaryState(
         @PathVariable("applianceId") String applianceId,
         @RequestBody OnOffState onOffState) {
         log.debug("Requested on-off {} state change for {}", onOffState.isOn(), applianceId);
-        MessageDeliveryReport report = appliancesStateService.updateApplianceState(applianceId, onOffState);
+        MessagePublicationReport report = appliancesStateService.updateApplianceState(applianceId, onOffState);
         return response(ResponseEntity.ok()).body(report);
     }
 
     @PatchMapping(value = "/{applianceId}/state/color")
-    public ResponseEntity<MessageDeliveryReport> changeColorState(
+    public ResponseEntity<MessagePublicationReport> changeColorState(
         @PathVariable("applianceId") String applianceId,
         @RequestBody RGBWColor stateUpdate) {
         log.debug("Requested color change for {}", applianceId);
-        MessageDeliveryReport report = appliancesStateService.updateApplianceState(applianceId, stateUpdate);
+        MessagePublicationReport report = appliancesStateService.updateApplianceState(applianceId, stateUpdate);
         return response(ResponseEntity.ok()).body(report);
     }
 }

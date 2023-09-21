@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.jwavez.sensormultilevel;
 import com.rposcro.jwavez.core.commands.supported.sensormultilevel.SensorMultilevelReport;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.Measure;
 import com.tbot.ruler.broker.payload.MeasureQuantity;
 import com.tbot.ruler.things.Actuator;
@@ -37,7 +37,7 @@ public class SensorMultilevelActuator implements Actuator {
     }
 
     @Override
-    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
+    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
     }
 
     @Override

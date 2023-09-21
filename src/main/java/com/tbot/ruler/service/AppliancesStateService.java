@@ -5,7 +5,7 @@ import com.tbot.ruler.exceptions.ServiceException;
 import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.exceptions.ServiceUnavailableException;
 import com.tbot.ruler.broker.SynchronousMessagePublisher;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePayload;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +24,7 @@ public class AppliancesStateService {
     @Autowired
     private AppliancesService appliancesService;
 
-    public MessageDeliveryReport updateApplianceState(String applianceId, Object requestedState) {
+    public MessagePublicationReport updateApplianceState(String applianceId, Object requestedState) {
         Appliance appliance = appliancesService.findApplianceByUuid(applianceId).orElseThrow(
             () -> new ServiceRequestException("No appliance id " + applianceId + " found")
         );
@@ -32,11 +32,11 @@ public class AppliancesStateService {
         return publishMessage(optionalForwardMessage);
     }
 
-    private MessageDeliveryReport publishMessage(Optional<Message> optionalForwardMessage) {
-        MessageDeliveryReport report = optionalForwardMessage
+    private MessagePublicationReport publishMessage(Optional<Message> optionalForwardMessage) {
+        MessagePublicationReport report = optionalForwardMessage
             .map(message -> messagePublisher.publishAndWaitForReport(message, 3000))
-            .orElseThrow(() -> new ServiceException("Unexpected missing delivery report without exception!"));
-        if (!report.deliverySuccessful()) {
+            .orElseThrow(() -> new ServiceException("Unexpected missing publication report without exception!"));
+        if (!report.publicationSuccessful()) {
             throw new ServiceUnavailableException("Some or all items are unavailable for messaging", report.getFailedReceivers());
         }
         return report;

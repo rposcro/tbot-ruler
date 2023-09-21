@@ -8,15 +8,15 @@ import lombok.Singular;
 import java.util.Set;
 
 @Getter
-public class MessageDeliveryReport {
+public class MessagePublicationReport {
 
     private Message originalMessage;
     private Set<String> failedReceivers;
     private Set<String> successfulReceivers;
     private boolean senderSuspended;
 
-    @Builder(builderClassName = "DeliveryReportBuilder")
-    public MessageDeliveryReport(
+    @Builder(builderClassName = "publicationReportBuilder")
+    public MessagePublicationReport(
         @NonNull @Singular Set<String> failedReceivers,
         @NonNull @Singular Set<String> successfulReceivers,
         @NonNull Message originalMessage,
@@ -35,15 +35,15 @@ public class MessageDeliveryReport {
         return !senderSuspended && failedReceivers.isEmpty() && successfulReceivers.isEmpty();
     }
 
-    public boolean deliverySuccessful() {
+    public boolean publicationSuccessful() {
         return !senderSuspended && failedReceivers.isEmpty() && !successfulReceivers.isEmpty();
     }
 
-    public boolean deliveryFailed() {
+    public boolean publicationFailed() {
         return !senderSuspended && !failedReceivers.isEmpty() && successfulReceivers.isEmpty();
     }
 
-    public boolean deliveryPartiallyFailed() {
+    public boolean publicationPartiallyFailed() {
         return !senderSuspended && !failedReceivers.isEmpty() && !successfulReceivers.isEmpty();
     }
 }

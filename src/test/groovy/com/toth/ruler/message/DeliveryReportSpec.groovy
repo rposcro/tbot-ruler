@@ -1,6 +1,6 @@
 package com.toth.ruler.message
 
-import com.tbot.ruler.broker.model.MessageDeliveryReport
+import com.tbot.ruler.broker.model.MessagePublicationReport
 import com.tbot.ruler.broker.model.Message
 import com.tbot.ruler.broker.model.payloads.BooleanTogglePayload
 
@@ -12,7 +12,7 @@ class DeliveryReportSpec extends Specification {
     @Unroll
     def "reports: #testName"() {
         given:
-        MessageDeliveryReport.DeliveryReportBuilder reportBuilder = MessageDeliveryReport.builder()
+        MessagePublicationReport.DeliveryReportBuilder reportBuilder = MessagePublicationReport.builder()
             .originalMessage(Message.builder()
                 .senderId(new EmitterId("1234"))
                 .payload(BooleanTogglePayload.TOGGLE_PAYLOAD)
@@ -22,13 +22,13 @@ class DeliveryReportSpec extends Specification {
         successfulItems.stream().forEach({ item -> reportBuilder.successfulReceiver(new ItemId("" + item)) });
 
         when:
-        MessageDeliveryReport report = reportBuilder.build();
+        MessagePublicationReport report = reportBuilder.build();
 
         then:
         report.noReceiversFound() == noReceivers;
-        report.deliverySuccessful() == success
-        report.deliveryFailed() == failed;
-        report.deliveryPartiallyFailed() == partFailed;
+        report.publicationSuccessful() == success
+        report.publicationFailed() == failed;
+        report.publicationPartiallyFailed() == partFailed;
 
         where:
         testName | failedItems | successfulItems | noReceivers | success | failed | partFailed

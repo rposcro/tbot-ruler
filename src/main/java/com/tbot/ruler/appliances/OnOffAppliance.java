@@ -3,7 +3,7 @@ package com.tbot.ruler.appliances;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePayload;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
@@ -37,10 +37,10 @@ public class OnOffAppliance extends AbstractAppliance<OnOffState> {
     }
 
     @Override
-    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
-        super.acceptDeliveryReport(deliveryReport);
-        if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
-            setState(deliveryReport.getOriginalMessage().getPayload());
+    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
+        super.acceptPublicationReport(publicationReport);
+        if (publicationReport.publicationSuccessful() || publicationReport.noReceiversFound()) {
+            setState(publicationReport.getOriginalMessage().getPayload());
             getPersistenceService().persist(this.getUuid(), state.get());
         }
     }

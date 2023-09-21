@@ -2,7 +2,7 @@ package com.tbot.ruler.appliances;
 
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.MessagePayload;
 import com.tbot.ruler.broker.payload.Measure;
 import com.tbot.ruler.service.ApplianceStatePersistenceService;
@@ -31,10 +31,10 @@ public class MeasureAppliance extends AbstractAppliance<Measure> {
     }
 
     @Override
-    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
-        super.acceptDeliveryReport(deliveryReport);
-        if (deliveryReport.deliverySuccessful() || deliveryReport.noReceiversFound()) {
-            setState(deliveryReport.getOriginalMessage().getPayloadAs(Measure.class));
+    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
+        super.acceptPublicationReport(publicationReport);
+        if (publicationReport.publicationSuccessful() || publicationReport.noReceiversFound()) {
+            setState(publicationReport.getOriginalMessage().getPayloadAs(Measure.class));
             getPersistenceService().persist(this.getUuid(), measureState.get());
         }
     }

@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.jwavez.basicset;
 
 import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
@@ -51,7 +51,7 @@ public class BasicSetActuator extends AbstractItem implements Actuator {
     }
 
     @Override
-    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
+    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
     }
 
     private Object messagePayload(byte commandValue) {

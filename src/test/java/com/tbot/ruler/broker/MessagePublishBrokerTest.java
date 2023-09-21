@@ -2,7 +2,7 @@ package com.tbot.ruler.broker;
 
 import com.tbot.ruler.exceptions.MessageException;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.service.things.BindingsService;
 import org.junit.jupiter.api.AfterEach;
@@ -76,7 +76,7 @@ public class MessagePublishBrokerTest {
         when(bindingsService.findReceiverByUuid(eq("receiver-2"))).thenReturn(receiver);
 
         messageQueueComponent.enqueueMessage(message);
-        MessageDeliveryReport deliveryReport = messageQueueComponent.nextDeliveryReport(100);
+        MessagePublicationReport publicationReport = messageQueueComponent.nextReport(100);
 
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
         verify(receiver, times(2)).acceptMessage(messageCaptor.capture());
@@ -85,16 +85,16 @@ public class MessagePublishBrokerTest {
         assertEquals(message, messageCaptor.getAllValues().get(0));
         assertEquals(message, messageCaptor.getAllValues().get(1));
 
-        assertEquals(message, deliveryReport.getOriginalMessage());
-        assertFalse(deliveryReport.isSenderSuspended());
-        assertTrue(deliveryReport.deliverySuccessful());
-        assertFalse(deliveryReport.deliveryFailed());
-        assertFalse(deliveryReport.deliveryPartiallyFailed());
-        assertFalse(deliveryReport.noReceiversFound());
+        assertEquals(message, publicationReport.getOriginalMessage());
+        assertFalse(publicationReport.isSenderSuspended());
+        assertTrue(publicationReport.publicationSuccessful());
+        assertFalse(publicationReport.publicationFailed());
+        assertFalse(publicationReport.publicationPartiallyFailed());
+        assertFalse(publicationReport.noReceiversFound());
     }
 
     @Test
-    public void deliveryReportFailedWhenAllReceiversFail() throws Exception {
+    public void publicationReportFailedWhenAllReceiversFail() throws Exception {
         final String senderId = "mocked-sender-id";
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
         final MessageReceiver receiver = Mockito.mock(MessageReceiver.class);
@@ -106,20 +106,20 @@ public class MessagePublishBrokerTest {
         doThrow(new MessageException("terefere")).when(receiver).acceptMessage(eq(message));
 
         messageQueueComponent.enqueueMessage(message);
-        MessageDeliveryReport deliveryReport = messageQueueComponent.nextDeliveryReport(100);
+        MessagePublicationReport publicationReport = messageQueueComponent.nextReport(100);
 
         verify(receiver, times(2)).acceptMessage(eq(message));
 
-        assertEquals(message, deliveryReport.getOriginalMessage());
-        assertFalse(deliveryReport.isSenderSuspended());
-        assertFalse(deliveryReport.deliverySuccessful());
-        assertTrue(deliveryReport.deliveryFailed());
-        assertFalse(deliveryReport.deliveryPartiallyFailed());
-        assertFalse(deliveryReport.noReceiversFound());
+        assertEquals(message, publicationReport.getOriginalMessage());
+        assertFalse(publicationReport.isSenderSuspended());
+        assertFalse(publicationReport.publicationSuccessful());
+        assertTrue(publicationReport.publicationFailed());
+        assertFalse(publicationReport.publicationPartiallyFailed());
+        assertFalse(publicationReport.noReceiversFound());
     }
 
     @Test
-    public void deliveryReportPartiallyFailedWhenSomeReceiversFail() throws Exception {
+    public void publicationReportPartiallyFailedWhenSomeReceiversFail() throws Exception {
         final String senderId = "mocked-sender-id";
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
         final MessageReceiver receiver = Mockito.mock(MessageReceiver.class);
@@ -132,38 +132,38 @@ public class MessagePublishBrokerTest {
         doNothing().doThrow(new MessageException("terefere")).when(receiver).acceptMessage(eq(message));
 
         messageQueueComponent.enqueueMessage(message);
-        MessageDeliveryReport deliveryReport = messageQueueComponent.nextDeliveryReport(100);
+        MessagePublicationReport publicationReport = messageQueueComponent.nextReport(100);
 
         verify(receiver, times(2)).acceptMessage(eq(message));
 
-        assertEquals(message, deliveryReport.getOriginalMessage());
-        assertFalse(deliveryReport.isSenderSuspended());
-        assertFalse(deliveryReport.deliverySuccessful());
-        assertFalse(deliveryReport.deliveryFailed());
-        assertTrue(deliveryReport.deliveryPartiallyFailed());
-        assertFalse(deliveryReport.noReceiversFound());
+        assertEquals(message, publicationReport.getOriginalMessage());
+        assertFalse(publicationReport.isSenderSuspended());
+        assertFalse(publicationReport.publicationSuccessful());
+        assertFalse(publicationReport.publicationFailed());
+        assertTrue(publicationReport.publicationPartiallyFailed());
+        assertFalse(publicationReport.noReceiversFound());
     }
 
     @Test
-    public void deliveryReportWhenNoReceiversFound() throws Exception {
+    public void publicationReportWhenNoReceiversFound() throws Exception {
         final String senderId = "mocked-sender-id";
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
 
         when(bindingsService.findReceiversUuidsBySenderUuid(eq(senderId))).thenReturn(Collections.emptyList());
 
         messageQueueComponent.enqueueMessage(message);
-        MessageDeliveryReport deliveryReport = messageQueueComponent.nextDeliveryReport(100);
+        MessagePublicationReport publicationReport = messageQueueComponent.nextReport(100);
 
-        assertEquals(message, deliveryReport.getOriginalMessage());
-        assertFalse(deliveryReport.isSenderSuspended());
-        assertFalse(deliveryReport.deliverySuccessful());
-        assertFalse(deliveryReport.deliveryFailed());
-        assertFalse(deliveryReport.deliveryPartiallyFailed());
-        assertTrue(deliveryReport.noReceiversFound());
+        assertEquals(message, publicationReport.getOriginalMessage());
+        assertFalse(publicationReport.isSenderSuspended());
+        assertFalse(publicationReport.publicationSuccessful());
+        assertFalse(publicationReport.publicationFailed());
+        assertFalse(publicationReport.publicationPartiallyFailed());
+        assertTrue(publicationReport.noReceiversFound());
     }
 
     @Test
-    public void deliveryReportWhenSenderSuspended() throws Exception {
+    public void publicationReportWhenSenderSuspended() throws Exception {
         final String senderId = "mocked-sender-id";
         final Message message = Message.builder().senderId(senderId).payload(Notification.HEARTBEAT).build();
 
@@ -171,13 +171,13 @@ public class MessagePublishBrokerTest {
         when(messagePublicationManager.isSenderSuspended(eq(senderId))).thenReturn(true);
 
         messageQueueComponent.enqueueMessage(message);
-        MessageDeliveryReport deliveryReport = messageQueueComponent.nextDeliveryReport(100);
+        MessagePublicationReport publicationReport = messageQueueComponent.nextReport(100);
 
-        assertEquals(message, deliveryReport.getOriginalMessage());
-        assertTrue(deliveryReport.isSenderSuspended());
-        assertFalse(deliveryReport.deliverySuccessful());
-        assertFalse(deliveryReport.deliveryFailed());
-        assertFalse(deliveryReport.deliveryPartiallyFailed());
-        assertFalse(deliveryReport.noReceiversFound());
+        assertEquals(message, publicationReport.getOriginalMessage());
+        assertTrue(publicationReport.isSenderSuspended());
+        assertFalse(publicationReport.publicationSuccessful());
+        assertFalse(publicationReport.publicationFailed());
+        assertFalse(publicationReport.publicationPartiallyFailed());
+        assertFalse(publicationReport.noReceiversFound());
     }
 }

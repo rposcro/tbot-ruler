@@ -40,7 +40,7 @@ public class AppliancesController extends AbstractController {
     @GetMapping(value = "/{applianceId}")
     public ResponseEntity<ApplianceResponse> getAppliance(@PathVariable("applianceId") String applianceId) {
         Appliance appliance = appliancesService.findApplianceByUuid(applianceId)
-            .orElseThrow(() -> new ServiceException("Unexpected missing delivery report without exception!"));
+            .orElseThrow(() -> new ServiceException("Unexpected missing publication report without exception!"));
         ApplianceResponse entity = fromAppliance(appliance);
         return response(ResponseEntity.ok())
             .body(entity);

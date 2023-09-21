@@ -1,9 +1,9 @@
 package com.tbot.ruler.broker;
 
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 
 @FunctionalInterface
 public interface MessageSender {
 
-    void acceptDeliveryReport(MessageDeliveryReport deliveryReport);
+    void acceptPublicationReport(MessagePublicationReport publicationReport);
 }

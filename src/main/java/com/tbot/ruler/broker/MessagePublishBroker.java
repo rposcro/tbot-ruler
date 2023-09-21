@@ -1,8 +1,8 @@
 package com.tbot.ruler.broker;
 
 import com.tbot.ruler.exceptions.MessageException;
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
-import com.tbot.ruler.broker.model.MessageDeliveryReport.DeliveryReportBuilder;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport.publicationReportBuilder;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.service.things.BindingsService;
 import lombok.Builder;
@@ -35,16 +35,16 @@ public class MessagePublishBroker implements Runnable {
         while(true) {
             try {
                 Message message = messageQueue.nextMessage();
-                MessageDeliveryReport deliveryReport = dispatchMessage(message);
-                messageQueue.enqueueDeliveryReport(deliveryReport);
+                MessagePublicationReport publicationReport = dispatchMessage(message);
+                messageQueue.enqueueReport(publicationReport);
             } catch(Exception e) {
                 log.error("Dispatch interrupted by unexpected internal error", e);
             }
         }
     }
 
-    private MessageDeliveryReport dispatchMessage(Message message) {
-        DeliveryReportBuilder reportBuilder = MessageDeliveryReport.builder().originalMessage(message);
+    private MessagePublicationReport dispatchMessage(Message message) {
+        publicationReportBuilder reportBuilder = MessagePublicationReport.builder().originalMessage(message);
         Collection<String> receivers = extractReceivers(message);
 
         if (messagePublicationManager.isSenderSuspended(message.getSenderId())) {

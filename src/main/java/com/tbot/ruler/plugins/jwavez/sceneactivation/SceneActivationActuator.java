@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.jwavez.sceneactivation;
 
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
 import com.tbot.ruler.things.Actuator;
@@ -44,7 +44,7 @@ public class SceneActivationActuator implements Actuator {
     }
 
     @Override
-    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
+    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
     }
 
     @Override

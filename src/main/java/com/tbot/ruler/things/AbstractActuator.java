@@ -1,6 +1,6 @@
 package com.tbot.ruler.things;
 
-import com.tbot.ruler.broker.model.MessageDeliveryReport;
+import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.task.Task;
 import lombok.Getter;
@@ -28,6 +28,6 @@ public abstract class AbstractActuator extends AbstractItem implements Actuator 
     }
 
     @Override
-    public void acceptDeliveryReport(MessageDeliveryReport deliveryReport) {
+    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
     }
 }
