@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 public class SingleIntervalEmissionTask implements Runnable {
 
     private final SingleIntervalConfiguration configuration;
-    private final SingleIntervalStateAgent stateAgent;
+    private final SingleIntervalActuatorState stateAgent;
     private final ZoneId zoneId;
     private final MessagePublisher messagePublisher;
     private final String emitterId;
@@ -33,7 +33,7 @@ public class SingleIntervalEmissionTask implements Runnable {
     @Builder
     public SingleIntervalEmissionTask(
             @NonNull SingleIntervalConfiguration configuration,
-            @NonNull SingleIntervalStateAgent stateAgent,
+            @NonNull SingleIntervalActuatorState stateAgent,
             @NonNull ZoneId zoneId,
             @NonNull MessagePublisher messagePublisher,
             @NonNull String emitterId,

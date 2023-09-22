@@ -8,4 +8,8 @@ public interface Actuator extends Subject, MessageReceiver, MessageSender {
 
     default void acceptPublicationReport(MessagePublicationReport publicationReport) {
     }
+
+    default SubjectState getState() {
+        return null;
+    };
 }

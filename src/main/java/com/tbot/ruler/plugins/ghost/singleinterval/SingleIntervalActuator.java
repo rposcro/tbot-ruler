@@ -3,6 +3,7 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.subjects.AbstractActuator;
+import com.tbot.ruler.subjects.SubjectState;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.NonNull;
@@ -14,22 +15,27 @@ import java.util.Collection;
 @Slf4j
 public class SingleIntervalActuator extends AbstractActuator {
 
-    private final SingleIntervalStateAgent singleIntervalStateAgent;
+    private final SingleIntervalActuatorState singleIntervalActuatorState;
 
     @Builder
     public SingleIntervalActuator(
             @NonNull String uuid,
             @NonNull String name,
             String description,
-            @NonNull SingleIntervalStateAgent singleIntervalStateAgent,
+            @NonNull SingleIntervalActuatorState singleIntervalActuatorState,
             @NonNull @Singular Collection<Task> asynchronousTasks) {
         super(uuid, name, description, asynchronousTasks);
-        this.singleIntervalStateAgent = singleIntervalStateAgent;
+        this.singleIntervalActuatorState = singleIntervalActuatorState;
     }
 
     @Override
     public void acceptMessage(Message message) {
-        singleIntervalStateAgent.setActive(message.getPayloadAs(OnOffState.class).isOn());
-        log.info("Actuator {} active flag changed to {}", this.getUuid(), singleIntervalStateAgent.isActive());
+        singleIntervalActuatorState.setActive(message.getPayloadAs(OnOffState.class).isOn());
+        log.info("Actuator {} active flag changed to {}", this.getUuid(), singleIntervalActuatorState.isActive());
+    }
+
+    @Override
+    public SubjectState getState() {
+        return this.singleIntervalActuatorState;
     }
 }

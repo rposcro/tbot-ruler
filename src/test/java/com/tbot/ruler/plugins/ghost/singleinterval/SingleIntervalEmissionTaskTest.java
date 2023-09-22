@@ -151,7 +151,7 @@ public class SingleIntervalEmissionTaskTest {
     }
 
     private SingleIntervalEmissionTask createTask(int startHour, int endHour, long variation, boolean active) {
-        SingleIntervalStateAgent stateAgent = new SingleIntervalStateAgent();
+        SingleIntervalActuatorState stateAgent = new SingleIntervalActuatorState("act-test-id", false);
         stateAgent.setActive(active);
         SingleIntervalConfiguration configuration = SingleIntervalConfiguration.builder()
                 .activationTime(LocalTime.of(startHour, 0))
