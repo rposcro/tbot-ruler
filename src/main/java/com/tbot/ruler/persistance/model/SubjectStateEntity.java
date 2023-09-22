@@ -15,5 +15,5 @@ public class SubjectStateEntity {
     private String subjectUuid;
 
     @JsonProperty(required = true)
-    private JsonNode state;
+    private JsonNode payload;
 }

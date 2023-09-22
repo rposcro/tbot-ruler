@@ -22,20 +22,20 @@ public class SingleIntervalActuatorBuilder extends GhostActuatorBuilder {
     @Override
     public Actuator buildActuator(ActuatorEntity actuatorEntity, MessagePublisher messagePublisher, GhostThingConfiguration thingConfiguration) {
         SingleIntervalConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SingleIntervalConfiguration.class);
-        SingleIntervalActuatorState actuatorState = new SingleIntervalActuatorState(actuatorEntity.getActuatorUuid(), false);
+        SingleIntervalAgent actuatorAgent = new SingleIntervalAgent(actuatorEntity.getActuatorUuid(), false);
         Runnable emissionTask = SingleIntervalEmissionTask.builder()
                 .configuration(configuration)
                 .emitterId(actuatorEntity.getActuatorUuid())
                 .messagePublisher(messagePublisher)
                 .zoneId(ZoneId.of(thingConfiguration.getTimeZone()))
-                .stateAgent(actuatorState)
+                .singleIntervalAgent(actuatorAgent)
                 .build();
 
         return SingleIntervalActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
-                .singleIntervalActuatorState(actuatorState)
+                .singleIntervalAgent(actuatorAgent)
                 .asynchronousTask(Task.startUpTask(emissionTask))
                 .asynchronousTask(Task.triggerableTask(emissionTask, configuration.getEmissionIntervalMinutes() * 60_000))
                 .build();

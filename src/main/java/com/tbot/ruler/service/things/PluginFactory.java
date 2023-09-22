@@ -21,6 +21,8 @@ public class PluginFactory {
     private ServiceProvider serviceProvider;
     @Autowired
     private MessagePublisher messagePublisher;
+    @Autowired
+    private SubjectStatePersistenceService subjectStatePersistenceService;
 
     public List<Plugin> buildPlugins(List<PluginEntity> pluginEntities) {
         List<Plugin> plugins = new LinkedList<>();
@@ -42,6 +44,7 @@ public class PluginFactory {
                 .pluginEntity(pluginEntity)
                 .serviceProvider(serviceProvider)
                 .messagePublisher(messagePublisher)
+                .subjectStatePersistenceService(subjectStatePersistenceService)
                 .build();
         PluginBuilder builder = instantiateBuilder(pluginEntity);
         return builder.buildPlugin(context);

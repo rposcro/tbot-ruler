@@ -1,22 +1,16 @@
 package com.tbot.ruler.subjects;
 
-import com.tbot.ruler.exceptions.MessageUnsupportedException;
+import lombok.Builder;
+import lombok.Getter;
 
-public interface SubjectState {
+@Getter
+@Builder
+public final class SubjectState<T> {
 
-    String getSubjectUuid();
-    Object getPayload();
+    String subjectUuid;
+    T payload;
 
-    default boolean isPayloadAs(Class<?> clazz) {
-        return getPayload().getClass().isAssignableFrom(clazz);
-    }
-
-    default <T> T getPayloadAs(Class<T> clazz) {
-        try {
-            return clazz.cast(this.getPayload());
-        } catch(ClassCastException e) {
-            throw new MessageUnsupportedException(
-                    String.format("Illegal payload type %s while expected %s", getPayload().getClass(), clazz));
-        }
+    public void updatePayload(T payload) {
+        this.payload = payload;
     }
 }

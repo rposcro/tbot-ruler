@@ -1,10 +1,12 @@
 package com.tbot.ruler.configuration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.persistance.json.JsonFileActuatorsRepository;
 import com.tbot.ruler.persistance.json.JsonFileAppliancesRepository;
 import com.tbot.ruler.persistance.json.JsonFileBindingsRepository;
 import com.tbot.ruler.persistance.json.JsonFilePluginsRepository;
 import com.tbot.ruler.persistance.json.JsonFileRepositoryReader;
+import com.tbot.ruler.persistance.json.JsonFileSubjectStatesRepository;
 import com.tbot.ruler.persistance.json.JsonFileThingsRepository;
 import com.tbot.ruler.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
@@ -62,6 +64,15 @@ public class RepositoryConfiguration {
     public JsonFileBindingsRepository bindingsRepository(JsonFileRepositoryReader repositoryReader) {
         return JsonFileBindingsRepository.builder()
                 .repositoryReader(repositoryReader)
+                .build();
+    }
+
+    @Bean
+    public JsonFileSubjectStatesRepository subjectStatesRepository(
+            @Value("${ruler.cache.states.path}") String statesPath, ObjectMapper objectMapper) {
+        return JsonFileSubjectStatesRepository.builder()
+                .statesPath(statesPath)
+                .objectMapper(objectMapper)
                 .build();
     }
 }

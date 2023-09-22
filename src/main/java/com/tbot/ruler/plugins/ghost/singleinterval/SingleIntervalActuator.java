@@ -15,27 +15,27 @@ import java.util.Collection;
 @Slf4j
 public class SingleIntervalActuator extends AbstractActuator {
 
-    private final SingleIntervalActuatorState singleIntervalActuatorState;
+    private final SingleIntervalAgent singleIntervalAgent;
 
     @Builder
     public SingleIntervalActuator(
             @NonNull String uuid,
             @NonNull String name,
             String description,
-            @NonNull SingleIntervalActuatorState singleIntervalActuatorState,
+            @NonNull SingleIntervalAgent singleIntervalAgent,
             @NonNull @Singular Collection<Task> asynchronousTasks) {
         super(uuid, name, description, asynchronousTasks);
-        this.singleIntervalActuatorState = singleIntervalActuatorState;
+        this.singleIntervalAgent = singleIntervalAgent;
     }
 
     @Override
     public void acceptMessage(Message message) {
-        singleIntervalActuatorState.setActive(message.getPayloadAs(OnOffState.class).isOn());
-        log.info("Actuator {} active flag changed to {}", this.getUuid(), singleIntervalActuatorState.isActive());
+        singleIntervalAgent.setActive(message.getPayloadAs(OnOffState.class).isOn());
+        log.info("Actuator {} active flag changed to {}", this.getUuid(), singleIntervalAgent.isActive());
     }
 
     @Override
     public SubjectState getState() {
-        return this.singleIntervalActuatorState;
+        return singleIntervalAgent.getCurrentState();
     }
 }
