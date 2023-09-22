@@ -13,13 +13,10 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class BrokerMessageRequest {
+public class ActuatorStateUpdateRequest {
 
     @JsonProperty(required = true)
     private String widgetUuid;
-
-    @JsonProperty(required = true)
-    private String receiverUuid;
 
     @JsonProperty(defaultValue = "Object")
     private String payloadType;

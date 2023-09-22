@@ -7,8 +7,9 @@ import com.tbot.ruler.broker.SynchronousMessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.broker.payload.RGBWColor;
-import com.tbot.ruler.controller.payload.BrokerMessageRequest;
+import com.tbot.ruler.controller.payload.ActuatorStateUpdateRequest;
 import com.tbot.ruler.exceptions.ServiceRequestException;
+import com.tbot.ruler.service.things.ActuatorsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,43 +24,48 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class BrokerMessageControllerTest {
+public class ActuatorStateControllerTest {
+
+    @Mock
+    private ActuatorsService actuatorsService;
 
     @Mock
     private SynchronousMessagePublisher messagePublisher;
 
-    private BrokerMessageController controller;
+    private ActuatorStateController controller;
 
     @BeforeEach
     public void setUp() {
-        this.controller = new BrokerMessageController(messagePublisher, new ObjectMapper());
+        this.controller = new ActuatorStateController(actuatorsService, messagePublisher, new ObjectMapper());
     }
 
     @Test
     public void sendsObjectMessage() {
         final JsonNode payload = new TextNode("a payload");
-        final BrokerMessageRequest request = mockMessageRequest("Object", payload);
+        final String actuatorUuid = "actuator-uuid";
+        final ActuatorStateUpdateRequest request = mockMessageRequest("Object", payload);
         final ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
 
-        controller.sendMessage(request);
+        controller.updateActuatorState(actuatorUuid, request);
 
         verify(messagePublisher, times(1)).publishAndWaitForReport(messageCaptor.capture());
         assertEquals(request.getWidgetUuid(), messageCaptor.getValue().getSenderId());
-        assertEquals(request.getReceiverUuid(), messageCaptor.getValue().getReceiverId());
+        assertEquals(actuatorUuid, messageCaptor.getValue().getReceiverId());
         assertEquals(payload, messageCaptor.getValue().getPayload());
     }
 
     @Test
     public void sendsOnOffMessage() {
         final JsonNode payload = new ObjectMapper().createObjectNode().put("on", "true");
-        final BrokerMessageRequest request = mockMessageRequest("OnOff", payload);
+        final String actuatorUuid = "actuator-uuid";
+        final ActuatorStateUpdateRequest request = mockMessageRequest("OnOff", payload);
         final ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
 
-        controller.sendMessage(request);
+        controller.updateActuatorState(actuatorUuid, request);
 
         verify(messagePublisher, times(1)).publishAndWaitForReport(messageCaptor.capture());
         assertEquals(request.getWidgetUuid(), messageCaptor.getValue().getSenderId());
-        assertEquals(request.getReceiverUuid(), messageCaptor.getValue().getReceiverId());
+        assertEquals(actuatorUuid, messageCaptor.getValue().getReceiverId());
         assertTrue(messageCaptor.getValue().isPayloadAs(OnOffState.class));
         assertTrue(messageCaptor.getValue().getPayloadAs(OnOffState.class).isOn());
     }
@@ -71,14 +77,15 @@ public class BrokerMessageControllerTest {
                 .put("green", "101")
                 .put("blue", "102")
                 .put("white", "103");
-        final BrokerMessageRequest request = mockMessageRequest("Rgbw", payload);
+        final String actuatorUuid = "actuator-uuid";
+        final ActuatorStateUpdateRequest request = mockMessageRequest("Rgbw", payload);
         final ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
 
-        controller.sendMessage(request);
+        controller.updateActuatorState("actuator-uuid", request);
 
         verify(messagePublisher, times(1)).publishAndWaitForReport(messageCaptor.capture());
         assertEquals(request.getWidgetUuid(), messageCaptor.getValue().getSenderId());
-        assertEquals(request.getReceiverUuid(), messageCaptor.getValue().getReceiverId());
+        assertEquals(actuatorUuid, messageCaptor.getValue().getReceiverId());
         assertTrue(messageCaptor.getValue().isPayloadAs(RGBWColor.class));
 
         assertEquals(100, messageCaptor.getValue().getPayloadAs(RGBWColor.class).getRed());
@@ -89,14 +96,13 @@ public class BrokerMessageControllerTest {
 
     @Test
     public void failsOnUnknownPayloadType() {
-        final BrokerMessageRequest request = mockMessageRequest("Fake", null);
-        assertThrows(ServiceRequestException.class, () -> controller.sendMessage(request));
+        final ActuatorStateUpdateRequest request = mockMessageRequest("Fake", null);
+        assertThrows(ServiceRequestException.class, () -> controller.updateActuatorState("actuator-uuid", request));
     }
 
-    private BrokerMessageRequest mockMessageRequest(String payloadType, JsonNode payload) {
-        return BrokerMessageRequest.builder()
+    private ActuatorStateUpdateRequest mockMessageRequest(String payloadType, JsonNode payload) {
+        return ActuatorStateUpdateRequest.builder()
                 .widgetUuid("widget-uuid")
-                .receiverUuid("receiver-uuid")
                 .payloadType(payloadType)
                 .payload(payload)
                 .build();
