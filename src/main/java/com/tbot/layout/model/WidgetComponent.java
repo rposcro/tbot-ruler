@@ -7,6 +7,7 @@ import lombok.Setter;
 @Setter
 public class WidgetComponent {
 
-    private String applianceId;
-    private String applianceClass;
+    private String componentUuid;
+    private String componentClass;
+    private String actuatorUuid;
 }

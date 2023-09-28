@@ -10,13 +10,13 @@ import com.tbot.ruler.controller.payload.ActuatorStatePayloadType;
 import com.tbot.ruler.controller.payload.ActuatorStateUpdateRequest;
 import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.service.things.ActuatorsService;
-import com.tbot.ruler.subjects.SubjectState;
+import com.tbot.ruler.subjects.ActuatorState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -26,14 +26,14 @@ import java.io.IOException;
 @Slf4j
 @RestController
 @RequestMapping(value = "/actuators")
-public class ActuatorStateController extends AbstractController {
+public class ActuatorsStateController extends AbstractController {
 
     private final ActuatorsService actuatorsService;
     private final SynchronousMessagePublisher messagePublisher;
     private final ObjectMapper objectMapper;
 
     @Autowired
-    public ActuatorStateController(
+    public ActuatorsStateController(
             ActuatorsService actuatorsService,
             SynchronousMessagePublisher messagePublisher,
             ObjectMapper objectMapper) {
@@ -43,17 +43,26 @@ public class ActuatorStateController extends AbstractController {
     }
 
     @GetMapping("/{actuatorUuid}/state")
-    public ResponseEntity<SubjectState> getActuatorState(@PathVariable("actuatorUuid") String actuatorUuid) {
+    public ResponseEntity<ActuatorState> getActuatorState(@PathVariable("actuatorUuid") String actuatorUuid) {
         log.debug("Requested actuator state for uuid {}", actuatorUuid);
         return response(ResponseEntity.ok()).body(actuatorsService.getActuatorState(actuatorUuid));
     }
 
-    @PostMapping("/{actuatorUuid}/state")
+    @PutMapping("/{actuatorUuid}/state")
     public ResponseEntity<MessagePublicationReport> updateActuatorState(
             @PathVariable("actuatorUuid") String actuatorUuid,
             @RequestBody ActuatorStateUpdateRequest stateUpdateRequest) {
         log.debug("Requested actuator state update {}", stateUpdateRequest);
         Message message = toMessage(actuatorUuid, stateUpdateRequest);
+        MessagePublicationReport report = messagePublisher.publishAndWaitForReport(message);
+        return response(ResponseEntity.ok()).body(report);
+    }
+
+    @PutMapping("/state")
+    public ResponseEntity<MessagePublicationReport> broadcastStateUpdate(
+            @RequestBody ActuatorStateUpdateRequest stateUpdateRequest) {
+        log.debug("Requested actuator state update broadcast {}", stateUpdateRequest);
+        Message message = toMessage(null, stateUpdateRequest);
         MessagePublicationReport report = messagePublisher.publishAndWaitForReport(message);
         return response(ResponseEntity.ok()).body(report);
     }

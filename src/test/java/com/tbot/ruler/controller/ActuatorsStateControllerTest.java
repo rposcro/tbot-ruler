@@ -24,7 +24,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 @ExtendWith(MockitoExtension.class)
-public class ActuatorStateControllerTest {
+public class ActuatorsStateControllerTest {
 
     @Mock
     private ActuatorsService actuatorsService;
@@ -32,11 +32,11 @@ public class ActuatorStateControllerTest {
     @Mock
     private SynchronousMessagePublisher messagePublisher;
 
-    private ActuatorStateController controller;
+    private ActuatorsStateController controller;
 
     @BeforeEach
     public void setUp() {
-        this.controller = new ActuatorStateController(actuatorsService, messagePublisher, new ObjectMapper());
+        this.controller = new ActuatorsStateController(actuatorsService, messagePublisher, new ObjectMapper());
     }
 
     @Test

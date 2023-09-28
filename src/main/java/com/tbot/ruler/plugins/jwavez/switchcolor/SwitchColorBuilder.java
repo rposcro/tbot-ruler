@@ -20,7 +20,7 @@ public class SwitchColorBuilder extends JWaveZActuatorBuilder {
     public Actuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) throws PluginException {
         SwitchColorConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SwitchColorConfiguration.class);
         return SwitchColorActuator.builder()
-                .id(actuatorEntity.getActuatorUuid())
+                .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
                 .commandSender(pluginContext.getJwzCommandSender())

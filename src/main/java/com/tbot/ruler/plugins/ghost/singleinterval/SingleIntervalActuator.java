@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.subjects.AbstractActuator;
-import com.tbot.ruler.subjects.SubjectState;
+import com.tbot.ruler.subjects.ActuatorState;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.NonNull;
@@ -35,7 +35,7 @@ public class SingleIntervalActuator extends AbstractActuator {
     }
 
     @Override
-    public SubjectState getState() {
+    public ActuatorState getState() {
         return singleIntervalAgent.getCurrentState();
     }
 }

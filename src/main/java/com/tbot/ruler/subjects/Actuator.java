@@ -9,7 +9,9 @@ public interface Actuator extends Subject, MessageReceiver, MessageSender {
     default void acceptPublicationReport(MessagePublicationReport publicationReport) {
     }
 
-    default SubjectState getState() {
-        return null;
+    default ActuatorState getState() {
+        return ActuatorState.builder()
+                .actuatorUuid(getUuid())
+                .build();
     };
 }

@@ -6,15 +6,16 @@ import com.rposcro.jwavez.core.commands.controlled.builders.switchmultilevel.Swi
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.exceptions.MessageUnsupportedException;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.BinaryStateClaim;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.JWaveZCommandSender;
 import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.ActuatorState;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
+
+import static com.tbot.ruler.plugins.StatesUtil.determineOnOffState;
 
 @Getter
 public class SwitchMultilevelActuator implements Actuator {
@@ -28,6 +29,8 @@ public class SwitchMultilevelActuator implements Actuator {
     private final JWaveZCommandSender commandSender;
 
     private final SwitchMultiLevelCommandBuilder commandBuilder;
+
+    private final ActuatorState<OnOffState> actuatorState;
 
     @Builder
     public SwitchMultilevelActuator(
@@ -45,29 +48,24 @@ public class SwitchMultilevelActuator implements Actuator {
         this.nodeId = nodeId;
         this.commandSender = commandSender;
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchMultiLevelCommandBuilder();
+        this.actuatorState = ActuatorState.<OnOffState>builder()
+                .actuatorUuid(uuid)
+                .build();
     }
+
+    @Override
+    public ActuatorState getState() {
+        return actuatorState;
+    };
 
     @Override
     public void acceptMessage(Message message) {
         try {
-            boolean onFlag;
-
-            if (message.isPayloadAs(BinaryStateClaim.class)) {
-                BinaryStateClaim claim = message.getPayloadAs(BinaryStateClaim.class);
-                if (claim.isToggle()) {
-                    throw new MessageUnsupportedException("Cannot support toggle claim!");
-                }
-                onFlag = claim.isSetOn();
-            } else if (message.isPayloadAs(OnOffState.class)) {
-                OnOffState payload = message.getPayloadAs(OnOffState.class);
-                onFlag = payload.isOn();
-            } else {
-                throw new MessageUnsupportedException("Message of type " + message.getPayload().getClass() + " is not supported here!");
-            }
-
-            ZWaveControlledCommand command = onFlag ? commandBuilder.v2().buildSetMaximumCommand(switchDuration)
+            OnOffState updatedState = determineOnOffState(message, actuatorState.getPayload());
+            ZWaveControlledCommand command = updatedState.isOn() ? commandBuilder.v2().buildSetMaximumCommand(switchDuration)
                     : commandBuilder.v2().buildSetMinimumCommand(switchDuration);
             commandSender.enqueueCommand(nodeId, command);
+            actuatorState.updatePayload(updatedState);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }

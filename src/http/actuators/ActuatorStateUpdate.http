@@ -1,7 +1,7 @@
 ### Update actuator state
 # @name = ActuatorStateUpdate
 
-POST http://{{host-tbot-ruler}}/actuators/actr-799c2261-1e01-4ae0-b92e-321afd705140/state
+PUT http://{{host-tbot-ruler}}/actuators/actr-799c2261-1e01-4ae0-b92e-321afd705140/state
 Content-Type: application/json
 
 {
