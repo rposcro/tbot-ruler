@@ -16,26 +16,20 @@ public class BindingsService {
     @Autowired
     private SubjectLifetimeService subjectLifetimeService;
 
-    @Autowired
-    private AppliancesLifetimeService appliancesLifetimeService;
-
     public Collection<String> findReceiversUuidsBySenderUuid(String senderUuid) {
         return bindingsLifetimeService.getReceiversForSender(senderUuid);
     }
 
     public MessageReceiver findReceiverByUuid(String receiverUuid) {
-        return actuatorOrAppliance(receiverUuid);
+        return findSubject(receiverUuid);
     }
 
     public MessageSender findSenderByUuid(String senderUuid) {
-        return actuatorOrAppliance(senderUuid);
+        return findSubject(senderUuid);
     }
 
-    private <T> T actuatorOrAppliance(String uuid) {
+    private <T> T findSubject(String uuid) {
         T subject = (T) subjectLifetimeService.getActuatorByUuid(uuid);
-        if (subject == null) {
-            subject = (T) appliancesLifetimeService.getApplianceByUuid(uuid);
-        }
         return subject;
     }
 }

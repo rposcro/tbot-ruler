@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-@JsonRootName(value = "appliance")
+@JsonRootName(value = "actuator")
 public class ActuatorResponse {
 
 	@JsonProperty(required = true)

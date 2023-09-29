@@ -1,9 +1,7 @@
 package com.tbot.ruler.controller.console;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.persistance.model.ApplianceEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
-import com.tbot.ruler.service.admin.AppliancesAdminService;
 import com.tbot.ruler.service.admin.BindingsAdminService;
 import com.tbot.ruler.service.admin.PluginsAdminService;
 import com.tbot.ruler.service.admin.ThingsAdminService;
@@ -28,9 +26,6 @@ public class ConsoleController {
     private ThingsAdminService thingsAdminService;
 
     @Autowired
-    private AppliancesAdminService appliancesAdminService;
-
-    @Autowired
     private BindingsAdminService bindingsAdminService;
 
     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
@@ -38,7 +33,6 @@ public class ConsoleController {
         ModelAndView mav = new ModelAndView("home");
         mav.addObject("plugins", pluginsAdminService.allPlugins());
         mav.addObject("things", thingsAdminService.allThings());
-        mav.addObject("appliances", appliancesAdminService.allAppliances());
         return mav;
     }
 
@@ -77,25 +71,6 @@ public class ConsoleController {
         mav.addObject("actuators", thingsAdminService.allActuators());
         mav.addObject("senders", bindingsAdminService.sendersForReceiver(actuatorId));
         mav.addObject("listeners", bindingsAdminService.receiversForSender(actuatorId));
-        return mav;
-    }
-
-    @GetMapping(path = "appliances", produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView appliances() {
-        ModelAndView mav = new ModelAndView("appliances");
-        mav.addObject("appliances", appliancesAdminService.allAppliances());
-        return mav;
-    }
-
-    @GetMapping(path = "appliances/{applianceUuid}", produces = MediaType.TEXT_HTML_VALUE)
-    public ModelAndView applianceById(@PathVariable String applianceUuid) {
-        ModelAndView mav = new ModelAndView("appliances");
-        ApplianceEntity applianceEntity = appliancesAdminService.applianceByUuid(applianceUuid);
-        mav.addObject("applianceId", applianceUuid);
-        mav.addObject("appliance", applianceEntity);
-        mav.addObject("appliances", appliancesAdminService.allAppliances());
-        mav.addObject("senders", bindingsAdminService.sendersForReceiver(applianceUuid));
-        mav.addObject("listeners", bindingsAdminService.receiversForSender(applianceUuid));
         return mav;
     }
 

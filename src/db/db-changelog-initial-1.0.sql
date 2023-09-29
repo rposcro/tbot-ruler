@@ -45,19 +45,6 @@ create table `actuators`
     foreign_key thing_uuid references things (thing_uuid)
 );
 
-drop table if exists `appliances`;
-
-create table `appliances`
-(
-    appliance_id    long            auto_increment,
-    appliance_uuid  varchar(64)     not_null unique,
-    appliance_type  varchar(64)     not null,
-    name            varchar(64)     not null,
-    description     varchar(256),
-
-    primary key (appliance_id)
-);
-
 drop table if exists `bindings`;
 
 create table `bindings`

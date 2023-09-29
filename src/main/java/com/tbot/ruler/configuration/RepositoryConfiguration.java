@@ -2,7 +2,6 @@ package com.tbot.ruler.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.persistance.json.JsonFileActuatorsRepository;
-import com.tbot.ruler.persistance.json.JsonFileAppliancesRepository;
 import com.tbot.ruler.persistance.json.JsonFileBindingsRepository;
 import com.tbot.ruler.persistance.json.JsonFilePluginsRepository;
 import com.tbot.ruler.persistance.json.JsonFileRepositoryReader;
@@ -50,13 +49,6 @@ public class RepositoryConfiguration {
         return JsonFilePluginsRepository.builder()
                 .repositoryReader(repositoryReader)
                 .thingsRepository(thingsRepository)
-                .build();
-    }
-
-    @Bean
-    public JsonFileAppliancesRepository appliancesRepository(JsonFileRepositoryReader repositoryReader) {
-        return JsonFileAppliancesRepository.builder()
-                .repositoryReader(repositoryReader)
                 .build();
     }
 

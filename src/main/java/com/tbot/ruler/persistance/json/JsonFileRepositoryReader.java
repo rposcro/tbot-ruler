@@ -1,7 +1,6 @@
 package com.tbot.ruler.persistance.json;
 
 import com.tbot.ruler.exceptions.ConfigurationException;
-import com.tbot.ruler.persistance.json.dto.ApplianceDTO;
 import com.tbot.ruler.persistance.json.dto.BindingDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
 import com.tbot.ruler.persistance.json.dto.ThingPluginDTO;
@@ -32,17 +31,8 @@ public class JsonFileRepositoryReader {
         this.dtoWrappers = new LinkedList<>();
         dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/plugins", WrapperDTO.class));
         dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/things", WrapperDTO.class));
-        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/appliances", WrapperDTO.class));
         dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/bindings", WrapperDTO.class));
         validateUuids();
-    }
-
-    public List<ApplianceDTO> getApplianceDTOs() {
-        List<ApplianceDTO> dtos = dtoWrappers.stream()
-                .filter(wrapper -> wrapper.appliances != null)
-                .flatMap(wrapper -> wrapper.appliances.stream())
-                .collect(Collectors.toList());
-        return dtos;
     }
 
     public List<ThingPluginDTO> getPluginDTOs() {
@@ -105,7 +95,6 @@ public class JsonFileRepositoryReader {
         Set<String> uuids = new HashSet<>();
         getPluginDTOs().stream().forEach(dto -> considerUuid(uuids, dto.getUuid()));
         getThingDTOs().stream().forEach(dto -> considerUuid(uuids, dto.getUuid()));
-        getApplianceDTOs().stream().forEach(dto -> considerUuid(uuids, dto.getUuid()));
     }
 
     private void considerUuid(Set<String> uuids, String uuid) {
@@ -119,7 +108,6 @@ public class JsonFileRepositoryReader {
     private static class WrapperDTO {
         private List<ThingPluginDTO> plugins;
         private List<ThingDTO> things;
-        private List<ApplianceDTO> appliances;
         private List<BindingDTO> bindings;
     }
 }
