@@ -16,43 +16,43 @@ import java.util.Optional;
 @Slf4j
 public class SensorMultilevelListener extends JWaveZCommandListener<SensorMultilevelReport> {
 
-    private Map<String, List<SensorMultilevelEmitter>> emittersPerKey;
+    private Map<String, List<SensorMultilevelActuator>> actuatorsPerKey;
     private JwzSupportedCommandParser supportedCommandParser;
 
     public SensorMultilevelListener(JwzSupportedCommandParser supportedCommandParser) {
         this.supportedCommandParser = supportedCommandParser;
-        this.emittersPerKey = new HashMap<>();
+        this.actuatorsPerKey = new HashMap<>();
     }
 
-    public void registerEmitter(byte sourceNodeId, SensorMultilevelEmitter emitter) {
-        emittersPerKey.computeIfAbsent(computeKey(sourceNodeId), key -> new LinkedList()).add(emitter);
+    public void registerActuator(byte sourceNodeId, SensorMultilevelActuator actuator) {
+        actuatorsPerKey.computeIfAbsent(computeKey(sourceNodeId), key -> new LinkedList()).add(actuator);
     }
 
-    public void registerEmitter(byte sourceNodeId, byte sourceEndPointId, SensorMultilevelEmitter emitter) {
-        emittersPerKey.computeIfAbsent(computeKey(sourceNodeId, sourceEndPointId), key -> new LinkedList()).add(emitter);
+    public void registerActuator(byte sourceNodeId, byte sourceEndPointId, SensorMultilevelActuator actuator) {
+        actuatorsPerKey.computeIfAbsent(computeKey(sourceNodeId, sourceEndPointId), key -> new LinkedList()).add(actuator);
     }
 
     @Override
     public void handleCommand(SensorMultilevelReport report) {
         log.debug("Handling sensor multilevel report command");
-        String emittersKey = computeKey(report.getSourceNodeId().getId());
-        Optional.ofNullable(emittersPerKey.get(emittersKey))
+        String actuatorKey = computeKey(report.getSourceNodeId().getId());
+        Optional.ofNullable(actuatorsPerKey.get(actuatorKey))
             .map(List::stream)
             .ifPresent(stream -> stream.forEach(
-                    emitter -> emitter.publishMessage(report)));
+                    actuator -> actuator.publishMessage(report)));
     }
 
     @Override
     public void handleEncapsulatedCommand(MultiChannelCommandEncapsulation commandEncapsulation) {
         log.debug("Handling encapsulated sensor multilevel report command");
-        String emittersKey = computeKey(commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndPointId());
-        List<SensorMultilevelEmitter> emitters = emittersPerKey.get(emittersKey);
+        String actuatorKey = computeKey(commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndPointId());
+        List<SensorMultilevelActuator> actuators = actuatorsPerKey.get(actuatorKey);
 
-        if (emitters != null) {
+        if (actuators != null) {
             SensorMultilevelReport report = supportedCommandParser.parseCommand(
                     ImmutableBuffer.overBuffer(commandEncapsulation.getEncapsulatedCommandPayload()),
                     commandEncapsulation.getSourceNodeId());
-            emitters.stream().forEach(emitter -> emitter.publishMessage(report));
+            actuators.stream().forEach(actuator -> actuator.publishMessage(report));
         }
     }
 

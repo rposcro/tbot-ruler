@@ -3,7 +3,6 @@ package com.tbot.ruler;
 import java.util.Optional;
 import java.util.Properties;
 
-import com.tbot.ruler.handlers.RulerApplicationListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

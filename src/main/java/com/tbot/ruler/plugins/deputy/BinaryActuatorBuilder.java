@@ -1,30 +1,31 @@
 package com.tbot.ruler.plugins.deputy;
 
+import com.tbot.ruler.plugins.PluginBuilderContext;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.rest.RestPatchCommand;
 import com.tbot.ruler.rest.RestService;
-import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.builder.ThingBuilderContext;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.builder.dto.ThingDTO;
+import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
+import com.tbot.ruler.persistance.json.dto.ThingDTO;
 
 public class BinaryActuatorBuilder {
 
     private static final String PARAM_PIN = "pin";
     private static final String PATH_BINOUT_TEMPLATE = "binary-outputs/%s";
 
-    public Actuator buildActuator(ThingDTO thingDTO, ActuatorDTO actuatorDTO, ThingBuilderContext builderContext) {
-        return BinaryActuator.builder()
-            .actuatorDTO(actuatorDTO)
-            .binaryChannel(binChannel(thingDTO, actuatorDTO, builderContext))
-            .messagePublisher(builderContext.getMessagePublisher())
-            .build();
+    public Actuator buildActuator(ThingDTO thingDTO, ActuatorDTO actuatorDTO, PluginBuilderContext builderContext) {
+        return null;
+//        return BinaryActuator.builder()
+//            .id(actuatorDTO)
+//            .binaryChannel(binChannel(thingDTO, actuatorDTO, builderContext))
+//            .messagePublisher(builderContext.getMessagePublisher())
+//            .build();
     }
 
-    private BinaryActuatorChannel binChannel(ThingDTO thingDTO, ActuatorDTO actuatorDTO, ThingBuilderContext builderContext) {
+    private BinaryActuatorChannel binChannel(ThingDTO thingDTO, ActuatorDTO actuatorDTO, PluginBuilderContext builderContext) {
         return BinaryActuatorChannel.builder()
-            .patchCommand(restPatchCommand(thingDTO, actuatorDTO, builderContext.getServices().getRestService()))
-            .getCommand(restGetCommand(thingDTO, actuatorDTO, builderContext.getServices().getRestService()))
+            .patchCommand(restPatchCommand(thingDTO, actuatorDTO, builderContext.getServiceProvider().getRestService()))
+            .getCommand(restGetCommand(thingDTO, actuatorDTO, builderContext.getServiceProvider().getRestService()))
             .build();
     }
 

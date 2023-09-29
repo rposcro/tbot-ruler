@@ -9,7 +9,7 @@ import java.util.List;
 @Setter
 public class Widget {
 
-    private String id;
+    private String uuid;
     private String type;
     private String name;
     private String description;

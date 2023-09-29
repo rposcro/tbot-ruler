@@ -14,7 +14,7 @@ import java.util.Map;
 @Slf4j
 public class SwitchBinaryReportListener extends JWaveZCommandListener<BinarySwitchReport> {
 
-    private final Map<String, UpdateSwitchBinaryEmitter> emitters;
+    private final Map<String, UpdateSwitchBinaryActuator> emitters;
     private final JwzSupportedCommandParser commandParser;
 
     public SwitchBinaryReportListener(JwzApplicationSupport applicationSupport) {
@@ -26,7 +26,7 @@ public class SwitchBinaryReportListener extends JWaveZCommandListener<BinarySwit
     public void handleCommand(BinarySwitchReport report) {
         log.debug("Handling switch binary report command");
         byte nodeId = report.getSourceNodeId().getId();
-        UpdateSwitchBinaryEmitter emitter = emitters.get(computeKey(nodeId));
+        UpdateSwitchBinaryActuator emitter = emitters.get(computeKey(nodeId));
 
         if (emitter != null) {
             emitter.acceptCommand(report);
@@ -37,7 +37,7 @@ public class SwitchBinaryReportListener extends JWaveZCommandListener<BinarySwit
     public void handleEncapsulatedCommand(MultiChannelCommandEncapsulation commandEncapsulation) {
         log.info("Handling encapsulated switch binary report command");
         String emittersKey = computeKey(commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndPointId());
-        UpdateSwitchBinaryEmitter emitter = emitters.get(emittersKey);
+        UpdateSwitchBinaryActuator emitter = emitters.get(emittersKey);
 
         if (emitter != null) {
             BinarySwitchReport report = commandParser.parseCommand(
@@ -47,7 +47,7 @@ public class SwitchBinaryReportListener extends JWaveZCommandListener<BinarySwit
         }
     }
 
-    public void registerEmitter(int nodeId, int endPointId, UpdateSwitchBinaryEmitter emitter) {
+    public void registerActuator(int nodeId, int endPointId, UpdateSwitchBinaryActuator emitter) {
         emitters.put(endPointId == 0 ? computeKey((byte) nodeId) : computeKey((byte) nodeId, (byte) endPointId), emitter);
     }
 

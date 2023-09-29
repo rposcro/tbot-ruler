@@ -2,7 +2,7 @@ package com.tbot.ruler.controller;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.tbot.ruler.model.ApplicationInfo;
+import com.tbot.ruler.broker.payload.ApplicationInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;

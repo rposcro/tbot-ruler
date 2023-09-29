@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.ghost.singleinterval;
 
-import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.model.OnOffState;
+import com.tbot.ruler.broker.MessagePublisher;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.ghost.DateTimeRange;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,7 +20,7 @@ import java.util.function.Supplier;
 public class SingleIntervalEmissionTask implements Runnable {
 
     private final SingleIntervalConfiguration configuration;
-    private final SingleIntervalStateAgent stateAgent;
+    private final SingleIntervalAgent singleIntervalAgent;
     private final ZoneId zoneId;
     private final MessagePublisher messagePublisher;
     private final String emitterId;
@@ -33,14 +33,14 @@ public class SingleIntervalEmissionTask implements Runnable {
     @Builder
     public SingleIntervalEmissionTask(
             @NonNull SingleIntervalConfiguration configuration,
-            @NonNull SingleIntervalStateAgent stateAgent,
+            @NonNull SingleIntervalAgent singleIntervalAgent,
             @NonNull ZoneId zoneId,
             @NonNull MessagePublisher messagePublisher,
             @NonNull String emitterId,
             Supplier<LocalDateTime> timer
             ) {
         this.configuration = configuration;
-        this.stateAgent = stateAgent;
+        this.singleIntervalAgent = singleIntervalAgent;
         this.zoneId = zoneId;
         this.messagePublisher = messagePublisher;
         this.emitterId = emitterId;
@@ -50,7 +50,7 @@ public class SingleIntervalEmissionTask implements Runnable {
     }
 
     public void run() {
-        if (stateAgent.isActive()) {
+        if (singleIntervalAgent.isActive()) {
             LocalDateTime now = timer.get();
             boolean activationState = onInterval.isInRange(now);
             messagePublisher.publishMessage(Message.builder()

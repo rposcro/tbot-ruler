@@ -1,9 +1,9 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.model.ReportLog;
-import com.tbot.ruler.model.ReportLogLevel;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.MessagePublisher;
+import com.tbot.ruler.broker.payload.ReportLog;
+import com.tbot.ruler.broker.payload.ReportLogLevel;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.rest.RestResponse;
 import lombok.Builder;
@@ -16,7 +16,7 @@ import java.util.Optional;
 @Slf4j
 class  HealthCheckEmissionTask implements Runnable {
 
-    private String emitterId;
+    private String actuatorId;
     private MessagePublisher messagePublisher;
     private RestGetCommand healthCheckCommand;
 
@@ -24,11 +24,11 @@ class  HealthCheckEmissionTask implements Runnable {
 
     @Builder
     public HealthCheckEmissionTask(
-        @NonNull String emitterId,
+        @NonNull String actuatorId,
         @NonNull MessagePublisher messagePublisher,
         @NonNull RestGetCommand healthCheckCommand
     ) {
-        this.emitterId = emitterId;
+        this.actuatorId = actuatorId;
         this.messagePublisher = messagePublisher;
         this.healthCheckCommand = healthCheckCommand;
         this.isHealthy = Optional.empty();
@@ -37,7 +37,7 @@ class  HealthCheckEmissionTask implements Runnable {
     @Override
     public void run() {
         try {
-            log.info("[EMISSION] Deputy health check for emitter {}", emitterId);
+            log.info("[EMISSION] Deputy health check for actuator {}", actuatorId);
             RestResponse response = healthCheckCommand.sendGet();
             if (response.getStatusCode() == 200) {
                 handleHealthy();
@@ -69,7 +69,7 @@ class  HealthCheckEmissionTask implements Runnable {
 
     private Message buildMessage(String message, ReportLogLevel entryLevel) {
         return Message.builder()
-            .senderId(emitterId)
+            .senderId(actuatorId)
             .payload(ReportLog.builder()
                     .logLevel(entryLevel)
                     .timestamp(ZonedDateTime.now())

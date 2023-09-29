@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.ghost.singleinterval;
 
-import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.model.OnOffState;
+import com.tbot.ruler.broker.MessagePublisher;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.ghost.DateTimeRange;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -151,7 +151,7 @@ public class SingleIntervalEmissionTaskTest {
     }
 
     private SingleIntervalEmissionTask createTask(int startHour, int endHour, long variation, boolean active) {
-        SingleIntervalStateAgent stateAgent = new SingleIntervalStateAgent();
+        SingleIntervalAgent stateAgent = new SingleIntervalAgent("act-test-id", false);
         stateAgent.setActive(active);
         SingleIntervalConfiguration configuration = SingleIntervalConfiguration.builder()
                 .activationTime(LocalTime.of(startHour, 0))
@@ -160,7 +160,7 @@ public class SingleIntervalEmissionTaskTest {
                 .build();
         return SingleIntervalEmissionTask.builder()
                 .configuration(configuration)
-                .stateAgent(stateAgent)
+                .singleIntervalAgent(stateAgent)
                 .emitterId(EMITTER_ID)
                 .zoneId(ZONE_ID)
                 .messagePublisher(messagePublisher)

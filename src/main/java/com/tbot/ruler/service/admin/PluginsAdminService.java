@@ -1,7 +1,7 @@
 package com.tbot.ruler.service.admin;
 
-import com.tbot.ruler.configuration.DTOConfiguration;
-import com.tbot.ruler.things.builder.dto.ThingPluginDTO;
+import com.tbot.ruler.persistance.PluginsRepository;
+import com.tbot.ruler.persistance.model.PluginEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +11,9 @@ import java.util.List;
 public class PluginsAdminService {
 
     @Autowired
-    private DTOConfiguration dtoConfiguration;
+    private PluginsRepository pluginsRepository;
 
-    public List<ThingPluginDTO> allPlugins() {
-        return dtoConfiguration.pluginDTOs();
+    public List<PluginEntity> allPlugins() {
+        return pluginsRepository.findAll();
     }
 }

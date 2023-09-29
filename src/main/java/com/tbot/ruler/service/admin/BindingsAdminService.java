@@ -1,8 +1,7 @@
 package com.tbot.ruler.service.admin;
 
-import com.tbot.ruler.configuration.DTOConfiguration;
-import com.tbot.ruler.things.builder.dto.BindingDTO;
-import com.tbot.ruler.things.builder.dto.ItemDTO;
+import com.tbot.ruler.persistance.BindingsRepository;
+import com.tbot.ruler.persistance.model.BindingEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -15,49 +14,23 @@ import java.util.stream.Collectors;
 public class BindingsAdminService {
 
     @Autowired
-    private DTOConfiguration dtoConfiguration;
+    private BindingsRepository bindingsRepository;
 
-    public List<BindingDTO> allBindings() {
-        return dtoConfiguration.bindingDTOs();
+    public List<BindingEntity> allBindings() {
+        return bindingsRepository.findAll();
     }
 
-    public List<ItemDTO> sendersForItem(String itemId) {
-        List<ItemDTO> senders = dtoConfiguration.bindingDTOs().stream()
-                .filter(binding -> binding.getConsumerIds().contains(itemId))
-                .map(BindingDTO::getSenderId)
-                .map(this::findSenderDTO)
+    public List<String> sendersForReceiver(String receiverUuid) {
+        return bindingsRepository.findAll().stream()
+                .filter(binding -> binding.getReceiverUuid().equals(receiverUuid))
+                .map(BindingEntity::getSenderUuid)
                 .collect(Collectors.toList());
-        return senders;
     }
 
-    public List<ItemDTO> listenersForItem(String itemId) {
-        List<ItemDTO> listeners = dtoConfiguration.bindingDTOs().stream()
-                .filter(binding -> binding.getSenderId().equals(itemId))
-                .flatMap(binding -> binding.getConsumerIds().stream())
-                .map(this::findListenerDTO)
+    public List<String> receiversForSender(String senderUuid) {
+        return bindingsRepository.findAll().stream()
+                .filter(binding -> binding.getSenderUuid().equals(senderUuid))
+                .map(BindingEntity::getReceiverUuid)
                 .collect(Collectors.toList());
-        return listeners;
-    }
-
-    private ItemDTO findSenderDTO(String itemId) {
-        ItemDTO itemDTO = dtoConfiguration.emitterDTOMap().get(itemId);
-        if (itemDTO == null) {
-            itemDTO = dtoConfiguration.actuatorDTOMap().get(itemId);
-        }
-        if (itemDTO == null) {
-            itemDTO = dtoConfiguration.applianceDTOMap().get(itemId);
-        }
-        return itemDTO;
-    }
-
-    private ItemDTO findListenerDTO(String itemId) {
-        ItemDTO itemDTO = dtoConfiguration.collectorDTOMap().get(itemId);
-        if (itemDTO == null) {
-            itemDTO = dtoConfiguration.actuatorDTOMap().get(itemId);
-        }
-        if (itemDTO == null) {
-            itemDTO = dtoConfiguration.applianceDTOMap().get(itemId);
-        }
-        return itemDTO;
     }
 }

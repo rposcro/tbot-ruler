@@ -17,7 +17,7 @@
                 <div class="property">Pick an appliance from the list:
                     <select th:id="itemSelector" onchange="switchItem()">
                         <option></option>
-                        <option th:each="appliance: ${appliances}" th:value="${appliance.id}"
+                        <option th:each="appliance: ${appliances}" th:value="${appliance.uuid}"
                                 th:text="|${appliance.name}|" />
                     </select>
                 </div>
@@ -26,11 +26,11 @@
                 <div class="section">
                     <div class="property">Appliance:
                         <select th:id="itemSelector" onchange="switchItem()">
-                            <option th:each="appliance: ${appliances}" th:value="${appliance.id}"
-                                    th:text="|${appliance.name}|" th:selected="${appliance.id.equals(applianceId)}" />
+                            <option th:each="appliance: ${appliances}" th:value="${appliance.uuid}"
+                                    th:text="|${appliance.name}|" th:selected="${appliance.uuid.equals(applianceId)}" />
                         </select>
                     </div>
-                    <div class="property">UUID: <span class="highlight">[[${appliance.id}]]</span></div>
+                    <div class="property">UUID: <span class="highlight">[[${appliance.uuid}]]</span></div>
                     <div class="property">Name: <span class="highlight">[[${appliance.name}]]</span></div>
                     <div class="property">Description: <span class="highlight">[[${appliance.description}]]</span></div>
                     <div class="property">Category: <span class="highlight">[[${appliance.type}]]</span></div>
