@@ -34,17 +34,18 @@ public class SensorMultilevelListener extends JWaveZCommandListener<SensorMultil
 
     @Override
     public void handleCommand(SensorMultilevelReport report) {
-        log.debug("Handling sensor multilevel report command");
+        log.debug("Handling sensor multilevel report command from {}", report.getSourceNodeId().getId());
         String actuatorKey = computeKey(report.getSourceNodeId().getId());
         Optional.ofNullable(actuatorsPerKey.get(actuatorKey))
             .map(List::stream)
             .ifPresent(stream -> stream.forEach(
-                    actuator -> actuator.publishMessage(report)));
+                    actuator -> actuator.acceptCommand(report)));
     }
 
     @Override
     public void handleEncapsulatedCommand(MultiChannelCommandEncapsulation commandEncapsulation) {
-        log.debug("Handling encapsulated sensor multilevel report command");
+        log.debug("Handling encapsulated sensor multilevel report command from {}-{}",
+                commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndPointId());
         String actuatorKey = computeKey(commandEncapsulation.getSourceNodeId().getId(), commandEncapsulation.getSourceEndPointId());
         List<SensorMultilevelActuator> actuators = actuatorsPerKey.get(actuatorKey);
 
@@ -52,7 +53,7 @@ public class SensorMultilevelListener extends JWaveZCommandListener<SensorMultil
             SensorMultilevelReport report = supportedCommandParser.parseCommand(
                     ImmutableBuffer.overBuffer(commandEncapsulation.getEncapsulatedCommandPayload()),
                     commandEncapsulation.getSourceNodeId());
-            actuators.stream().forEach(actuator -> actuator.publishMessage(report));
+            actuators.stream().forEach(actuator -> actuator.acceptCommand(report));
         }
     }
 

@@ -9,7 +9,9 @@ import com.tbot.ruler.subjects.AbstractActuator;
 import com.tbot.ruler.subjects.ActuatorState;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 @Getter
 public class SensorMultilevelActuator extends AbstractActuator {
 
@@ -30,7 +32,8 @@ public class SensorMultilevelActuator extends AbstractActuator {
         return this.actuatorState;
     }
 
-    public void publishMessage(SensorMultilevelReport report) {
+    public void acceptCommand(SensorMultilevelReport report) {
+        log.debug("Received multilevel report from {} for {}", report.getSourceNodeId(), getUuid());
         Measure measure = extractMeasure(report);
         messagePublisher.publishMessage(Message.builder()
                 .senderId(getUuid())
