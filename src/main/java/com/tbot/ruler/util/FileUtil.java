@@ -50,7 +50,7 @@ public class FileUtil {
 
     public <T> T deserializeJsonFile(File jsonFile, Class<T> dtoClass) {
         try {
-            logFile(jsonFile);
+//            logFile(jsonFile);
             return objectMapper.readValue(jsonFile, dtoClass);
         }
         catch(IOException e) {

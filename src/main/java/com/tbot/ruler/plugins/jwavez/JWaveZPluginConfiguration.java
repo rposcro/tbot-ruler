@@ -10,6 +10,8 @@ public class JWaveZPluginConfiguration {
 
     @JsonProperty(required = true)
     private String moduleDevice;
+    @JsonProperty(defaultValue = "false")
+    private boolean mockDevice;
     @JsonProperty(defaultValue = "5")
     private int reconnectAttempts;
     @JsonProperty(defaultValue = "36")

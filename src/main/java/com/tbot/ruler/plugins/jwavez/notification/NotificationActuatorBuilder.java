@@ -12,12 +12,16 @@ public class NotificationActuatorBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "notification";
 
-    public NotificationActuatorBuilder() {
-        super(REFERENCE);
+    private final NotificationCommandListener commandListener;
+
+    public NotificationActuatorBuilder(JWaveZPluginContext pluginContext) {
+        super(REFERENCE, pluginContext);
+        this.commandListener = new NotificationCommandListener(pluginContext.getJwzApplicationSupport().supportedCommandParser());
+        pluginContext.getJwzSerialHandler().addCommandListener(NotificationCommandType.NOTIFICATION_REPORT, commandListener);
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity) {
         NotificationConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), NotificationConfiguration.class);
         NotificationActuator actuator = NotificationActuator.builder()
                 .id(actuatorEntity.getActuatorUuid())
@@ -27,10 +31,7 @@ public class NotificationActuatorBuilder extends JWaveZActuatorBuilder {
                 .messagePublisher(pluginContext.getMessagePublisher())
                 .build();
 
-        NotificationCommandListener commandListener = new NotificationCommandListener(pluginContext.getJwzApplicationSupport().supportedCommandParser());
         commandListener.registerActuator(actuator);
-        pluginContext.getJwzSerialHandler().addCommandListener(NotificationCommandType.NOTIFICATION_REPORT, commandListener);
-
         return actuator;
     }
 }

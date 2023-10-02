@@ -18,17 +18,17 @@ public class PluginsUtil {
         }
     }
 
-    public static <T> Set<T> findActuatorsBuilders(Class<T> builderSuperClass, String... packages) {
+    public static <T> Set<T> instantiateActuatorsBuilders(Class<T> builderSuperClass, String... packages) {
         PackageScanner packageScanner = new PackageScanner();
         Set<Class<? extends T>> buildersClasses = packageScanner.findAllClassesOfType(builderSuperClass, packages);
         Set<T> builders = packageScanner.instantiateAll(buildersClasses);
         return builders;
     }
 
-    public static <T> Set<T> findActuatorsBuilders(Class<T> builderSuperClass, String basePackage, Object... arguments) {
+    public static <T> Set<T> instantiateActuatorsBuilders(Class<T> builderSuperClass, String basePackage, Object... arguments) {
         PackageScanner packageScanner = new PackageScanner();
         Set<Class<? extends T>> buildersClasses = packageScanner.findAllClassesOfType(builderSuperClass, basePackage);
-        Set<T> builders = packageScanner.instantiateAll(buildersClasses);
+        Set<T> builders = packageScanner.instantiateAll(buildersClasses, arguments);
         return builders;
     }
 }

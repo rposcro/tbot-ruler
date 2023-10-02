@@ -12,12 +12,16 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "update-switch-binary";
 
-    public UpdateSwitchMultiLevelBuilder() {
-        super(REFERENCE);
+    private final SwitchBinaryReportListener listener;
+
+    public UpdateSwitchMultiLevelBuilder(JWaveZPluginContext pluginContext) {
+        super(REFERENCE, pluginContext);
+        this.listener = new SwitchBinaryReportListener(pluginContext.getJwzApplicationSupport());
+        pluginContext.getJwzSerialHandler().addCommandListener(SwitchBinaryCommandType.BINARY_SWITCH_REPORT, listener);
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity) {
         UpdateSwitchBinaryConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), UpdateSwitchBinaryConfiguration.class);
         UpdateSwitchBinaryActuator actuator = UpdateSwitchBinaryActuator.builder()
                 .id(actuatorEntity.getActuatorUuid())
@@ -29,10 +33,7 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
                 .applicationSupport(pluginContext.getJwzApplicationSupport())
                 .build();
 
-        SwitchBinaryReportListener listener = new SwitchBinaryReportListener(pluginContext.getJwzApplicationSupport());
-        pluginContext.getJwzSerialHandler().addCommandListener(SwitchBinaryCommandType.BINARY_SWITCH_REPORT, listener);
         listener.registerActuator(configuration.getNodeId(), configuration.getEndPointId(), actuator);
-
         return actuator;
     }
 }

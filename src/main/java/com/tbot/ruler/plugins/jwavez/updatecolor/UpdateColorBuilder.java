@@ -12,12 +12,16 @@ public class UpdateColorBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "update-color";
 
-    public UpdateColorBuilder() {
-        super(REFERENCE);
+    private final SwitchColorReportListener listener;
+
+    public UpdateColorBuilder(JWaveZPluginContext pluginContext) {
+        super(REFERENCE, pluginContext);
+        this.listener = new SwitchColorReportListener();
+        pluginContext.getJwzSerialHandler().addCommandListener(SwitchColorCommandType.SWITCH_COLOR_REPORT, listener);
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity) {
         UpdateColorConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(),  UpdateColorConfiguration.class);
         UpdateColorActuator actuator = UpdateColorActuator.builder()
                 .id(actuatorEntity.getActuatorUuid())
@@ -29,10 +33,7 @@ public class UpdateColorBuilder extends JWaveZActuatorBuilder {
                 .applicationSupport(pluginContext.getJwzApplicationSupport())
                 .build();
 
-        SwitchColorReportListener listener = new SwitchColorReportListener();
-        pluginContext.getJwzSerialHandler().addCommandListener(SwitchColorCommandType.SWITCH_COLOR_REPORT, listener);
         listener.registerActuator(actuator);
-
         return actuator;
     }
 }

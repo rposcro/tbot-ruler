@@ -12,12 +12,12 @@ public class SwitchColorBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "switch-color";
 
-    public SwitchColorBuilder() {
-        super(REFERENCE);
+    public SwitchColorBuilder(JWaveZPluginContext pluginContext) {
+        super(REFERENCE, pluginContext);
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) throws PluginException {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity) throws PluginException {
         SwitchColorConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SwitchColorConfiguration.class);
         return SwitchColorActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())

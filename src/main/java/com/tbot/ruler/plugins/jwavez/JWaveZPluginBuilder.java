@@ -18,71 +18,83 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.tbot.ruler.plugins.PluginsUtil.findActuatorsBuilders;
+import static com.tbot.ruler.plugins.PluginsUtil.instantiateActuatorsBuilders;
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
 public class JWaveZPluginBuilder implements PluginBuilder {
 
-    private final Map<String, JWaveZActuatorBuilder> actuatorsBuilders;
+    private final PluginBuilderContext pluginBuilderContext;
 
-    public JWaveZPluginBuilder() {
-        this.actuatorsBuilders = findActuatorsBuilders(
-                JWaveZActuatorBuilder.class, "com.tbot.ruler.plugins.jwavez").stream()
-                .collect(Collectors.toMap(JWaveZActuatorBuilder::getReference, Function.identity()));
+    public JWaveZPluginBuilder(PluginBuilderContext pluginBuilderContext) {
+        this.pluginBuilderContext = pluginBuilderContext;
     }
 
     @Override
-    public Plugin buildPlugin(PluginBuilderContext builderContext) {
-        JWaveZPluginContext pluginContext = preparePluginContext(builderContext);
+    public Plugin buildPlugin(PluginEntity pluginEntity) {
+        JWaveZPluginContext pluginContext = preparePluginContext(pluginEntity);
+        Map<String, JWaveZActuatorBuilder> actuatorsBuilders = instantiateActuatorsBuilders(
+                JWaveZActuatorBuilder.class, "com.tbot.ruler.plugins.jwavez", pluginContext).stream()
+                .collect(Collectors.toMap(JWaveZActuatorBuilder::getReference, Function.identity()));
 
         return BasicPlugin.builder()
-                .uuid(builderContext.getPluginEntity().getPluginUuid())
-                .name(builderContext.getPluginEntity().getName())
-                .things(builderContext.getPluginEntity().getThings().stream()
-                        .map(thingEntity -> buildThing(thingEntity, pluginContext))
+                .uuid(pluginEntity.getPluginUuid())
+                .name(pluginEntity.getName())
+                .things(pluginEntity.getThings().stream()
+                        .map(thingEntity -> buildThing(thingEntity, actuatorsBuilders))
                         .collect(Collectors.toList()))
-                .asynchronousTask(Task.startUpTask(() -> pluginContext.getJwzSerialController().connect()))
+                .asynchronousTask(Task.startUpTask(() -> pluginContext.getSerialController().connect()))
                 .asynchronousTask(Task.continuousTask(pluginContext.getJwzCommandSender()))
                 .build();
     }
 
-    private Thing buildThing(ThingEntity thingEntity, JWaveZPluginContext pluginContext) {
+    private Thing buildThing(ThingEntity thingEntity, Map<String, JWaveZActuatorBuilder> actuatorsBuilders) {
         return BasicThing.builder()
                 .uuid(thingEntity.getThingUuid())
                 .name(thingEntity.getName())
                 .description(thingEntity.getDescription())
                 .actuators(thingEntity.getActuators().stream()
-                        .map(actuatorEntity -> buildActuator(actuatorEntity, pluginContext))
+                        .map(actuatorEntity -> buildActuator(actuatorEntity, actuatorsBuilders))
                         .collect(Collectors.toList()))
                 .build();
     }
 
-    private Actuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
+    private Actuator buildActuator(ActuatorEntity actuatorEntity, Map<String, JWaveZActuatorBuilder> actuatorsBuilders) {
         JWaveZActuatorBuilder actuatorBuilder = actuatorsBuilders.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
             throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
         }
-        return actuatorBuilder.buildActuator(actuatorEntity, pluginContext);
+        return actuatorBuilder.buildActuator(actuatorEntity);
     }
 
-    private JWaveZPluginContext preparePluginContext(PluginBuilderContext builderContext) {
-        PluginEntity pluginEntity = builderContext.getPluginEntity();
+    private JWaveZPluginContext preparePluginContext(PluginEntity pluginEntity) {
         JWaveZSerialHandler serialHandler = new JWaveZSerialHandler();
-        JWaveZSerialController serialController = JWaveZSerialController.builder()
-                .configuration(parseConfiguration(pluginEntity.getConfiguration(), JWaveZPluginConfiguration.class))
-                .callbackHandler(serialHandler)
-                .build();
+        SerialController serialController = prepareSerialController(pluginEntity, serialHandler);
         JWaveZCommandSender commandSender = JWaveZCommandSender.builder()
-                .jwzController(serialController)
+                .serialController(serialController)
                 .build();
 
         return JWaveZPluginContext.builder()
-                .pluginBuilderContext(builderContext)
-                .messagePublisher(builderContext.getMessagePublisher())
+                .pluginBuilderContext(pluginBuilderContext)
+                .messagePublisher(pluginBuilderContext.getMessagePublisher())
+                .serialController(serialController)
                 .jwzApplicationSupport(JwzApplicationSupport.defaultSupport())
-                .jwzSerialController(serialController)
                 .jwzSerialHandler(serialHandler)
                 .jwzCommandSender(commandSender)
                 .build();
+    }
+
+    private SerialController prepareSerialController(PluginEntity pluginEntity, JWaveZSerialHandler serialHandler) {
+        JWaveZPluginConfiguration configuration = parseConfiguration(pluginEntity.getConfiguration(), JWaveZPluginConfiguration.class);
+
+        if (configuration.isMockDevice()) {
+            return MockedSerialController.builder()
+                    .configuration(configuration)
+                    .build();
+        } else {
+            return JWaveZSerialController.builder()
+                    .configuration(configuration)
+                    .callbackHandler(serialHandler)
+                    .build();
+        }
     }
 }

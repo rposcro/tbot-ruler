@@ -11,12 +11,16 @@ public class SensorMultilevelBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "sensor-multilevel";
 
-    public SensorMultilevelBuilder() {
-        super(REFERENCE);
+    private final SensorMultilevelListener listener;
+
+    public SensorMultilevelBuilder(JWaveZPluginContext pluginContext) {
+        super(REFERENCE, pluginContext);
+        this.listener = new SensorMultilevelListener(pluginContext.getJwzApplicationSupport().supportedCommandParser());
+        pluginContext.getJwzSerialHandler().addCommandListener(SensorMultilevelCommandType.SENSOR_MULTILEVEL_REPORT, listener);
     }
 
     @Override
-    public SensorMultilevelActuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
+    public SensorMultilevelActuator buildActuator(ActuatorEntity actuatorEntity) {
         SensorMultilevelConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SensorMultilevelConfiguration.class);
         SensorMultilevelActuator actuator = SensorMultilevelActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
@@ -24,10 +28,6 @@ public class SensorMultilevelBuilder extends JWaveZActuatorBuilder {
                 .description(actuatorEntity.getDescription())
                 .messagePublisher(pluginContext.getMessagePublisher())
                 .build();
-
-        SensorMultilevelListener listener = new SensorMultilevelListener(
-                pluginContext.getJwzApplicationSupport().supportedCommandParser());
-        pluginContext.getJwzSerialHandler().addCommandListener(SensorMultilevelCommandType.SENSOR_MULTILEVEL_REPORT, listener);
 
         if (configuration.isMultiChannelOn()) {
             listener.registerActuator(

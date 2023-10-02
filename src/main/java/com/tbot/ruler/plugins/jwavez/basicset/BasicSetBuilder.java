@@ -12,12 +12,16 @@ public class BasicSetBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "basic-set";
 
-    public BasicSetBuilder() {
-        super(REFERENCE);
+    private final BasicSetCommandListener commandListener;
+
+    public BasicSetBuilder(JWaveZPluginContext pluginContext) {
+        super(REFERENCE, pluginContext);
+        this.commandListener = new BasicSetCommandListener(pluginContext.getJwzApplicationSupport().supportedCommandParser());
+        pluginContext.getJwzSerialHandler().addCommandListener(BasicCommandType.BASIC_SET, commandListener);
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity) {
         BasicSetConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), BasicSetConfiguration.class);
         BasicSetActuator actuator = BasicSetActuator.builder()
                 .id(actuatorEntity.getActuatorUuid())
@@ -27,10 +31,7 @@ public class BasicSetBuilder extends JWaveZActuatorBuilder {
                 .messagePublisher(pluginContext.getMessagePublisher())
                 .build();
 
-        BasicSetCommandListener commandListener = new BasicSetCommandListener(pluginContext.getJwzApplicationSupport().supportedCommandParser());
         commandListener.registerActuator(actuator);
-        pluginContext.getJwzSerialHandler().addCommandListener(BasicCommandType.BASIC_SET, commandListener);
-
         return actuator;
     }
 }

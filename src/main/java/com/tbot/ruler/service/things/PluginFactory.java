@@ -41,19 +41,18 @@ public class PluginFactory {
 
     public Plugin buildPlugin(PluginEntity pluginEntity) throws ReflectiveOperationException {
         PluginBuilderContext context = PluginBuilderContext.builder()
-                .pluginEntity(pluginEntity)
                 .serviceProvider(serviceProvider)
                 .messagePublisher(messagePublisher)
                 .subjectStatePersistenceService(subjectStatePersistenceService)
                 .build();
-        PluginBuilder builder = instantiateBuilder(pluginEntity);
-        return builder.buildPlugin(context);
+        PluginBuilder builder = instantiateBuilder(pluginEntity, context);
+        return builder.buildPlugin(pluginEntity);
     }
 
-    private PluginBuilder instantiateBuilder(PluginEntity pluginEntity) throws ReflectiveOperationException {
+    private PluginBuilder instantiateBuilder(PluginEntity pluginEntity, PluginBuilderContext pluginBuilderContext) throws ReflectiveOperationException {
         String builderClassName = pluginEntity.getBuilderClass();
         Class<?> builderClass = this.getClass().getClassLoader().loadClass(builderClassName);
-        return (PluginBuilder) builderClass.newInstance();
+        return (PluginBuilder) builderClass.getConstructor(PluginBuilderContext.class).newInstance(pluginBuilderContext);
     }
 
 }

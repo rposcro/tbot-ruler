@@ -10,12 +10,12 @@ public class SwitchBinaryBuilder extends JWaveZActuatorBuilder {
 
     private final static String REFERENCE = "switch-binary";
 
-    public SwitchBinaryBuilder() {
-        super(REFERENCE);
+    public SwitchBinaryBuilder(JWaveZPluginContext pluginContext) {
+        super(REFERENCE, pluginContext);
     }
 
     @Override
-    public SwitchBinaryActuator buildActuator(ActuatorEntity actuatorEntity, JWaveZPluginContext pluginContext) {
+    public SwitchBinaryActuator buildActuator(ActuatorEntity actuatorEntity) {
         SwitchBinaryConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SwitchBinaryConfiguration.class);
 
         return SwitchBinaryActuator.builder()
