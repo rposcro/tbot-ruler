@@ -25,19 +25,19 @@ public class RepositoryConfiguration {
     private FileUtil fileUtil;
 
     @Bean
-    public JsonFileRepositoryReader repositoryReader() {
+    public JsonFileRepositoryReader jsonFileRepositoryReader() {
         return new JsonFileRepositoryReader(configPath, fileUtil);
     }
 
     @Bean
-    public JsonFileActuatorsRepository actuatorsRepository(JsonFileRepositoryReader repositoryReader) {
+    public JsonFileActuatorsRepository jsonFileActuatorsRepository(JsonFileRepositoryReader repositoryReader) {
         return JsonFileActuatorsRepository.builder()
                 .repositoryReader(repositoryReader)
                 .build();
     }
 
     @Bean
-    public JsonFileThingsRepository thingsRepository(JsonFileRepositoryReader repositoryReader, JsonFileActuatorsRepository actuatorsRepository) {
+    public JsonFileThingsRepository jsonFileThingsRepository(JsonFileRepositoryReader repositoryReader, JsonFileActuatorsRepository actuatorsRepository) {
         return JsonFileThingsRepository.builder()
                 .repositoryReader(repositoryReader)
                 .actuatorsRepository(actuatorsRepository)
@@ -45,7 +45,7 @@ public class RepositoryConfiguration {
     }
 
     @Bean
-    public JsonFilePluginsRepository pluginsRepository(JsonFileRepositoryReader repositoryReader, JsonFileThingsRepository thingsRepository) {
+    public JsonFilePluginsRepository jsonFilePluginsRepository(JsonFileRepositoryReader repositoryReader, JsonFileThingsRepository thingsRepository) {
         return JsonFilePluginsRepository.builder()
                 .repositoryReader(repositoryReader)
                 .thingsRepository(thingsRepository)
@@ -53,14 +53,14 @@ public class RepositoryConfiguration {
     }
 
     @Bean
-    public JsonFileBindingsRepository bindingsRepository(JsonFileRepositoryReader repositoryReader) {
+    public JsonFileBindingsRepository jsonFileBindingsRepository(JsonFileRepositoryReader repositoryReader) {
         return JsonFileBindingsRepository.builder()
                 .repositoryReader(repositoryReader)
                 .build();
     }
 
     @Bean
-    public JsonFileSubjectStatesRepository subjectStatesRepository(
+    public JsonFileSubjectStatesRepository jsonFileSubjectStatesRepository(
             @Value("${ruler.cache.states.path}") String statesPath, ObjectMapper objectMapper) {
         return JsonFileSubjectStatesRepository.builder()
                 .statesPath(statesPath)

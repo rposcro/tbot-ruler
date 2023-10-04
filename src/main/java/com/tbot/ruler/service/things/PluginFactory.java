@@ -24,18 +24,17 @@ public class PluginFactory {
     @Autowired
     private SubjectStatePersistenceService subjectStatePersistenceService;
 
-    public List<Plugin> buildPlugins(List<PluginEntity> pluginEntities) {
+    public List<Plugin> buildPlugins(Iterable<PluginEntity> pluginEntities) {
         List<Plugin> plugins = new LinkedList<>();
-        pluginEntities.stream()
-                .forEach(pluginEntity -> {
-                    try {
-                        log.info("Building plugin: {} {} {}", pluginEntity.getPluginUuid(), pluginEntity.getName(), pluginEntity.getBuilderClass());
-                        Plugin plugin = buildPlugin(pluginEntity);
-                        plugins.add(plugin);
-                    } catch(ReflectiveOperationException e) {
-                        log.error("Failed to instantiate plugin builder!", e);
-                    }
-                });
+        pluginEntities.forEach(pluginEntity -> {
+            try {
+                    log.info("Building plugin: {} {} {}", pluginEntity.getPluginUuid(), pluginEntity.getName(), pluginEntity.getBuilderClass());
+                    Plugin plugin = buildPlugin(pluginEntity);
+                    plugins.add(plugin);
+                } catch(ReflectiveOperationException e) {
+                    log.error("Failed to instantiate plugin builder!", e);
+                }
+            });
         return plugins;
     }
 

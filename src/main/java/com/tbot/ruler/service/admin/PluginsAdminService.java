@@ -13,7 +13,7 @@ public class PluginsAdminService {
     @Autowired
     private PluginsRepository pluginsRepository;
 
-    public List<PluginEntity> allPlugins() {
+    public Iterable<PluginEntity> allPlugins() {
         return pluginsRepository.findAll();
     }
 }

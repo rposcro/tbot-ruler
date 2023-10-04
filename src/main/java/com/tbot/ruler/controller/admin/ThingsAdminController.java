@@ -35,7 +35,7 @@ public class ThingsAdminController extends AbstractController {
     }
 
     @GetMapping(path="/plugins", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<PluginEntity> getPluginsEntities() {
+    public Iterable<PluginEntity> getPluginsEntities() {
         log.debug("Requested plugins entities ...");
         return pluginsService.allPlugins();
     }

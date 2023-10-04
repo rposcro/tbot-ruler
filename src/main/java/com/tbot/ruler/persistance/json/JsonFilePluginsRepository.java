@@ -9,7 +9,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class JsonFilePluginsRepository extends AbstractJsonFileRepository implements PluginsRepository {
+public class JsonFilePluginsRepository extends AbstractJsonFileRepository {
 
     private final JsonFileThingsRepository thingsRepository;
     private final List<PluginEntity> entityList;
@@ -24,7 +24,6 @@ public class JsonFilePluginsRepository extends AbstractJsonFileRepository implem
         );
     }
 
-    @Override
     public List<PluginEntity> findAll() {
         return entityList;
     }
