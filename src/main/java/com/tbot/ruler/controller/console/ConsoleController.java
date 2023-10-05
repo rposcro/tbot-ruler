@@ -1,10 +1,9 @@
 package com.tbot.ruler.controller.console;
 
-import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.persistance.model.ThingEntity;
-import com.tbot.ruler.service.admin.BindingsAdminService;
-import com.tbot.ruler.service.admin.PluginsAdminService;
-import com.tbot.ruler.service.admin.ThingsAdminService;
+import com.tbot.ruler.service.things.BindingsLifetimeService;
+import com.tbot.ruler.service.things.SubjectLifetimeService;
+import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.Thing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,57 +19,52 @@ import org.springframework.web.servlet.ModelAndView;
 public class ConsoleController {
 
     @Autowired
-    private PluginsAdminService pluginsAdminService;
+    private SubjectLifetimeService subjectLifetimeService;
 
     @Autowired
-    private ThingsAdminService thingsAdminService;
-
-    @Autowired
-    private BindingsAdminService bindingsAdminService;
+    private BindingsLifetimeService bindingsLifetimeService;
 
     @GetMapping(produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView home() {
         ModelAndView mav = new ModelAndView("home");
-        mav.addObject("plugins", pluginsAdminService.allPlugins());
-        mav.addObject("things", thingsAdminService.allThings());
+        mav.addObject("plugins", subjectLifetimeService.getAllPlugins());
+        mav.addObject("things", subjectLifetimeService.getAllThings());
         return mav;
     }
 
     @GetMapping(path = "things", produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView things() {
         ModelAndView mav = new ModelAndView("things");
-        mav.addObject("things", thingsAdminService.allThings());
+        mav.addObject("things", subjectLifetimeService.getAllThings());
         return mav;
     }
 
     @GetMapping(path = "things/{thingUuid}", produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView thingById(@PathVariable String thingUuid) {
         ModelAndView mav = new ModelAndView("things");
-        ThingEntity thingEntity = thingsAdminService.thingByUuid(thingUuid);
+        Thing thing = subjectLifetimeService.getThingByUuid(thingUuid);
         mav.addObject("thingId", thingUuid);
-        mav.addObject("thing", thingEntity);
-        mav.addObject("things", thingsAdminService.allThings());
-        mav.addObject("senders", bindingsAdminService.sendersForReceiver(thingUuid));
-        mav.addObject("listeners", bindingsAdminService.receiversForSender(thingUuid));
+        mav.addObject("thing", thing);
+        mav.addObject("things", subjectLifetimeService.getAllThings());
         return mav;
     }
 
     @GetMapping(path = "actuators", produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView actuators() {
         ModelAndView mav = new ModelAndView("actuators");
-        mav.addObject("actuators", thingsAdminService.allActuators());
+        mav.addObject("actuators", subjectLifetimeService.getAllActuators());
         return mav;
     }
 
     @GetMapping(path = "actuators/{actuatorId}", produces = MediaType.TEXT_HTML_VALUE)
     public ModelAndView actuatorById(@PathVariable String actuatorId) {
         ModelAndView mav = new ModelAndView("actuators");
-        ActuatorEntity actuatorEntity = thingsAdminService.actuatorByUuid(actuatorId);
+        Actuator actuator = subjectLifetimeService.getActuatorByUuid(actuatorId);
         mav.addObject("actuatorId", actuatorId);
-        mav.addObject("actuator", actuatorEntity);
-        mav.addObject("actuators", thingsAdminService.allActuators());
-        mav.addObject("senders", bindingsAdminService.sendersForReceiver(actuatorId));
-        mav.addObject("listeners", bindingsAdminService.receiversForSender(actuatorId));
+        mav.addObject("actuator", actuator);
+        mav.addObject("actuators", subjectLifetimeService.getAllActuators());
+//        mav.addObject("senders", bindingsLifetimeService.getReceiversForSender(actuator.getUuid()));
+//        mav.addObject("listeners", bindingsAdminService.receiversForSender(actuatorId));
         return mav;
     }
 

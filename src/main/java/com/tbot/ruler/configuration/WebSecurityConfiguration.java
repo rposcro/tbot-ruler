@@ -7,15 +7,16 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
-@EnableWebSecurity
 public class WebSecurityConfiguration {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll())
+//                .authorizeHttpRequests(auth -> auth.requestMatchers("/h2-console/**").permitAll())
+                .authorizeHttpRequests(auth -> auth.anyRequest().permitAll())
                 .headers(headers -> headers.frameOptions().disable())
-                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
+//                .csrf(csrf -> csrf.ignoringRequestMatchers("/h2-console/**"));
+                .csrf().disable();
         return http.build();
     }
 }

@@ -5,9 +5,10 @@ import com.tbot.ruler.task.EmissionTriggerContext;
 import com.tbot.ruler.task.Task;
 import com.tbot.ruler.task.TaskTrigger;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.concurrent.ConcurrentTaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Service;
@@ -19,7 +20,7 @@ import java.util.List;
 @Slf4j
 @Service
 @Scope("singleton")
-public class TasksLifetimeService implements InitializingBean {
+public class TasksLifetimeService {
 
     @Autowired
     private SubjectLifetimeService subjectLifetimeService;
@@ -30,8 +31,8 @@ public class TasksLifetimeService implements InitializingBean {
     @Autowired
     private ConcurrentTaskExecutor startUpTasksExecutor;
 
-    @Override
-    public void afterPropertiesSet() {
+    @EventListener
+    public void initialize(ApplicationReadyEvent event) {
         List<Subject> subjects = subjects();
         subjects.stream()
                 .flatMap(subject -> subject.getAsynchronousTasks().stream())

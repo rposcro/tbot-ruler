@@ -16,7 +16,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Slf4j
 @Configuration
-public class RepositoryConfiguration {
+public class JsonRepositoryConfiguration {
 
     @Value("${ruler.thingsConfig.path}")
     private String configPath;
@@ -37,10 +37,10 @@ public class RepositoryConfiguration {
     }
 
     @Bean
-    public JsonFileThingsRepository jsonFileThingsRepository(JsonFileRepositoryReader repositoryReader, JsonFileActuatorsRepository actuatorsRepository) {
+    public JsonFileThingsRepository jsonFileThingsRepository(JsonFileRepositoryReader repositoryReader, JsonFileActuatorsRepository jsonFileActuatorsRepository) {
         return JsonFileThingsRepository.builder()
                 .repositoryReader(repositoryReader)
-                .actuatorsRepository(actuatorsRepository)
+                .actuatorsRepository(jsonFileActuatorsRepository)
                 .build();
     }
 

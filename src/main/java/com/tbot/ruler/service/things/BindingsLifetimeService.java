@@ -3,9 +3,10 @@ package com.tbot.ruler.service.things;
 import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -16,15 +17,15 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @Scope("singleton")
-public class BindingsLifetimeService implements InitializingBean {
+public class BindingsLifetimeService {
 
     @Autowired
     private BindingsRepository bindingsRepository;
 
     private Map<String, Set<String>> bindingsMap;
 
-    @Override
-    public void afterPropertiesSet() {
+    @EventListener
+    public void initialize(ApplicationStartedEvent event) {
         Collectors.mapping(BindingEntity::getReceiverUuid, Collectors.<String>toSet());
         this.bindingsMap = bindingsRepository.findAll().stream()
                 .collect(Collectors.groupingBy(

@@ -10,12 +10,6 @@ import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 @Configuration
 public class RulerConfiguration {
 
-	@Bean(name="clientHttpRequestFactory")
-	public HttpComponentsClientHttpRequestFactory clientHttpRequestFactory() {
-		HttpComponentsClientHttpRequestFactory factory = new HttpComponentsClientHttpRequestFactory();
-		return factory;
-	}
-
 	@Bean(destroyMethod = "shutdown")
 	public ThreadPoolTaskExecutor rulerTaskExecutor(
 			MessagePublishBroker messagePublishBroker, MessagePublicationReportBroker publicationReportBroker) {

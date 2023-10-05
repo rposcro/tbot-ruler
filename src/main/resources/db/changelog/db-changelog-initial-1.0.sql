@@ -8,9 +8,10 @@ create table `plugins`
 (
     plugin_id       long            auto_increment,
     plugin_uuid     varchar(64)     not null unique,
-    plugin_class    varchar(256)    not null,
+    builder_class   varchar(256)    not null,
     name            varchar(64)     not null,
     configuration   json,
+    version         int             not null default 0,
 
     primary key (plugin_id)
 );
@@ -19,12 +20,13 @@ drop table if exists `things`;
 
 create table `things`
 (
-    thing_id      long        auto_increment,
-    thing_uuid    varchar(64) not null unique,
-    plugin_id     long        not null,
-    name          varchar(64) not null,
+    thing_id      long          auto_increment,
+    thing_uuid    varchar(64)   not null unique,
+    plugin_id     long          not null,
+    name          varchar(64)   not null,
     description   varchar(256),
     configuration json,
+    version         int         not null default 0,
 
     primary key (thing_id),
     foreign key (plugin_id) references plugins (plugin_id) on delete restrict
@@ -41,6 +43,7 @@ create table `actuators`
     name            varchar(64)     not null,
     description     varchar(256),
     configuration   json,
+    version         int             not null default 0,
 
     primary key (actuator_id),
     foreign key (thing_id) references things (thing_id) on delete restrict
@@ -50,12 +53,12 @@ drop table if exists `bindings`;
 
 create table `bindings`
 (
-    sender_id     long     not null,
-    receiver_id   long     not null,
+    sender_uuid     varchar(64)     not null,
+    receiver_uuid   varchar(64)     not null,
 
-    primary key (sender_id, receiver_id),
-    foreign key (sender_id) references actuators (actuator_id) on delete cascade,
-    foreign key (receiver_id) references actuators (actuator_id) on delete cascade
+    primary key (sender_uuid, receiver_uuid),
+    foreign key (sender_uuid) references actuators (actuator_uuid) on delete cascade,
+    foreign key (receiver_uuid) references actuators (actuator_uuid) on delete cascade
 );
 
 drop table if exists `subject_states`;

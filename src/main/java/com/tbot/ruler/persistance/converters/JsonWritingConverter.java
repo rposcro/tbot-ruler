@@ -6,21 +6,20 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.exceptions.CriticalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.convert.converter.Converter;
-import org.springframework.data.convert.ReadingConverter;
 import org.springframework.data.convert.WritingConverter;
 import org.springframework.stereotype.Component;
 
 @Component
 @WritingConverter
-public class JsonWritingConverter implements Converter<JsonNode, String> {
+public class JsonWritingConverter implements Converter<JsonNode, byte[]> {
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Override
-    public String convert(JsonNode jsonNode) {
+    public byte[] convert(JsonNode jsonNode) {
         try {
-            return objectMapper.writeValueAsString(jsonNode);
+            return objectMapper.writeValueAsBytes(jsonNode);
         } catch(JsonProcessingException e) {
             throw new CriticalException("Cannot convert json to string!", e);
         }

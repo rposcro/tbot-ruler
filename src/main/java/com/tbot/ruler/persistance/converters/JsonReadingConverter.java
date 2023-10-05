@@ -11,17 +11,17 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ReadingConverter
-public class JsonReadingConverter implements Converter<String, JsonNode> {
+public class JsonReadingConverter implements Converter<byte[], JsonNode> {
 
     @Autowired
     private ObjectMapper objectMapper;
 
     @Override
-    public JsonNode convert(String jsonString) {
+    public JsonNode convert(byte[] rawJson) {
         try {
-            return objectMapper.readTree(jsonString);
-        } catch(JsonProcessingException e) {
-            throw new CriticalException("Cannot convert string to json: " + jsonString, e);
+            return objectMapper.readTree(rawJson);
+        } catch(Exception e) {
+            throw new CriticalException("Cannot convert string to json: " + new String(rawJson), e);
         }
     }
 }

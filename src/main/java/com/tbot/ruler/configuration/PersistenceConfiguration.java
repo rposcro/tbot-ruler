@@ -6,15 +6,15 @@ import com.tbot.ruler.persistance.model.PluginEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.event.ApplicationContextInitializedEvent;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 
 import java.util.List;
 
 @Slf4j
 @Configuration
-public class DatabaseConfiguration {
+public class PersistenceConfiguration {
 
     @Value("${ruler.thingsConfig.path:@null}")
     private String filaConfigPath;
@@ -26,7 +26,7 @@ public class DatabaseConfiguration {
     private JsonFilePluginsRepository jsonFilePluginsRepository;
 
     @EventListener
-    public void loadConfigData(ApplicationContextInitializedEvent applicationEvent) {
+    public void loadConfigData(ContextRefreshedEvent e) {
         if (filaConfigPath != null) {
             log.info("File based config found, loading into repository ...");
             loadPlugins();
@@ -37,9 +37,10 @@ public class DatabaseConfiguration {
 
     private void loadPlugins() {
         log.info("Loading plugins data ...");
-        jsonFilePluginsRepository.findAll().stream()
+        List<PluginEntity> pluginEntites = jsonFilePluginsRepository.findAll();
+        pluginEntites.stream()
                 .forEach(entity -> {
-                    if (pluginsRepository.fundByUuid(entity.getPluginUuid()).isPresent()) {
+                    if (!pluginsRepository.findByUuid(entity.getPluginUuid()).isPresent()) {
                         pluginsRepository.save(entity);
                     }
                 });

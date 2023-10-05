@@ -53,11 +53,11 @@ public class JsonFileRepositoryReader {
         return dtos;
     }
 
-    public ThingPluginDTO getPluginDTO(String uuid) {
+    public ThingPluginDTO getPluginDTOByReference(String reference) {
         return dtoWrappers.stream()
                 .filter(wrapper -> wrapper.plugins != null)
                 .flatMap(wrapper -> wrapper.plugins.stream())
-                .filter(plugin -> uuid.equals(plugin.getUuid()))
+                .filter(plugin -> reference.equals(plugin.getAlias()))
                 .findFirst()
                 .orElse(null);
     }
