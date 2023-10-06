@@ -16,11 +16,11 @@ public class SingleIntervalAgent {
                 .build();
     }
 
-    public boolean isActive() {
+    public boolean isEnabled() {
         return currentState.getPayload().isOn();
     }
 
-    public void setActive(boolean active) {
+    public void setEnabled(boolean active) {
         currentState.updatePayload(OnOffState.of(active));
     }
 }

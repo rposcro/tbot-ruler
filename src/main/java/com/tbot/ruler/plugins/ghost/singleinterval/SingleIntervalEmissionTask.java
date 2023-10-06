@@ -50,7 +50,7 @@ public class SingleIntervalEmissionTask implements Runnable {
     }
 
     public void run() {
-        if (singleIntervalAgent.isActive()) {
+        if (singleIntervalAgent.isEnabled()) {
             LocalDateTime now = timer.get();
             boolean activationState = onInterval.isInRange(now);
             messagePublisher.publishMessage(Message.builder()
