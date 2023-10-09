@@ -12,6 +12,7 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.Collections;
 import java.util.List;
 
 @Getter
@@ -46,5 +47,6 @@ public class ThingEntity {
     private int version;
 
     @Transient
-    private List<ActuatorEntity> actuators;
+    @Builder.Default
+    private List<ActuatorEntity> actuators = Collections.emptyList();
 }

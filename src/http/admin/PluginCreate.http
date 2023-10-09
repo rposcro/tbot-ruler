@@ -1,0 +1,10 @@
+### Created new plugin
+# @name = PluginCreate
+
+POST http://{{host-tbot-ruler}}/admin/plugins
+Content-Type: application/json
+
+{
+    "builderClass": "com.tbot.ruler.plugins.sunwatch.SunWatchPluginBuilder",
+    "name": "FakeTestPlugin"
+}

@@ -17,7 +17,6 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.tbot.ruler.plugins.PluginsUtil.instantiateActuatorsBuilders;
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
 public class GhostPluginBuilder implements PluginBuilder {
@@ -60,6 +59,6 @@ public class GhostPluginBuilder implements PluginBuilder {
         if (actuatorBuilder == null) {
             throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
         }
-        return actuatorBuilder.buildActuator(actuatorEntity, pluginBuilderContext.getMessagePublisher(), thingConfiguration);
+        return actuatorBuilder.buildActuator(pluginBuilderContext, actuatorEntity, thingConfiguration);
     }
 }

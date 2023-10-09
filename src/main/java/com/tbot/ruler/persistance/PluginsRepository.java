@@ -46,6 +46,11 @@ public class PluginsRepository {
     }
 
     @Transactional
+    public void delete(PluginEntity pluginEntity) {
+        crudPluginsRepository.delete(pluginEntity);
+    }
+
+    @Transactional
     public PluginEntity save(PluginEntity pluginEntity) {
         PluginEntity savedPlugin = crudPluginsRepository.save(pluginEntity);
 

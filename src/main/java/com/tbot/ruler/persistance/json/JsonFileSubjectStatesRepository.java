@@ -3,7 +3,6 @@ package com.tbot.ruler.persistance.json;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.exceptions.ServiceExecutionException;
-import com.tbot.ruler.persistance.SubjectStatesRepository;
 import com.tbot.ruler.persistance.model.SubjectStateEntity;
 import lombok.Builder;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +18,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
-public class JsonFileSubjectStatesRepository implements SubjectStatesRepository {
+public class JsonFileSubjectStatesRepository {
 
     private final ObjectMapper objectMapper;
     private final Path statesFile;
@@ -44,12 +43,10 @@ public class JsonFileSubjectStatesRepository implements SubjectStatesRepository 
         }
     }
 
-    @Override
     public Optional<SubjectStateEntity> findBySubjectUuid(String subjectUuid) {
         return Optional.ofNullable(statesMap.get(subjectUuid));
     }
 
-    @Override
     public SubjectStateEntity save(SubjectStateEntity stateEntity) {
         statesMap.put(stateEntity.getSubjectUuid(), stateEntity);
         return stateEntity;

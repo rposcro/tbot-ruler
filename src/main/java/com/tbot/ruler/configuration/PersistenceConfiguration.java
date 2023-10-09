@@ -1,7 +1,10 @@
 package com.tbot.ruler.configuration;
 
+import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
+import com.tbot.ruler.persistance.json.JsonFileBindingsRepository;
 import com.tbot.ruler.persistance.json.JsonFilePluginsRepository;
+import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +28,18 @@ public class PersistenceConfiguration {
     @Autowired
     private JsonFilePluginsRepository jsonFilePluginsRepository;
 
+    @Autowired
+    private BindingsRepository bindingsRepository;
+
+    @Autowired
+    private JsonFileBindingsRepository jsonFileBindingsRepository;
+
     @EventListener
     public void loadConfigData(ContextRefreshedEvent e) {
         if (filaConfigPath != null) {
             log.info("File based config found, loading into repository ...");
             loadPlugins();
+            loadBindings();
         } else {
             log.info("No file based config to logs, skipped");
         }
@@ -43,6 +53,15 @@ public class PersistenceConfiguration {
                     if (!pluginsRepository.findByUuid(entity.getPluginUuid()).isPresent()) {
                         pluginsRepository.save(entity);
                     }
+                });
+    }
+
+    private void loadBindings() {
+        log.info("Loading bindings data ...");
+        List<BindingEntity> bindingEntities = jsonFileBindingsRepository.findAll();
+        bindingEntities.stream()
+                .forEach(entity -> {
+                    bindingsRepository.insert(entity);
                 });
     }
 }

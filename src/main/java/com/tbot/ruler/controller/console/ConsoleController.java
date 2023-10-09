@@ -1,7 +1,7 @@
 package com.tbot.ruler.controller.console;
 
-import com.tbot.ruler.service.things.BindingsLifetimeService;
-import com.tbot.ruler.service.things.SubjectLifetimeService;
+import com.tbot.ruler.service.lifetime.BindingsLifetimeService;
+import com.tbot.ruler.service.lifetime.SubjectLifetimeService;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.subjects.Thing;
 import lombok.extern.slf4j.Slf4j;

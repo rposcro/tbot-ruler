@@ -56,9 +56,9 @@ create table `bindings`
     sender_uuid     varchar(64)     not null,
     receiver_uuid   varchar(64)     not null,
 
-    primary key (sender_uuid, receiver_uuid),
-    foreign key (sender_uuid) references actuators (actuator_uuid) on delete cascade,
-    foreign key (receiver_uuid) references actuators (actuator_uuid) on delete cascade
+    primary key (sender_uuid, receiver_uuid)
+--     foreign key (sender_uuid) references actuators (actuator_uuid) on delete cascade,
+--     foreign key (receiver_uuid) references actuators (actuator_uuid) on delete cascade
 );
 
 drop table if exists `subject_states`;
@@ -66,5 +66,7 @@ drop table if exists `subject_states`;
 create table `subject_states`
 (
     subject_uuid    varchar(64) not null unique,
-    payload         json        not null
+    payload         json        not null,
+
+    primary key (subject_uuid)
 )

@@ -1,4 +1,4 @@
-package com.tbot.ruler.service.things;
+package com.tbot.ruler.service.lifetime;
 
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.model.PluginEntity;

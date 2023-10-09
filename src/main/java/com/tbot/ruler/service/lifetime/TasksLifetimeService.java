@@ -1,5 +1,6 @@
-package com.tbot.ruler.service.things;
+package com.tbot.ruler.service.lifetime;
 
+import com.tbot.ruler.service.lifetime.SubjectLifetimeService;
 import com.tbot.ruler.subjects.Subject;
 import com.tbot.ruler.task.EmissionTriggerContext;
 import com.tbot.ruler.task.Task;
