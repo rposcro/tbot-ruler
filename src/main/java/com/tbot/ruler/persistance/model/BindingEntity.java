@@ -1,18 +1,24 @@
 package com.tbot.ruler.persistance.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
+@Table("bindings")
 public class BindingEntity {
 
-    @JsonProperty(required = true)
+    @Column("sender_uuid")
     private String senderUuid;
 
-    @JsonProperty(required = true)
+    @Column("receiver_uuid")
     private String receiverUuid;
 }

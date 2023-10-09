@@ -1,13 +1,14 @@
-package com.tbot.ruler.service.things;
+package com.tbot.ruler.service.lifetime;
 
 import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Scope;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
@@ -23,8 +24,8 @@ public class BindingsLifetimeService {
 
     private Map<String, Set<String>> bindingsMap;
 
-    @PostConstruct
-    public void init() {
+    @EventListener
+    public void initialize(ApplicationStartedEvent event) {
         Collectors.mapping(BindingEntity::getReceiverUuid, Collectors.<String>toSet());
         this.bindingsMap = bindingsRepository.findAll().stream()
                 .collect(Collectors.groupingBy(

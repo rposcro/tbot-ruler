@@ -1,32 +1,39 @@
 package com.tbot.ruler.persistance.json;
 
-import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.json.dto.ThingPluginDTO;
 import lombok.Builder;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class JsonFilePluginsRepository extends AbstractJsonFileRepository implements PluginsRepository {
+public class JsonFilePluginsRepository extends AbstractJsonFileRepository {
 
     private final JsonFileThingsRepository thingsRepository;
-    private final List<PluginEntity> entityList;
+    private final List<PluginEntity> plugins;
+    private final Map<String, PluginEntity> pluginsByReference;
 
     @Builder
     public JsonFilePluginsRepository(JsonFileRepositoryReader repositoryReader, JsonFileThingsRepository thingsRepository) {
         this.thingsRepository = thingsRepository;
-        this.entityList = Collections.unmodifiableList(
+        this.plugins = Collections.unmodifiableList(
                 repositoryReader.getPluginDTOs().stream()
                         .map(this::toEntity)
                         .collect(Collectors.toList())
         );
+        this.pluginsByReference = plugins.stream()
+                .collect(Collectors.toMap(PluginEntity::getName, Function.identity()));
     }
 
-    @Override
     public List<PluginEntity> findAll() {
-        return entityList;
+        return plugins;
+    }
+
+    public PluginEntity findByReference(String reference) {
+        return pluginsByReference.get(reference);
     }
 
     private PluginEntity toEntity(ThingPluginDTO pluginDTO) {

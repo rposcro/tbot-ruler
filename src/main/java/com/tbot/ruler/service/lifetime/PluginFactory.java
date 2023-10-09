@@ -1,7 +1,8 @@
-package com.tbot.ruler.service.things;
+package com.tbot.ruler.service.lifetime;
 
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.persistance.model.PluginEntity;
+import com.tbot.ruler.service.things.SubjectStateService;
 import com.tbot.ruler.subjects.Plugin;
 import com.tbot.ruler.plugins.PluginBuilder;
 import com.tbot.ruler.plugins.PluginBuilderContext;
@@ -22,20 +23,19 @@ public class PluginFactory {
     @Autowired
     private MessagePublisher messagePublisher;
     @Autowired
-    private SubjectStatePersistenceService subjectStatePersistenceService;
+    private SubjectStateService subjectStateService;
 
-    public List<Plugin> buildPlugins(List<PluginEntity> pluginEntities) {
+    public List<Plugin> buildPlugins(Iterable<PluginEntity> pluginEntities) {
         List<Plugin> plugins = new LinkedList<>();
-        pluginEntities.stream()
-                .forEach(pluginEntity -> {
-                    try {
-                        log.info("Building plugin: {} {} {}", pluginEntity.getPluginUuid(), pluginEntity.getName(), pluginEntity.getBuilderClass());
-                        Plugin plugin = buildPlugin(pluginEntity);
-                        plugins.add(plugin);
-                    } catch(ReflectiveOperationException e) {
-                        log.error("Failed to instantiate plugin builder!", e);
-                    }
-                });
+        pluginEntities.forEach(pluginEntity -> {
+            try {
+                    log.info("Building plugin: {} {} {}", pluginEntity.getPluginUuid(), pluginEntity.getName(), pluginEntity.getBuilderClass());
+                    Plugin plugin = buildPlugin(pluginEntity);
+                    plugins.add(plugin);
+                } catch(ReflectiveOperationException e) {
+                    log.error("Failed to instantiate plugin builder!", e);
+                }
+            });
         return plugins;
     }
 
@@ -43,7 +43,7 @@ public class PluginFactory {
         PluginBuilderContext context = PluginBuilderContext.builder()
                 .serviceProvider(serviceProvider)
                 .messagePublisher(messagePublisher)
-                .subjectStatePersistenceService(subjectStatePersistenceService)
+                .subjectStateService(subjectStateService)
                 .build();
         PluginBuilder builder = instantiateBuilder(pluginEntity, context);
         return builder.buildPlugin(pluginEntity);

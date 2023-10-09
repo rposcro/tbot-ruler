@@ -1,35 +1,53 @@
 package com.tbot.ruler.persistance.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
+import java.util.Collections;
 import java.util.List;
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
+@Table("plugins")
 public class PluginEntity {
 
-    @JsonProperty(required = true)
+    @Id
+    @Column("plugin_id")
     private long pluginId;
 
     @NonNull
-    @JsonProperty(required = true)
+    @Column("plugin_uuid")
     private String pluginUuid;
 
     @NonNull
-    @JsonProperty(required = true)
+    @Column("builder_class")
     private String builderClass;
 
     @NonNull
-    @JsonProperty(required = true)
+    @Column("name")
     private String name;
 
+    @Column("configuration")
     private JsonNode configuration;
 
-    private List<ThingEntity> things;
+    @Version
+    @Column("version")
+    private int version;
+
+    @Transient
+    @Builder.Default
+    private List<ThingEntity> things = Collections.emptyList();
 }

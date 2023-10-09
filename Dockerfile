@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 adoptopenjdk/openjdk16
+FROM --platform=linux/amd64 amazoncorretto:17-alpine
 
 WORKDIR /cache
 WORKDIR /app

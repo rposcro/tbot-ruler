@@ -1,32 +1,47 @@
 package com.tbot.ruler.persistance.model;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Version;
+import org.springframework.data.relational.core.mapping.Column;
+import org.springframework.data.relational.core.mapping.Table;
 
 @Getter
+@Setter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
+@Table("actuators")
 public class ActuatorEntity {
 
-    @JsonProperty(required = true)
+    @Id
+    @Column("actuator_id")
     private long actuatorId;
 
-    @JsonProperty(required = true)
+    @Column("actuator_uuid")
     private String actuatorUuid;
 
-    @JsonProperty(required = true)
-    private String thingUuid;
+    @Column("thing_id")
+    private long thingId;
 
-    @JsonProperty(required = true)
+    @Column("reference")
     private String reference;
 
-    @JsonProperty(required = true)
+    @Column("name")
     private String name;
 
+    @Column("description")
     private String description;
 
+    @Column("configuration")
     private JsonNode configuration;
+
+    @Version
+    @Column("version")
+    private int version;
 }

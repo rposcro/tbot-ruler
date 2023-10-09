@@ -74,7 +74,7 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
     }
 
     private Collection<Task> asynchronousTasks() {
-        if (configuration.getPollStateInterval() == 0) {
+        if (pollIntervalMilliseconds == 0) {
             return Collections.emptySet();
         } else {
             Runnable runnable = () -> {

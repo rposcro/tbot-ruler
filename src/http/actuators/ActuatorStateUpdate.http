@@ -5,7 +5,7 @@ PUT http://{{host-tbot-ruler}}/actuators/actr-d32f8398-03ac-4b8b-8120-ccad5b0240
 Content-Type: application/json
 
 {
-    "widgetUuid": "wdgt-test",
+    "widgetUuid": "wdgtc-a549fc6a-6afd-4ab5-a87f-508d104534fa",
     "payloadType": "OnOff",
     "payload": {
         "on": "true"

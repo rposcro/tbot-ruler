@@ -18,14 +18,20 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class SingleIntervalConfiguration {
 
+    @JsonProperty(defaultValue = "true")
+    private boolean enabledByDefault;
+
     @JsonProperty(required = true)
     @JsonDeserialize(converter = StringToLocalTimeConverter.class)
     private LocalTime activationTime;
+
     @JsonProperty(required = true)
     @JsonDeserialize(converter = StringToLocalTimeConverter.class)
     private LocalTime deactivationTime;
+
     @JsonProperty(defaultValue = "0")
     private long variationMinutes;
+
     @JsonProperty(defaultValue = "5")
     private long emissionIntervalMinutes;
 }

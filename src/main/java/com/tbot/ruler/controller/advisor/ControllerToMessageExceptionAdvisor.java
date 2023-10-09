@@ -7,17 +7,15 @@ import com.tbot.ruler.broker.payload.ApplicationProblemDetails;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class ControllerToMessageExceptionAdvisor {
 
     @ExceptionHandler(MessageException.class)
-    public ResponseEntity<ApplicationProblemDetails> handleMessageException(HttpServletRequest request, MessageException ex) {
+    public ResponseEntity<ApplicationProblemDetails> handleMessageException(MessageException ex) {
         log.warn("Message exception!", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .header("Content-Type", "application/json")
@@ -29,7 +27,7 @@ public class ControllerToMessageExceptionAdvisor {
     }
 
     @ExceptionHandler(MessageProcessingException.class)
-    public ResponseEntity<ApplicationProblemDetails> handleMessageProcessingException(HttpServletRequest request, MessageProcessingException ex) {
+    public ResponseEntity<ApplicationProblemDetails> handleMessageProcessingException(MessageProcessingException ex) {
         log.warn("Message could not be processed!", ex);
         return ResponseEntity.status(HttpStatus.SERVICE_UNAVAILABLE)
             .header("Content-Type", "application/json")
@@ -41,7 +39,7 @@ public class ControllerToMessageExceptionAdvisor {
     }
 
     @ExceptionHandler(MessageUnsupportedException.class)
-    public ResponseEntity<ApplicationProblemDetails> handleMessageUnsupportedException(HttpServletRequest request, MessageUnsupportedException ex) {
+    public ResponseEntity<ApplicationProblemDetails> handleMessageUnsupportedException(MessageUnsupportedException ex) {
         log.warn("Message is not supported by receiver!", ex);
         return ResponseEntity.status(HttpStatus.BAD_REQUEST)
             .header("Content-Type", "application/json")

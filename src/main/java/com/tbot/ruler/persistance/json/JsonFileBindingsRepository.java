@@ -1,6 +1,5 @@
 package com.tbot.ruler.persistance.json;
 
-import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.json.dto.BindingDTO;
 import lombok.Builder;
@@ -10,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class JsonFileBindingsRepository extends AbstractJsonFileRepository implements BindingsRepository {
+public class JsonFileBindingsRepository extends AbstractJsonFileRepository {
 
     private final JsonFileRepositoryReader repositoryReader;
     private final Map<String, List<BindingEntity>> entitiesMap;
@@ -21,7 +20,6 @@ public class JsonFileBindingsRepository extends AbstractJsonFileRepository imple
         this.entitiesMap = new HashMap<>();
     }
 
-    @Override
     public List<BindingEntity> findAll() {
         return repositoryReader.getBindingDTOs().stream()
                 .map(this::toEntities)
@@ -29,7 +27,6 @@ public class JsonFileBindingsRepository extends AbstractJsonFileRepository imple
                 .collect(Collectors.toList());
     }
 
-    @Override
     public List<BindingEntity> findBySenderUuid(String senderUuid) {
         List<BindingEntity> entities = entitiesMap.get(senderUuid);
 
