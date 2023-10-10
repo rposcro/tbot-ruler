@@ -30,6 +30,10 @@ public class BindingsRepository {
                 .collect(Collectors.toList());
     }
 
+    public boolean bindingExists(String senderUuid, String receiverUuid) {
+        return crudBindingsRepository.bindingExists(senderUuid, receiverUuid);
+    }
+
     public void delete(BindingEntity bindingEntity) {
         crudBindingsRepository.delete(bindingEntity);
     }

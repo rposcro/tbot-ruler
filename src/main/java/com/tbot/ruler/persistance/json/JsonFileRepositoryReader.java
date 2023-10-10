@@ -1,9 +1,10 @@
 package com.tbot.ruler.persistance.json;
 
 import com.tbot.ruler.exceptions.ConfigurationException;
+import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.json.dto.BindingDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
-import com.tbot.ruler.persistance.json.dto.ThingPluginDTO;
+import com.tbot.ruler.persistance.json.dto.PluginDTO;
 import com.tbot.ruler.util.FileUtil;
 import lombok.Builder;
 import lombok.Data;
@@ -31,13 +32,14 @@ public class JsonFileRepositoryReader {
         this.dtoWrappers = new LinkedList<>();
         dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/plugins", WrapperDTO.class));
         dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/things", WrapperDTO.class));
+        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/actuators", WrapperDTO.class));
         dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/bindings", WrapperDTO.class));
         validateUuids();
     }
 
-    public List<ThingPluginDTO> getPluginDTOs() {
+    public List<PluginDTO> getPluginDTOs() {
         Set<String> aliases = new HashSet<>();
-        List<ThingPluginDTO> dtos = dtoWrappers.stream()
+        List<PluginDTO> dtos = dtoWrappers.stream()
                 .filter(wrapper -> wrapper.plugins != null)
                 .flatMap(wrapper -> wrapper.plugins.stream())
                 .filter(dto -> {
@@ -53,17 +55,16 @@ public class JsonFileRepositoryReader {
         return dtos;
     }
 
-    public ThingPluginDTO getPluginDTOByReference(String reference) {
+    public PluginDTO getPluginDTO(String pluginUuid) {
         return dtoWrappers.stream()
                 .filter(wrapper -> wrapper.plugins != null)
                 .flatMap(wrapper -> wrapper.plugins.stream())
-                .filter(plugin -> reference.equals(plugin.getAlias()))
+                .filter(plugin -> pluginUuid.equals(plugin.getUuid()))
                 .findFirst()
                 .orElse(null);
     }
 
     public List<ThingDTO> getThingDTOs() {
-        Set<String> aliases = new HashSet<>();
         List<ThingDTO> dtos = dtoWrappers.stream()
                 .filter(wrapper -> wrapper.things != null)
                 .flatMap(wrapper -> wrapper.things.stream())
@@ -72,13 +73,22 @@ public class JsonFileRepositoryReader {
         return dtos;
     }
 
-    public ThingDTO getThingDTO(String uuid) {
+    public ThingDTO getThingDTO(String thingUuid) {
         return dtoWrappers.stream()
                 .filter(wrapper -> wrapper.things != null)
                 .flatMap(wrapper -> wrapper.things.stream())
-                .filter(thing -> uuid.equals(thing.getUuid()))
+                .filter(thing -> thingUuid.equals(thing.getUuid()))
                 .findFirst()
                 .orElse(null);
+    }
+
+    public List<ActuatorDTO> getActuatorDTOs() {
+        List<ActuatorDTO> dtos = dtoWrappers.stream()
+                .filter(wrapper -> wrapper.actuators != null)
+                .flatMap(wrapper -> wrapper.actuators.stream())
+                .collect(Collectors.toList());
+        log.info("Found and read {} actuator DTOs", dtos.size());
+        return dtos;
     }
 
     public List<BindingDTO> getBindingDTOs() {
@@ -87,7 +97,7 @@ public class JsonFileRepositoryReader {
                 .filter(wrapper -> wrapper.bindings != null)
                 .flatMap(wrapper -> wrapper.bindings.stream())
                 .collect(Collectors.toList());
-        log.info("Found and read {} thing DTOs", dtos.size());
+        log.info("Found and read {} binding DTOs", dtos.size());
         return dtos;
     }
 
@@ -106,8 +116,9 @@ public class JsonFileRepositoryReader {
 
     @Data
     private static class WrapperDTO {
-        private List<ThingPluginDTO> plugins;
+        private List<PluginDTO> plugins;
         private List<ThingDTO> things;
+        private List<ActuatorDTO> actuators;
         private List<BindingDTO> bindings;
     }
 }

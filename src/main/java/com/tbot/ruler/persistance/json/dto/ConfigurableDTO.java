@@ -1,9 +1,12 @@
 package com.tbot.ruler.persistance.json.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.tbot.ruler.util.ParseUtil;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -11,18 +14,22 @@ import java.util.Map;
 import java.util.stream.StreamSupport;
 
 @Getter
+@SuperBuilder
+@NoArgsConstructor
 public abstract class ConfigurableDTO {
 
-    private JsonNode configurationNode;
+    private JsonNode configuration;
+
+    @JsonIgnore
     private Map<String, String> configurationMap = Collections.emptyMap();;
 
     @JsonProperty("config")
-    public void setConfigurationNode(JsonNode configurationNode) {
-        this.configurationNode = configurationNode;
+    public void setConfiguration(JsonNode configuration) {
+        this.configuration = configuration;
         this.configurationMap = new HashMap<>();
-        Iterable<String> namesIterable = () -> configurationNode.fieldNames();
+        Iterable<String> namesIterable = () -> configuration.fieldNames();
         StreamSupport.stream(namesIterable.spliterator(), false)
-                .forEach(fieldName -> configurationMap.put(fieldName, configurationNode.get(fieldName).asText()));
+                .forEach(fieldName -> configurationMap.put(fieldName, configuration.get(fieldName).asText()));
     }
 
     public String getStringParameter(String paramName) {

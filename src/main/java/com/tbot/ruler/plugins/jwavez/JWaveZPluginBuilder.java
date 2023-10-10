@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static com.tbot.ruler.plugins.PluginsUtil.instantiateActuatorsBuilders;
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
+import static java.lang.String.format;
 
 public class JWaveZPluginBuilder implements PluginBuilder {
 
@@ -61,7 +62,8 @@ public class JWaveZPluginBuilder implements PluginBuilder {
     private Actuator buildActuator(ActuatorEntity actuatorEntity, Map<String, JWaveZActuatorBuilder> actuatorsBuilders) {
         JWaveZActuatorBuilder actuatorBuilder = actuatorsBuilders.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
-            throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
+            throw new PluginException(format("Wrong actuator %s definition, unknown actuator reference %s, entity skipped",
+                    actuatorEntity.getActuatorUuid(), actuatorEntity.getReference()));
         }
         return actuatorBuilder.buildActuator(actuatorEntity);
     }
