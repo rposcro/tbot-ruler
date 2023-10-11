@@ -7,12 +7,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.exceptions.ConfigurationException;
 import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
+import com.tbot.ruler.persistance.SchemasRepository;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.json.dto.BindingDTO;
 import com.tbot.ruler.persistance.json.dto.PluginDTO;
+import com.tbot.ruler.persistance.json.dto.SchemaDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
+import com.tbot.ruler.persistance.model.SchemaEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -29,12 +32,14 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static java.lang.String.format;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE;
 import static java.time.temporal.ChronoField.HOUR_OF_DAY;
 import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
@@ -73,6 +78,9 @@ public class DumpJsonService {
     @Autowired
     private BindingsRepository bindingsRepository;
 
+    @Autowired
+    private SchemasRepository schemasRepository;
+
     public void dumpToJson() {
         if (dumpJsonFiles == null) {
             throw new ConfigurationException("Json dump path not set, try setting 'ruler.dump.jsonFiles' property");
@@ -85,6 +93,7 @@ public class DumpJsonService {
             dumpThings(dumpContext);
             dumpActuators(dumpContext);
             dumpBindings(dumpContext);
+            dumpSchemas(dumpContext);
         } catch(IOException e) {
             throw new ConfigurationException("Could not use the file system to store json dumps!", e);
         }
@@ -105,7 +114,7 @@ public class DumpJsonService {
                 return plugins;
             }
         });
-        log.info("Dumped plugins to " + file);
+        log.info("Dumped plugins to {}", file);
     }
 
     private void dumpThings(DumpContext dumpContext) throws IOException {
@@ -125,7 +134,7 @@ public class DumpJsonService {
                     return things;
                 }
             });
-            log.info("Dumped things to " + file);
+            log.info("Dumped things to {}", file);
         }
     }
 
@@ -150,7 +159,7 @@ public class DumpJsonService {
                     return actuators;
                 }
             });
-            log.info("Dumped actuators to " + file);
+            log.info("Dumped actuators to {}", file);
         }
     }
 
@@ -173,7 +182,26 @@ public class DumpJsonService {
                 return bindingsMap.values();
             }
         });
-        log.info("Dumped bindings to " + file);
+        log.info("Dumped bindings to {}", file);
+    }
+
+    private void dumpSchemas(DumpContext dumpContext) throws IOException {
+        List<SchemaEntity> schemaEntities = schemasRepository.findAll();
+        for (SchemaEntity schemaEntity: schemaEntities) {
+            SchemaDTO dto = SchemaDTO.builder()
+                    .uuid(schemaEntity.getSchemaUuid())
+                    .owner(schemaEntity.getOwner())
+                    .type(schemaEntity.getType())
+                    .payload(schemaEntity.getPayload())
+                    .build();
+            File file = formatFile(format("schema-%s-%s", schemaEntity.getOwner(), schemaEntity.getType()), dumpContext);
+            objectMapper.writer(JSON_PRINTER).writeValue(file, new Object() {
+                public List<SchemaDTO> getSchemas() {
+                    return Collections.singletonList(dto);
+                }
+            });
+            log.info("Dumped schema to {}", file);
+        }
     }
 
     private DumpContext buildContext() {
@@ -194,7 +222,7 @@ public class DumpJsonService {
     }
 
     private File formatFile(String baseName, DumpContext dumpContext) {
-        String fileName = String.format("%s-%s.json", dumpContext.dumpDate.toEpochSecond(ZoneOffset.UTC), baseName);
+        String fileName = format("%s-%s.json", dumpContext.dumpDate.toEpochSecond(ZoneOffset.UTC), baseName);
         return dumpContext.dumpDirectory.resolve(fileName).toFile();
     }
 
