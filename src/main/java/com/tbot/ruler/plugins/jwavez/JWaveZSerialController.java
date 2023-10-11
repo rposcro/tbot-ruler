@@ -13,7 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import static com.tbot.ruler.util.LogArgument.argument;
 
 @Slf4j
-public class JWaveZSerialController {
+public class JWaveZSerialController implements SerialController {
 
     private final String device;
     private final int reconnectAttempts;
@@ -23,7 +23,7 @@ public class JWaveZSerialController {
     private CallbackHandler callbackHandler;
 
     @Builder
-    public JWaveZSerialController(JWaveZThingConfiguration configuration, CallbackHandler callbackHandler) {
+    public JWaveZSerialController(JWaveZPluginConfiguration configuration, CallbackHandler callbackHandler) {
         this.reconnectAttempts = configuration.getReconnectAttempts();
         this.reconnectDelay = configuration.getReconnectDelay();
         this.device = configuration.getModuleDevice();

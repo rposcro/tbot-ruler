@@ -50,36 +50,6 @@
                 </div>
                 <div class="section">
                     <table class="grid">
-                        <caption class="grid-title">Emitters</caption>
-                        <tr class="grid-header">
-                            <td>Name</td>
-                            <td>UUID</td>
-                            <td>Description</td>
-                        </tr>
-                        <tr th:each="emitter: ${thing.emitters}" class="grid-row">
-                            <td><a th:href="@{'/console/emitters/' + ${emitter.id}}">[[${emitter.name}]]</a></td>
-                            <td>[[${emitter.id}]]</td>
-                            <td>[[${emitter.description}]]</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="section">
-                    <table class="grid">
-                        <caption class="grid-title">Collectors</caption>
-                        <tr class="grid-header">
-                            <td>Name</td>
-                            <td>UUID</td>
-                            <td>Description</td>
-                        </tr>
-                        <tr th:each="collector: ${thing.collectors}" class="grid-row">
-                            <td><a th:href="@{'/console/collectors/' + ${collector.id}}">[[${collector.name}]]</a></td>
-                            <td>[[${collector.id}]]</td>
-                            <td>[[${collector.description}]]</td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="section">
-                    <table class="grid">
                         <caption class="grid-title">Actuators</caption>
                         <tr class="grid-header">
                             <td>Name</td>

@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.sunwatch.daytime;
 
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
-import com.tbot.ruler.things.thread.TaskTrigger;
-import com.tbot.ruler.things.thread.EmissionTriggerContext;
+import com.tbot.ruler.task.TaskTrigger;
+import com.tbot.ruler.task.EmissionTriggerContext;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;

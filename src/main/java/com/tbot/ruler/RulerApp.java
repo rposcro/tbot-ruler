@@ -3,14 +3,15 @@ package com.tbot.ruler;
 import java.util.Optional;
 import java.util.Properties;
 
-import com.tbot.ruler.handlers.RulerApplicationListener;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.builder.SpringApplicationBuilder;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 @Slf4j
 @SpringBootApplication(scanBasePackages = { "com.tbot.ruler", "com.tbot.layout"})
+@EnableWebSecurity
 public class RulerApp implements CommandLineRunner {
     
     public static final String APPLICATION_NAME = "tbot-ruler";

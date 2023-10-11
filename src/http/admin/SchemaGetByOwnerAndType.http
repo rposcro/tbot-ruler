@@ -1,0 +1,9 @@
+### Gets schema by owner and type
+# @name = SchemaGetByOwnerAndType
+
+< {%
+    request.variables.set("owner", "tbot-panel");
+    request.variables.set("type", "layout");
+%}
+GET http://{{host-tbot-ruler}}/admin/schemas/owners/{{owner}}/types/{{type}}
+Content-Type: application/json

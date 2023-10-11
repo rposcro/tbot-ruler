@@ -1,0 +1,5 @@
+### Dumps things data to json files
+# @name = DumpToJson
+
+PUT http://{{host-tbot-ruler}}/admin/dump/json
+Content-Type: application/json

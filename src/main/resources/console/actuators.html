@@ -17,7 +17,7 @@
                 <div class="property">Pick an actuator from the list:
                     <select th:id="itemSelector" onchange="switchItem()">
                         <option></option>
-                        <option th:each="actuator: ${actuators}" th:value="${actuator.id}"
+                        <option th:each="actuator: ${actuators}" th:value="${actuator.uuid}"
                                 th:text="|${actuator.name}|" />
                     </select>
                 </div>
@@ -26,11 +26,11 @@
                 <div class="section">
                     <div class="property">Actuator:
                         <select th:id="itemSelector" onchange="switchItem()">
-                            <option th:each="actuator: ${actuators}" th:value="${actuator.id}"
-                                    th:text="|${actuator.name}|" th:selected="${actuator.id.equals(actuatorId)}" />
+                            <option th:each="actuator: ${actuators}" th:value="${actuator.uuid}"
+                                    th:text="|${actuator.name}|" th:selected="${actuator.uuid.equals(actuatorId)}" />
                         </select>
                     </div>
-                    <div class="property">UUID: <span class="highlight">[[${actuator.id}]]</span></div>
+                    <div class="property">UUID: <span class="highlight">[[${actuator.uuid}]]</span></div>
                     <div class="property">Name: <span class="highlight">[[${actuator.name}]]</span></div>
                     <div class="property">Description: <span class="highlight">[[${actuator.description}]]</span></div>
                     <div class="property">From Thing: <span class="highlight">[[${actuator.ref}]]</span></div>

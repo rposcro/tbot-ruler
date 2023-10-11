@@ -1,12 +1,19 @@
 package com.tbot.ruler.plugins.ghost;
 
-import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.things.Actuator;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.exceptions.PluginException;
+import com.tbot.ruler.broker.MessagePublisher;
+import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.subjects.Actuator;
+import lombok.Getter;
 
-public interface GhostActuatorBuilder {
+public abstract class GhostActuatorBuilder {
 
-    String getReference();
-    Actuator buildActuator(ActuatorDTO actuatorDTO, MessagePublisher messagePublisher, GhostThingConfiguration ghostThingConfiguration) throws PluginException;
+    @Getter
+    protected String reference;
+
+    protected GhostActuatorBuilder(String reference) {
+        this.reference = reference;
+    }
+
+    public abstract Actuator buildActuator(PluginBuilderContext pluginBuilderContext, ActuatorEntity actuatorEntity, GhostThingConfiguration configuration);
 }

@@ -10,7 +10,7 @@ import java.util.List;
 @Slf4j
 public class SwitchMultiLevelReportListener extends JWaveZCommandListener<SwitchMultilevelReport> {
 
-    private List<UpdateSwitchMultiLevelEmitter> emitters;
+    private List<UpdateSwitchMultiLevelActuator> emitters;
 
     public SwitchMultiLevelReportListener() {
         this.emitters = new LinkedList<>();
@@ -25,7 +25,7 @@ public class SwitchMultiLevelReportListener extends JWaveZCommandListener<Switch
                 .forEach(emitter -> emitter.acceptCommand(command));
     }
 
-    public void registerEmitter(UpdateSwitchMultiLevelEmitter emitter) {
+    public void registerEmitter(UpdateSwitchMultiLevelActuator emitter) {
         emitters.add(emitter);
     }
 }

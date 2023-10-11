@@ -1,0 +1,13 @@
+### Update actuator state
+# @name = ActuatorStateUpdate
+
+PUT http://{{host-tbot-ruler}}/actuators/state
+Content-Type: application/json
+
+{
+    "widgetUuid": "wdgt-test",
+    "payloadType": "OnOff",
+    "payload": {
+        "on": "true"
+    }
+}

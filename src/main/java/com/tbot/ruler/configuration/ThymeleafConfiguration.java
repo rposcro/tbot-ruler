@@ -7,7 +7,7 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
-import org.thymeleaf.spring5.view.ThymeleafView;
+import org.thymeleaf.spring6.view.ThymeleafView;
 
 import java.util.Collections;
 

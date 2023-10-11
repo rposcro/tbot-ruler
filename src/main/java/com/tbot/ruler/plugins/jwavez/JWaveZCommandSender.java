@@ -17,7 +17,7 @@ public class JWaveZCommandSender implements Runnable {
 
     private final static long MAX_ACTIVATION_WAIT_TIME = 300_000;
 
-    private JWaveZSerialController jwzController;
+    private SerialController serialController;
     private SerialRequestFactory serialRequestFactory;
     private long sleepTimeOnNotActiveController;
 
@@ -25,8 +25,8 @@ public class JWaveZCommandSender implements Runnable {
     private final AtomicInteger callbackId;
 
     @Builder
-    public JWaveZCommandSender(JWaveZSerialController jwzController) {
-        this.jwzController = jwzController;
+    public JWaveZCommandSender(SerialController serialController) {
+        this.serialController = serialController;
         this.serialRequestFactory = JwzSerialSupport.defaultSupport().serialRequestFactory();
         this.sleepTimeOnNotActiveController = 1000;
         this.requestQueue = new LinkedBlockingQueue<>(100);
@@ -52,7 +52,7 @@ public class JWaveZCommandSender implements Runnable {
             try {
                 SerialRequest request = requestQueue.take();
                 log.debug("Requested Z-Wave frame to send ...");
-                jwzController.sendRequest(request);
+                serialController.sendRequest(request);
             } catch(SerialException e) {
                 log.error("Exception when sending Z-Wave command!", e);
             } catch(InterruptedException e) {
@@ -62,7 +62,7 @@ public class JWaveZCommandSender implements Runnable {
     }
 
     private void waitForJwzController() {
-        while(!jwzController.isConnected()) {
+        while(!serialController.isConnected()) {
             log.warn("JwzController is not active, waiting for {} to activate", sleepTimeOnNotActiveController);
             try {
                 Thread.sleep(sleepTimeOnNotActiveController);

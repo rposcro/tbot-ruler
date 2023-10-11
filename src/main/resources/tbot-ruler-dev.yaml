@@ -2,48 +2,15 @@ server:
     port: 4042
 
 spring:
-    application:
-        name: ThingBot Ruler
-    http:
-        encoding:
-            charset: UTF-8
-            enabled: true
-            force: true
-    jmx:
-        enabled: false
-    thymeleaf:
-        enabled: true
-        cache: false
-        prefix: classpath:/console/
-        suffix: .html
-        mode: HTML
-        servlet:
-            content-type: text/html
-        encoding: UTF-8
-        enable-spring-el-compiler: true
+    datasource:
+        url: jdbc:h2:file:./ignore/db/tbotdb;MODE=MySQL;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;INIT=RUNSCRIPT FROM 'classpath:/db/init-db.sql'
+#        url: jdbc:h2:mem:tbotdb;MODE=MySQL;DATABASE_TO_UPPER=FALSE;CASE_INSENSITIVE_IDENTIFIERS=TRUE;INIT=RUNSCRIPT FROM 'classpath:/db/init-db.sql'
 
-security:
-    basic:
-        enabled: false
-
-management:
-    security:
-        enabled: false
-
-eureka:
-    client:
-        enabled: false
-        
 ruler:
     thingsConfig:
         path: ignore/config-dev
-    cache:
-        states:
-            path: ignore/cache/states.json
-    broker:
-        emissionQueueLength: 200
-        collectionQueueLength: 200
-    restService:
-        connectionTimeout: 1000
-        readTimeout: 2000
-        retryCount: 5
+    dump:
+        jsonFiles:
+            ignore/dump/json
+        sqlFiles:
+            ignore/dump/sql

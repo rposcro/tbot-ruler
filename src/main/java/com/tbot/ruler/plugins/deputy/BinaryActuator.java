@@ -1,40 +1,41 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.model.Notification;
-import com.tbot.ruler.model.OnOffState;
-import com.tbot.ruler.things.AbstractActuator;
-import com.tbot.ruler.things.builder.dto.ActuatorDTO;
-import com.tbot.ruler.things.thread.RegularEmissionTrigger;
-import com.tbot.ruler.things.thread.TaskTrigger;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.MessagePublisher;
+import com.tbot.ruler.broker.payload.Notification;
+import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.subjects.AbstractSubject;
+import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.task.Task;
 import lombok.Builder;
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Optional;
+import java.util.Collection;
+import java.util.Collections;
 
 @Slf4j
-public class BinaryActuator extends AbstractActuator {
+public class BinaryActuator extends AbstractSubject implements Actuator {
 
-    private BinaryActuatorChannel binaryChannel;
-    private MessagePublisher messagePublisher;
+
+    private final BinaryActuatorChannel binaryChannel;
+    private final MessagePublisher messagePublisher;
+    private final Collection<Task> asynchronousTasks;
+
     private boolean expectedState;
 
     @Builder
-    public BinaryActuator(ActuatorDTO actuatorDTO, BinaryActuatorChannel binaryChannel, MessagePublisher messagePublisher) {
-        super(actuatorDTO.getId(), actuatorDTO.getName(), actuatorDTO.getDescription());
+    public BinaryActuator(
+            @NonNull String id,
+            @NonNull String name,
+            String description,
+            @NonNull BinaryActuatorChannel binaryChannel,
+            @NonNull MessagePublisher messagePublisher) {
+        super(id, name, description);
         this.binaryChannel = binaryChannel;
         this.messagePublisher = messagePublisher;
-    }
-
-    @Override
-    public Optional<TaskTrigger> getTaskTrigger() {
-        return Optional.of(new RegularEmissionTrigger(600_1000));
-    }
-
-    @Override
-    public Optional<Runnable> getTriggerableTask() {
-        return Optional.of(() -> binaryChannel.updateState(expectedState));
+        this.asynchronousTasks = Collections.singleton(Task.triggerableTask(
+                () -> binaryChannel.updateState(expectedState), 600_000));
     }
 
     @Override
@@ -57,7 +58,7 @@ public class BinaryActuator extends AbstractActuator {
     private void handleUpdateRequest() {
         expectedState = binaryChannel.requestState();
         Message message = Message.builder()
-            .senderId(getId())
+            .senderId(getUuid())
             .payload(OnOffState.of(expectedState))
             .build();
         messagePublisher.publishMessage(message);

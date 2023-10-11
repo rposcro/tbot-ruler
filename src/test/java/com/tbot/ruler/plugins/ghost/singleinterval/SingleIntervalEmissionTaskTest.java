@@ -1,9 +1,12 @@
 package com.tbot.ruler.plugins.ghost.singleinterval;
 
-import com.tbot.ruler.messages.MessagePublisher;
-import com.tbot.ruler.messages.model.Message;
-import com.tbot.ruler.model.OnOffState;
+import com.tbot.ruler.broker.MessagePublisher;
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.plugins.PluginBuilderContext;
 import com.tbot.ruler.plugins.ghost.DateTimeRange;
+import com.tbot.ruler.service.things.SubjectStateService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -33,6 +36,9 @@ public class SingleIntervalEmissionTaskTest {
 
     @Mock
     private MessagePublisher messagePublisher;
+
+    @Mock
+    private SubjectStateService subjectStateService;
 
     @Mock
     private Supplier<LocalDateTime> timer;
@@ -151,8 +157,12 @@ public class SingleIntervalEmissionTaskTest {
     }
 
     private SingleIntervalEmissionTask createTask(int startHour, int endHour, long variation, boolean active) {
-        SingleIntervalStateAgent stateAgent = new SingleIntervalStateAgent();
-        stateAgent.setActive(active);
+        SingleIntervalAgent stateAgent = SingleIntervalAgent.builder()
+                .subjectStateService(subjectStateService)
+                .actuatorUuid("act-test-id")
+                .defaultState(false)
+                .build();
+        stateAgent.setEnabled(active);
         SingleIntervalConfiguration configuration = SingleIntervalConfiguration.builder()
                 .activationTime(LocalTime.of(startHour, 0))
                 .deactivationTime(LocalTime.of(endHour, 0))
@@ -160,7 +170,7 @@ public class SingleIntervalEmissionTaskTest {
                 .build();
         return SingleIntervalEmissionTask.builder()
                 .configuration(configuration)
-                .stateAgent(stateAgent)
+                .singleIntervalAgent(stateAgent)
                 .emitterId(EMITTER_ID)
                 .zoneId(ZONE_ID)
                 .messagePublisher(messagePublisher)

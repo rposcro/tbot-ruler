@@ -6,8 +6,6 @@
                 <td><a th:href="|/console|">Home</a></td>
                 <td><a th:href="|/console/things|">Things</a></td>
                 <td><a th:href="|/console/appliances|">Appliances</a></td>
-                <td><a th:href="|/console/emitters|">Emitters</a></td>
-                <td><a th:href="|/console/collectors|">Collectors</a></td>
                 <td><a th:href="|/console/actuators|">Actuators</a></td>
             </tr>
         </table>
@@ -27,7 +25,7 @@
             </tr>
             <tr th:each="sender: ${senders}" class="grid-row">
                 <td>[[${sender.name}]]</td>
-                <td>[[${sender.id}]]</td>
+                <td>[[${sender.uuid}]]</td>
                 <td>[[${sender.description}]]</td>
             </tr>
         </table>
@@ -42,7 +40,7 @@
             </tr>
             <tr th:each="listener: ${listeners}" class="grid-row">
                 <td>[[${listener.name}]]</td>
-                <td>[[${listener.id}]]</td>
+                <td>[[${listener.uuid}]]</td>
                 <td>[[${listener.description}]]</td>
             </tr>
         </table>
