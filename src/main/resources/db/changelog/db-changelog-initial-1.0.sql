@@ -69,4 +69,18 @@ create table `subject_states`
     payload         json        not null,
 
     primary key (subject_uuid)
-)
+);
+
+drop table if exists `schemas`;
+
+create table `schemas`
+(
+    schema_id       long            auto_increment,
+    schema_uuid     varchar(64)     not null unique,
+    owner           varchar(64)     not null,
+    type            varchar(64)     not null,
+    payload         json            not null,
+    version         int             not null default 0,
+
+    primary key (schema_id)
+);

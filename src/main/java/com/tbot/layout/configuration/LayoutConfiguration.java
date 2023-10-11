@@ -25,7 +25,7 @@ public class LayoutConfiguration implements InitializingBean {
 
     @Override
     public void afterPropertiesSet() {
-        panelLayout = fileUtil.deserializeJsonFile(new File(configPath + "/layout/layout.json"), PanelLayout.class);
+        //panelLayout = fileUtil.deserializeJsonFile(new File(configPath + "/layout/layout.json"), PanelLayout.class);
     }
 
     @Bean

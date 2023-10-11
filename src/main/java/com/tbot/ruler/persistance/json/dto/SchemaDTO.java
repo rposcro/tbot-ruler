@@ -1,6 +1,7 @@
 package com.tbot.ruler.persistance.json.dto;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.JsonNode;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class PluginDTO extends ConfigurableDTO {
+public class SchemaDTO {
 
     @NonNull
     @JsonProperty(required = true)
@@ -21,9 +22,13 @@ public class PluginDTO extends ConfigurableDTO {
 
     @NonNull
     @JsonProperty(required = true)
-    private String alias;
+    private String owner;
 
     @NonNull
     @JsonProperty(required = true)
-    private String builderClass;
+    private String type;
+
+    @NonNull
+    @JsonProperty(required = true)
+    private JsonNode payload;
 }

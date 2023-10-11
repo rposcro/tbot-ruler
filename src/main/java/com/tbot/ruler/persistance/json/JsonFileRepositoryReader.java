@@ -3,6 +3,7 @@ package com.tbot.ruler.persistance.json;
 import com.tbot.ruler.exceptions.ConfigurationException;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.json.dto.BindingDTO;
+import com.tbot.ruler.persistance.json.dto.SchemaDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
 import com.tbot.ruler.persistance.json.dto.PluginDTO;
 import com.tbot.ruler.util.FileUtil;
@@ -30,10 +31,7 @@ public class JsonFileRepositoryReader {
 
     public void initialize(String configPath) {
         this.dtoWrappers = new LinkedList<>();
-        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/plugins", WrapperDTO.class));
-        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/things", WrapperDTO.class));
-        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/actuators", WrapperDTO.class));
-        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath + "/bindings", WrapperDTO.class));
+        dtoWrappers.addAll(fileUtil.deserializeJsonFilesInSubPackages(configPath, WrapperDTO.class));
         validateUuids();
     }
 
@@ -52,6 +50,7 @@ public class JsonFileRepositoryReader {
                     }
                 })
                 .collect(Collectors.toList());
+        log.info("Found and read {} plugin DTOs", dtos.size());
         return dtos;
     }
 
@@ -92,12 +91,20 @@ public class JsonFileRepositoryReader {
     }
 
     public List<BindingDTO> getBindingDTOs() {
-        Set<String> aliases = new HashSet<>();
         List<BindingDTO> dtos = dtoWrappers.stream()
                 .filter(wrapper -> wrapper.bindings != null)
                 .flatMap(wrapper -> wrapper.bindings.stream())
                 .collect(Collectors.toList());
         log.info("Found and read {} binding DTOs", dtos.size());
+        return dtos;
+    }
+
+    public List<SchemaDTO> getSchemaDTOs() {
+        List<SchemaDTO> dtos = dtoWrappers.stream()
+                .filter(wrapper -> wrapper.schemas != null)
+                .flatMap(wrapper -> wrapper.schemas.stream())
+                .collect(Collectors.toList());
+        log.info("Found and read {} schemas DTOs", dtos.size());
         return dtos;
     }
 
@@ -120,5 +127,6 @@ public class JsonFileRepositoryReader {
         private List<ThingDTO> things;
         private List<ActuatorDTO> actuators;
         private List<BindingDTO> bindings;
+        private List<SchemaDTO> schemas;
     }
 }
