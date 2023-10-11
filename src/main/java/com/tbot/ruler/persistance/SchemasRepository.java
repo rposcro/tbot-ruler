@@ -18,6 +18,10 @@ public class SchemasRepository {
         return crudSchemasRepository.findByUuid(schemaUuid);
     }
 
+    public Optional<SchemaEntity> findByOwnerAndType(String owner, String type) {
+        return crudSchemasRepository.findByOwnerAndType(owner, type);
+    }
+
     @Transactional
     public SchemaEntity save(SchemaEntity schemaEntity) {
         return crudSchemasRepository.save(schemaEntity);

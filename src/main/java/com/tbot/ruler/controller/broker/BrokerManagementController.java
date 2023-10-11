@@ -1,4 +1,4 @@
-package com.tbot.ruler.controller;
+package com.tbot.ruler.controller.broker;
 
 import com.tbot.ruler.broker.MessagePublicationManager;
 import lombok.extern.slf4j.Slf4j;

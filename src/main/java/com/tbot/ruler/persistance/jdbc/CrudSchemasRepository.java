@@ -10,4 +10,7 @@ public interface CrudSchemasRepository extends CrudRepository<SchemaEntity, Long
 
     @Query("SELECT * FROM schemas WHERE schema_uuid = :schemaUuid")
     Optional<SchemaEntity> findByUuid(String schemaUuid);
+
+    @Query("SELECT * FROM schemas WHERE owner = :owner AND type = :type")
+    Optional<SchemaEntity> findByOwnerAndType(String owner, String type);
 }

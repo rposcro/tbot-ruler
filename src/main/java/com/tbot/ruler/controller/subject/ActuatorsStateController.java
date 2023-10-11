@@ -1,4 +1,4 @@
-package com.tbot.ruler.controller;
+package com.tbot.ruler.controller.subject;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.broker.SynchronousMessagePublisher;
@@ -6,8 +6,9 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.broker.payload.RGBWColor;
-import com.tbot.ruler.controller.payload.ActuatorStatePayloadType;
-import com.tbot.ruler.controller.payload.ActuatorStateUpdateRequest;
+import com.tbot.ruler.controller.AbstractController;
+import com.tbot.ruler.controller.subject.payload.ActuatorStatePayloadType;
+import com.tbot.ruler.controller.subject.payload.ActuatorStateUpdateRequest;
 import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.service.things.ActuatorsService;
 import com.tbot.ruler.subjects.ActuatorState;
@@ -45,7 +46,7 @@ public class ActuatorsStateController extends AbstractController {
     @GetMapping("/{actuatorUuid}/state")
     public ResponseEntity<ActuatorState> getActuatorState(@PathVariable("actuatorUuid") String actuatorUuid) {
         log.debug("Requested actuator state for uuid {}", actuatorUuid);
-        return response(ResponseEntity.ok()).body(actuatorsService.getActuatorState(actuatorUuid));
+        return ok(actuatorsService.getActuatorState(actuatorUuid));
     }
 
     @PutMapping("/{actuatorUuid}/state")
@@ -55,7 +56,7 @@ public class ActuatorsStateController extends AbstractController {
         log.debug("Requested actuator state update {}", stateUpdateRequest);
         Message message = toMessage(actuatorUuid, stateUpdateRequest);
         MessagePublicationReport report = messagePublisher.publishAndWaitForReport(message);
-        return response(ResponseEntity.ok()).body(report);
+        return ok(report);
     }
 
     @PutMapping("/state")
@@ -64,7 +65,7 @@ public class ActuatorsStateController extends AbstractController {
         log.debug("Requested actuator state update broadcast {}", stateUpdateRequest);
         Message message = toMessage(null, stateUpdateRequest);
         MessagePublicationReport report = messagePublisher.publishAndWaitForReport(message);
-        return response(ResponseEntity.ok()).body(report);
+        return ok(report);
     }
 
     private Message toMessage(String actuatorUuid, ActuatorStateUpdateRequest stateUpdateRequest) {

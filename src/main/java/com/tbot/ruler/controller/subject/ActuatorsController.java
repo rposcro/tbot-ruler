@@ -1,6 +1,7 @@
-package com.tbot.ruler.controller;
+package com.tbot.ruler.controller.subject;
 
-import com.tbot.ruler.controller.payload.ActuatorResponse;
+import com.tbot.ruler.controller.AbstractController;
+import com.tbot.ruler.controller.subject.payload.ActuatorResponse;
 import com.tbot.ruler.service.things.ActuatorsService;
 import com.tbot.ruler.subjects.Actuator;
 import lombok.extern.slf4j.Slf4j;
@@ -26,16 +27,15 @@ public class ActuatorsController extends AbstractController {
         List<ActuatorResponse> entities = actuatorsService.findAllActuators().stream()
             .map(this::fromActuator)
             .collect(Collectors.toList());
-        return response(ResponseEntity.ok())
-            .body(entities);
+        return ok(entities);
     }
 
     private ActuatorResponse fromActuator(Actuator actuator) {
         return ActuatorResponse.builder()
-            .uuid(actuator.getUuid())
-            .name(actuator.getName())
-            .description(actuator.getDescription())
-            .state(actuator.getState() != null ? actuator.getState().getPayload() : null)
-            .build();
+                .uuid(actuator.getUuid())
+                .name(actuator.getName())
+                .description(actuator.getDescription())
+                .state(actuator.getState() != null ? actuator.getState().getPayload() : null)
+                .build();
     }
 }

@@ -82,5 +82,6 @@ create table `schemas`
     payload         json            not null,
     version         int             not null default 0,
 
-    primary key (schema_id)
+    primary key (schema_id),
+    constraint uq_schema unique (owner, type)
 );

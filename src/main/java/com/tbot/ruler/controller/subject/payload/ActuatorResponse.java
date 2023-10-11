@@ -1,4 +1,4 @@
-package com.tbot.ruler.controller.payload;
+package com.tbot.ruler.controller.subject.payload;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

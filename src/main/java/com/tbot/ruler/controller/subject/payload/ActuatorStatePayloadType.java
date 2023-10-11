@@ -1,4 +1,4 @@
-package com.tbot.ruler.controller.payload;
+package com.tbot.ruler.controller.subject.payload;
 
 import java.util.Map;
 import java.util.Optional;
