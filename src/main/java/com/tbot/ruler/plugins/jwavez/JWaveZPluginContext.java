@@ -3,6 +3,9 @@ package com.tbot.ruler.plugins.jwavez;
 import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.plugins.RulerPluginContext;
+import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandSender;
+import com.tbot.ruler.plugins.jwavez.controller.JWaveZSerialHandler;
+import com.tbot.ruler.plugins.jwavez.controller.SerialController;
 import lombok.Builder;
 import lombok.Getter;
 
