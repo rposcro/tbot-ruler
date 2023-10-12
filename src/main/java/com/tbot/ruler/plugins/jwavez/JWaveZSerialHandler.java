@@ -16,7 +16,10 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -26,7 +29,7 @@ import static com.tbot.ruler.util.LogArgument.argument;
 @Getter
 public class JWaveZSerialHandler extends InterceptableCallbackHandler {
 
-    private final Map<CommandType, LoggingCommandListener<? extends ZWaveSupportedCommand>> commandListenersMap;
+    private final Map<CommandType, List<LoggingCommandListener<? extends ZWaveSupportedCommand>>> commandListenersMap;
     private final ApplicationCommandInterceptor applicationCommandInterceptor;
 
     private final AtomicInteger callbackId = new AtomicInteger(1);
@@ -45,7 +48,7 @@ public class JWaveZSerialHandler extends InterceptableCallbackHandler {
 
     public void addCommandListener(CommandType commandType, JWaveZCommandListener<? extends ZWaveSupportedCommand> listener) {
         LoggingCommandListener<? extends ZWaveSupportedCommand> loggingListener = new LoggingCommandListener<>(listener);
-        this.commandListenersMap.put(commandType, loggingListener);
+        this.commandListenersMap.computeIfAbsent(commandType, commandType1 -> new ArrayList<>()).add(loggingListener);
         this.applicationCommandInterceptor.registerCommandHandler(commandType, loggingListener);
     }
 
@@ -58,12 +61,14 @@ public class JWaveZSerialHandler extends InterceptableCallbackHandler {
             try {
                 CommandType commandType = CommandTypesRegistry.decodeCommandType(
                         CommandClass.ofCode(encapsulation.getEncapsulatedCommandClass()), encapsulation.getEncapsulatedCommandCode());
-                LoggingCommandListener commandListener = commandListenersMap.get(commandType);
-                if (commandListener == null) {
+                List<LoggingCommandListener<?>> commandListeners = commandListenersMap.getOrDefault(commandType, Collections.emptyList());
+                if (commandListeners.isEmpty()) {
                     log.info("Command encapsulation not handled ");
                 } else {
-                    log.debug("Listener found for command encapsulation: {}", commandListener.delegate.getClass());
-                    ((JWaveZCommandListener) commandListener.delegate).handleEncapsulatedCommand(encapsulation);
+                    commandListeners.forEach(commandListener -> {
+                        log.debug("Listener found for command encapsulation: {}", commandListener.delegate.getClass());
+                        ((JWaveZCommandListener) commandListener.delegate).handleEncapsulatedCommand(encapsulation);
+                    });
                 }
             } catch(Exception e) {
                 log.error(String.format("Failed to handle encapsulated command %s with command type code %s",

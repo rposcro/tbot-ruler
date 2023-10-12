@@ -33,7 +33,7 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
                 .applicationSupport(pluginContext.getJwzApplicationSupport())
                 .build();
 
-        listener.registerEmitter(actuator);
+        listener.registerActuator(actuator);
         return actuator;
     }
 }

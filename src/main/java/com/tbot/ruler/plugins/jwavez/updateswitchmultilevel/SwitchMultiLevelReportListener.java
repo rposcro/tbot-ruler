@@ -10,22 +10,22 @@ import java.util.List;
 @Slf4j
 public class SwitchMultiLevelReportListener extends JWaveZCommandListener<SwitchMultilevelReport> {
 
-    private List<UpdateSwitchMultiLevelActuator> emitters;
+    private List<UpdateSwitchMultiLevelActuator> actuators;
 
     public SwitchMultiLevelReportListener() {
-        this.emitters = new LinkedList<>();
+        this.actuators = new LinkedList<>();
     }
 
     @Override
     public void handleCommand(SwitchMultilevelReport command) {
         log.debug("Handling switch multilevel report command");
         byte nodeId = command.getSourceNodeId().getId();
-        emitters.stream()
+        actuators.stream()
                 .filter(emitter -> emitter.acceptsReportCommand(nodeId))
                 .forEach(emitter -> emitter.acceptCommand(command));
     }
 
-    public void registerEmitter(UpdateSwitchMultiLevelActuator emitter) {
-        emitters.add(emitter);
+    public void registerActuator(UpdateSwitchMultiLevelActuator emitter) {
+        actuators.add(emitter);
     }
 }
