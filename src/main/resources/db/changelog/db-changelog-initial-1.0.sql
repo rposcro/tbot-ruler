@@ -8,7 +8,7 @@ create table `plugins`
 (
     plugin_id       long            auto_increment,
     plugin_uuid     varchar(64)     not null unique,
-    builder_class   varchar(256)    not null,
+    factory_class   varchar(256)    not null,
     name            varchar(64)     not null,
     configuration   json,
     version         int             not null default 0,

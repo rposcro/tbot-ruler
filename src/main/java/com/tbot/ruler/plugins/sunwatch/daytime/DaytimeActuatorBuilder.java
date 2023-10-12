@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.sunwatch.daytime;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
@@ -20,7 +20,7 @@ public class DaytimeActuatorBuilder extends SunWatchActuatorBuilder {
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, PluginBuilderContext builderContext, SunLocale eventLocale) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerPluginContext builderContext, SunLocale eventLocale) {
         DaytimeActuatorConfiguration emitterConfiguration = parseConfiguration(actuatorEntity.getConfiguration(), DaytimeActuatorConfiguration.class);
         SunCalculator sunCalculator = sunCalculator(emitterConfiguration, eventLocale);
         DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterConfiguration, sunCalculator);
@@ -37,12 +37,12 @@ public class DaytimeActuatorBuilder extends SunWatchActuatorBuilder {
 
     private DaytimeEmissionTask emissionTask(
             ActuatorEntity actuatorEntity,
-            PluginBuilderContext pluginBuilderContext,
+            RulerPluginContext rulerPluginContext,
             SunCalculator sunCalculator,
             DaytimeActuatorConfiguration emitterConfiguration) {
         return DaytimeEmissionTask.builder()
                 .emitterId(actuatorEntity.getActuatorUuid())
-                .messagePublisher(pluginBuilderContext.getMessagePublisher())
+                .messagePublisher(rulerPluginContext.getMessagePublisher())
                 .dayTimeMessage(emitterMessage(actuatorEntity, emitterConfiguration.getDayTimeSignal()))
                 .nightTimeMessage(emitterMessage(actuatorEntity, emitterConfiguration.getNightTimeSignal()))
                 .sunCalculator(sunCalculator)

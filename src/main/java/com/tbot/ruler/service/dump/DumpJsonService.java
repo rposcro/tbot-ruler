@@ -104,7 +104,7 @@ public class DumpJsonService {
                 .map(entity -> PluginDTO.builder()
                         .uuid(entity.getPluginUuid())
                         .alias(entity.getName())
-                        .builderClass(entity.getBuilderClass())
+                        .factoryClass(entity.getFactoryClass())
                         .configuration(entity.getConfiguration())
                         .build())
                 .collect(Collectors.toList());

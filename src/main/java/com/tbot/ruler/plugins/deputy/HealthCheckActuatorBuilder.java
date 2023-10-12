@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.subjects.BasicActuator;
@@ -13,7 +13,7 @@ class HealthCheckActuatorBuilder {
     private static final String PARAM_FREQUENCY = "frequency";
     private static final String DEFAULT_FREQUENCY = "15";
 
-    Actuator buildActuator(ActuatorDTO actuatorDTO, PluginBuilderContext builderContext) {
+    Actuator buildActuator(ActuatorDTO actuatorDTO, RulerPluginContext builderContext) {
         return BasicActuator.builder()
                 .uuid(actuatorDTO.getUuid())
                 .name(actuatorDTO.getName())
@@ -24,7 +24,7 @@ class HealthCheckActuatorBuilder {
                 .build();
     }
 
-    private HealthCheckEmissionTask emissionTask(PluginBuilderContext builderContext, ActuatorDTO actuatorDTO) {
+    private HealthCheckEmissionTask emissionTask(RulerPluginContext builderContext, ActuatorDTO actuatorDTO) {
         return HealthCheckEmissionTask.builder()
             .actuatorId(actuatorDTO.getUuid())
             .healthCheckCommand(restGetCommand(builderContext))
@@ -37,7 +37,7 @@ class HealthCheckActuatorBuilder {
                 1000 * Long.parseLong(actuatorDTO.getStringParameter(PARAM_FREQUENCY, DEFAULT_FREQUENCY)));
     }
 
-    private RestGetCommand restGetCommand(PluginBuilderContext builderContext) {
+    private RestGetCommand restGetCommand(RulerPluginContext builderContext) {
         return null;
 //        ThingDTO thingDTO = builderContext.getThingDTO();
 //        return builderContext.getServices().getRestService().builderForGet()

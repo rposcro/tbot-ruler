@@ -10,10 +10,14 @@ import static com.tbot.ruler.util.CollectionsUtil.orEmpty;
 @Getter
 public abstract class AbstractSubject implements Subject {
 
-    private final String uuid;
-    private final String name;
-    private final String description;
-    private final Collection<Task> asynchronousTasks;
+    protected String uuid;
+    protected String name;
+    protected String description;
+    protected Collection<Task> asynchronousTasks;
+
+    protected AbstractSubject(String uuid, String name) {
+        this(uuid, name, null, null);
+    }
 
     protected AbstractSubject(String uuid, String name, String description) {
         this(uuid, name, description, null);

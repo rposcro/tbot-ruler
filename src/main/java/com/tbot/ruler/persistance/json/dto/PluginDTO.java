@@ -25,5 +25,5 @@ public class PluginDTO extends ConfigurableDTO {
 
     @NonNull
     @JsonProperty(required = true)
-    private String builderClass;
+    private String factoryClass;
 }

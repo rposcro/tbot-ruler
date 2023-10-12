@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.rest.RestPatchCommand;
 import com.tbot.ruler.rest.RestService;
@@ -13,7 +13,7 @@ public class BinaryActuatorBuilder {
     private static final String PARAM_PIN = "pin";
     private static final String PATH_BINOUT_TEMPLATE = "binary-outputs/%s";
 
-    public Actuator buildActuator(ThingDTO thingDTO, ActuatorDTO actuatorDTO, PluginBuilderContext builderContext) {
+    public Actuator buildActuator(ThingDTO thingDTO, ActuatorDTO actuatorDTO, RulerPluginContext builderContext) {
         return null;
 //        return BinaryActuator.builder()
 //            .id(actuatorDTO)
@@ -22,7 +22,7 @@ public class BinaryActuatorBuilder {
 //            .build();
     }
 
-    private BinaryActuatorChannel binChannel(ThingDTO thingDTO, ActuatorDTO actuatorDTO, PluginBuilderContext builderContext) {
+    private BinaryActuatorChannel binChannel(ThingDTO thingDTO, ActuatorDTO actuatorDTO, RulerPluginContext builderContext) {
         return BinaryActuatorChannel.builder()
             .patchCommand(restPatchCommand(thingDTO, actuatorDTO, builderContext.getServiceProvider().getRestService()))
             .getCommand(restGetCommand(thingDTO, actuatorDTO, builderContext.getServiceProvider().getRestService()))

@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.email.sender;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.email.EmailActuatorBuilder;
 import com.tbot.ruler.plugins.email.EmailSenderConfiguration;
 import com.tbot.ruler.subjects.Actuator;
@@ -22,7 +22,7 @@ public class EmailSenderActuatorBuilder extends EmailActuatorBuilder {
     @Override
     public Actuator buildActuator(
             ActuatorEntity actuatorEntity,
-            PluginBuilderContext pluginBuilderContext,
+            RulerPluginContext rulerPluginContext,
             EmailSenderConfiguration emailSenderConfiguration) throws PluginException {
         EmailConfiguration emailConfiguration = parseConfiguration(actuatorEntity.getConfiguration(), EmailConfiguration.class);
         JavaMailSender emailSender = buildEmailSender(emailSenderConfiguration);

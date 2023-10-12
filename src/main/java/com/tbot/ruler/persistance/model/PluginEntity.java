@@ -33,8 +33,8 @@ public class PluginEntity {
     private String pluginUuid;
 
     @NonNull
-    @Column("builder_class")
-    private String builderClass;
+    @Column("factory_class")
+    private String factoryClass;
 
     @NonNull
     @Column("name")

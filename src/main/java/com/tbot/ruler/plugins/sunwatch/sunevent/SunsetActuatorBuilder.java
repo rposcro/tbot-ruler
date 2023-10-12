@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.sunwatch.sunevent;
 
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
@@ -22,7 +22,7 @@ public class SunsetActuatorBuilder extends SunWatchActuatorBuilder {
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, PluginBuilderContext builderContext, SunLocale eventLocale) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerPluginContext builderContext, SunLocale eventLocale) {
         SunEventActuatorConfiguration configuration = parseConfiguration(
                 actuatorEntity.getConfiguration(), SunEventActuatorConfiguration.class);
         TaskTrigger emissionTrigger = emissionTrigger(configuration, eventLocale);
@@ -36,7 +36,7 @@ public class SunsetActuatorBuilder extends SunWatchActuatorBuilder {
                 .build();
     }
 
-    private Runnable emissionTask(ActuatorEntity actuatorEntity, PluginBuilderContext builderContext, SunEventActuatorConfiguration emitterConfiguration) {
+    private Runnable emissionTask(ActuatorEntity actuatorEntity, RulerPluginContext builderContext, SunEventActuatorConfiguration emitterConfiguration) {
         Message message = emitterMessage(actuatorEntity, emitterConfiguration.getSignal());
         return () -> builderContext.getMessagePublisher().publishMessage(message);
     }

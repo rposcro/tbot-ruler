@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.cron;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.Notification;
-import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.subjects.BasicActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
@@ -15,7 +15,7 @@ public class CronSchedulerActuatorBuilder {
 
     private static final String PARAM_SCHEDULE_PATTERN = "schedulePattern";
 
-    public Actuator buildEmitter(PluginBuilderContext builderContext, ActuatorDTO actuatorDTO, TimeZone timeZone) {
+    public Actuator buildEmitter(RulerPluginContext builderContext, ActuatorDTO actuatorDTO, TimeZone timeZone) {
         return BasicActuator.builder()
                 .uuid(actuatorDTO.getUuid())
                 .name(actuatorDTO.getName())

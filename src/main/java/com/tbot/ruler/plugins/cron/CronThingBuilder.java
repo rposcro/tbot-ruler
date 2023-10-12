@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.cron;
 
-import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.subjects.Thing;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
@@ -18,7 +18,7 @@ public class CronThingBuilder {
 
     private CronSchedulerActuatorBuilder schedulerActuatorBuilder = new CronSchedulerActuatorBuilder();
 
-    public Thing buildThing(PluginBuilderContext builderContext) {
+    public Thing buildThing(RulerPluginContext builderContext) {
         // TODO: Rewrite the code
         return null;
         //        ThingDTO thingDTO = builderContext.getThingDTO();
@@ -34,7 +34,7 @@ public class CronThingBuilder {
 //            .build();
     }
 
-    private List<Actuator> buildActuators(PluginBuilderContext builderContext) {
+    private List<Actuator> buildActuators(RulerPluginContext builderContext) {
         //        List<ActuatorDTO> actuatorDTOS = builderContext.getThingDTO().getActuators();
 //        TimeZone timeZone = determineTimeZone(builderContext.getThingDTO());
 //

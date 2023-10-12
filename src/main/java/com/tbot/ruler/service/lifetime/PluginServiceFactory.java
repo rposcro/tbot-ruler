@@ -2,10 +2,10 @@ package com.tbot.ruler.service.lifetime;
 
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.persistance.model.PluginEntity;
+import com.tbot.ruler.plugins.PluginFactory;
 import com.tbot.ruler.service.things.SubjectStateService;
-import com.tbot.ruler.subjects.Plugin;
-import com.tbot.ruler.plugins.PluginBuilder;
-import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.plugins.Plugin;
+import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.subjects.service.ServiceProvider;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.List;
 
 @Slf4j
 @Component
-public class PluginFactory {
+public class PluginServiceFactory {
 
     @Autowired
     private ServiceProvider serviceProvider;
@@ -29,7 +29,7 @@ public class PluginFactory {
         List<Plugin> plugins = new LinkedList<>();
         pluginEntities.forEach(pluginEntity -> {
             try {
-                    log.info("Building plugin: {} {} {}", pluginEntity.getPluginUuid(), pluginEntity.getName(), pluginEntity.getBuilderClass());
+                    log.info("Building plugin: {} {} {}", pluginEntity.getPluginUuid(), pluginEntity.getName(), pluginEntity.getFactoryClass());
                     Plugin plugin = buildPlugin(pluginEntity);
                     plugins.add(plugin);
                 } catch(ReflectiveOperationException e) {
@@ -40,19 +40,21 @@ public class PluginFactory {
     }
 
     public Plugin buildPlugin(PluginEntity pluginEntity) throws ReflectiveOperationException {
-        PluginBuilderContext context = PluginBuilderContext.builder()
+        RulerPluginContext context = RulerPluginContext.builder()
+                .pluginUuid(pluginEntity.getPluginUuid())
+                .pluginName(pluginEntity.getName())
+                .pluginConfiguration(pluginEntity.getConfiguration())
                 .serviceProvider(serviceProvider)
                 .messagePublisher(messagePublisher)
                 .subjectStateService(subjectStateService)
                 .build();
-        PluginBuilder builder = instantiateBuilder(pluginEntity, context);
-        return builder.buildPlugin(pluginEntity);
+        PluginFactory factory = instantiateFactory(pluginEntity);
+        return factory.producePlugin(context);
     }
 
-    private PluginBuilder instantiateBuilder(PluginEntity pluginEntity, PluginBuilderContext pluginBuilderContext) throws ReflectiveOperationException {
-        String builderClassName = pluginEntity.getBuilderClass();
+    private PluginFactory instantiateFactory(PluginEntity pluginEntity) throws ReflectiveOperationException {
+        String builderClassName = pluginEntity.getFactoryClass();
         Class<?> builderClass = this.getClass().getClassLoader().loadClass(builderClassName);
-        return (PluginBuilder) builderClass.getConstructor(PluginBuilderContext.class).newInstance(pluginBuilderContext);
+        return (PluginFactory) builderClass.getConstructor().newInstance();
     }
-
 }

@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.ghost.singleinterval;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.ghost.GhostActuatorBuilder;
 import com.tbot.ruler.plugins.ghost.GhostThingConfiguration;
 import com.tbot.ruler.subjects.Actuator;
@@ -20,17 +20,17 @@ public class SingleIntervalActuatorBuilder extends GhostActuatorBuilder {
     }
 
     @Override
-    public Actuator buildActuator(PluginBuilderContext pluginBuilderContext, ActuatorEntity actuatorEntity, GhostThingConfiguration thingConfiguration) {
+    public Actuator buildActuator(RulerPluginContext rulerPluginContext, ActuatorEntity actuatorEntity, GhostThingConfiguration thingConfiguration) {
         SingleIntervalConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SingleIntervalConfiguration.class);
         SingleIntervalAgent actuatorAgent = SingleIntervalAgent.builder()
                 .actuatorUuid(actuatorEntity.getActuatorUuid())
                 .defaultState(configuration.isEnabledByDefault())
-                .subjectStateService(pluginBuilderContext.getSubjectStateService())
+                .subjectStateService(rulerPluginContext.getSubjectStateService())
                 .build();
         Runnable emissionTask = SingleIntervalEmissionTask.builder()
                 .configuration(configuration)
                 .emitterId(actuatorEntity.getActuatorUuid())
-                .messagePublisher(pluginBuilderContext.getMessagePublisher())
+                .messagePublisher(rulerPluginContext.getMessagePublisher())
                 .zoneId(ZoneId.of(thingConfiguration.getTimeZone()))
                 .singleIntervalAgent(actuatorAgent)
                 .build();

@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.plugins.PluginBuilderContext;
+import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.subjects.Actuator;
 import java.util.Collections;
 import java.util.List;
@@ -22,7 +22,7 @@ public class DeputyThingBuilder {
     private HealthCheckActuatorBuilder healthCheckActuatorBuilder = new HealthCheckActuatorBuilder();
     private BinaryActuatorBuilder binOutActuatorBuilder = new BinaryActuatorBuilder();
 
-    public Thing buildThing(PluginBuilderContext builderContext) {
+    public Thing buildThing(RulerPluginContext builderContext) {
         // TODO: rewrite the thing
         return null;
 //        ThingDTO thingDTO = builderContext.getThingDTO();
@@ -38,7 +38,7 @@ public class DeputyThingBuilder {
 //            .build();
     }
 
-    private List<Actuator> buildActuators(PluginBuilderContext builderContext) {
+    private List<Actuator> buildActuators(RulerPluginContext builderContext) {
 //        ThingDTO thingDTO = builderContext.getThingDTO();
 //        List<ActuatorDTO> actuatorDTOs = thingDTO.getActuators();
 //

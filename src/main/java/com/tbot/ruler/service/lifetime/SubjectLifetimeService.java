@@ -2,7 +2,7 @@ package com.tbot.ruler.service.lifetime;
 
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.model.PluginEntity;
-import com.tbot.ruler.subjects.Plugin;
+import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.subjects.Thing;
 import lombok.extern.slf4j.Slf4j;
@@ -28,20 +28,27 @@ public class SubjectLifetimeService {
     private PluginsRepository pluginsRepository;
 
     @Autowired
-    private PluginFactory pluginFactory;
+    private PluginServiceFactory pluginServiceFactory;
 
     private List<Plugin> plugins;
     private List<Thing> things;
     private List<Actuator> actuators;
+    private Map<String, Plugin> pluginsMap;
     private Map<String, Thing> thingsMap;
     private Map<String, Actuator> actuatorsMap;
 
     @EventListener
     public void initialize(ApplicationStartedEvent event) {
         List<PluginEntity> pluginEntities = pluginsRepository.findAll();
-        plugins = pluginFactory.buildPlugins(pluginEntities);
-        things = plugins.stream()
-                .flatMap(plugin -> plugin.getThings().stream())
+        Map<Long, PluginEntity> pluginEntityMap = pluginEntities.stream()
+                .collect(Collectors.toMap(PluginEntity::getPluginId, Function.identity()));
+
+        plugins = pluginServiceFactory.buildPlugins(pluginEntities);
+        pluginsMap = plugins.stream()
+                .collect(Collectors.toMap(Plugin::getUuid, Function.identity()));
+        things = pluginEntities.stream()
+                .flatMap(pluginEntity -> pluginEntity.getThings().stream())
+                .map(thingEntity -> pluginsMap.get(pluginEntityMap.get(thingEntity.getPluginId()).getPluginUuid()).startUpThing(thingEntity))
                 .collect(Collectors.toList());
         thingsMap = things.stream()
                 .collect(Collectors.toMap(Thing::getUuid, Function.identity()));

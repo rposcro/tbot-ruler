@@ -77,7 +77,7 @@ public class JsonDataConfiguration {
                     PluginEntity pluginEntity = PluginEntity.builder()
                             .pluginUuid(dto.getUuid())
                             .name(dto.getAlias())
-                            .builderClass(dto.getBuilderClass())
+                            .factoryClass(dto.getFactoryClass())
                             .configuration(dto.getConfiguration())
                             .build();
                     pluginsRepository.save(pluginEntity);
