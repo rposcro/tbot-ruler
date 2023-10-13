@@ -32,17 +32,6 @@ public class NotificationActuator extends AbstractActuator {
         this.configuration = configuration;
     }
 
-    public boolean acceptsCommand(byte sourceNodeId) {
-        return !configuration.isMultiChannelOn()
-                && (byte) configuration.getSourceNodeId() == sourceNodeId;
-    }
-
-    public boolean acceptsCommand(byte sourceNodeId, byte sourceEndpointId) {
-        return configuration.isMultiChannelOn()
-                && ((byte) configuration.getSourceNodeId() == sourceNodeId)
-                && (byte) configuration.getSourceEndPointId() == sourceEndpointId;
-    }
-
     public void acceptNotification(NotificationReport notificationReport) {
         int event = notificationReport.getNotificationEvent();
         OnOffState payload;

@@ -58,10 +58,6 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
     public void acceptPublicationReport(MessagePublicationReport publicationReport) {
     }
 
-    public boolean acceptsReportCommand(byte nodeId) {
-        return nodeId == (byte) configuration.getNodeId();
-    }
-
     public void acceptCommand(SwitchMultilevelReport command) {
         messagePublisher.publishMessage(Message.builder()
                 .senderId(this.getUuid())

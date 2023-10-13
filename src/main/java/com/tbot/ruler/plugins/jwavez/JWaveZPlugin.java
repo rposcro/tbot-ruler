@@ -1,14 +1,16 @@
 package com.tbot.ruler.plugins.jwavez;
 
 import com.rposcro.jwavez.core.JwzApplicationSupport;
+import com.rposcro.jwavez.serial.handlers.ApplicationCommandHandler;
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.RulerPluginContext;
+import com.tbot.ruler.plugins.jwavez.controller.CommandRouteRegistry;
+import com.tbot.ruler.plugins.jwavez.controller.CommandRouter;
 import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandSender;
 import com.tbot.ruler.plugins.jwavez.controller.JWaveZSerialController;
-import com.tbot.ruler.plugins.jwavez.controller.JWaveZSerialHandler;
 import com.tbot.ruler.plugins.jwavez.controller.MockedSerialController;
 import com.tbot.ruler.plugins.jwavez.controller.SerialController;
 import com.tbot.ruler.subjects.AbstractSubject;
@@ -71,8 +73,8 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
     }
 
     private JWaveZPluginContext prepareJwzContext(RulerPluginContext rulerPluginContext) {
-        JWaveZSerialHandler serialHandler = new JWaveZSerialHandler();
-        SerialController serialController = prepareSerialController(rulerPluginContext, serialHandler);
+        CommandRouteRegistry commandRouteRegistry = new CommandRouteRegistry();
+        SerialController serialController = prepareSerialController(rulerPluginContext, commandRouteRegistry);
         JWaveZCommandSender commandSender = JWaveZCommandSender.builder()
                 .serialController(serialController)
                 .build();
@@ -82,12 +84,14 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
                 .messagePublisher(rulerPluginContext.getMessagePublisher())
                 .serialController(serialController)
                 .jwzApplicationSupport(JwzApplicationSupport.defaultSupport())
-                .jwzSerialHandler(serialHandler)
                 .jwzCommandSender(commandSender)
+                .commandRouteRegistry(commandRouteRegistry)
                 .build();
     }
 
-    private SerialController prepareSerialController(RulerPluginContext rulerPluginContext, JWaveZSerialHandler serialHandler) {
+    private SerialController prepareSerialController(
+            RulerPluginContext rulerPluginContext,
+            CommandRouteRegistry commandRouteRegistry) {
         JWaveZPluginConfiguration configuration = parseConfiguration(rulerPluginContext.getPluginConfiguration(), JWaveZPluginConfiguration.class);
 
         if (configuration.isMockDevice()) {
@@ -95,6 +99,15 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
                     .configuration(configuration)
                     .build();
         } else {
+            CommandRouter commandRouter = CommandRouter.builder()
+                    .commandRouteRegistry(commandRouteRegistry)
+                    .supportedCommandParser(JwzApplicationSupport.defaultSupport().supportedCommandParser())
+                    .build();
+            ApplicationCommandHandler serialHandler = ApplicationCommandHandler.builder()
+                    .supportBroadcasts(false)
+                    .supportMulticasts(false)
+                    .supportedCommandDispatcher(commandRouter)
+                    .build();
             return JWaveZSerialController.builder()
                     .configuration(configuration)
                     .callbackHandler(serialHandler)

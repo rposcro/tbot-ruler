@@ -14,9 +14,9 @@ import lombok.NonNull;
 @Getter
 public class BasicSetActuator extends AbstractSubject implements Actuator {
 
-    private MessagePublisher messagePublisher;
-    private BasicSetValueMode valueMode;
-    private BasicSetConfiguration configuration;
+    private final MessagePublisher messagePublisher;
+    private final BasicSetValueMode valueMode;
+    private final BasicSetConfiguration configuration;
 
     @Builder
     public BasicSetActuator(
@@ -32,15 +32,12 @@ public class BasicSetActuator extends AbstractSubject implements Actuator {
         this.configuration = configuration;
     }
 
-    public boolean acceptsCommand(byte sourceNodeId) {
-        return !configuration.isMultiChannelOn()
-                && (byte) configuration.getNodeId() == sourceNodeId;
+    @Override
+    public void acceptMessage(Message message) {
     }
 
-    public boolean acceptsCommand(byte sourceNodeId, byte sourceEndpointId) {
-        return configuration.isMultiChannelOn()
-                && ((byte) configuration.getNodeId() == sourceNodeId)
-                && (byte) configuration.getSourceEndPointId() == sourceEndpointId;
+    @Override
+    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
     }
 
     public void acceptCommandValue(byte commandValue) {
@@ -48,10 +45,6 @@ public class BasicSetActuator extends AbstractSubject implements Actuator {
                 .senderId(this.getUuid())
                 .payload(messagePayload(commandValue))
                 .build());
-    }
-
-    @Override
-    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
     }
 
     private Object messagePayload(byte commandValue) {
@@ -64,9 +57,5 @@ public class BasicSetActuator extends AbstractSubject implements Actuator {
             default:
                 throw new MessageProcessingException("Unexpected implementation inconsistency!");
         }
-    }
-
-    @Override
-    public void acceptMessage(Message message) {
     }
 }

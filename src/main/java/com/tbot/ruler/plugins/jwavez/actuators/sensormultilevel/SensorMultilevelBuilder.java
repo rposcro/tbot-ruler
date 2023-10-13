@@ -1,9 +1,11 @@
 package com.tbot.ruler.plugins.jwavez.actuators.sensormultilevel;
 
+import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
 import com.rposcro.jwavez.core.commands.types.SensorMultilevelCommandType;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
+import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
@@ -11,12 +13,8 @@ public class SensorMultilevelBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "sensor-multilevel";
 
-    private final SensorMultilevelListener listener;
-
     public SensorMultilevelBuilder(JWaveZPluginContext pluginContext) {
         super(REFERENCE, pluginContext);
-        this.listener = new SensorMultilevelListener(pluginContext.getJwzApplicationSupport().supportedCommandParser());
-        pluginContext.getJwzSerialHandler().addCommandListener(SensorMultilevelCommandType.SENSOR_MULTILEVEL_REPORT, listener);
     }
 
     @Override
@@ -28,20 +26,24 @@ public class SensorMultilevelBuilder extends JWaveZActuatorBuilder {
                 .description(actuatorEntity.getDescription())
                 .messagePublisher(pluginContext.getMessagePublisher())
                 .build();
-
-        if (configuration.isMultiChannelOn()) {
-            listener.registerActuator(
-                    (byte) configuration.getSourceNodeId(),
-                    (byte) configuration.getSourceEndPointId(),
-                    actuator
-            );
-        } else {
-            listener.registerActuator(
-                    (byte) configuration.getSourceNodeId(),
-                    actuator
-            );
-        }
-
+        CommandListener<? extends ZWaveSupportedCommand> listener = buildCommandListener(actuator, configuration);
+        pluginContext.getCommandRouteRegistry().registerListener(SensorMultilevelCommandType.SENSOR_MULTILEVEL_REPORT, listener);
         return actuator;
+    }
+
+    private CommandListener<? extends ZWaveSupportedCommand> buildCommandListener(SensorMultilevelActuator actuator, SensorMultilevelConfiguration configuration) {
+        if (configuration.isMultiChannelOn()) {
+            return SensorMultilevelEncapsulatedCommandListener.builder()
+                    .supportedCommandParser(pluginContext.getJwzApplicationSupport().supportedCommandParser())
+                    .actuator(actuator)
+                    .sourceNodeId(configuration.getSourceNodeId())
+                    .sourceEndPointId(configuration.getSourceEndPointId())
+                    .build();
+        } else {
+            return SensorMultilevelCommandListener.builder()
+                    .actuator(actuator)
+                    .sourceNodeId(configuration.getSourceNodeId())
+                    .build();
+        }
     }
 }

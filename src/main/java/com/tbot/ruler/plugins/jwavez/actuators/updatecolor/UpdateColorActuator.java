@@ -69,10 +69,6 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
     public void acceptPublicationReport(MessagePublicationReport publicationReport) {
     }
 
-    public boolean acceptsReportCommand(byte nodeId) {
-        return nodeId == (byte) configuration.getNodeId();
-    }
-
     public void acceptCommand(SwitchColorReport command) {
         log.debug("Color component {} report received for node {}", command.getColorComponentId(), command.getSourceNodeId().getId());
         collectedComponentsReports.put((int) command.getColorComponentId(), (int) command.getCurrentValue());

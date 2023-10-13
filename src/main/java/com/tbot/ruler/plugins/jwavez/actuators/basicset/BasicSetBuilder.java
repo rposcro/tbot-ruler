@@ -1,9 +1,11 @@
 package com.tbot.ruler.plugins.jwavez.actuators.basicset;
 
+import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
 import com.rposcro.jwavez.core.commands.types.BasicCommandType;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
+import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
 import com.tbot.ruler.subjects.Actuator;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
@@ -12,12 +14,8 @@ public class BasicSetBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "basic-set";
 
-    private final BasicSetCommandListener commandListener;
-
     public BasicSetBuilder(JWaveZPluginContext pluginContext) {
         super(REFERENCE, pluginContext);
-        this.commandListener = new BasicSetCommandListener(pluginContext.getJwzApplicationSupport().supportedCommandParser());
-        pluginContext.getJwzSerialHandler().addCommandListener(BasicCommandType.BASIC_SET, commandListener);
     }
 
     @Override
@@ -30,8 +28,24 @@ public class BasicSetBuilder extends JWaveZActuatorBuilder {
                 .configuration(configuration)
                 .messagePublisher(pluginContext.getMessagePublisher())
                 .build();
-
-        commandListener.registerActuator(actuator);
+        CommandListener<? extends ZWaveSupportedCommand> listener = buildCommandListener(actuator, configuration);
+        pluginContext.getCommandRouteRegistry().registerListener(BasicCommandType.BASIC_SET, listener);
         return actuator;
+    }
+
+    private CommandListener<? extends ZWaveSupportedCommand> buildCommandListener(BasicSetActuator actuator, BasicSetConfiguration configuration) {
+        if (configuration.isMultiChannelOn()) {
+            return BasicSetEncapsulatedCommandListener.builder()
+                    .supportedCommandParser(pluginContext.getJwzApplicationSupport().supportedCommandParser())
+                    .actuator(actuator)
+                    .sourceNodeId(configuration.getNodeId())
+                    .sourceEndPointId(configuration.getSourceEndPointId())
+                    .build();
+        } else {
+            return BasicSetCommandListener.builder()
+                    .actuator(actuator)
+                    .sourceNodeId(configuration.getNodeId())
+                    .build();
+        }
     }
 }

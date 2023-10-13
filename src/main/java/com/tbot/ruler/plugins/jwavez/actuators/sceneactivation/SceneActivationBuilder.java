@@ -11,12 +11,8 @@ public class SceneActivationBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "scene-activation";
 
-    private final SceneActivationListener listener;
-
     public SceneActivationBuilder(JWaveZPluginContext pluginContext) {
         super(REFERENCE, pluginContext);
-        this.listener = new SceneActivationListener();
-        pluginContext.getJwzSerialHandler().addCommandListener(SceneActivationCommandType.SCENE_ACTIVATION_SET, listener);
     }
 
     @Override
@@ -31,8 +27,13 @@ public class SceneActivationBuilder extends JWaveZActuatorBuilder {
             .sourceNodeId((byte) configuration.getSourceNodeId())
             .build()
             .init();
-
-        listener.registerActuator(actuator);
+        pluginContext.getCommandRouteRegistry().registerListener(
+                SceneActivationCommandType.SCENE_ACTIVATION_SET,
+                SceneActivationCommandListener.builder()
+                        .actuator(actuator)
+                        .sourceNodeId(configuration.getSourceNodeId())
+                        .sceneId(configuration.getSceneId())
+                        .build());
         return actuator;
     }
 }

@@ -63,9 +63,16 @@ public class JWaveZSerialController implements SerialController {
     private GeneralAsynchronousController buildJWaveZController(String device) {
         return GeneralAsynchronousController.builder()
                 .dongleDevice(device)
-                .callbackHandler(callbackHandler)
+                .callbackHandler(buildCallbackHandler())
                 .responseHandler(buildResponseHandler())
                 .build();
+    }
+
+    private CallbackHandler buildCallbackHandler() {
+        return (buffer) -> {
+            log.debug("Callback frame received: {}", argument(() -> FramesUtil.asFineString(buffer)));
+            callbackHandler.accept(buffer);
+        };
     }
 
     private ResponseHandler buildResponseHandler() {

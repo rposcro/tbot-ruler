@@ -3,20 +3,22 @@ package com.tbot.ruler.plugins.jwavez;
 import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.plugins.RulerPluginContext;
+import com.tbot.ruler.plugins.jwavez.controller.CommandRouteRegistry;
 import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandSender;
-import com.tbot.ruler.plugins.jwavez.controller.JWaveZSerialHandler;
 import com.tbot.ruler.plugins.jwavez.controller.SerialController;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NonNull;
 
 @Getter
 @Builder
+@NonNull
 public class JWaveZPluginContext {
 
     private final RulerPluginContext rulerPluginContext;
     private final MessagePublisher messagePublisher;
     private final SerialController serialController;
     private final JwzApplicationSupport jwzApplicationSupport;
-    private final JWaveZSerialHandler jwzSerialHandler;
     private final JWaveZCommandSender jwzCommandSender;
+    private final CommandRouteRegistry commandRouteRegistry;
 }

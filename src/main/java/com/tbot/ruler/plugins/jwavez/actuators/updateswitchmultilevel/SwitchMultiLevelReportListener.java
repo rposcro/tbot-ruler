@@ -1,31 +1,30 @@
 package com.tbot.ruler.plugins.jwavez.actuators.updateswitchmultilevel;
 
 import com.rposcro.jwavez.core.commands.supported.switchmultilevel.SwitchMultilevelReport;
-import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandListener;
+import com.tbot.ruler.plugins.jwavez.controller.CommandFilter;
+import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
+import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.LinkedList;
-import java.util.List;
-
 @Slf4j
-public class SwitchMultiLevelReportListener extends JWaveZCommandListener<SwitchMultilevelReport> {
+@Getter
+public class SwitchMultiLevelReportListener implements CommandListener<SwitchMultilevelReport> {
 
-    private List<UpdateSwitchMultiLevelActuator> actuators;
+    private final UpdateSwitchMultiLevelActuator actuator;
+    private final CommandFilter commandFilter;
 
-    public SwitchMultiLevelReportListener() {
-        this.actuators = new LinkedList<>();
+    @Builder
+    public SwitchMultiLevelReportListener(
+            UpdateSwitchMultiLevelActuator actuator,
+            int sourceNodeId) {
+        this.actuator = actuator;
+        this.commandFilter = CommandFilter.sourceNodeFilter(sourceNodeId);
     }
 
     @Override
     public void handleCommand(SwitchMultilevelReport command) {
         log.debug("Handling switch multilevel report command");
-        byte nodeId = command.getSourceNodeId().getId();
-        actuators.stream()
-                .filter(emitter -> emitter.acceptsReportCommand(nodeId))
-                .forEach(emitter -> emitter.acceptCommand(command));
-    }
-
-    public void registerActuator(UpdateSwitchMultiLevelActuator emitter) {
-        actuators.add(emitter);
+        actuator.acceptCommand(command);
     }
 }
