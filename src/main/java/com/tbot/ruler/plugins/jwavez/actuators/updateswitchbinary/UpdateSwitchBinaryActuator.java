@@ -10,7 +10,7 @@ import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
-import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandSender;
+import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.task.Task;
@@ -30,7 +30,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
 
     private final UpdateSwitchBinaryConfiguration configuration;
     private final MessagePublisher messagePublisher;
-    private final JWaveZCommandSender commandSender;
+    private final CommandSender commandSender;
 
     private final SwitchBinaryCommandBuilder commandBuilder;
     private final MultiChannelCommandBuilder multiChannelCommandBuilder;
@@ -45,7 +45,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
             @NonNull String name,
             String description,
             @NonNull MessagePublisher messagePublisher,
-            @NonNull JWaveZCommandSender commandSender,
+            @NonNull CommandSender commandSender,
             @NonNull UpdateSwitchBinaryConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
     ) {

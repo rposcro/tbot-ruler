@@ -9,7 +9,7 @@ import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.jwavez.controller.CommandRouteRegistry;
 import com.tbot.ruler.plugins.jwavez.controller.CommandRouter;
-import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandSender;
+import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.plugins.jwavez.controller.JWaveZSerialController;
 import com.tbot.ruler.plugins.jwavez.controller.MockedSerialController;
 import com.tbot.ruler.plugins.jwavez.controller.SerialController;
@@ -75,7 +75,7 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
     private JWaveZPluginContext prepareJwzContext(RulerPluginContext rulerPluginContext) {
         CommandRouteRegistry commandRouteRegistry = new CommandRouteRegistry();
         SerialController serialController = prepareSerialController(rulerPluginContext, commandRouteRegistry);
-        JWaveZCommandSender commandSender = JWaveZCommandSender.builder()
+        CommandSender commandSender = CommandSender.builder()
                 .serialController(serialController)
                 .build();
 

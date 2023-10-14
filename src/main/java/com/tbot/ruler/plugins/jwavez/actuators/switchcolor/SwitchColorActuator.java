@@ -8,7 +8,7 @@ import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.RGBWColor;
-import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandSender;
+import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractActuator;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.subjects.ActuatorState;
@@ -24,7 +24,7 @@ public class SwitchColorActuator extends AbstractActuator implements Actuator {
     private final static String PERSISTENCE_KEY = "rgbw";
 
     private final SwitchColorConfiguration configuration;
-    private final JWaveZCommandSender commandSender;
+    private final CommandSender commandSender;
     private final SwitchColorCommandBuilder commandBuilder;
     private final ColorMode colorMode;
 
@@ -35,7 +35,7 @@ public class SwitchColorActuator extends AbstractActuator implements Actuator {
             @NonNull String uuid,
             @NonNull String name,
             String description,
-            @NonNull JWaveZCommandSender commandSender,
+            @NonNull CommandSender commandSender,
             @NonNull SwitchColorConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
             ) {

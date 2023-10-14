@@ -9,7 +9,7 @@ import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
-import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandSender;
+import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.subjects.ActuatorState;
 import lombok.Builder;
@@ -27,7 +27,7 @@ public class SwitchMultilevelActuator implements Actuator {
 
     private final byte switchDuration;
     private final NodeId nodeId;
-    private final JWaveZCommandSender commandSender;
+    private final CommandSender commandSender;
 
     private final SwitchMultiLevelCommandBuilder commandBuilder;
 
@@ -40,7 +40,7 @@ public class SwitchMultilevelActuator implements Actuator {
             String description,
             byte switchDuration,
             @NonNull NodeId nodeId,
-            @NonNull JWaveZCommandSender commandSender,
+            @NonNull CommandSender commandSender,
             @NonNull JwzApplicationSupport applicationSupport) {
         this.uuid = uuid;
         this.name = name;

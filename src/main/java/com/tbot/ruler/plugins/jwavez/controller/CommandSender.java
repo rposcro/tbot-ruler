@@ -13,7 +13,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-public class JWaveZCommandSender implements Runnable {
+public class CommandSender implements Runnable {
 
     private final static long MAX_ACTIVATION_WAIT_TIME = 300_000;
 
@@ -25,7 +25,7 @@ public class JWaveZCommandSender implements Runnable {
     private final AtomicInteger callbackId;
 
     @Builder
-    public JWaveZCommandSender(SerialController serialController) {
+    public CommandSender(SerialController serialController) {
         this.serialController = serialController;
         this.serialRequestFactory = JwzSerialSupport.defaultSupport().serialRequestFactory();
         this.sleepTimeOnNotActiveController = 1000;

@@ -8,7 +8,7 @@ import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
-import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandSender;
+import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.task.Task;
@@ -29,7 +29,7 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
 
     private final UpdateSwitchMultiLevelConfiguration configuration;
     private final MessagePublisher messagePublisher;
-    private final JWaveZCommandSender commandSender;
+    private final CommandSender commandSender;
 
     private final SwitchMultiLevelCommandBuilder commandBuilder;
     private final long pollIntervalMilliseconds;
@@ -42,7 +42,7 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
             @NonNull String name,
             String description,
             @NonNull MessagePublisher messagePublisher,
-            @NonNull JWaveZCommandSender commandSender,
+            @NonNull CommandSender commandSender,
             @NonNull UpdateSwitchMultiLevelConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
             ) {

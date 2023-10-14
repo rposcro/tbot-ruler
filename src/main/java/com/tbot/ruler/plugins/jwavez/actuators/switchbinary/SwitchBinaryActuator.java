@@ -10,7 +10,7 @@ import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
-import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandSender;
+import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.subjects.ActuatorState;
@@ -23,7 +23,7 @@ public class SwitchBinaryActuator extends AbstractSubject implements Actuator {
     private final static byte SOURCE_ENDPOINT_ID = 0;
 
     private final SwitchBinaryConfiguration configuration;
-    private final JWaveZCommandSender commandSender;
+    private final CommandSender commandSender;
     private final SwitchBinaryCommandBuilder switchBinaryCommandBuilder;
     private final MultiChannelCommandBuilder multiChannelCommandBuilder;
 
@@ -35,7 +35,7 @@ public class SwitchBinaryActuator extends AbstractSubject implements Actuator {
             String name,
             String description,
             SwitchBinaryConfiguration configuration,
-            JWaveZCommandSender commandSender,
+            CommandSender commandSender,
             JwzApplicationSupport applicationSupport) {
         super(uuid, name, description);
         this.configuration = configuration;

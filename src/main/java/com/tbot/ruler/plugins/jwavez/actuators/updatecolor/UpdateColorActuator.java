@@ -10,7 +10,7 @@ import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.RGBWColor;
-import com.tbot.ruler.plugins.jwavez.controller.JWaveZCommandSender;
+import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.Actuator;
 import com.tbot.ruler.task.Task;
@@ -36,7 +36,7 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
 
     private final UpdateColorConfiguration configuration;
     private final MessagePublisher messagePublisher;
-    private final JWaveZCommandSender commandSender;
+    private final CommandSender commandSender;
 
     private final SwitchColorCommandBuilder commandBuilder;
     private final long pollIntervalMilliseconds;
@@ -52,7 +52,7 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
             @NonNull String name,
             String description,
             @NonNull MessagePublisher messagePublisher,
-            @NonNull JWaveZCommandSender commandSender,
+            @NonNull CommandSender commandSender,
             @NonNull UpdateColorConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
     ) {
