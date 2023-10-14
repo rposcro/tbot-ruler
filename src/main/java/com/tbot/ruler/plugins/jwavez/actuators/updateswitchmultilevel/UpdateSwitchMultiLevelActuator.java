@@ -19,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 @Slf4j
 @Getter
@@ -77,7 +78,9 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
                 log.debug("Sending multi level report request for node " + configuration.getNodeId());
                 commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
             };
-            return Collections.singleton(Task.triggerableTask(runnable, pollIntervalMilliseconds));
+            return List.of(
+                    Task.triggerableTask(runnable, pollIntervalMilliseconds),
+                    Task.startUpTask(runnable));
         }
     }
 }

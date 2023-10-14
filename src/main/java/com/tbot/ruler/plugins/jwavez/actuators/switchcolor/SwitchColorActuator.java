@@ -67,6 +67,10 @@ public class SwitchColorActuator extends AbstractActuator implements Actuator {
         return actuatorState;
     };
 
+    public void setState(RGBWColor color) {
+        this.actuatorState.updatePayload(color);
+    }
+
     private ZWaveControlledCommand buildCommand(RGBWColor payload) {
         switch(colorMode) {
             case RGB:

@@ -3,6 +3,7 @@ package com.tbot.ruler.plugins.jwavez.actuators.switchmultilevel;
 import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
 import com.rposcro.jwavez.core.commands.controlled.builders.switchmultilevel.SwitchMultiLevelCommandBuilder;
+import com.rposcro.jwavez.core.commands.supported.switchmultilevel.SwitchMultilevelReport;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
@@ -69,5 +70,9 @@ public class SwitchMultilevelActuator implements Actuator {
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }
+    }
+
+    public void acceptCommand(SwitchMultilevelReport report) {
+        this.actuatorState.updatePayload(OnOffState.of(report.getCurrentValue() != 0));
     }
 }
