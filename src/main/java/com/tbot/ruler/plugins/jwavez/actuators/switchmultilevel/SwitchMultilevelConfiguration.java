@@ -10,8 +10,10 @@ public class SwitchMultilevelConfiguration {
 
     @JsonProperty(required = true)
     private int nodeId;
+
     @JsonProperty(defaultValue = "0")
     private int switchDuration;
+
     @JsonProperty(defaultValue = "0")
     private int pollStateInterval;
 }

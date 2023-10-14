@@ -9,9 +9,9 @@ import lombok.Setter;
 public class NotificationConfiguration {
 
     @JsonProperty(required = true)
-    private int sourceNodeId;
+    private int nodeId;
 
-    private int sourceEndPointId;
+    private int nodeEndPointId;
 
     @JsonProperty(defaultValue = "false")
     private boolean multiChannelOn;

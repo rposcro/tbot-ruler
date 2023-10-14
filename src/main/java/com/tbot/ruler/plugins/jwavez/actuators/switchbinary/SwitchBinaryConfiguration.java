@@ -10,6 +10,9 @@ public class SwitchBinaryConfiguration {
 
     @JsonProperty(required = true)
     private int nodeId;
-    private int destinationEndPointId;
+
+    private int nodeEndPointId;
+
+    @JsonProperty(defaultValue = "false")
     private boolean multiChannelOn;
 }

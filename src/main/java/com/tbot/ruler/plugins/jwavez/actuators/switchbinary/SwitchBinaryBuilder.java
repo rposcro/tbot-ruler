@@ -39,7 +39,7 @@ public class SwitchBinaryBuilder extends JWaveZActuatorBuilder {
                     .actuator(actuator)
                     .commandParser(pluginContext.getJwzApplicationSupport().supportedCommandParser())
                     .sourceNodeId(configuration.getNodeId())
-                    .sourceEndPointId(configuration.getDestinationEndPointId())
+                    .sourceEndPointId(configuration.getNodeEndPointId())
                     .build();
         } else {
             return SwitchBinaryReportListener.builder()

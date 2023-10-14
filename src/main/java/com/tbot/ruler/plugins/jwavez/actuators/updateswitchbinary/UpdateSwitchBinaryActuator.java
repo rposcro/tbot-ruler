@@ -54,7 +54,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
         this.commandSender = commandSender;
         this.configuration = configuration;
         this.pollIntervalMilliseconds = configuration.getPollStateInterval() <= 0 ? 0 : 1000 * Math.max(MIN_POLL_INTERVAL, configuration.getPollStateInterval());
-        this.multiChannelOn = configuration.getEndPointId() >= 0;
+        this.multiChannelOn = configuration.getNodeEndPointId() >= 0;
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchBinaryCommandBuilder();
         this.multiChannelCommandBuilder = applicationSupport.controlledCommandFactory().multiChannelCommandBuilder();
         this.asynchronousTasks = asynchronousTasks();
@@ -82,9 +82,9 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
             Runnable runnable = () -> {
                 if (multiChannelOn) {
                     log.debug("Sending multi channel switch binary report request for node {} endPoint {}",
-                            configuration.getNodeId(), configuration.getEndPointId());
+                            configuration.getNodeId(), configuration.getNodeEndPointId());
                     ZWaveControlledCommand command = multiChannelCommandBuilder.v3().encapsulateCommand(
-                            (byte) 1, (byte) configuration.getEndPointId(), commandBuilder.v1().buildGetCommand());
+                            (byte) 1, (byte) configuration.getNodeEndPointId(), commandBuilder.v1().buildGetCommand());
                     commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), command);
                 } else {
                     log.debug("Sending switch binary report request for node " + configuration.getNodeId());

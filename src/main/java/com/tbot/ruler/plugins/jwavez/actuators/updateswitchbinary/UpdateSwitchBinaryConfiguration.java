@@ -10,8 +10,10 @@ public class UpdateSwitchBinaryConfiguration {
 
     @JsonProperty(required = true)
     private int nodeId;
+
     @JsonProperty(defaultValue = "0")
-    private int endPointId;
+    private int nodeEndPointId;
+
     @JsonProperty(defaultValue = "0")
     private int pollStateInterval;
 }

@@ -39,7 +39,7 @@ public class BasicSetBuilder extends JWaveZActuatorBuilder {
                     .supportedCommandParser(pluginContext.getJwzApplicationSupport().supportedCommandParser())
                     .actuator(actuator)
                     .sourceNodeId(configuration.getNodeId())
-                    .sourceEndPointId(configuration.getSourceEndPointId())
+                    .sourceEndPointId(configuration.getNodeEndPointId())
                     .build();
         } else {
             return BasicSetCommandListener.builder()

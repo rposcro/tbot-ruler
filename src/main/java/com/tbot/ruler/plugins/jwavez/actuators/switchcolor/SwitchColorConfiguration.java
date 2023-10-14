@@ -10,8 +10,10 @@ public class SwitchColorConfiguration {
 
     @JsonProperty(required = true)
     private int nodeId;
+
     @JsonProperty(defaultValue = "2")
     private int switchDuration;
+
     @JsonProperty(required = true)
     private String colorMode;
 }

@@ -38,12 +38,12 @@ public class NotificationActuatorBuilder extends JWaveZActuatorBuilder {
             return NotificationEncapsulatedCommandListener.builder()
                     .actuator(actuator)
                     .supportedCommandParser(pluginContext.getJwzApplicationSupport().supportedCommandParser())
-                    .sourceNodeId(configuration.getSourceNodeId())
+                    .sourceNodeId(configuration.getNodeId())
                     .build();
         } else {
             return NotificationCommandListener.builder()
                     .actuator(actuator)
-                    .sourceNodeId(configuration.getSourceNodeId())
+                    .sourceNodeId(configuration.getNodeId())
                     .build();
         }
     }

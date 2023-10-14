@@ -7,7 +7,8 @@ import lombok.Getter;
 public class SceneActivationConfiguration {
 
     @JsonProperty(required = true)
-    private int sourceNodeId;
+    private int nodeId;
+
     @JsonProperty(required = true)
     private int sceneId;
 }

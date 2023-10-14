@@ -10,14 +10,18 @@ public class BasicSetConfiguration {
 
     @JsonProperty(required = true)
     private int nodeId;
-    private int sourceEndPointId;
+
+    private int nodeEndPointId;
+
     @JsonProperty(defaultValue = "false")
     private boolean multiChannelOn;
 
     @JsonProperty(defaultValue = "toggle")
     private String valueMode;
+
     @JsonProperty(defaultValue = "255")
     private int turnOnValue;
+
     @JsonProperty(defaultValue = "0")
     private int turnOffValue;
 }

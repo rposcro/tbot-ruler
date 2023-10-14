@@ -7,10 +7,14 @@ import lombok.Getter;
 public class SensorMultilevelConfiguration {
 
     @JsonProperty(required = true)
-    private int sourceNodeId;
-    private int sourceEndPointId;
+    private int nodeId;
+
+    private int nodeEndPointId;
+
     @JsonProperty(defaultValue = "false")
     private boolean multiChannelOn;
+
     private String measureType;
+
     private String measureUnit;
 }

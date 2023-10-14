@@ -36,13 +36,13 @@ public class SensorMultilevelBuilder extends JWaveZActuatorBuilder {
             return SensorMultilevelEncapsulatedCommandListener.builder()
                     .supportedCommandParser(pluginContext.getJwzApplicationSupport().supportedCommandParser())
                     .actuator(actuator)
-                    .sourceNodeId(configuration.getSourceNodeId())
-                    .sourceEndPointId(configuration.getSourceEndPointId())
+                    .sourceNodeId(configuration.getNodeId())
+                    .sourceEndPointId(configuration.getNodeEndPointId())
                     .build();
         } else {
             return SensorMultilevelCommandListener.builder()
                     .actuator(actuator)
-                    .sourceNodeId(configuration.getSourceNodeId())
+                    .sourceNodeId(configuration.getNodeId())
                     .build();
         }
     }

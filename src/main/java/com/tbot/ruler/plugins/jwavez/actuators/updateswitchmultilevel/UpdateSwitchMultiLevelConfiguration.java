@@ -10,6 +10,7 @@ public class UpdateSwitchMultiLevelConfiguration {
 
     @JsonProperty(required = true)
     private int nodeId;
+
     @JsonProperty(defaultValue = "0")
     private int pollStateInterval;
 }

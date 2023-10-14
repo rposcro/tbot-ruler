@@ -24,14 +24,14 @@ public class SceneActivationBuilder extends JWaveZActuatorBuilder {
             .description(actuatorEntity.getDescription())
             .messagePublisher(pluginContext.getMessagePublisher())
             .sceneId((byte) configuration.getSceneId())
-            .sourceNodeId((byte) configuration.getSourceNodeId())
+            .sourceNodeId((byte) configuration.getNodeId())
             .build()
             .init();
         pluginContext.getCommandRouteRegistry().registerListener(
                 SceneActivationCommandType.SCENE_ACTIVATION_SET,
                 SceneActivationCommandListener.builder()
                         .actuator(actuator)
-                        .sourceNodeId(configuration.getSourceNodeId())
+                        .sourceNodeId(configuration.getNodeId())
                         .sceneId(configuration.getSceneId())
                         .build());
         return actuator;

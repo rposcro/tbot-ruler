@@ -55,7 +55,7 @@ public class SwitchBinaryActuator extends AbstractSubject implements Actuator {
 
             ZWaveControlledCommand command = switchBinaryCommandBuilder.v1().buildSetCommand((byte) (payload.isOn() ? 255 : 0));
             if (configuration.isMultiChannelOn()) {
-                command = multiChannelCommandBuilder.v3().encapsulateCommand(SOURCE_ENDPOINT_ID, (byte) configuration.getDestinationEndPointId(), command);
+                command = multiChannelCommandBuilder.v3().encapsulateCommand(SOURCE_ENDPOINT_ID, (byte) configuration.getNodeEndPointId(), command);
             }
             commandSender.enqueueCommand(NodeId.forId(configuration.getNodeId()), command);
         } catch(JWaveZException e) {

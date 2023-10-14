@@ -41,7 +41,7 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
                     .actuator(actuator)
                     .commandParser(pluginContext.getJwzApplicationSupport().supportedCommandParser())
                     .sourceNodeId(configuration.getNodeId())
-                    .sourceEndPointId(configuration.getEndPointId())
+                    .sourceEndPointId(configuration.getNodeEndPointId())
                     .build();
         } else {
             return SwitchBinaryReportListener.builder()
@@ -52,6 +52,6 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
     }
 
     private boolean isMultiChannelOn(UpdateSwitchBinaryConfiguration configuration) {
-        return configuration.getEndPointId() != 0;
+        return configuration.getNodeEndPointId() != 0;
     }
 }
