@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.ghost;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Getter;
 

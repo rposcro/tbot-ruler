@@ -1,4 +1,4 @@
-package com.tbot.ruler.subjects;
+package com.tbot.ruler.subjects.actuator;
 
 import lombok.Builder;
 import lombok.Getter;

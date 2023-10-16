@@ -3,9 +3,8 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.ghost.GhostActuatorBuilder;
-import com.tbot.ruler.plugins.ghost.GhostPluginConfiguration;
 import com.tbot.ruler.plugins.ghost.GhostPluginContext;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 import com.tbot.ruler.task.Task;
 

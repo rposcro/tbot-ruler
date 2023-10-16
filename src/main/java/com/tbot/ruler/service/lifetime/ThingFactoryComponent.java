@@ -1,7 +1,7 @@
 package com.tbot.ruler.service.lifetime;
 
 import com.tbot.ruler.persistance.model.ThingEntity;
-import com.tbot.ruler.subjects.Thing;
+import com.tbot.ruler.subjects.thing.Thing;
 import com.tbot.ruler.subjects.thing.RulerThing;
 import com.tbot.ruler.subjects.thing.RulerThingAgent;
 import com.tbot.ruler.subjects.thing.RulerThingContext;

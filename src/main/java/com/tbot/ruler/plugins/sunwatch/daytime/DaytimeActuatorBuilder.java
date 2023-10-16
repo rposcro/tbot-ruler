@@ -5,8 +5,8 @@ import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
-import com.tbot.ruler.subjects.Actuator;
-import com.tbot.ruler.subjects.BasicActuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.actuator.BasicActuator;
 import com.tbot.ruler.task.Task;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;

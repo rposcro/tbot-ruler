@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.service.things.SubjectStateService;
-import com.tbot.ruler.subjects.ActuatorState;
+import com.tbot.ruler.subjects.actuator.ActuatorState;
 import lombok.Builder;
 import lombok.Getter;
 

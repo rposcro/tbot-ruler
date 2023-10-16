@@ -11,7 +11,7 @@ import com.tbot.ruler.controller.subject.payload.ActuatorStatePayloadType;
 import com.tbot.ruler.controller.subject.payload.ActuatorStateUpdateRequest;
 import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.service.things.ActuatorsService;
-import com.tbot.ruler.subjects.ActuatorState;
+import com.tbot.ruler.subjects.actuator.ActuatorState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

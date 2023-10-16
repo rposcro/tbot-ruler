@@ -5,7 +5,7 @@ import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.email.EmailActuatorBuilder;
 import com.tbot.ruler.plugins.email.EmailSenderConfiguration;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 

@@ -13,7 +13,7 @@ import com.tbot.ruler.plugins.jwavez.controller.JWaveZSerialController;
 import com.tbot.ruler.plugins.jwavez.controller.MockedSerialController;
 import com.tbot.ruler.plugins.jwavez.controller.SerialController;
 import com.tbot.ruler.subjects.AbstractSubject;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;

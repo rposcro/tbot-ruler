@@ -2,8 +2,8 @@ package com.tbot.ruler.plugins.ghost.activator;
 
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
-import com.tbot.ruler.subjects.AbstractActuator;
-import com.tbot.ruler.subjects.ActuatorState;
+import com.tbot.ruler.subjects.actuator.AbstractActuator;
+import com.tbot.ruler.subjects.actuator.ActuatorState;
 import com.tbot.ruler.subjects.thing.RulerThingAgent;
 import lombok.Builder;
 import lombok.Getter;

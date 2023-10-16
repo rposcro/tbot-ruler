@@ -6,7 +6,7 @@ import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.PluginsUtil;
 import com.tbot.ruler.subjects.AbstractSubject;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Builder;
 

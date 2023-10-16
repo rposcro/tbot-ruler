@@ -1,8 +1,9 @@
-package com.tbot.ruler.subjects;
+package com.tbot.ruler.subjects.actuator;
 
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessageReceiver;
+import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.Getter;

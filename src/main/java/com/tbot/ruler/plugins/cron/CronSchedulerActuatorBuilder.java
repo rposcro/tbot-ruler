@@ -4,8 +4,8 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.plugins.RulerPluginContext;
-import com.tbot.ruler.subjects.Actuator;
-import com.tbot.ruler.subjects.BasicActuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.actuator.BasicActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.task.Task;
 

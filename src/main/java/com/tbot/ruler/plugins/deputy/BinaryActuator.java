@@ -5,7 +5,7 @@ import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.subjects.AbstractSubject;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.NonNull;

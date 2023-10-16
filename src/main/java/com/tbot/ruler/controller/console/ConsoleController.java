@@ -2,8 +2,8 @@ package com.tbot.ruler.controller.console;
 
 import com.tbot.ruler.service.lifetime.BindingsLifetimeService;
 import com.tbot.ruler.service.lifetime.SubjectLifetimeService;
-import com.tbot.ruler.subjects.Actuator;
-import com.tbot.ruler.subjects.Thing;
+import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.thing.Thing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;

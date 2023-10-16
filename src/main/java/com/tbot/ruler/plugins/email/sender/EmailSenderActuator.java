@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.email.sender;
 
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.subjects.AbstractActuator;
+import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import lombok.Builder;
 import lombok.NonNull;
 import org.springframework.mail.SimpleMailMessage;

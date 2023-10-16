@@ -1,8 +1,7 @@
 package com.tbot.ruler.subjects.thing;
 
 import com.tbot.ruler.subjects.AbstractSubject;
-import com.tbot.ruler.subjects.Actuator;
-import com.tbot.ruler.subjects.Thing;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;

@@ -3,7 +3,7 @@ package com.tbot.ruler.controller.subject;
 import com.tbot.ruler.controller.AbstractController;
 import com.tbot.ruler.controller.subject.payload.ActuatorResponse;
 import com.tbot.ruler.service.things.ActuatorsService;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

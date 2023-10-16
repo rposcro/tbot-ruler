@@ -1,6 +1,7 @@
-package com.tbot.ruler.subjects;
+package com.tbot.ruler.subjects.thing;
 
-import com.tbot.ruler.subjects.thing.RulerThingContext;
+import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.Subject;
 
 import java.util.List;
 
