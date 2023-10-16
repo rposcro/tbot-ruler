@@ -38,21 +38,27 @@ public class GhostPlugin extends AbstractSubject implements Plugin {
     public Thing startUpThing(ThingEntity thingEntity) {
         GhostThingConfiguration configuration = parseConfiguration(thingEntity.getConfiguration(), GhostThingConfiguration.class);
 
+        GhostThingAgent thingAgent = new GhostThingAgent();
+        GhostThingContext thingContext = GhostThingContext.builder()
+                .rulerPluginContext(rulerPluginContext)
+                .ghostThingAgent(thingAgent)
+                .build();
+
         return BasicThing.builder()
                 .uuid(thingEntity.getThingUuid())
                 .name(thingEntity.getName())
                 .description(thingEntity.getDescription())
                 .actuators(thingEntity.getActuators().stream()
-                        .map(entity -> buildActuator(entity, configuration))
+                        .map(entity -> buildActuator(thingContext, entity, configuration))
                         .collect(Collectors.toList()))
                 .build();
     }
 
-    private Actuator buildActuator(ActuatorEntity actuatorEntity, GhostThingConfiguration thingConfiguration) {
+    private Actuator buildActuator(GhostThingContext thingContext, ActuatorEntity actuatorEntity, GhostThingConfiguration thingConfiguration) {
         GhostActuatorBuilder actuatorBuilder = ACTUATORS_BUILDERS.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
             throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
         }
-        return actuatorBuilder.buildActuator(rulerPluginContext, actuatorEntity, thingConfiguration);
+        return actuatorBuilder.buildActuator(thingContext, actuatorEntity, thingConfiguration);
     }
 }

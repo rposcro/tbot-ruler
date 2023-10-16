@@ -27,11 +27,11 @@ public class SingleIntervalAgent {
         this.currentState = state;
     }
 
-    public boolean isEnabled() {
+    public boolean isActivated() {
         return currentState.getPayload().isOn();
     }
 
-    public void setEnabled(boolean active) {
+    public void setActivated(boolean active) {
         currentState.updatePayload(OnOffState.of(active));
         subjectStateService.persistState(currentState);
     }

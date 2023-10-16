@@ -4,6 +4,7 @@ import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.ghost.DateTimeRange;
+import com.tbot.ruler.plugins.ghost.GhostThingAgent;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -19,11 +20,11 @@ import java.util.function.Supplier;
 @Slf4j
 public class SingleIntervalEmissionTask implements Runnable {
 
-    private final SingleIntervalConfiguration configuration;
     private final SingleIntervalAgent singleIntervalAgent;
-    private final ZoneId zoneId;
+    private final GhostThingAgent ghostThingAgent;
+    private final SingleIntervalConfiguration configuration;
     private final MessagePublisher messagePublisher;
-    private final String emitterId;
+    private final String actuatorUuid;
     private final Random random;
     private final Supplier<LocalDateTime> timer;
 
@@ -32,29 +33,32 @@ public class SingleIntervalEmissionTask implements Runnable {
 
     @Builder
     public SingleIntervalEmissionTask(
-            @NonNull SingleIntervalConfiguration configuration,
+            @NonNull GhostThingAgent ghostThingAgent,
             @NonNull SingleIntervalAgent singleIntervalAgent,
+            @NonNull SingleIntervalConfiguration configuration,
             @NonNull ZoneId zoneId,
             @NonNull MessagePublisher messagePublisher,
-            @NonNull String emitterId,
+            @NonNull String actuatorUuid,
             Supplier<LocalDateTime> timer
             ) {
-        this.configuration = configuration;
+        this.ghostThingAgent = ghostThingAgent;
         this.singleIntervalAgent = singleIntervalAgent;
-        this.zoneId = zoneId;
+        this.configuration = configuration;
         this.messagePublisher = messagePublisher;
-        this.emitterId = emitterId;
+        this.actuatorUuid = actuatorUuid;
         this.random = new Random();
         this.timer = timer != null ? timer : () -> ZonedDateTime.now(zoneId).toLocalDateTime();
         resetOnInterval();
     }
 
     public void run() {
-        if (singleIntervalAgent.isEnabled()) {
+        boolean isActivated = ghostThingAgent.isActivated() && singleIntervalAgent.isActivated();
+        log.debug("Ghost actuator {} activation is {}", actuatorUuid, isActivated);
+        if (isActivated) {
             LocalDateTime now = timer.get();
             boolean activationState = onInterval.isInRange(now);
             messagePublisher.publishMessage(Message.builder()
-                    .senderId(emitterId)
+                    .senderId(actuatorUuid)
                     .payload(OnOffState.of(activationState))
                     .build());
 
@@ -70,7 +74,7 @@ public class SingleIntervalEmissionTask implements Runnable {
 
     private void resetOnInterval(LocalDateTime forDate) {
         this.onInterval = dateTimeRange(forDate.toLocalDate());
-        log.info("Ghost Single Interval {} changed to {} - {}", emitterId, onInterval.getStartDateTime(), onInterval.getEndDateTime());
+        log.info("Ghost Single Interval {} changed to {} - {}", actuatorUuid, onInterval.getStartDateTime(), onInterval.getEndDateTime());
     }
 
     private DateTimeRange dateTimeRange(LocalDate forDate) {

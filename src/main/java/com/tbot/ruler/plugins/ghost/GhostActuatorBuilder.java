@@ -14,5 +14,5 @@ public abstract class GhostActuatorBuilder {
         this.reference = reference;
     }
 
-    public abstract Actuator buildActuator(RulerPluginContext rulerPluginContext, ActuatorEntity actuatorEntity, GhostThingConfiguration configuration);
+    public abstract Actuator buildActuator(GhostThingContext ghostThingContext, ActuatorEntity actuatorEntity, GhostThingConfiguration configuration);
 }
