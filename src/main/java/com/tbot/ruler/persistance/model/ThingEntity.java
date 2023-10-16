@@ -7,13 +7,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.annotation.Transient;
 import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
-
-import java.util.Collections;
-import java.util.List;
 
 @Getter
 @Setter
@@ -30,9 +26,6 @@ public class ThingEntity {
     @Column("thing_uuid")
     private String thingUuid;
 
-    @Column("plugin_id")
-    private long pluginId;
-
     @Column("name")
     private String name;
 
@@ -45,8 +38,4 @@ public class ThingEntity {
     @Version
     @Column("version")
     private int version;
-
-    @Transient
-    @Builder.Default
-    private List<ActuatorEntity> actuators = Collections.emptyList();
 }

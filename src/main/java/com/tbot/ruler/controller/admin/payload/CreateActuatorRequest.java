@@ -16,6 +16,9 @@ import lombok.ToString;
 public class CreateActuatorRequest {
 
     @JsonProperty(required = true)
+    private String pluginUuid;
+
+    @JsonProperty(required = true)
     private String thingUuid;
 
     @JsonProperty(required = true)

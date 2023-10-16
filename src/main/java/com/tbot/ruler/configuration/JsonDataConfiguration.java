@@ -6,6 +6,7 @@ import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.SchemasRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.persistance.json.JsonFileRepositoryReader;
+import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
@@ -97,39 +98,28 @@ public class JsonDataConfiguration {
                     }
                 })
                 .forEach(dto -> {
-                    PluginEntity pluginEntity = pluginsRepository.findByUuid(dto.getPluginUuid()).orElse(null);
-                    if (pluginEntity != null) {
-                        ThingEntity thingEntity = ThingEntity.builder()
-                                .thingUuid(dto.getUuid())
-                                .pluginId(pluginEntity.getPluginId())
-                                .name(dto.getName())
-                                .description(dto.getDescription())
-                                .configuration(dto.getConfiguration())
-                                .build();
-                        thingsRepository.save(thingEntity);
-                        log.info("Loaded thing {}", dto.getUuid());
-                    } else {
-                        log.info("Skipped thing {} due to unknown plugin {}", dto.getUuid(), dto.getPluginUuid());
-                    }
+                    ThingEntity thingEntity = ThingEntity.builder()
+                            .thingUuid(dto.getUuid())
+                            .name(dto.getName())
+                            .description(dto.getDescription())
+                            .configuration(dto.getConfiguration())
+                            .build();
+                    thingsRepository.save(thingEntity);
+                    log.info("Loaded thing {}", dto.getUuid());
                 });
     }
 
     private void loadActuators() {
         log.info("Loading actuators ...");
         jsonFileRepositoryReader.getActuatorDTOs().stream()
-                .filter(dto -> {
-                    if (!actuatorsRepository.findByUuid(dto.getUuid()).isPresent()) {
-                        return true;
-                    } else {
-                        log.info("Skipped actuator {}, already exists", dto.getUuid());
-                        return false;
-                    }
-                })
+                .filter(this::checkActuator)
                 .forEach(dto -> {
+                    PluginEntity pluginEntity = pluginsRepository.findByUuid(dto.getPluginUuid()).orElse(null);
                     ThingEntity thingEntity = thingsRepository.findByUuid(dto.getThingUuid()).orElse(null);
                     if (thingEntity != null) {
                         ActuatorEntity actuatorEntity = ActuatorEntity.builder()
                                 .actuatorUuid(dto.getUuid())
+                                .pluginId(pluginEntity.getPluginId())
                                 .thingId(thingEntity.getThingId())
                                 .name(dto.getName())
                                 .description(dto.getDescription())
@@ -142,6 +132,20 @@ public class JsonDataConfiguration {
                         log.info("Skipped actuator {} due to unknown thing {}", dto.getUuid(), dto.getThingUuid());
                     }
                 });
+    }
+
+    private boolean checkActuator(ActuatorDTO actuatorDTO) {
+        if (actuatorsRepository.findByUuid(actuatorDTO.getUuid()).isPresent()) {
+            log.info("Skipped actuator {}, already exists", actuatorDTO.getUuid());
+            return false;
+        } else if (!pluginsRepository.findByUuid(actuatorDTO.getPluginUuid()).isPresent()) {
+            log.info("Skipped actuator {}, no related plugin {} found", actuatorDTO.getUuid(), actuatorDTO.getPluginUuid());
+            return false;
+        } else if (!thingsRepository.findByUuid(actuatorDTO.getThingUuid()).isPresent()) {
+            log.info("Skipped actuator {}, no related thing {} found", actuatorDTO.getUuid(), actuatorDTO.getThingUuid());
+            return false;
+        }
+        return true;
     }
 
     private void loadBindings() {

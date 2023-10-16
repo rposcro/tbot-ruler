@@ -21,6 +21,10 @@ public class ActuatorDTO extends ConfigurableDTO {
 
     @NonNull
     @JsonProperty(required = true)
+    private String pluginUuid;
+
+    @NonNull
+    @JsonProperty(required = true)
     private String thingUuid;
 
     @NonNull

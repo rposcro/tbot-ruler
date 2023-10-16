@@ -1,10 +1,10 @@
-package com.tbot.ruler.plugins.ghost;
+package com.tbot.ruler.subjects.thing;
 
 import com.tbot.ruler.broker.payload.OnOffState;
 import lombok.Getter;
 
 @Getter
-public class GhostThingAgent {
+public class RulerThingAgent {
 
     private boolean activated = true;
 

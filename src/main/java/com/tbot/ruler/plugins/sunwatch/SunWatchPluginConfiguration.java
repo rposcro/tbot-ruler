@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SunWatchThingConfiguration {
+public class SunWatchPluginConfiguration {
 
     @JsonProperty(required = true)
     private String latitude;

@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.ghost;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Getter;
 
 public abstract class GhostActuatorBuilder {
@@ -14,5 +14,6 @@ public abstract class GhostActuatorBuilder {
         this.reference = reference;
     }
 
-    public abstract Actuator buildActuator(GhostThingContext ghostThingContext, ActuatorEntity actuatorEntity, GhostThingConfiguration configuration);
+    public abstract Actuator buildActuator(
+            ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext, GhostPluginContext ghostPluginContext);
 }

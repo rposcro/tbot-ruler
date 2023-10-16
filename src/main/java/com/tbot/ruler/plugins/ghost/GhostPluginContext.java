@@ -8,8 +8,8 @@ import lombok.NonNull;
 @Getter
 @Builder
 @NonNull
-public class GhostThingContext {
+public class GhostPluginContext {
 
     private final RulerPluginContext rulerPluginContext;
-    private final GhostThingAgent ghostThingAgent;
+    private final GhostPluginConfiguration ghostPluginConfiguration;
 }

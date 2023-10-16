@@ -13,9 +13,6 @@ import org.springframework.data.annotation.Version;
 import org.springframework.data.relational.core.mapping.Column;
 import org.springframework.data.relational.core.mapping.Table;
 
-import java.util.Collections;
-import java.util.List;
-
 @Getter
 @Setter
 @Builder
@@ -46,8 +43,4 @@ public class PluginEntity {
     @Version
     @Column("version")
     private int version;
-
-    @Transient
-    @Builder.Default
-    private List<ThingEntity> things = Collections.emptyList();
 }

@@ -28,6 +28,12 @@ public class ActuatorsRepository {
         return thingEntity;
     }
 
+    public List<ActuatorEntity> findByThingId(long thingId) {
+        List<ActuatorEntity> entities = StreamSupport.stream(crudActuatorsRepository.findByThingId(thingId).spliterator(), false)
+                .collect(Collectors.toList());
+        return entities;
+    }
+
     @Transactional
     public void delete(ActuatorEntity actuatorEntity) {
         crudActuatorsRepository.delete(actuatorEntity);

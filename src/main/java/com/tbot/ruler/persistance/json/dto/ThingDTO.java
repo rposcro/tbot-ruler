@@ -22,10 +22,6 @@ public class ThingDTO extends ConfigurableDTO {
 
     @NonNull
     @JsonProperty(required = true)
-    private String pluginUuid;
-
-    @NonNull
-    @JsonProperty(required = true)
     private String name;
 
     private String description;

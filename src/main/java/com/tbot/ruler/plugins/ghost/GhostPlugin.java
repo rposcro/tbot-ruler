@@ -2,14 +2,12 @@ package com.tbot.ruler.plugins.ghost;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.PluginsUtil;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.Actuator;
-import com.tbot.ruler.subjects.BasicThing;
-import com.tbot.ruler.subjects.Thing;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -26,39 +24,30 @@ public class GhostPlugin extends AbstractSubject implements Plugin {
             PluginsUtil.instantiateActuatorsBuilders(GhostActuatorBuilder.class, "com.tbot.ruler.plugins.ghost").stream()
                 .collect(Collectors.toMap(GhostActuatorBuilder::getReference, Function.identity()));
 
-    private RulerPluginContext rulerPluginContext;
+    private final RulerPluginContext rulerPluginContext;
+    private final GhostPluginContext ghostPluginContext;
 
     @Builder
     public GhostPlugin(RulerPluginContext rulerPluginContext) {
         super(rulerPluginContext.getPluginUuid(), rulerPluginContext.getPluginName());
         this.rulerPluginContext = rulerPluginContext;
+        this.ghostPluginContext = GhostPluginContext.builder()
+                .rulerPluginContext(rulerPluginContext)
+                .ghostPluginConfiguration(parseConfiguration(
+                        rulerPluginContext.getPluginConfiguration(), GhostPluginConfiguration.class))
+                .build();
     }
 
     @Override
-    public Thing startUpThing(ThingEntity thingEntity) {
-        GhostThingConfiguration configuration = parseConfiguration(thingEntity.getConfiguration(), GhostThingConfiguration.class);
-
-        GhostThingAgent thingAgent = new GhostThingAgent();
-        GhostThingContext thingContext = GhostThingContext.builder()
-                .rulerPluginContext(rulerPluginContext)
-                .ghostThingAgent(thingAgent)
-                .build();
-
-        return BasicThing.builder()
-                .uuid(thingEntity.getThingUuid())
-                .name(thingEntity.getName())
-                .description(thingEntity.getDescription())
-                .actuators(thingEntity.getActuators().stream()
-                        .map(entity -> buildActuator(thingContext, entity, configuration))
-                        .collect(Collectors.toList()))
-                .build();
+    public Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
+        return buildActuator(actuatorEntity, rulerThingContext, ghostPluginContext);
     }
 
-    private Actuator buildActuator(GhostThingContext thingContext, ActuatorEntity actuatorEntity, GhostThingConfiguration thingConfiguration) {
+    private Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext, GhostPluginContext ghostPluginContext) {
         GhostActuatorBuilder actuatorBuilder = ACTUATORS_BUILDERS.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
             throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
         }
-        return actuatorBuilder.buildActuator(thingContext, actuatorEntity, thingConfiguration);
+        return actuatorBuilder.buildActuator(actuatorEntity, rulerThingContext, ghostPluginContext);
     }
 }

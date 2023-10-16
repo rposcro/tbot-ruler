@@ -4,7 +4,7 @@ import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.ghost.DateTimeRange;
-import com.tbot.ruler.plugins.ghost.GhostThingAgent;
+import com.tbot.ruler.subjects.thing.RulerThingAgent;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -21,7 +21,7 @@ import java.util.function.Supplier;
 public class SingleIntervalEmissionTask implements Runnable {
 
     private final SingleIntervalAgent singleIntervalAgent;
-    private final GhostThingAgent ghostThingAgent;
+    private final RulerThingAgent rulerThingAgent;
     private final SingleIntervalConfiguration configuration;
     private final MessagePublisher messagePublisher;
     private final String actuatorUuid;
@@ -33,7 +33,7 @@ public class SingleIntervalEmissionTask implements Runnable {
 
     @Builder
     public SingleIntervalEmissionTask(
-            @NonNull GhostThingAgent ghostThingAgent,
+            @NonNull RulerThingAgent rulerThingAgent,
             @NonNull SingleIntervalAgent singleIntervalAgent,
             @NonNull SingleIntervalConfiguration configuration,
             @NonNull ZoneId zoneId,
@@ -41,7 +41,7 @@ public class SingleIntervalEmissionTask implements Runnable {
             @NonNull String actuatorUuid,
             Supplier<LocalDateTime> timer
             ) {
-        this.ghostThingAgent = ghostThingAgent;
+        this.rulerThingAgent = rulerThingAgent;
         this.singleIntervalAgent = singleIntervalAgent;
         this.configuration = configuration;
         this.messagePublisher = messagePublisher;
@@ -52,7 +52,7 @@ public class SingleIntervalEmissionTask implements Runnable {
     }
 
     public void run() {
-        boolean isActivated = ghostThingAgent.isActivated() && singleIntervalAgent.isActivated();
+        boolean isActivated = rulerThingAgent.isActivated() && singleIntervalAgent.isActivated();
         log.debug("Ghost actuator {} activation is {}", actuatorUuid, isActivated);
         if (isActivated) {
             LocalDateTime now = timer.get();
