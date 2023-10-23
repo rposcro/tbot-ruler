@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins.ghost.activator;
+package com.tbot.ruler.plugins.agent.activator;
 
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
@@ -12,13 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class GhostThingActivationActuator extends AbstractActuator {
+public class ThingActivationActuator extends AbstractActuator {
 
     private final ActuatorState<OnOffState> state;
     private final RulerThingAgent rulerThingAgent;
 
     @Builder
-    public GhostThingActivationActuator(
+    public ThingActivationActuator(
             @NonNull String uuid,
             @NonNull String name,
             String description,

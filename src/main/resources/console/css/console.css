@@ -3,6 +3,21 @@ table, caption, tr, td, div {
     font-size: 10px;
 }
 
+table.split {
+    border: none;
+    margin: 0px 0px 15px 0px;
+}
+
+td.split-left {
+    border-right: solid 1px #7a6948;
+    vertical-align: top;
+    padding: 0px 10px 0px 0px;
+}
+
+td.split-right {
+    vertical-align: top;
+    padding: 0px 10px 0px 10px;
+}
 
 table.grid {
     min-width: 400px;
@@ -78,14 +93,39 @@ div.property {
     font-size: 12px;
 }
 
+.list {
+    margin: 0px 0px 10px 0px;
+    font-size: 11px;
+    border: none;
+}
+
+.list-item {
+    font-size: 11px;
+    margin: 1px 0px 2px 0px;
+    padding: 3px 5px 3px 5px;
+    border: 1px solid white;
+    border-bottom: solid 1px #a0a0a0;
+    background-color: #edede6;
+}
+
+.list-item-selected {
+    font-size: 11px;
+    margin: 1px 0px 2px 0px;
+    padding: 3px 5px 3px 5px;
+    border: 1px solid white;
+    border-bottom: solid 1px #a0a0a0;
+    background-color: #d5c9c9;
+    color: #e5e5f9;
+}
+
 .highlight {
     font-weight: bold;
 }
 
 .desktop * a:link, .desktop * a:visited {
-    color: #4040c0;
+    color: #760f2d;
 }
 
 .desktop * a:hover {
-    color: #2020ff;
+    color: #d4344a;
 }

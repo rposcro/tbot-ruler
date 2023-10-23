@@ -1,5 +1,6 @@
 package com.tbot.ruler.service.lifetime;
 
+import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
@@ -108,11 +109,15 @@ public class SubjectLifetimeService {
         actuators = new LinkedList<>();
         actuatorsUuidMap = new HashMap<>();
         actuatorsRepository.findAll().forEach(actuatorEntity -> {
-            Plugin plugin = pluginsIdMap.get(actuatorEntity.getPluginId());
-            Thing thing = thingsIdMap.get(actuatorEntity.getThingId());
-            Actuator actuator = plugin.startUpActuator(actuatorEntity, thing.getRulerThingContext());
-            actuators.add(actuator);
-            actuatorsUuidMap.put(actuator.getUuid(), actuator);
+            try {
+                Plugin plugin = pluginsIdMap.get(actuatorEntity.getPluginId());
+                Thing thing = thingsIdMap.get(actuatorEntity.getThingId());
+                Actuator actuator = plugin.startUpActuator(actuatorEntity, thing.getRulerThingContext());
+                actuators.add(actuator);
+                actuatorsUuidMap.put(actuator.getUuid(), actuator);
+            } catch(PluginException e) {
+                log.error("Failed to start up actuator " + actuatorEntity.getActuatorUuid(), e);
+            }
         });
     }
 }
