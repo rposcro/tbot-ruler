@@ -1,5 +1,6 @@
 package com.tbot.ruler.controller.console;
 
+import com.tbot.ruler.controller.console.payload.BindingReference;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
@@ -79,6 +80,7 @@ public class ConsoleController {
         mav.addObject("thingUuid", thingUuid);
         mav.addObject("thing", thingEntity);
         mav.addObject("things", thingsRepository.findAll());
+        mav.addObject("actuators", actuatorsRepository.findByThingId(thingEntity.getThingId()));
         return mav;
     }
 
@@ -97,8 +99,9 @@ public class ConsoleController {
         mav.addObject("actuator", actuatorEntity);
         mav.addObject("actuators", actuatorsRepository.findAll());
         mav.addObject("plugin", pluginsRepository.findById(actuatorEntity.getPluginId()).orElse(null));
-        mav.addObject("inboundBindings", bindingsRepository.findByReceiverUuid(actuatorUuid));
-        mav.addObject("outboundBindings", bindingsRepository.findBySenderUuid(actuatorUuid));
+        mav.addObject("thing", thingsRepository.findById(actuatorEntity.getThingId()).orElse(null));
+        mav.addObject("inboundBindings", toSendersReferences(bindingsRepository.findByReceiverUuid(actuatorUuid)));
+        mav.addObject("outboundBindings", toReceiversReferences(bindingsRepository.findBySenderUuid(actuatorUuid)));
         return mav;
     }
 
@@ -118,5 +121,23 @@ public class ConsoleController {
         mav.addObject("senders", senders);
         mav.addObject("bindingsMap", bindingsMap);
         return mav;
+    }
+
+    private List<BindingReference> toSendersReferences(List<BindingEntity> bindingEntities) {
+        return bindingEntities.stream()
+                .map(entity -> BindingReference.builder()
+                        .uuid(entity.getSenderUuid())
+                        .actuatorUuid(actuatorsRepository.findByUuid(entity.getSenderUuid()).isPresent())
+                        .build())
+                .toList();
+    }
+
+    private List<BindingReference> toReceiversReferences(List<BindingEntity> bindingEntities) {
+        return bindingEntities.stream()
+                .map(entity -> BindingReference.builder()
+                        .uuid(entity.getReceiverUuid())
+                        .actuatorUuid(actuatorsRepository.findByUuid(entity.getReceiverUuid()).isPresent())
+                        .build())
+                .toList();
     }
 }

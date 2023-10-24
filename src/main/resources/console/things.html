@@ -20,15 +20,23 @@
                     </div>
                 </td>
                 <td class="split-right">
-                    <div th:if="${thing != null}" class="section">
-                        <div class="property">Name: <span class="highlight">[[${thing.name}]]</span></div>
-                        <div class="property">Id: <span class="highlight">[[${thing.thingId}]]</span></div>
-                        <div class="property">Uuid: <span class="highlight">[[${thing.thingUuid}]]</span></div>
-                        <div class="property">Version: <span class="highlight">[[${thing.version}]]</span></div>
-                        <div class="property">Description: <span class="highlight">[[${thing.description}]]</span></div>
-                        <div class="property">Configuration: <span class="highlight">[[${thing.configuration}]]</span></div>
-                        <div class="property"></div>
-                    </div>
+                    <th:block th:if="${thing != null}">
+                        <div class="section">
+                            <div class="property">Name: <span class="highlight">[[${thing.name}]]</span></div>
+                            <div class="property">Id: <span class="highlight">[[${thing.thingId}]]</span></div>
+                            <div class="property">Uuid: <span class="highlight">[[${thing.thingUuid}]]</span></div>
+                            <div class="property">Version: <span class="highlight">[[${thing.version}]]</span></div>
+                            <div class="property">Description: <span class="highlight">[[${thing.description}]]</span></div>
+                            <div class="property">Configuration: <span class="highlight">[[${thing.configuration}]]</span></div>
+                            <div class="property"></div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">Actuators</div>
+                            <div class="property" th:each="actuator: ${actuators}">
+                                <a th:href="@{'/console/actuators/' + ${actuator.actuatorUuid}}">[[${actuator.name}]]</a>
+                            </div>
+                        </div>
+                    </th:block>
                 </td>
             </table>
         </div>

@@ -27,6 +27,11 @@ public class ThingsRepository {
         return entities;
     }
 
+    public Optional<ThingEntity> findById(long thingId) {
+        Optional<ThingEntity> thingEntity = crudThingsRepository.findById(thingId);
+        return thingEntity;
+    }
+
     public Optional<ThingEntity> findByUuid(String thingUuid) {
         Optional<ThingEntity> thingEntity = crudThingsRepository.findByUuid(thingUuid);
         return thingEntity;

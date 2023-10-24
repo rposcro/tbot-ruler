@@ -21,7 +21,7 @@ public class ThingActivationActuatorBuilder extends AgentActuatorBuilder {
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
-                .rulerThingAgent(rulerThingContext.getRulerThingAgent())
+                .rulerThingContext(rulerThingContext)
                 .build();
     }
 }
