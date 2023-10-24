@@ -20,15 +20,33 @@
                     </div>
                 </td>
                 <td class="split-right">
-                    <div th:if="${actuator != null}" class="section">
-                        <div class="property">Name: <span class="highlight">[[${actuator.name}]]</span></div>
-                        <div class="property">Id: <span class="highlight">[[${actuator.actuatorId}]]</span></div>
-                        <div class="property">Uuid: <span class="highlight">[[${actuator.actuatorUuid}]]</span></div>
-                        <div class="property">Version: <span class="highlight">[[${actuator.version}]]</span></div>
-                        <div class="property">Description: <span class="highlight">[[${actuator.description}]]</span></div>
-                        <div class="property">Configuration: <span class="highlight">[[${actuator.configuration}]]</span></div>
-                        <div class="property"></div>
-                    </div>
+                    <th:block th:if="${actuator != null}">
+                        <div class="section">
+                            <div class="property">Name: <span class="highlight">[[${actuator.name}]]</span></div>
+                            <div class="property">Id: <span class="highlight">[[${actuator.actuatorId}]]</span></div>
+                            <div class="property">Uuid: <span class="highlight">[[${actuator.actuatorUuid}]]</span></div>
+                            <div class="property">Version: <span class="highlight">[[${actuator.version}]]</span></div>
+                            <div class="property">Reference: <span class="highlight">[[${actuator.reference}]]</span></div>
+                            <div class="property">Description: <span class="highlight">[[${actuator.description}]]</span></div>
+                            <div class="property">Configuration: <span class="highlight">[[${actuator.configuration}]]</span></div>
+                            <div class="property">Plugin Name: <span class="highlight">
+                                <a th:href="@{'/console/plugins/' + ${plugin.pluginUuid}}">[[${plugin.name}]]</a>
+                            </span></div>
+                            <div class="property">Plugin Uuid: <span class="highlight">[[${plugin.pluginUuid}]]</span></div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">Inbound Bindings</div>
+                            <div class="property" th:each="binding: ${inboundBindings}">
+                                [[${binding.senderUuid}]]
+                            </div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">Outbound Bindings</div>
+                            <div class="property" th:each="binding: ${inboundBindings}">
+                                [[${binding.receiverUuid}]]
+                            </div>
+                        </div>
+                    </th:block>
                 </td>
             </table>
         </div>

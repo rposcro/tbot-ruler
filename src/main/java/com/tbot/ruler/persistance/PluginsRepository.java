@@ -31,6 +31,10 @@ public class PluginsRepository {
         return entities;
     }
 
+    public Optional<PluginEntity> findById(long pluginId) {
+        return crudPluginsRepository.findById(pluginId);
+    }
+
     public Optional<PluginEntity> findByUuid(String pluginUuid) {
         return crudPluginsRepository.findByUuid(pluginUuid);
     }

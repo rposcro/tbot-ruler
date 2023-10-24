@@ -17,7 +17,9 @@
                         <td>Factory</td>
                     </tr>
                     <tr th:each="plugin: ${plugins}" class="grid-row">
-                        <td th:text="${plugin.name}"/>
+                        <td>
+                            <a th:href="@{'/console/plugins/' + ${plugin.pluginUuid}}">[[${plugin.name}]]</a>
+                        </td>
                         <td th:text="${plugin.pluginId}"/>
                         <td th:text="${plugin.pluginUuid}"/>
                         <td th:text="${plugin.factoryClass}"/>

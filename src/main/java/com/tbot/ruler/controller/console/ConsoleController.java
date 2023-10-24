@@ -6,11 +6,8 @@ import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.BindingEntity;
+import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
-import com.tbot.ruler.service.lifetime.BindingsLifetimeService;
-import com.tbot.ruler.service.lifetime.SubjectLifetimeService;
-import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.subjects.thing.Thing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +45,23 @@ public class ConsoleController {
         mav.addObject("plugins", pluginsRepository.findAll());
         mav.addObject("things", thingsRepository.findAll());
         mav.addObject("actuators", actuatorsRepository.findAll());
+        return mav;
+    }
+
+    @GetMapping(path = "plugins", produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView plugins() {
+        ModelAndView mav = new ModelAndView("plugins");
+        mav.addObject("plugins", pluginsRepository.findAll());
+        return mav;
+    }
+
+    @GetMapping(path = "plugins/{pluginUuid}", produces = MediaType.TEXT_HTML_VALUE)
+    public ModelAndView pluginById(@PathVariable String pluginUuid) {
+        ModelAndView mav = new ModelAndView("plugins");
+        PluginEntity pluginEntity = pluginsRepository.findByUuid(pluginUuid).orElse(null);
+        mav.addObject("pluginUuid", pluginUuid);
+        mav.addObject("plugin", pluginEntity);
+        mav.addObject("plugins", pluginsRepository.findAll());
         return mav;
     }
 
@@ -83,6 +96,9 @@ public class ConsoleController {
         mav.addObject("actuatorUuid", actuatorUuid);
         mav.addObject("actuator", actuatorEntity);
         mav.addObject("actuators", actuatorsRepository.findAll());
+        mav.addObject("plugin", pluginsRepository.findById(actuatorEntity.getPluginId()).orElse(null));
+        mav.addObject("inboundBindings", bindingsRepository.findByReceiverUuid(actuatorUuid));
+        mav.addObject("outboundBindings", bindingsRepository.findBySenderUuid(actuatorUuid));
         return mav;
     }
 

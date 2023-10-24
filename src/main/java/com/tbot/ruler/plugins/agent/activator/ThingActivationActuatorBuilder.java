@@ -16,8 +16,7 @@ public class ThingActivationActuatorBuilder extends AgentActuatorBuilder {
     }
 
     @Override
-    public Actuator buildActuator(
-            ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         return ThingActivationActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
