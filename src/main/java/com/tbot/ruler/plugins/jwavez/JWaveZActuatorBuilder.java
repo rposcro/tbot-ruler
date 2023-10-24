@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.jwavez;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import lombok.Getter;
 
 @Getter

@@ -6,7 +6,7 @@ import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 

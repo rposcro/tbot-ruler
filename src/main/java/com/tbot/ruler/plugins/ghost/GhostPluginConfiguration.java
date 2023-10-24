@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class GhostThingConfiguration {
+public class GhostPluginConfiguration {
 
     @JsonProperty(required = true)
     private String timeZone;

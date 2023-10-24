@@ -1,8 +1,8 @@
 package com.tbot.ruler.service.things;
 
 import com.tbot.ruler.service.lifetime.SubjectLifetimeService;
-import com.tbot.ruler.subjects.Actuator;
-import com.tbot.ruler.subjects.ActuatorState;
+import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.actuator.ActuatorState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

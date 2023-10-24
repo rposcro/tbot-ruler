@@ -5,14 +5,17 @@ import com.fasterxml.jackson.core.util.DefaultIndenter;
 import com.fasterxml.jackson.core.util.DefaultPrettyPrinter;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.exceptions.ConfigurationException;
+import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.SchemasRepository;
+import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.json.dto.BindingDTO;
 import com.tbot.ruler.persistance.json.dto.PluginDTO;
 import com.tbot.ruler.persistance.json.dto.SchemaDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
+import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.SchemaEntity;
@@ -37,6 +40,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -76,6 +80,12 @@ public class DumpJsonService {
     private PluginsRepository pluginsRepository;
 
     @Autowired
+    private ThingsRepository thingsRepository;
+
+    @Autowired
+    private ActuatorsRepository actuatorsRepository;
+
+    @Autowired
     private BindingsRepository bindingsRepository;
 
     @Autowired
@@ -100,7 +110,7 @@ public class DumpJsonService {
     }
 
     private void dumpPlugins(DumpContext dumpContext) throws IOException {
-        List<PluginDTO> plugins = dumpContext.pluginEntities.stream()
+        List<PluginDTO> plugins = dumpContext.pluginEntitiesMap.values().stream()
                 .map(entity -> PluginDTO.builder()
                         .uuid(entity.getPluginUuid())
                         .alias(entity.getName())
@@ -118,37 +128,32 @@ public class DumpJsonService {
     }
 
     private void dumpThings(DumpContext dumpContext) throws IOException {
-        for (PluginEntity pluginEntity: dumpContext.pluginEntities) {
-            List<ThingDTO> things = pluginEntity.getThings().stream()
-                    .map(thingEntity -> ThingDTO.builder()
-                            .uuid(thingEntity.getThingUuid())
-                            .pluginUuid(pluginEntity.getPluginUuid())
-                            .name(thingEntity.getName())
-                            .description(thingEntity.getDescription())
-                            .configuration(thingEntity.getConfiguration())
-                            .build())
-                    .collect(Collectors.toList());
-            File file = formatFile("things-" + pluginEntity.getName().replace(' ', '_'), dumpContext);
-            objectMapper.writer(JSON_PRINTER).writeValue(file, new Object() {
+        List<ThingDTO> things = thingsRepository.findAll().stream()
+                .map(thingEntity -> ThingDTO.builder()
+                        .uuid(thingEntity.getThingUuid())
+                        .name(thingEntity.getName())
+                        .description(thingEntity.getDescription())
+                        .configuration(thingEntity.getConfiguration())
+                        .build())
+                .collect(Collectors.toList());
+        File file = formatFile("things", dumpContext);
+        objectMapper.writer(JSON_PRINTER).writeValue(file, new Object() {
                 public List<ThingDTO> getThings() {
                     return things;
                 }
             });
-            log.info("Dumped things to {}", file);
-        }
+        log.info("Dumped things to {}", file);
     }
 
     private void dumpActuators(DumpContext dumpContext) throws IOException {
-        List<ThingEntity> thingEntities = dumpContext.pluginEntities.stream()
-                .flatMap(pluginEntity -> pluginEntity.getThings().stream())
-                .collect(Collectors.toList());
-        for (ThingEntity thingEntity: thingEntities) {
-            List<ActuatorDTO> actuators = thingEntity.getActuators().stream()
+        for (ThingEntity thingEntity : thingsRepository.findAll()) {
+            List<ActuatorDTO> actuators = actuatorsRepository.findByThingId(thingEntity.getThingId()).stream()
                     .map(actuatorEntity -> ActuatorDTO.builder()
                             .uuid(actuatorEntity.getActuatorUuid())
                             .thingUuid(thingEntity.getThingUuid())
-                            .name(actuatorEntity.getName())
+                            .pluginUuid(dumpContext.pluginEntitiesMap.get(actuatorEntity.getPluginId()).getPluginUuid())
                             .ref(actuatorEntity.getReference())
+                            .name(actuatorEntity.getName())
                             .description(actuatorEntity.getDescription())
                             .configuration(actuatorEntity.getConfiguration())
                             .build())
@@ -209,7 +214,8 @@ public class DumpJsonService {
         return DumpContext.builder()
                 .dumpDate(now)
                 .dumpDirectory(Path.of(dumpJsonFiles, now.format(DT_FORMATTER)))
-                .pluginEntities(pluginsRepository.findAll())
+                .pluginEntitiesMap(pluginsRepository.findAll().stream()
+                        .collect(Collectors.toMap(PluginEntity::getPluginId, Function.identity())))
                 .bindingEntities(bindingsRepository.findAll())
                 .build();
     }
@@ -230,7 +236,7 @@ public class DumpJsonService {
     private static class DumpContext {
         private LocalDateTime dumpDate;
         private Path dumpDirectory;
-        private List<PluginEntity> pluginEntities;
+        private Map<Long, PluginEntity> pluginEntitiesMap;
         private List<BindingEntity> bindingEntities;
     }
 }

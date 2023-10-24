@@ -22,14 +22,12 @@ create table `things`
 (
     thing_id      long          auto_increment,
     thing_uuid    varchar(64)   not null unique,
-    plugin_id     long          not null,
     name          varchar(64)   not null,
     description   varchar(256),
     configuration json,
     version         int         not null default 0,
 
-    primary key (thing_id),
-    foreign key (plugin_id) references plugins (plugin_id) on delete restrict
+    primary key (thing_id)
 );
 
 drop table if exists `actuators`;
@@ -39,6 +37,7 @@ create table `actuators`
     actuator_id     long            auto_increment,
     actuator_uuid   varchar(64)     not null unique,
     thing_id        long            not null,
+    plugin_id       long            not null,
     reference       varchar(32)     not null,
     name            varchar(64)     not null,
     description     varchar(256),
@@ -46,7 +45,8 @@ create table `actuators`
     version         int             not null default 0,
 
     primary key (actuator_id),
-    foreign key (thing_id) references things (thing_id) on delete restrict
+    foreign key (thing_id) references things (thing_id) on delete restrict,
+    foreign key (plugin_id) references plugins (plugin_id) on delete restrict
 );
 
 drop table if exists `bindings`;

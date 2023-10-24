@@ -12,7 +12,7 @@ import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.Getter;

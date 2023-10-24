@@ -1,11 +1,11 @@
 package com.tbot.ruler.plugins.deputy;
 
 import com.tbot.ruler.plugins.RulerPluginContext;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import java.util.Collections;
 import java.util.List;
 
-import com.tbot.ruler.subjects.Thing;
+import com.tbot.ruler.subjects.thing.Thing;
 
 import lombok.extern.slf4j.Slf4j;
 

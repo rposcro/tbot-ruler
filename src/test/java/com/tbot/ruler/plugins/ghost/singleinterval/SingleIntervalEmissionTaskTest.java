@@ -160,7 +160,7 @@ public class SingleIntervalEmissionTaskTest {
                 .actuatorUuid("act-test-id")
                 .defaultState(false)
                 .build();
-        stateAgent.setEnabled(active);
+        stateAgent.setActivated(active);
         SingleIntervalConfiguration configuration = SingleIntervalConfiguration.builder()
                 .activationTime(LocalTime.of(startHour, 0))
                 .deactivationTime(LocalTime.of(endHour, 0))

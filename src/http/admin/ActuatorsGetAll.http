@@ -1,0 +1,5 @@
+### Get all actuators in DB
+# @name = ActuatorsGetAll
+
+GET http://{{host-tbot-ruler}}/admin/actuators
+Content-Type: application/json

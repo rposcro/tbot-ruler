@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.jwavez.actuators.sceneactivation;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.broker.MessagePublisher;
 import lombok.Builder;
 import lombok.Getter;

@@ -18,8 +18,7 @@ import java.time.LocalTime;
 @NoArgsConstructor
 public class SingleIntervalConfiguration {
 
-    @JsonProperty(defaultValue = "true")
-    private boolean enabledByDefault;
+    private boolean activatedByDefault;
 
     @JsonProperty(required = true)
     @JsonDeserialize(converter = StringToLocalTimeConverter.class)

@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.service.things.SubjectStateService;
-import com.tbot.ruler.subjects.ActuatorState;
+import com.tbot.ruler.subjects.actuator.ActuatorState;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -27,11 +27,11 @@ public class SingleIntervalAgent {
         this.currentState = state;
     }
 
-    public boolean isEnabled() {
+    public boolean isActivated() {
         return currentState.getPayload().isOn();
     }
 
-    public void setEnabled(boolean active) {
+    public void setActivated(boolean active) {
         currentState.updatePayload(OnOffState.of(active));
         subjectStateService.persistState(currentState);
     }

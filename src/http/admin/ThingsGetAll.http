@@ -1,0 +1,5 @@
+### Get all things in DB
+# @name = PluginsGetAll
+
+GET http://{{host-tbot-ruler}}/admin/things
+Content-Type: application/json

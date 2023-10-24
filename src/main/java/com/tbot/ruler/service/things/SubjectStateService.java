@@ -3,7 +3,7 @@ package com.tbot.ruler.service.things;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.persistance.SubjectStatesRepository;
 import com.tbot.ruler.persistance.model.SubjectStateEntity;
-import com.tbot.ruler.subjects.ActuatorState;
+import com.tbot.ruler.subjects.actuator.ActuatorState;
 import com.tbot.ruler.subjects.SubjectState;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

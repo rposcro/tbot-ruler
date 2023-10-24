@@ -2,8 +2,8 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
-import com.tbot.ruler.subjects.AbstractActuator;
-import com.tbot.ruler.subjects.ActuatorState;
+import com.tbot.ruler.subjects.actuator.AbstractActuator;
+import com.tbot.ruler.subjects.actuator.ActuatorState;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.NonNull;
@@ -30,8 +30,8 @@ public class SingleIntervalActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
-        singleIntervalAgent.setEnabled(message.getPayloadAs(OnOffState.class).isOn());
-        log.info("Actuator {} enabled flag changed to {}", this.getUuid(), singleIntervalAgent.isEnabled());
+        singleIntervalAgent.setActivated(message.getPayloadAs(OnOffState.class).isOn());
+        log.info("Ghost actuator {} activation flag changed to {}", this.getUuid(), singleIntervalAgent.isActivated());
     }
 
     @Override

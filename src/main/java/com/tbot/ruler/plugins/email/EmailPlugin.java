@@ -2,15 +2,14 @@ package com.tbot.ruler.plugins.email;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.PluginsUtil;
 import com.tbot.ruler.subjects.AbstractSubject;
-import com.tbot.ruler.subjects.Actuator;
-import com.tbot.ruler.subjects.BasicThing;
-import com.tbot.ruler.subjects.Thing;
+import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Builder;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 import java.util.function.Function;
@@ -18,6 +17,7 @@ import java.util.stream.Collectors;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
+@Slf4j
 public class EmailPlugin extends AbstractSubject implements Plugin {
 
     private final RulerPluginContext rulerPluginContext;
@@ -32,20 +32,14 @@ public class EmailPlugin extends AbstractSubject implements Plugin {
     }
 
     @Override
-    public Thing startUpThing(ThingEntity thingEntity) {
-        return BasicThing.builder()
-                .uuid(thingEntity.getThingUuid())
-                .name(thingEntity.getName())
-                .description(thingEntity.getDescription())
-                .actuators(thingEntity.getActuators().stream()
-                        .map(entity -> buildActuator(entity))
-                        .collect(Collectors.toList()))
-                .build();
+    public Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
+        return buildActuator(actuatorEntity);
     }
 
     private Actuator buildActuator(ActuatorEntity actuatorEntity) {
         EmailActuatorBuilder actuatorBuilder = buildersMap.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
+            log.error("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
             throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
         }
         EmailSenderConfiguration senderConfiguration = parseConfiguration(

@@ -29,6 +29,9 @@ public class ActuatorEntity {
     @Column("thing_id")
     private long thingId;
 
+    @Column("plugin_id")
+    private long pluginId;
+
     @Column("reference")
     private String reference;
 

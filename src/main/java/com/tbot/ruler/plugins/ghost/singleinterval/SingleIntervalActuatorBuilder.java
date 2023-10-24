@@ -3,8 +3,9 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.ghost.GhostActuatorBuilder;
-import com.tbot.ruler.plugins.ghost.GhostThingConfiguration;
-import com.tbot.ruler.subjects.Actuator;
+import com.tbot.ruler.plugins.ghost.GhostPluginContext;
+import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import com.tbot.ruler.task.Task;
 
 import java.time.ZoneId;
@@ -20,19 +21,22 @@ public class SingleIntervalActuatorBuilder extends GhostActuatorBuilder {
     }
 
     @Override
-    public Actuator buildActuator(RulerPluginContext rulerPluginContext, ActuatorEntity actuatorEntity, GhostThingConfiguration thingConfiguration) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext, GhostPluginContext ghostPluginContext) {
         SingleIntervalConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SingleIntervalConfiguration.class);
+        RulerPluginContext rulerPluginContext = ghostPluginContext.getRulerPluginContext();
+
         SingleIntervalAgent actuatorAgent = SingleIntervalAgent.builder()
                 .actuatorUuid(actuatorEntity.getActuatorUuid())
-                .defaultState(configuration.isEnabledByDefault())
+                .defaultState(configuration.isActivatedByDefault())
                 .subjectStateService(rulerPluginContext.getSubjectStateService())
                 .build();
         Runnable emissionTask = SingleIntervalEmissionTask.builder()
-                .configuration(configuration)
-                .emitterId(actuatorEntity.getActuatorUuid())
-                .messagePublisher(rulerPluginContext.getMessagePublisher())
-                .zoneId(ZoneId.of(thingConfiguration.getTimeZone()))
+                .rulerThingAgent(rulerThingContext.getRulerThingAgent())
                 .singleIntervalAgent(actuatorAgent)
+                .configuration(configuration)
+                .actuatorUuid(actuatorEntity.getActuatorUuid())
+                .messagePublisher(rulerPluginContext.getMessagePublisher())
+                .zoneId(ZoneId.of(ghostPluginContext.getGhostPluginConfiguration().getTimeZone()))
                 .build();
 
         return SingleIntervalActuator.builder()

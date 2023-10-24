@@ -4,7 +4,7 @@ import com.rposcro.jwavez.core.commands.supported.notification.NotificationRepor
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
-import com.tbot.ruler.subjects.AbstractActuator;
+import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;

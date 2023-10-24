@@ -4,7 +4,6 @@ import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.rposcro.jwavez.serial.handlers.ApplicationCommandHandler;
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.jwavez.controller.CommandRouteRegistry;
@@ -14,9 +13,8 @@ import com.tbot.ruler.plugins.jwavez.controller.JWaveZSerialController;
 import com.tbot.ruler.plugins.jwavez.controller.MockedSerialController;
 import com.tbot.ruler.plugins.jwavez.controller.SerialController;
 import com.tbot.ruler.subjects.AbstractSubject;
-import com.tbot.ruler.subjects.Actuator;
-import com.tbot.ruler.subjects.BasicThing;
-import com.tbot.ruler.subjects.Thing;
+import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import com.tbot.ruler.task.Task;
 import lombok.Builder;
 import lombok.Getter;
@@ -52,18 +50,11 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
     }
 
     @Override
-    public Thing startUpThing(ThingEntity thingEntity) {
-        return BasicThing.builder()
-                .uuid(thingEntity.getThingUuid())
-                .name(thingEntity.getName())
-                .description(thingEntity.getDescription())
-                .actuators(thingEntity.getActuators().stream()
-                        .map(actuatorEntity -> buildActuator(actuatorEntity, actuatorsBuilders))
-                        .collect(Collectors.toList()))
-                .build();
+    public Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
+        return buildActuator(actuatorEntity);
     }
 
-    private Actuator buildActuator(ActuatorEntity actuatorEntity, Map<String, JWaveZActuatorBuilder> actuatorsBuilders) {
+    private Actuator buildActuator(ActuatorEntity actuatorEntity) {
         JWaveZActuatorBuilder actuatorBuilder = actuatorsBuilders.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
             throw new PluginException(format("Wrong actuator %s definition, unknown actuator reference %s, entity skipped",
