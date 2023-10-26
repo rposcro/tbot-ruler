@@ -1,9 +1,7 @@
 package com.tbot.ruler.service.lifetime;
 
-import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.plugins.PluginFactory;
-import com.tbot.ruler.service.things.SubjectStateService;
 import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.subjects.service.ServiceProvider;
@@ -17,10 +15,6 @@ public class PluginFactoryComponent {
 
     @Autowired
     private ServiceProvider serviceProvider;
-    @Autowired
-    private MessagePublisher messagePublisher;
-    @Autowired
-    private SubjectStateService subjectStateService;
 
     public Plugin buildPlugin(PluginEntity pluginEntity) {
         try {
@@ -29,8 +23,6 @@ public class PluginFactoryComponent {
                     .pluginName(pluginEntity.getName())
                     .pluginConfiguration(pluginEntity.getConfiguration())
                     .serviceProvider(serviceProvider)
-                    .messagePublisher(messagePublisher)
-                    .subjectStateService(subjectStateService)
                     .build();
             PluginFactory factory = instantiateFactory(pluginEntity);
             Plugin plugin = factory.producePlugin(context);

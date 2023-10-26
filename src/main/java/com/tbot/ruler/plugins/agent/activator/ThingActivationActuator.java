@@ -4,7 +4,6 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
-import com.tbot.ruler.subjects.thing.RulerThingAgent;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +27,7 @@ public class ThingActivationActuator extends AbstractActuator {
         this.rulerThingContext = rulerThingContext;
         this.state = ActuatorState.<OnOffState>builder()
                 .actuatorUuid(uuid)
-                .payload(OnOffState.of(rulerThingContext.getRulerThingAgent().isActivated()))
+                .payload(OnOffState.of(!rulerThingContext.getRulerThingAgent().isSilenced()))
                 .build();
     }
 
@@ -36,7 +35,7 @@ public class ThingActivationActuator extends AbstractActuator {
     public void acceptMessage(Message message) {
         OnOffState requestedState = message.getPayloadAs(OnOffState.class);
         state.updatePayload(requestedState);
-        rulerThingContext.getRulerThingAgent().setActivated(requestedState);
-        log.info("Thing {} activation flag changed to {}", rulerThingContext.getThingUuid(), state.getPayload().isOn());
+        rulerThingContext.getRulerThingAgent().setSilenced(requestedState.negate());
+        log.info("Thing {} silenced flag changed to {}", rulerThingContext.getThingUuid(), !state.getPayload().isOn());
     }
 }

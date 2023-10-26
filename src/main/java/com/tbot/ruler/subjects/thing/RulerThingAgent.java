@@ -6,9 +6,9 @@ import lombok.Getter;
 @Getter
 public class RulerThingAgent {
 
-    private boolean activated = true;
+    private boolean silenced = false;
 
-    public void setActivated(OnOffState onOffState) {
-        this.activated = onOffState.isOn();
+    public void setSilenced(OnOffState onOffState) {
+        this.silenced = onOffState.isOn();
     }
 }

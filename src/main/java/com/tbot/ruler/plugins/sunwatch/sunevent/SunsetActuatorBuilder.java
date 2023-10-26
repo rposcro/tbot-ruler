@@ -2,12 +2,12 @@ package com.tbot.ruler.plugins.sunwatch.sunevent;
 
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.BasicActuator;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import com.tbot.ruler.task.Task;
 import com.tbot.ruler.task.TaskTrigger;
 
@@ -22,11 +22,11 @@ public class SunsetActuatorBuilder extends SunWatchActuatorBuilder {
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerPluginContext builderContext, SunLocale eventLocale) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext, SunLocale eventLocale) {
         SunEventActuatorConfiguration configuration = parseConfiguration(
                 actuatorEntity.getConfiguration(), SunEventActuatorConfiguration.class);
         TaskTrigger emissionTrigger = emissionTrigger(configuration, eventLocale);
-        Runnable emissionTask = emissionTask(actuatorEntity, builderContext, configuration);
+        Runnable emissionTask = emissionTask(actuatorEntity, thingContext, configuration);
 
         return BasicActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
@@ -36,9 +36,9 @@ public class SunsetActuatorBuilder extends SunWatchActuatorBuilder {
                 .build();
     }
 
-    private Runnable emissionTask(ActuatorEntity actuatorEntity, RulerPluginContext builderContext, SunEventActuatorConfiguration emitterConfiguration) {
+    private Runnable emissionTask(ActuatorEntity actuatorEntity, RulerThingContext thingContext, SunEventActuatorConfiguration emitterConfiguration) {
         Message message = emitterMessage(actuatorEntity, emitterConfiguration.getSignal());
-        return () -> builderContext.getMessagePublisher().publishMessage(message);
+        return () -> thingContext.getMessagePublisher().publishMessage(message);
     }
 
     private TaskTrigger emissionTrigger(SunEventActuatorConfiguration configuration, SunLocale eventLocale) {

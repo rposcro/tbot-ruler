@@ -51,16 +51,16 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
 
     @Override
     public Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
-        return buildActuator(actuatorEntity);
+        return buildActuator(actuatorEntity, rulerThingContext);
     }
 
-    private Actuator buildActuator(ActuatorEntity actuatorEntity) {
+    private Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         JWaveZActuatorBuilder actuatorBuilder = actuatorsBuilders.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
             throw new PluginException(format("Wrong actuator %s definition, unknown actuator reference %s, entity skipped",
                     actuatorEntity.getActuatorUuid(), actuatorEntity.getReference()));
         }
-        return actuatorBuilder.buildActuator(actuatorEntity);
+        return actuatorBuilder.buildActuator(actuatorEntity, rulerThingContext);
     }
 
     private JWaveZPluginContext prepareJwzContext(RulerPluginContext rulerPluginContext) {
@@ -72,7 +72,6 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
 
         return JWaveZPluginContext.builder()
                 .rulerPluginContext(rulerPluginContext)
-                .messagePublisher(rulerPluginContext.getMessagePublisher())
                 .serialController(serialController)
                 .jwzApplicationSupport(JwzApplicationSupport.defaultSupport())
                 .jwzCommandSender(commandSender)

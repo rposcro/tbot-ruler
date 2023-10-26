@@ -16,7 +16,6 @@ import lombok.NonNull;
 public class JWaveZPluginContext {
 
     private final RulerPluginContext rulerPluginContext;
-    private final MessagePublisher messagePublisher;
     private final SerialController serialController;
     private final JwzApplicationSupport jwzApplicationSupport;
     private final CommandSender jwzCommandSender;

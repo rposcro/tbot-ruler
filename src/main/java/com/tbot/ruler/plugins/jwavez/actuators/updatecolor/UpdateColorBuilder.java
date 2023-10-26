@@ -5,6 +5,7 @@ import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
@@ -17,14 +18,14 @@ public class UpdateColorBuilder extends JWaveZActuatorBuilder {
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         UpdateColorConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(),  UpdateColorConfiguration.class);
         UpdateColorActuator actuator = UpdateColorActuator.builder()
                 .id(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
                 .commandSender(pluginContext.getJwzCommandSender())
-                .messagePublisher(pluginContext.getMessagePublisher())
+                .messagePublisher(rulerThingContext.getMessagePublisher())
                 .configuration(configuration)
                 .applicationSupport(pluginContext.getJwzApplicationSupport())
                 .build();

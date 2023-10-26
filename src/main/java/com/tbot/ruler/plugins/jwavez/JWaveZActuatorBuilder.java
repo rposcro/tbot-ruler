@@ -2,6 +2,7 @@ package com.tbot.ruler.plugins.jwavez;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Getter;
 
 @Getter
@@ -15,5 +16,5 @@ public abstract class JWaveZActuatorBuilder {
         this.pluginContext = pluginContext;
     }
 
-    public abstract Actuator buildActuator(ActuatorEntity actuatorEntity);
+    public abstract Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext);
 }

@@ -21,21 +21,20 @@ public class SingleIntervalActuatorBuilder extends GhostActuatorBuilder {
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext, GhostPluginContext ghostPluginContext) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext, GhostPluginContext ghostPluginContext) {
         SingleIntervalConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SingleIntervalConfiguration.class);
         RulerPluginContext rulerPluginContext = ghostPluginContext.getRulerPluginContext();
 
         SingleIntervalAgent actuatorAgent = SingleIntervalAgent.builder()
                 .actuatorUuid(actuatorEntity.getActuatorUuid())
                 .defaultState(configuration.isActivatedByDefault())
-                .subjectStateService(rulerPluginContext.getSubjectStateService())
+                .subjectStateService(thingContext.getSubjectStateService())
                 .build();
         Runnable emissionTask = SingleIntervalEmissionTask.builder()
-                .rulerThingAgent(rulerThingContext.getRulerThingAgent())
                 .singleIntervalAgent(actuatorAgent)
                 .configuration(configuration)
                 .actuatorUuid(actuatorEntity.getActuatorUuid())
-                .messagePublisher(rulerPluginContext.getMessagePublisher())
+                .messagePublisher(thingContext.getMessagePublisher())
                 .zoneId(ZoneId.of(ghostPluginContext.getGhostPluginConfiguration().getTimeZone()))
                 .build();
 

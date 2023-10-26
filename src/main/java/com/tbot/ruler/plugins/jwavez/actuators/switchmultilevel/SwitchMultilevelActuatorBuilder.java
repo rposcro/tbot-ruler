@@ -5,6 +5,7 @@ import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
@@ -17,7 +18,7 @@ public class SwitchMultilevelActuatorBuilder extends JWaveZActuatorBuilder {
     }
 
     @Override
-    public SwitchMultilevelActuator buildActuator(ActuatorEntity actuatorEntity) {
+    public SwitchMultilevelActuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         SwitchMultilevelConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SwitchMultilevelConfiguration.class);
         SwitchMultilevelActuator actuator = SwitchMultilevelActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())

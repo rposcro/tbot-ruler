@@ -1,12 +1,12 @@
 package com.tbot.ruler.plugins.sunwatch.daytime;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.BasicActuator;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import com.tbot.ruler.task.Task;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
@@ -20,11 +20,11 @@ public class DaytimeActuatorBuilder extends SunWatchActuatorBuilder {
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerPluginContext builderContext, SunLocale eventLocale) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext, SunLocale eventLocale) {
         DaytimeActuatorConfiguration emitterConfiguration = parseConfiguration(actuatorEntity.getConfiguration(), DaytimeActuatorConfiguration.class);
         SunCalculator sunCalculator = sunCalculator(emitterConfiguration, eventLocale);
         DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterConfiguration, sunCalculator);
-        DaytimeEmissionTask emissionTask = emissionTask(actuatorEntity, builderContext, sunCalculator, emitterConfiguration);
+        DaytimeEmissionTask emissionTask = emissionTask(actuatorEntity, thingContext, sunCalculator, emitterConfiguration);
 
         return BasicActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
@@ -37,12 +37,12 @@ public class DaytimeActuatorBuilder extends SunWatchActuatorBuilder {
 
     private DaytimeEmissionTask emissionTask(
             ActuatorEntity actuatorEntity,
-            RulerPluginContext rulerPluginContext,
+            RulerThingContext thingContext,
             SunCalculator sunCalculator,
             DaytimeActuatorConfiguration emitterConfiguration) {
         return DaytimeEmissionTask.builder()
                 .emitterId(actuatorEntity.getActuatorUuid())
-                .messagePublisher(rulerPluginContext.getMessagePublisher())
+                .messagePublisher(thingContext.getMessagePublisher())
                 .dayTimeMessage(emitterMessage(actuatorEntity, emitterConfiguration.getDayTimeSignal()))
                 .nightTimeMessage(emitterMessage(actuatorEntity, emitterConfiguration.getNightTimeSignal()))
                 .sunCalculator(sunCalculator)

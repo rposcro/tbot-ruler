@@ -36,16 +36,16 @@ public class SunWatchPlugin extends AbstractSubject implements Plugin {
     }
 
     @Override
-    public Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
-        return buildActuator(actuatorEntity, sunLocale);
+    public Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext) {
+        return buildActuator(actuatorEntity, thingContext, sunLocale);
     }
 
-    private Actuator buildActuator(ActuatorEntity actuatorEntity, SunLocale sunLocale) {
+    private Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext, SunLocale sunLocale) {
         SunWatchActuatorBuilder actuatorBuilder = buildersMap.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
             throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
         }
-        return actuatorBuilder.buildActuator(actuatorEntity, rulerPluginContext, sunLocale);
+        return actuatorBuilder.buildActuator(actuatorEntity, thingContext, sunLocale);
     }
 
     private SunLocale sunLocale(SunWatchPluginConfiguration configuration) {

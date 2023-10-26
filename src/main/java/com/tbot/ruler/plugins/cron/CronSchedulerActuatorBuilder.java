@@ -3,10 +3,10 @@ package com.tbot.ruler.plugins.cron;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.Notification;
-import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.BasicActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import com.tbot.ruler.task.Task;
 
 import java.util.TimeZone;
@@ -15,13 +15,13 @@ public class CronSchedulerActuatorBuilder {
 
     private static final String PARAM_SCHEDULE_PATTERN = "schedulePattern";
 
-    public Actuator buildEmitter(RulerPluginContext builderContext, ActuatorDTO actuatorDTO, TimeZone timeZone) {
+    public Actuator buildEmitter(RulerThingContext thingContext, ActuatorDTO actuatorDTO, TimeZone timeZone) {
         return BasicActuator.builder()
                 .uuid(actuatorDTO.getUuid())
                 .name(actuatorDTO.getName())
                 .description(actuatorDTO.getDescription())
                 .asynchronousTask(Task.triggerableTask(
-                        emissionTask(actuatorDTO, builderContext.getMessagePublisher()),
+                        emissionTask(actuatorDTO, thingContext.getMessagePublisher()),
                         emissionTrigger(actuatorDTO, timeZone)))
                 .build();
     }

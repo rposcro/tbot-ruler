@@ -14,6 +14,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
+import java.util.UUID;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -167,11 +168,11 @@ public class SingleIntervalEmissionTaskTest {
                 .variationMinutes(variation)
                 .build();
         return SingleIntervalEmissionTask.builder()
-                .configuration(configuration)
                 .singleIntervalAgent(stateAgent)
-                .emitterId(EMITTER_ID)
+                .configuration(configuration)
                 .zoneId(ZONE_ID)
                 .messagePublisher(messagePublisher)
+                .actuatorUuid(EMITTER_ID)
                 .timer(timer)
                 .build();
     }

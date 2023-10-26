@@ -21,7 +21,6 @@ import java.util.function.Supplier;
 public class SingleIntervalEmissionTask implements Runnable {
 
     private final SingleIntervalAgent singleIntervalAgent;
-    private final RulerThingAgent rulerThingAgent;
     private final SingleIntervalConfiguration configuration;
     private final MessagePublisher messagePublisher;
     private final String actuatorUuid;
@@ -33,7 +32,6 @@ public class SingleIntervalEmissionTask implements Runnable {
 
     @Builder
     public SingleIntervalEmissionTask(
-            @NonNull RulerThingAgent rulerThingAgent,
             @NonNull SingleIntervalAgent singleIntervalAgent,
             @NonNull SingleIntervalConfiguration configuration,
             @NonNull ZoneId zoneId,
@@ -41,7 +39,6 @@ public class SingleIntervalEmissionTask implements Runnable {
             @NonNull String actuatorUuid,
             Supplier<LocalDateTime> timer
             ) {
-        this.rulerThingAgent = rulerThingAgent;
         this.singleIntervalAgent = singleIntervalAgent;
         this.configuration = configuration;
         this.messagePublisher = messagePublisher;
@@ -52,7 +49,7 @@ public class SingleIntervalEmissionTask implements Runnable {
     }
 
     public void run() {
-        boolean isActivated = rulerThingAgent.isActivated() && singleIntervalAgent.isActivated();
+        boolean isActivated = singleIntervalAgent.isActivated();
         log.debug("Ghost actuator {} activation is {}", actuatorUuid, isActivated);
         if (isActivated) {
             LocalDateTime now = timer.get();

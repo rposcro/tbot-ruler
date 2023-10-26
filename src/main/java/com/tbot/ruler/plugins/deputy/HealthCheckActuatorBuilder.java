@@ -5,6 +5,7 @@ import com.tbot.ruler.rest.RestGetCommand;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.BasicActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import com.tbot.ruler.task.RegularEmissionTrigger;
 import com.tbot.ruler.task.Task;
 
@@ -13,22 +14,22 @@ class HealthCheckActuatorBuilder {
     private static final String PARAM_FREQUENCY = "frequency";
     private static final String DEFAULT_FREQUENCY = "15";
 
-    Actuator buildActuator(ActuatorDTO actuatorDTO, RulerPluginContext builderContext) {
+    Actuator buildActuator(ActuatorDTO actuatorDTO, RulerThingContext thingContext) {
         return BasicActuator.builder()
                 .uuid(actuatorDTO.getUuid())
                 .name(actuatorDTO.getName())
                 .description(actuatorDTO.getDescription())
                 .asynchronousTask(Task.triggerableTask(
-                        emissionTask(builderContext, actuatorDTO),
+                        emissionTask(thingContext, actuatorDTO),
                         emissionTrigger(actuatorDTO)))
                 .build();
     }
 
-    private HealthCheckEmissionTask emissionTask(RulerPluginContext builderContext, ActuatorDTO actuatorDTO) {
+    private HealthCheckEmissionTask emissionTask(RulerThingContext thingContext, ActuatorDTO actuatorDTO) {
         return HealthCheckEmissionTask.builder()
             .actuatorId(actuatorDTO.getUuid())
-            .healthCheckCommand(restGetCommand(builderContext))
-            .messagePublisher(builderContext.getMessagePublisher())
+            .healthCheckCommand(null)
+            .messagePublisher(thingContext.getMessagePublisher())
             .build();
     }
 

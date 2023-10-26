@@ -3,9 +3,9 @@ package com.tbot.ruler.plugins.sunwatch;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.exceptions.PluginException;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Getter;
 
 public abstract class SunWatchActuatorBuilder {
@@ -21,7 +21,7 @@ public abstract class SunWatchActuatorBuilder {
 
     public abstract Actuator buildActuator(
             ActuatorEntity actuatorEntity,
-            RulerPluginContext rulerPluginContext,
+            RulerThingContext rulerThingContext,
             SunLocale eventLocale) throws PluginException;
 
     protected Message emitterMessage(ActuatorEntity actuatorEntity, String signalValue) {

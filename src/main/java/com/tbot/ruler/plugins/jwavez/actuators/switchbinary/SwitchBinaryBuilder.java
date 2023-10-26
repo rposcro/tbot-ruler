@@ -6,6 +6,7 @@ import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
@@ -18,7 +19,7 @@ public class SwitchBinaryBuilder extends JWaveZActuatorBuilder {
     }
 
     @Override
-    public SwitchBinaryActuator buildActuator(ActuatorEntity actuatorEntity) {
+    public SwitchBinaryActuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         SwitchBinaryConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SwitchBinaryConfiguration.class);
         SwitchBinaryActuator actuator = SwitchBinaryActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())

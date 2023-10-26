@@ -6,6 +6,7 @@ import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
@@ -18,13 +19,13 @@ public class SensorMultilevelBuilder extends JWaveZActuatorBuilder {
     }
 
     @Override
-    public SensorMultilevelActuator buildActuator(ActuatorEntity actuatorEntity) {
+    public SensorMultilevelActuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         SensorMultilevelConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SensorMultilevelConfiguration.class);
         SensorMultilevelActuator actuator = SensorMultilevelActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
-                .messagePublisher(pluginContext.getMessagePublisher())
+                .messagePublisher(rulerThingContext.getMessagePublisher())
                 .build();
         CommandListener<? extends ZWaveSupportedCommand> listener = buildCommandListener(actuator, configuration);
         pluginContext.getCommandRouteRegistry().registerListener(SensorMultilevelCommandType.SENSOR_MULTILEVEL_REPORT, listener);

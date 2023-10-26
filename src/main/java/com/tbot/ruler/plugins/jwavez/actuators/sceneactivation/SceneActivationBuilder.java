@@ -4,6 +4,7 @@ import com.rposcro.jwavez.core.commands.types.SceneActivationCommandType;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
@@ -16,13 +17,13 @@ public class SceneActivationBuilder extends JWaveZActuatorBuilder {
     }
 
     @Override
-    public SceneActivationActuator buildActuator(ActuatorEntity actuatorEntity) {
+    public SceneActivationActuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         SceneActivationConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SceneActivationConfiguration.class);
         SceneActivationActuator actuator = SceneActivationActuator.builder()
             .uuid(actuatorEntity.getActuatorUuid())
             .name(actuatorEntity.getName())
             .description(actuatorEntity.getDescription())
-            .messagePublisher(pluginContext.getMessagePublisher())
+            .messagePublisher(rulerThingContext.getMessagePublisher())
             .sceneId((byte) configuration.getSceneId())
             .sourceNodeId((byte) configuration.getNodeId())
             .build()

@@ -19,6 +19,10 @@ public class OnOffState {
         return on ? STATE_ON : STATE_OFF;
     }
 
+    public OnOffState negate() {
+        return isOn() ? STATE_OFF : STATE_ON;
+    }
+
     @Override
     public String toString() {
         return String.format("OnOffState { on: %s }", on);

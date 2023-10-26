@@ -7,6 +7,7 @@ import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
 import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
@@ -19,14 +20,14 @@ public class BasicSetBuilder extends JWaveZActuatorBuilder {
     }
 
     @Override
-    public Actuator buildActuator(ActuatorEntity actuatorEntity) {
+    public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         BasicSetConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), BasicSetConfiguration.class);
         BasicSetActuator actuator = BasicSetActuator.builder()
                 .id(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
                 .configuration(configuration)
-                .messagePublisher(pluginContext.getMessagePublisher())
+                .messagePublisher(rulerThingContext.getMessagePublisher())
                 .build();
         CommandListener<? extends ZWaveSupportedCommand> listener = buildCommandListener(actuator, configuration);
         pluginContext.getCommandRouteRegistry().registerListener(BasicCommandType.BASIC_SET, listener);
