@@ -6,6 +6,7 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.broker.payload.RGBWColor;
+import com.tbot.ruler.broker.payload.Trigger;
 import com.tbot.ruler.controller.AbstractController;
 import com.tbot.ruler.controller.subject.payload.ActuatorStatePayloadType;
 import com.tbot.ruler.controller.subject.payload.ActuatorStateUpdateRequest;
@@ -77,6 +78,7 @@ public class ActuatorsStateController extends AbstractController {
                 case Object -> stateUpdateRequest.getPayload();
                 case OnOff -> objectMapper.readerFor(OnOffState.class).readValue(stateUpdateRequest.getPayload());
                 case Rgbw -> objectMapper.readerFor(RGBWColor.class).readValue(stateUpdateRequest.getPayload());
+                case Trigger -> Trigger.TRIGGER;
             };
             return Message.builder()
                     .senderId(stateUpdateRequest.getWidgetUuid())

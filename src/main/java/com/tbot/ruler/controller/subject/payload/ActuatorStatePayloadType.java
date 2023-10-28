@@ -10,7 +10,8 @@ public enum ActuatorStatePayloadType {
 
     Object,
     OnOff,
-    Rgbw;
+    Rgbw,
+    Trigger;
 
     private static Map<String, ActuatorStatePayloadType> typesMap = Stream.of(ActuatorStatePayloadType.values())
             .collect(Collectors.toMap(ActuatorStatePayloadType::name, Function.identity()));

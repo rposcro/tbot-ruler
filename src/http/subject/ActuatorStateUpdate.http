@@ -1,13 +1,15 @@
 ### Update actuator state
 # @name = ActuatorStateUpdate
 
-PUT http://{{host-tbot-ruler}}/actuators/actr-d32f8398-03ac-4b8b-8120-ccad5b02400a/state
+< {%
+    request.variables.set("actuatorUuid", "actr-d6043d86-cfcd-4067-af26-830f2ab52066");
+    request.variables.set("widgetUuid", "wdgtc-ec01c493-1fa5-406a-a674-9c0e54e29857");
+    request.variables.set("payloadType", "Trigger");
+%}
+PUT http://{{host-tbot-ruler}}/actuators/{{actuatorUuid}}/state
 Content-Type: application/json
 
 {
-    "widgetUuid": "wdgtc-a549fc6a-6afd-4ab5-a87f-508d104534fa",
-    "payloadType": "OnOff",
-    "payload": {
-        "on": "true"
-    }
+    "widgetUuid": "{{widgetUuid}}",
+    "payloadType": "{{payloadType}}"
 }
