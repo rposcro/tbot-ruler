@@ -14,17 +14,17 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-public class ThingAgentPlugin extends AbstractSubject implements Plugin {
+public class AgentPlugin extends AbstractSubject implements Plugin {
 
     private final RulerPluginContext rulerPluginContext;
-    private final Map<String, ThingAgentActuatorBuilder> buildersMap;
+    private final Map<String, AgentActuatorBuilder> buildersMap;
 
     @Builder
-    public ThingAgentPlugin(RulerPluginContext rulerPluginContext) {
+    public AgentPlugin(RulerPluginContext rulerPluginContext) {
         super(rulerPluginContext.getPluginUuid(), rulerPluginContext.getPluginName());
         this.rulerPluginContext = rulerPluginContext;
-        this.buildersMap = PluginsUtil.instantiateActuatorsBuilders(ThingAgentActuatorBuilder.class, "com.tbot.ruler.plugins.agent").stream()
-                .collect(Collectors.toMap(ThingAgentActuatorBuilder::getReference, Function.identity()));
+        this.buildersMap = PluginsUtil.instantiateActuatorsBuilders(AgentActuatorBuilder.class, "com.tbot.ruler.plugins.agent").stream()
+                .collect(Collectors.toMap(AgentActuatorBuilder::getReference, Function.identity()));
     }
 
     @Override
@@ -33,7 +33,7 @@ public class ThingAgentPlugin extends AbstractSubject implements Plugin {
     }
 
     private Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
-        ThingAgentActuatorBuilder actuatorBuilder = buildersMap.get(actuatorEntity.getReference());
+        AgentActuatorBuilder actuatorBuilder = buildersMap.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
             throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
         }

@@ -1,13 +1,13 @@
 package com.tbot.ruler.plugins.agent.mute;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.agent.ThingAgentActuatorBuilder;
+import com.tbot.ruler.plugins.agent.AgentActuatorBuilder;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
-public class ThingMuteActuatorBuilder extends ThingAgentActuatorBuilder {
+public class ThingMuteActuatorBuilder extends AgentActuatorBuilder {
 
     private static final String REFERENCE = "mute";
 

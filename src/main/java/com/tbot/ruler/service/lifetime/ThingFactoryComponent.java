@@ -4,7 +4,6 @@ import com.tbot.ruler.broker.DefaultMessagePublisher;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.service.things.SubjectStateService;
-import com.tbot.ruler.subjects.thing.Thing;
 import com.tbot.ruler.subjects.thing.RulerThing;
 import com.tbot.ruler.subjects.thing.RulerThingAgent;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
@@ -22,7 +21,7 @@ public class ThingFactoryComponent {
     @Autowired
     private SubjectStateService subjectStateService;
 
-    public Thing buildThing(ThingEntity thingEntity) {
+    public RulerThing buildThing(ThingEntity thingEntity) {
         RulerThingAgent thingAgent = new RulerThingAgent();
         RulerThingContext thingContext = RulerThingContext.builder()
                 .thingUuid(thingEntity.getThingUuid())

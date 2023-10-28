@@ -10,7 +10,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Getter
-public class RulerThing extends AbstractSubject implements Thing {
+public final class RulerThing extends AbstractSubject implements Thing {
 
     private final RulerThingContext rulerThingContext;
     private final List<Actuator> actuators;
@@ -20,6 +20,7 @@ public class RulerThing extends AbstractSubject implements Thing {
         super(rulerThingContext.getThingUuid(), rulerThingContext.getThingName(), null);
         this.rulerThingContext = rulerThingContext;
         this.actuators = new LinkedList<>();
+        this.rulerThingContext.getRulerThingAgent().setThing(this);
     }
 
     public void addActuator(Actuator actuator) {

@@ -9,7 +9,7 @@ import lombok.NonNull;
 
 @Getter
 @Builder
-public class RulerThingContext {
+public final class RulerThingContext {
 
     @NonNull
     private final String thingUuid;

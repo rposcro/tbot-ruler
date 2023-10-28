@@ -6,6 +6,7 @@ import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.thing.RulerThing;
 import com.tbot.ruler.subjects.thing.Thing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,8 +47,8 @@ public class SubjectLifetimeService {
     private Map<String, Plugin> pluginsUuidMap;
 
     private List<Thing> things;
-    private Map<Long, Thing> thingsIdMap;
-    private Map<String, Thing> thingsUuidMap;
+    private Map<Long, RulerThing> thingsIdMap;
+    private Map<String, RulerThing> thingsUuidMap;
 
     private List<Actuator> actuators;
     private Map<String, Actuator> actuatorsUuidMap;
@@ -98,7 +99,7 @@ public class SubjectLifetimeService {
         thingsIdMap = new HashMap<>();
         thingsUuidMap = new HashMap<>();
         thingsRepository.findAll().forEach(thingEntity -> {
-            Thing thing = thingFactoryComponent.buildThing(thingEntity);
+            RulerThing thing = thingFactoryComponent.buildThing(thingEntity);
             things.add(thing);
             thingsIdMap.put(thingEntity.getThingId(), thing);
             thingsUuidMap.put(thingEntity.getThingUuid(), thing);
@@ -111,8 +112,9 @@ public class SubjectLifetimeService {
         actuatorsRepository.findAll().forEach(actuatorEntity -> {
             try {
                 Plugin plugin = pluginsIdMap.get(actuatorEntity.getPluginId());
-                Thing thing = thingsIdMap.get(actuatorEntity.getThingId());
+                RulerThing thing = thingsIdMap.get(actuatorEntity.getThingId());
                 Actuator actuator = plugin.startUpActuator(actuatorEntity, thing.getRulerThingContext());
+                thing.addActuator(actuator);
                 actuators.add(actuator);
                 actuatorsUuidMap.put(actuator.getUuid(), actuator);
             } catch(PluginException e) {
