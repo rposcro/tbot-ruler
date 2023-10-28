@@ -15,7 +15,6 @@ import com.tbot.ruler.persistance.json.dto.BindingDTO;
 import com.tbot.ruler.persistance.json.dto.PluginDTO;
 import com.tbot.ruler.persistance.json.dto.SchemaDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
-import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.SchemaEntity;
@@ -152,7 +151,7 @@ public class DumpJsonService {
                             .uuid(actuatorEntity.getActuatorUuid())
                             .thingUuid(thingEntity.getThingUuid())
                             .pluginUuid(dumpContext.pluginEntitiesMap.get(actuatorEntity.getPluginId()).getPluginUuid())
-                            .ref(actuatorEntity.getReference())
+                            .reference(actuatorEntity.getReference())
                             .name(actuatorEntity.getName())
                             .description(actuatorEntity.getDescription())
                             .configuration(actuatorEntity.getConfiguration())

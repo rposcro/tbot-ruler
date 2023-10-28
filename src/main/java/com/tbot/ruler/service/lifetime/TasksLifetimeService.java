@@ -1,6 +1,5 @@
 package com.tbot.ruler.service.lifetime;
 
-import com.tbot.ruler.service.lifetime.SubjectLifetimeService;
 import com.tbot.ruler.subjects.Subject;
 import com.tbot.ruler.task.EmissionTriggerContext;
 import com.tbot.ruler.task.Task;
@@ -39,13 +38,13 @@ public class TasksLifetimeService {
                 .flatMap(subject -> subject.getAsynchronousTasks().stream())
                 .filter(Task::runOnStartUp)
                 .map(Task::getRunnable)
-                .forEach(runnable -> startUpTasksExecutor.execute(runnable));
+                .forEach(startUpTasksExecutor::execute);
 
         subjects.stream()
                 .flatMap(subject -> subject.getAsynchronousTasks().stream())
                 .filter(Task::runContinuously)
                 .map(Task::getRunnable)
-                .forEach(runnable -> continuousTasksExecutor.execute(runnable));
+                .forEach(continuousTasksExecutor::execute);
 
         subjects.stream()
                 .flatMap(subject -> subject.getAsynchronousTasks().stream())

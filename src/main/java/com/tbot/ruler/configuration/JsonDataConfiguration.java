@@ -124,7 +124,7 @@ public class JsonDataConfiguration {
                                 .name(dto.getName())
                                 .description(dto.getDescription())
                                 .configuration(dto.getConfiguration())
-                                .reference(dto.getRef())
+                                .reference(dto.getReference())
                                 .build();
                         actuatorsRepository.save(actuatorEntity);
                         log.info("Loaded actuator {}", dto.getUuid());

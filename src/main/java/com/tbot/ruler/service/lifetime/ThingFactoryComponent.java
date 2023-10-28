@@ -40,7 +40,7 @@ public class ThingFactoryComponent {
 
     private MessagePublisher buildPublisher(RulerThingAgent thingAgent, String thingUuid) {
         return message -> {
-             if (thingAgent.isSilenced()) {
+             if (thingAgent.isOnMute()) {
                  defaultMessageQueue.publishMessage(message);
              } else {
                  log.debug("Silenced message from actuator {} of thing {}", message.getSenderId(), thingUuid);

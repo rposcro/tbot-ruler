@@ -4,11 +4,11 @@ import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.PluginFactory;
 import com.tbot.ruler.plugins.RulerPluginContext;
 
-public class AgentPluginFactory implements PluginFactory {
+public class ThingAgentPluginFactory implements PluginFactory {
 
     @Override
     public Plugin producePlugin(RulerPluginContext rulerPluginContext) {
-        return AgentPlugin.builder()
+        return ThingAgentPlugin.builder()
                 .rulerPluginContext(rulerPluginContext)
                 .build();
     }

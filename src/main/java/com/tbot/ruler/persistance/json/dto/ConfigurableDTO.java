@@ -23,7 +23,7 @@ public abstract class ConfigurableDTO {
     @JsonIgnore
     private Map<String, String> configurationMap = Collections.emptyMap();;
 
-    @JsonProperty("config")
+    @JsonProperty
     public void setConfiguration(JsonNode configuration) {
         this.configuration = configuration;
         this.configurationMap = new HashMap<>();

@@ -12,9 +12,16 @@ public class PluginsUtil {
 
     public static <T> T parseConfiguration(JsonNode jsonNode, Class<T> clazz) {
         try {
+            if (jsonNode == null) {
+                return clazz.getConstructor().newInstance();
+            }
             return new ObjectMapper().readerFor(clazz).readValue(jsonNode);
         } catch(IOException e) {
             throw new PluginException("Could not parse configuration for class " + clazz, e);
+        } catch(NoSuchMethodException e) {
+            throw new PluginException("Could not create configuration instance, no default constructor!", e);
+        } catch(Exception e) {
+            throw new PluginException("Could not create configuration instance due to an error!", e);
         }
     }
 

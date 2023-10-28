@@ -29,7 +29,7 @@ public class ActuatorDTO extends ConfigurableDTO {
 
     @NonNull
     @JsonProperty(required = true)
-    private String ref;
+    private String reference;
 
     @NonNull
     @JsonProperty(required = true)
