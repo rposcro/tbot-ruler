@@ -3,3 +3,5 @@
  */
 
 rootProject.name = 'tbot-ruler'
+include 'tbot-ruler-service'
+

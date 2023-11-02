@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tbot.ruler.broker.model.MessagePublicationReportTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2023-11-02T22:05:11" hostname="ip-192-168-100-31.us-west-2.compute.internal" time="0.002">
+  <properties/>
+  <testcase name="testDeliverySuccessful()" classname="com.tbot.ruler.broker.model.MessagePublicationReportTest" time="0.0"/>
+  <testcase name="testSenderSuspended()" classname="com.tbot.ruler.broker.model.MessagePublicationReportTest" time="0.001"/>
+  <testcase name="testNoReceiversFound()" classname="com.tbot.ruler.broker.model.MessagePublicationReportTest" time="0.0"/>
+  <testcase name="testDeliveryPartiallyFailed()" classname="com.tbot.ruler.broker.model.MessagePublicationReportTest" time="0.001"/>
+  <testcase name="testDeliveryFailed()" classname="com.tbot.ruler.broker.model.MessagePublicationReportTest" time="0.0"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tbot.ruler.plugins.ghost.singleinterval.SingleIntervalEmissionTaskTest" tests="7" skipped="0" failures="0" errors="0" timestamp="2023-11-02T22:05:11" hostname="ip-192-168-100-31.us-west-2.compute.internal" time="0.047">
+  <properties/>
+  <testcase name="emitsTrueInInterval()" classname="com.tbot.ruler.plugins.ghost.singleinterval.SingleIntervalEmissionTaskTest" time="0.025"/>
+  <testcase name="initialIntervalWithVariation()" classname="com.tbot.ruler.plugins.ghost.singleinterval.SingleIntervalEmissionTaskTest" time="0.001"/>
+  <testcase name="initialIntervalWithoutSpanIsCorrect()" classname="com.tbot.ruler.plugins.ghost.singleinterval.SingleIntervalEmissionTaskTest" time="0.009"/>
+  <testcase name="emitsFalseBeforeInterval()" classname="com.tbot.ruler.plugins.ghost.singleinterval.SingleIntervalEmissionTaskTest" time="0.004"/>
+  <testcase name="initialIntervalWithSpanIsCorrect()" classname="com.tbot.ruler.plugins.ghost.singleinterval.SingleIntervalEmissionTaskTest" time="0.001"/>
+  <testcase name="emitsFalseAfterIntervalAndChangesInterval()" classname="com.tbot.ruler.plugins.ghost.singleinterval.SingleIntervalEmissionTaskTest" time="0.002"/>
+  <testcase name="doesNotEmitWhenDeactivated()" classname="com.tbot.ruler.plugins.ghost.singleinterval.SingleIntervalEmissionTaskTest" time="0.002"/>
+  <system-out><![CDATA[2023-11-02 23:05:11,188  INFO ingleinterval.SingleIntervalEmissionTask:  74 - Ghost Single Interval Dummy One changed to 2023-09-07T13:00 - 2023-09-07T20:00
+2023-11-02 23:05:11,191  INFO ingleinterval.SingleIntervalEmissionTask:  74 - Ghost Single Interval Dummy One changed to 2023-09-07T09:46 - 2023-09-07T14:44
+2023-11-02 23:05:11,201  INFO ingleinterval.SingleIntervalEmissionTask:  74 - Ghost Single Interval Dummy One changed to 2023-09-07T10:00 - 2023-09-07T15:00
+2023-11-02 23:05:11,202  INFO ingleinterval.SingleIntervalEmissionTask:  74 - Ghost Single Interval Dummy One changed to 2023-09-07T15:00 - 2023-09-07T20:00
+2023-11-02 23:05:11,207  INFO ingleinterval.SingleIntervalEmissionTask:  74 - Ghost Single Interval Dummy One changed to 2023-09-07T20:00 - 2023-09-08T04:00
+2023-11-02 23:05:11,208  INFO ingleinterval.SingleIntervalEmissionTask:  74 - Ghost Single Interval Dummy One changed to 2023-09-07T10:00 - 2023-09-07T12:00
+2023-11-02 23:05:11,208  INFO ingleinterval.SingleIntervalEmissionTask:  74 - Ghost Single Interval Dummy One changed to 2023-09-08T10:00 - 2023-09-08T12:00
+2023-11-02 23:05:11,210  INFO ingleinterval.SingleIntervalEmissionTask:  74 - Ghost Single Interval Dummy One changed to 2023-09-07T10:00 - 2023-09-07T12:00
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

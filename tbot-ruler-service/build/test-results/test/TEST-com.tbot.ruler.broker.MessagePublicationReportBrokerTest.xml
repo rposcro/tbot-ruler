@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tbot.ruler.broker.MessagePublicationReportBrokerTest" tests="1" skipped="0" failures="0" errors="0" timestamp="2023-11-02T22:05:10" hostname="ip-192-168-100-31.us-west-2.compute.internal" time="0.63">
+  <properties/>
+  <testcase name="successfullyDeliversEnqueuedReport()" classname="com.tbot.ruler.broker.MessagePublicationReportBrokerTest" time="0.63"/>
+  <system-out><![CDATA[23:05:10,831 |-INFO in ch.qos.logback.classic.LoggerContext[default] - This is logback-classic version 1.4.11
+23:05:10,832 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad - Here is a list of configurators discovered as a service, by rank: 
+23:05:10,833 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad -   org.springframework.boot.logging.logback.RootLogLevelConfigurator
+23:05:10,833 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad - They will be invoked in order until ExecutionStatus.DO_NOT_INVOKE_NEXT_IF_ANY is returned.
+23:05:10,833 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad - Constructed configurator of type class org.springframework.boot.logging.logback.RootLogLevelConfigurator
+23:05:10,838 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad - org.springframework.boot.logging.logback.RootLogLevelConfigurator.configure() call lasted 0 milliseconds. ExecutionStatus=INVOKE_NEXT_IF_ANY
+23:05:10,838 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad - Trying to configure with ch.qos.logback.classic.joran.SerializedModelConfigurator
+23:05:10,838 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad - Constructed configurator of type class ch.qos.logback.classic.joran.SerializedModelConfigurator
+23:05:10,845 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.scmo]
+23:05:10,846 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback.scmo]
+23:05:10,846 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad - ch.qos.logback.classic.joran.SerializedModelConfigurator.configure() call lasted 8 milliseconds. ExecutionStatus=INVOKE_NEXT_IF_ANY
+23:05:10,846 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad - Trying to configure with ch.qos.logback.classic.util.DefaultJoranConfigurator
+23:05:10,846 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad - Constructed configurator of type class ch.qos.logback.classic.util.DefaultJoranConfigurator
+23:05:10,846 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Could NOT find resource [logback-test.xml]
+23:05:10,848 |-INFO in ch.qos.logback.classic.LoggerContext[default] - Found resource [logback.xml] at [file:/Users/rposcro/workspace/projects/tbot-ruler/tbot-ruler-service/build/resources/main/logback.xml]
+23:05:10,894 |-WARN in ch.qos.logback.core.model.processor.ImplicitModelHandler - Ignoring unknown property [jmxConfigurator] in [ch.qos.logback.classic.LoggerContext]
+23:05:10,895 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [console]
+23:05:10,895 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.ConsoleAppender]
+23:05:10,897 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+23:05:10,905 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [file]
+23:05:10,905 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+23:05:10,908 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1458905542 - setting totalSizeCap to 100 MB
+23:05:10,909 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1458905542 - No compression will be used
+23:05:10,910 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1458905542 - Will use the pattern ./logs/tbot-ruler-%d{yyyy-MM-dd}.log for the active file
+23:05:10,911 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - The date pattern is 'yyyy-MM-dd' from file name pattern './logs/tbot-ruler-%d{yyyy-MM-dd}.log'.
+23:05:10,911 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Roll-over at midnight.
+23:05:10,912 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Setting initial period to 2023-11-02T21:27:22.529Z
+23:05:10,912 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+23:05:10,914 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[file] - Active log file name: ./logs/tbot-ruler.log
+23:05:10,914 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[file] - File property is set to [./logs/tbot-ruler.log]
+23:05:10,914 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [jwavezFile]
+23:05:10,914 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+23:05:10,915 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1745512157 - setting totalSizeCap to 100 MB
+23:05:10,915 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1745512157 - No compression will be used
+23:05:10,915 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@1745512157 - Will use the pattern ./logs/jwavez-%d{yyyy-MM-dd}.log for the active file
+23:05:10,915 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - The date pattern is 'yyyy-MM-dd' from file name pattern './logs/jwavez-%d{yyyy-MM-dd}.log'.
+23:05:10,915 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Roll-over at midnight.
+23:05:10,915 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Setting initial period to 2023-11-02T20:30:39.402Z
+23:05:10,915 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+23:05:10,916 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[jwavezFile] - Active log file name: ./logs/jwavez.log
+23:05:10,916 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[jwavezFile] - File property is set to [./logs/jwavez.log]
+23:05:10,916 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - Processing appender named [errorFile]
+23:05:10,916 |-INFO in ch.qos.logback.core.model.processor.AppenderModelHandler - About to instantiate appender of type [ch.qos.logback.core.rolling.RollingFileAppender]
+23:05:10,916 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@48071225 - setting totalSizeCap to 100 MB
+23:05:10,917 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@48071225 - No compression will be used
+23:05:10,917 |-INFO in c.q.l.core.rolling.TimeBasedRollingPolicy@48071225 - Will use the pattern ./logs/tbot-ruler-errors-%d{yyyy-MM-dd}.log for the active file
+23:05:10,917 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - The date pattern is 'yyyy-MM-dd' from file name pattern './logs/tbot-ruler-errors-%d{yyyy-MM-dd}.log'.
+23:05:10,917 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Roll-over at midnight.
+23:05:10,917 |-INFO in c.q.l.core.rolling.DefaultTimeBasedFileNamingAndTriggeringPolicy - Setting initial period to 2023-11-02T21:27:22.314Z
+23:05:10,917 |-INFO in ch.qos.logback.core.model.processor.ImplicitModelHandler - Assuming default type [ch.qos.logback.classic.encoder.PatternLayoutEncoder] for [encoder] property
+23:05:10,917 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[errorFile] - Active log file name: ./logs/tbot-ruler-errors.log
+23:05:10,917 |-INFO in ch.qos.logback.core.rolling.RollingFileAppender[errorFile] - File property is set to [./logs/tbot-ruler-errors.log]
+23:05:10,917 |-INFO in ch.qos.logback.classic.model.processor.RootLoggerModelHandler - Setting level of ROOT logger to INFO
+23:05:10,918 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [console] to Logger[ROOT]
+23:05:10,918 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [file] to Logger[ROOT]
+23:05:10,918 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [errorFile] to Logger[ROOT]
+23:05:10,918 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [com.tbot.ruler] to INFO
+23:05:10,919 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting additivity of logger [com.tbot.ruler] to false
+23:05:10,919 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [console] to Logger[com.tbot.ruler]
+23:05:10,919 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [file] to Logger[com.tbot.ruler]
+23:05:10,919 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [errorFile] to Logger[com.tbot.ruler]
+23:05:10,919 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting level of logger [com.rposcro.jwavez] to DEBUG
+23:05:10,919 |-INFO in ch.qos.logback.classic.model.processor.LoggerModelHandler - Setting additivity of logger [com.rposcro.jwavez] to false
+23:05:10,919 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [console] to Logger[com.rposcro.jwavez]
+23:05:10,919 |-INFO in ch.qos.logback.core.model.processor.AppenderRefModelHandler - Attaching appender named [jwavezFile] to Logger[com.rposcro.jwavez]
+23:05:10,919 |-INFO in ch.qos.logback.core.model.processor.DefaultProcessor@472698d - End of configuration.
+23:05:10,919 |-INFO in ch.qos.logback.classic.joran.JoranConfigurator@7b7683d4 - Registering current configuration as safe fallback point
+23:05:10,919 |-INFO in ch.qos.logback.classic.util.ContextInitializer@67fc2aad - ch.qos.logback.classic.util.DefaultJoranConfigurator.configure() call lasted 73 milliseconds. ExecutionStatus=DO_NOT_INVOKE_NEXT_IF_ANY
+
+2023-11-02 23:05:10,924  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
+2023-11-02 23:05:10,954 ERROR er.broker.MessagePublicationReportBroker:  39 - Message delivery report broker interrupted by unexpected internal error
+java.lang.InterruptedException: null
+	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1638)
+	at java.base/java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:435)
+	at com.tbot.ruler.broker.MessageQueueComponent.nextReport(MessageQueueComponent.java:47)
+	at com.tbot.ruler.broker.MessagePublicationReportBroker.run(MessagePublicationReportBroker.java:36)
+	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
+	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
+	at java.base/java.lang.Thread.run(Thread.java:833)
+]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>
