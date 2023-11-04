@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="com.tbot.ruler.broker.MessagePublishBrokerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2023-11-02T22:05:10" hostname="ip-192-168-100-31.us-west-2.compute.internal" time="0.04">
+<testsuite name="com.tbot.ruler.broker.MessagePublishBrokerTest" tests="5" skipped="0" failures="0" errors="0" timestamp="2023-11-04T22:07:23" hostname="Robert-Poskrobek-CY2F4TQX5G.local" time="0.041">
   <properties/>
   <testcase name="publicationReportWhenSenderSuspended()" classname="com.tbot.ruler.broker.MessagePublishBrokerTest" time="0.014"/>
-  <testcase name="publicationReportPartiallyFailedWhenSomeReceiversFail()" classname="com.tbot.ruler.broker.MessagePublishBrokerTest" time="0.015"/>
-  <testcase name="successfullyPublishesEnqueuedMessage()" classname="com.tbot.ruler.broker.MessagePublishBrokerTest" time="0.004"/>
+  <testcase name="publicationReportPartiallyFailedWhenSomeReceiversFail()" classname="com.tbot.ruler.broker.MessagePublishBrokerTest" time="0.017"/>
+  <testcase name="successfullyPublishesEnqueuedMessage()" classname="com.tbot.ruler.broker.MessagePublishBrokerTest" time="0.003"/>
   <testcase name="publicationReportWhenNoReceiversFound()" classname="com.tbot.ruler.broker.MessagePublishBrokerTest" time="0.002"/>
   <testcase name="publicationReportFailedWhenAllReceiversFail()" classname="com.tbot.ruler.broker.MessagePublishBrokerTest" time="0.003"/>
-  <system-out><![CDATA[2023-11-02 23:05:10,974  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
-2023-11-02 23:05:10,976  INFO m.tbot.ruler.broker.MessagePublishBroker:  51 - Dispatch from mocked-sender-id: Suspended
-2023-11-02 23:05:10,976 ERROR m.tbot.ruler.broker.MessagePublishBroker:  41 - Dispatch interrupted by unexpected internal error
+  <system-out><![CDATA[2023-11-04 23:07:23,925  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
+2023-11-04 23:07:23,927  INFO m.tbot.ruler.broker.MessagePublishBroker:  51 - Dispatch from mocked-sender-id: Suspended
+2023-11-04 23:07:23,927 ERROR m.tbot.ruler.broker.MessagePublishBroker:  41 - Dispatch interrupted by unexpected internal error
 java.lang.InterruptedException: null
 	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1638)
 	at java.base/java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:435)
@@ -17,10 +17,10 @@ java.lang.InterruptedException: null
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:833)
-2023-11-02 23:05:10,978  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
-2023-11-02 23:05:10,990  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-1
-2023-11-02 23:05:10,990  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-2
-2023-11-02 23:05:10,991 ERROR m.tbot.ruler.broker.MessagePublishBroker:  64 - Dispatch from mocked-sender-id: Failed to deliver to receiver-2
+2023-11-04 23:07:23,929  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
+2023-11-04 23:07:23,943  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-1
+2023-11-04 23:07:23,943  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-2
+2023-11-04 23:07:23,944 ERROR m.tbot.ruler.broker.MessagePublishBroker:  64 - Dispatch from mocked-sender-id: Failed to deliver to receiver-2
 com.tbot.ruler.exceptions.MessageException: terefere
 	at com.tbot.ruler.broker.MessagePublishBroker.deliverMessage(MessagePublishBroker.java:82)
 	at com.tbot.ruler.broker.MessagePublishBroker.lambda$dispatchMessage$0(MessagePublishBroker.java:60)
@@ -31,7 +31,7 @@ com.tbot.ruler.exceptions.MessageException: terefere
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:833)
-2023-11-02 23:05:10,992 ERROR m.tbot.ruler.broker.MessagePublishBroker:  41 - Dispatch interrupted by unexpected internal error
+2023-11-04 23:07:23,944 ERROR m.tbot.ruler.broker.MessagePublishBroker:  41 - Dispatch interrupted by unexpected internal error
 java.lang.InterruptedException: null
 	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1638)
 	at java.base/java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:435)
@@ -40,10 +40,10 @@ java.lang.InterruptedException: null
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:833)
-2023-11-02 23:05:10,993  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
-2023-11-02 23:05:10,995  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-1
-2023-11-02 23:05:10,995  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-2
-2023-11-02 23:05:10,996 ERROR m.tbot.ruler.broker.MessagePublishBroker:  41 - Dispatch interrupted by unexpected internal error
+2023-11-04 23:07:23,946  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
+2023-11-04 23:07:23,947  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-1
+2023-11-04 23:07:23,947  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-2
+2023-11-04 23:07:23,948 ERROR m.tbot.ruler.broker.MessagePublishBroker:  41 - Dispatch interrupted by unexpected internal error
 java.lang.InterruptedException: null
 	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1638)
 	at java.base/java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:435)
@@ -52,9 +52,9 @@ java.lang.InterruptedException: null
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:833)
-2023-11-02 23:05:10,997  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
-2023-11-02 23:05:10,998  WARN m.tbot.ruler.broker.MessagePublishBroker:  54 - Dispatch from mocked-sender-id: No bindings found
-2023-11-02 23:05:10,998 ERROR m.tbot.ruler.broker.MessagePublishBroker:  41 - Dispatch interrupted by unexpected internal error
+2023-11-04 23:07:23,950  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
+2023-11-04 23:07:23,951  WARN m.tbot.ruler.broker.MessagePublishBroker:  54 - Dispatch from mocked-sender-id: No bindings found
+2023-11-04 23:07:23,951 ERROR m.tbot.ruler.broker.MessagePublishBroker:  41 - Dispatch interrupted by unexpected internal error
 java.lang.InterruptedException: null
 	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1638)
 	at java.base/java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:435)
@@ -63,9 +63,9 @@ java.lang.InterruptedException: null
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:833)
-2023-11-02 23:05:10,999  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
-2023-11-02 23:05:11,000  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-1
-2023-11-02 23:05:11,001 ERROR m.tbot.ruler.broker.MessagePublishBroker:  64 - Dispatch from mocked-sender-id: Failed to deliver to receiver-1
+2023-11-04 23:07:23,952  INFO .tbot.ruler.broker.MessageQueueComponent:  22 - Message queue length set to 2
+2023-11-04 23:07:23,953  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-1
+2023-11-04 23:07:23,953 ERROR m.tbot.ruler.broker.MessagePublishBroker:  64 - Dispatch from mocked-sender-id: Failed to deliver to receiver-1
 com.tbot.ruler.exceptions.MessageException: terefere
 	at com.tbot.ruler.broker.MessagePublishBroker.deliverMessage(MessagePublishBroker.java:82)
 	at com.tbot.ruler.broker.MessagePublishBroker.lambda$dispatchMessage$0(MessagePublishBroker.java:60)
@@ -76,8 +76,8 @@ com.tbot.ruler.exceptions.MessageException: terefere
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:833)
-2023-11-02 23:05:11,001  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-2
-2023-11-02 23:05:11,001 ERROR m.tbot.ruler.broker.MessagePublishBroker:  64 - Dispatch from mocked-sender-id: Failed to deliver to receiver-2
+2023-11-04 23:07:23,954  INFO m.tbot.ruler.broker.MessagePublishBroker:  59 - Dispatch from mocked-sender-id: Delivering to receiver-2
+2023-11-04 23:07:23,954 ERROR m.tbot.ruler.broker.MessagePublishBroker:  64 - Dispatch from mocked-sender-id: Failed to deliver to receiver-2
 com.tbot.ruler.exceptions.MessageException: terefere
 	at com.tbot.ruler.broker.MessagePublishBroker.deliverMessage(MessagePublishBroker.java:82)
 	at com.tbot.ruler.broker.MessagePublishBroker.lambda$dispatchMessage$0(MessagePublishBroker.java:60)
@@ -88,7 +88,7 @@ com.tbot.ruler.exceptions.MessageException: terefere
 	at java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1136)
 	at java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:635)
 	at java.base/java.lang.Thread.run(Thread.java:833)
-2023-11-02 23:05:11,002 ERROR m.tbot.ruler.broker.MessagePublishBroker:  41 - Dispatch interrupted by unexpected internal error
+2023-11-04 23:07:23,954 ERROR m.tbot.ruler.broker.MessagePublishBroker:  41 - Dispatch interrupted by unexpected internal error
 java.lang.InterruptedException: null
 	at java.base/java.util.concurrent.locks.AbstractQueuedSynchronizer$ConditionObject.await(AbstractQueuedSynchronizer.java:1638)
 	at java.base/java.util.concurrent.LinkedBlockingQueue.take(LinkedBlockingQueue.java:435)

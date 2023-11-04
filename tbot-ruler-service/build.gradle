@@ -4,6 +4,7 @@ plugins {
     id 'com.palantir.docker' version '0.35.0'
     id 'org.springframework.boot' version '3.1.4'
     id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'tbot-ruler.java-conventions'
 }
 
 java {
@@ -15,6 +16,13 @@ java {
 project.group = tbotRulerGroup
 project.version = tbotRulerVersion
 project.description = 'TBot Ruler Service'
+
+project.configurations {
+    instrumentedJars {
+        canBeConsumed = true
+        canBeResolved = false
+    }
+}
 
 project.repositories {
     mavenLocal()
@@ -91,6 +99,10 @@ project.dependencies {
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
 
+project.tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
 project.tasks.named('test') {
     useJUnitPlatform()
 }
@@ -104,19 +116,17 @@ project.tasks.named('jar') {
     archiveClassifier = 'plain'
 }
 
-project.tasks.named('build') {
-    finalizedBy('clientApiModelJar')
-}
-
-project.tasks.withType(JavaCompile) {
-    options.encoding = 'UTF-8'
-}
-
 project.tasks.register('clientApiModelJar', Jar.class) {
     dependsOn('build')
     archiveClassifier = 'api-model'
     from sourceSets.main.output
     include 'com/tbot/ruler/controller/admin/payload/*.class'
+}
+
+project.artifacts {
+    instrumentedJars(clientApiModelJar.archiveFile) {
+        builtBy(clientApiModelJar)
+    }
 }
 
 docker {

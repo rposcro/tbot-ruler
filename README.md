@@ -1,9 +1,8 @@
 # ThingBot Ruler
 
 ## Profiles
-By default 3 profiles are pre-prepared:
+By default profiles are pre-prepared:
  * dev  (development), listening on 4042, running from IDE
- * stag (staging), listening on 4041, running in local docker
  * prod (production), listening on 4040, running in docker on production host
 
 ## Run
@@ -12,10 +11,6 @@ when Z-Wave or other USB devices should be connected.
 
 ### Development
 Simply run from IDE. Check `tbot-ruler-dev.yaml` for configuration paths.
-
-### Staging
-* Build docker image, run `./build-docker.sh`. Default platform is linux/amd64 which is probably what you need.
-* Run `run-staging.sh` to start up the container.
 
 ### Production
 * Build docker image, run `./build-docker.sh`. You may need to consider platform other than default, for example linux/arm/v7.
@@ -27,11 +22,6 @@ For running in DEBUG mode use another env variables:
  * for all others add --env APP_LOGGING_LEVEL=DEBUG
 
 In order to specify logs directory add --env LOGS_PATH=<path_to_logs_dir>
-
-## Build Runnable Artifact
-Use SpringBoot plugin to build a jar with dependencies:
-
-`./gradlew bootJar`
 
 If you need runnable docker image type:
 
