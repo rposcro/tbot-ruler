@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuite name="com.tbot.ruler.broker.SynchronousMessagePublisherTest" tests="2" skipped="0" failures="0" errors="0" timestamp="2023-11-04T22:07:23" hostname="Robert-Poskrobek-CY2F4TQX5G.local" time="0.027">
+  <properties/>
+  <testcase name="timesOutWhenSynchronousSend()" classname="com.tbot.ruler.broker.SynchronousMessagePublisherTest" time="0.025"/>
+  <testcase name="successfullySendsMessageAndReceivesReport()" classname="com.tbot.ruler.broker.SynchronousMessagePublisherTest" time="0.001"/>
+  <system-out><![CDATA[]]></system-out>
+  <system-err><![CDATA[]]></system-err>
+</testsuite>

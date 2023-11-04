@@ -1,0 +1,131 @@
+table, caption, tr, td, div {
+    font-family: Verdana;
+    font-size: 10px;
+}
+
+table.split {
+    border: none;
+    margin: 0px 0px 15px 0px;
+}
+
+td.split-left {
+    border-right: solid 1px #7a6948;
+    vertical-align: top;
+    padding: 0px 10px 0px 0px;
+}
+
+td.split-right {
+    vertical-align: top;
+    padding: 0px 10px 0px 10px;
+}
+
+table.grid {
+    min-width: 400px;
+    border: solid 1px #a0a0a0;
+    border-spacing: 2px;
+    margin: 0px 0px 15px 5px;
+}
+
+caption.grid-title {
+    font-size: 11px;
+    font-weight: bold;
+    text-align: center;
+    background-color: #d6d6c9;
+    border-top: solid 1px #a0a0a0;
+    border-left: solid 1px #a0a0a0;
+    padding: 3px 0px 3px 0px;
+    margin: 0px 0px 0px 0px;
+}
+
+tr.grid-header td {
+    font-weight: bold;
+    background-color: #edede6;
+    border-bottom: solid 1px #a0a0a0;
+    padding: 3px 20px 3px 5px;
+}
+
+tr.grid-row td {
+    padding: 2px 20px 1px 5px;
+    border-bottom: solid 1px #a0a0a0;
+    vertical-align: top;
+}
+
+tr:nth-child(odd).grid-row td {
+    background-color: #f8f8f8;
+}
+
+tr:nth-last-child(1).grid-row td {
+    border-bottom: none;
+}
+
+
+.desktop {
+}
+
+.desktop-title {
+    background-color: #ceb788;
+    font-family: Verdana;
+    font-size: 12px;
+    font-weight: bold;
+    border: none;
+    padding: 5px 10px 5px 10px;
+    margin: 0px 2px 5px 2px;
+}
+
+.section {
+    margin: 0px 0px 30px 2px;
+    border: none;
+}
+
+.section-title {
+    font-size: 11px;
+    font-weight: bold;
+    background-color: #e5e5f9;
+    border: solid 1px #aeaee2;
+    border-left: none;
+    border-right: none;
+    padding: 5px 10px 5px 10px;
+    margin: 0px 2px 5px 0px;
+}
+
+div.property {
+    padding: 3px 5px 3px 5px;
+    font-size: 12px;
+}
+
+.list {
+    margin: 0px 0px 10px 0px;
+    font-size: 11px;
+    border: none;
+}
+
+.list-item {
+    font-size: 11px;
+    margin: 1px 0px 2px 0px;
+    padding: 3px 5px 3px 5px;
+    border: 1px solid white;
+    border-bottom: solid 1px #a0a0a0;
+    background-color: #edede6;
+}
+
+.list-item-selected {
+    font-size: 11px;
+    margin: 1px 0px 2px 0px;
+    padding: 3px 5px 3px 5px;
+    border: 1px solid white;
+    border-bottom: solid 1px #a0a0a0;
+    background-color: #d5c9c9;
+    color: #e5e5f9;
+}
+
+.highlight {
+    font-weight: bold;
+}
+
+.desktop * a:link, .desktop * a:visited {
+    color: #760f2d;
+}
+
+.desktop * a:hover {
+    color: #d4344a;
+}

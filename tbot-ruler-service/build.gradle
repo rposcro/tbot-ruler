@@ -1,0 +1,146 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'com.palantir.docker' version '0.35.0'
+    id 'org.springframework.boot' version '3.1.4'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'tbot-ruler.java-conventions'
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
+}
+
+project.group = tbotRulerGroup
+project.version = tbotRulerVersion
+project.description = 'TBot Ruler Service'
+
+project.configurations {
+    instrumentedJars {
+        canBeConsumed = true
+        canBeResolved = false
+    }
+}
+
+project.repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+project.ext {
+    jwavezVersion = '1.3.1'
+    jacksonVersion = '2.14.1'
+    javaxValidationVersion = '2.0.2'
+
+    logSlf4jVersion = '2.0.9'
+    logLockbackVersion = '1.4.11'
+    lombokVersion = '1.18.22'
+
+    lombokPluginVersion = '1.16.16.0'
+    reflectionsVersion = '0.10.2'
+
+    dbMysqlVersion = '8.0.33'
+    dbH2Version = '2.1.210'
+    dbLiquibaseVersion = '4.8.0'
+
+    junitJupiterVersion = '5.10.0'
+    junitMockitoVersion = '5.5+'
+}
+
+project.dependencies {
+    implementation "com.jwavez:jwavez-serial:${jwavezVersion}"
+    implementation "com.jwavez:jwavez-core:${jwavezVersion}"
+
+    implementation "org.springframework.boot:spring-boot-starter"
+    implementation "org.springframework.boot:spring-boot-starter-tomcat"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.boot:spring-boot-starter-mail"
+    implementation "org.springframework.boot:spring-boot-starter-data-jdbc"
+    implementation "org.springframework.boot:spring-boot-starter-thymeleaf"
+    implementation "org.springframework:spring-webmvc"
+
+    implementation "org.liquibase:liquibase-core"
+    implementation "com.h2database:h2:${dbH2Version}"
+    implementation "mysql:mysql-connector-java:${dbMysqlVersion}"
+
+    implementation "org.slf4j:slf4j-api:${logSlf4jVersion}"
+    implementation "org.slf4j:jcl-over-slf4j:${logSlf4jVersion}"
+    implementation "ch.qos.logback:logback-classic:${logLockbackVersion}"
+    implementation "ch.qos.logback:logback-core:${logLockbackVersion}"
+
+    implementation "org.reflections:reflections:${reflectionsVersion}"
+    implementation "jakarta.validation:jakarta.validation-api:${javaxValidationVersion}"
+
+    implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}"
+    implementation "com.fasterxml.jackson.module:jackson-module-parameter-names:${jacksonVersion}"
+
+    implementation "org.apache.httpcomponents:httpclient:4.5.5"
+    implementation "com.luckycatlabs:SunriseSunsetCalculator:1.2"
+
+    compileOnly "org.projectlombok:lombok-maven-plugin:${lombokPluginVersion}"
+    compileOnly "org.projectlombok:lombok:${lombokVersion}"
+
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+
+    testImplementation "org.junit.jupiter:junit-jupiter:${junitJupiterVersion}"
+    testImplementation "org.mockito:mockito-core:${junitMockitoVersion}"
+    testImplementation "org.mockito:mockito-junit-jupiter:${junitMockitoVersion}"
+
+    testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
+    testImplementation 'org.codehaus.groovy:groovy-all:2.4.6'
+    testImplementation 'cglib:cglib-nodep:3.3.0'
+
+    testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
+    testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
+}
+
+project.tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+project.tasks.named('test') {
+    useJUnitPlatform()
+}
+
+project.tasks.named('bootJar') {
+    mainClass = 'com.tbot.ruler.RulerApp'
+    archiveClassifier = 'boot'
+}
+
+project.tasks.named('jar') {
+    archiveClassifier = 'plain'
+}
+
+project.tasks.register('clientApiModelJar', Jar.class) {
+    dependsOn('build')
+    archiveClassifier = 'api-model'
+    from sourceSets.main.output
+    include 'com/tbot/ruler/controller/admin/payload/*.class'
+}
+
+project.artifacts {
+    instrumentedJars(clientApiModelJar.archiveFile) {
+        builtBy(clientApiModelJar)
+    }
+}
+
+docker {
+    name = "${project.name}"
+    noCache true
+
+    copySpec.with {
+        from("build/libs") {
+            include "${project.name}-${version}-boot.jar"
+            rename(name -> "${project.name}.jar")
+        }
+        from("src/main/sh") {
+            include "**"
+        }
+    }
+}
+

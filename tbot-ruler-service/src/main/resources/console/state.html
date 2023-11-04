@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" type="text/css" href="/css/console.css" />
+    <link rel="stylesheet" type="text/css" href="/css/menu.css" />
+</head>
+<body>
+<div th:replace="fragments:: header('Appliances State')" />
+<div class="desktop">
+    <th:block th:if="${lights != null}">
+        <div class="section">
+            <div class="section-title">Lights</div>
+            <table class="grid">
+                <tr class="grid-header">
+                    <td>Name</td>
+                    <td>Id</td>
+                    <td>Description</td>
+                    <td>State</td>
+                </tr>
+                <tr th:each="light: ${lights}" class="grid-row">
+                    <td>[[${light.metadata.name}]]</td>
+                    <td>[[${light.id}]]</td>
+                    <td>[[${light.metadata.description}]]</td>
+                    <td th:insert="fragments:: formatOptional(${light.state})" />
+                </tr>
+            </table>
+        </div>
+    </th:block>
+    <th:block th:if="${sprinklers != null}">
+        <div class="section">
+            <div class="section-title">Sprinklers</div>
+            <table class="grid">
+                <tr class="grid-header">
+                    <td>Name</td>
+                    <td>Id</td>
+                    <td>Description</td>
+                    <td>State</td>
+                </tr>
+                <tr th:each="sprinkler: ${sprinklers}" class="grid-row">
+                    <td>[[${sprinkler.metadata.name}]]</td>
+                    <td>[[${sprinkler.id}]]</td>
+                    <td>[[${sprinkler.metadata.description}]]</td>
+                    <td th:insert="fragments:: formatOptional(${sprinkler.state})" />
+                </tr>
+            </table>
+        </div>
+    </th:block>
+</body>
+</html>

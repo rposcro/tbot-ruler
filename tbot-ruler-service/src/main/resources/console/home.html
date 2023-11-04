@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/console.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/menu.css"/>
+    </head>
+    <body>
+        <div th:replace="fragments:: header('Home')"/>
+        <div class="desktop">
+            <div class="section">
+                <table class="grid">
+                    <caption class="grid-title">Plugins</caption>
+                    <tr class="grid-header">
+                        <td>Name</td>
+                        <td>Id</td>
+                        <td>Uuid</td>
+                        <td>Factory</td>
+                    </tr>
+                    <tr th:each="plugin: ${plugins}" class="grid-row">
+                        <td>
+                            <a th:href="@{'/console/plugins/' + ${plugin.pluginUuid}}">[[${plugin.name}]]</a>
+                        </td>
+                        <td th:text="${plugin.pluginId}"/>
+                        <td th:text="${plugin.pluginUuid}"/>
+                        <td th:text="${plugin.factoryClass}"/>
+                    </tr>
+                </table>
+            </div>
+            <div class="section">
+                <table class="grid">
+                    <caption class="grid-title">Things</caption>
+                    <tr class="grid-header">
+                        <td>Name</td>
+                        <td>Id</td>
+                        <td>Uuid</td>
+                        <td>Description</td>
+                    </tr>
+                    <tr th:each="thing: ${things}" class="grid-row">
+                        <td>
+                            <a th:href="@{'/console/things/' + ${thing.thingUuid}}">[[${thing.name}]]</a>
+                        </td>
+                        <td th:text="${thing.thingId}"/>
+                        <td th:text="|${thing.thingUuid}|"/>
+                        <td th:text="${thing.description}"/>
+                    </tr>
+                </table>
+            </div>
+            <div class="section">
+                <table class="grid">
+                    <caption class="grid-title">Actuators</caption>
+                    <tr class="grid-header">
+                        <td>Name</td>
+                        <td>Id</td>
+                        <td>Uuid</td>
+                        <td>Thing</td>
+                        <td>Plugin</td>
+                        <td>Reference</td>
+                        <td>Description</td>
+                    </tr>
+                    <tr th:each="actuator: ${actuators}" class="grid-row">
+                        <td>
+                            <a th:href="@{'/console/actuators/' + ${actuator.actuatorUuid}}">[[${actuator.name}]]</a>
+                        </td>
+                        <td th:text="${actuator.actuatorId}"/>
+                        <td th:text="|${actuator.actuatorUuid}|"/>
+                        <td th:text="${actuator.thingId}"/>
+                        <td th:text="${actuator.pluginId}"/>
+                        <td th:text="${actuator.reference}"/>
+                        <td th:text="${actuator.description}"/>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </body>
+</html>

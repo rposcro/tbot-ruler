@@ -1,0 +1,17 @@
+{
+  "frontendFolder": "/Users/rposcro/workspace/projects/tbot-ruler/tbot-ruler-console/src/frontend",
+  "themeFolder": "themes",
+  "themeResourceFolder": "/Users/rposcro/workspace/projects/tbot-ruler/tbot-ruler-console/src/frontend/generated/jar-resources",
+  "staticOutput": "build/classes/META-INF/VAADIN/webapp/VAADIN/static",
+  "generatedFolder": "generated",
+  "statsOutput": "build/classes/META-INF/VAADIN/webapp/../config/",
+  "frontendBundleOutput": "build/classes/META-INF/VAADIN/webapp/",
+  "devBundleOutput": "/Users/rposcro/workspace/projects/tbot-ruler/tbot-ruler-console/npm/src/main/dev-bundle/webapp",
+  "devBundleStatsOutput": "/Users/rposcro/workspace/projects/tbot-ruler/tbot-ruler-console/npm/src/main/dev-bundle/config",
+  "jarResourcesFolder": "/Users/rposcro/workspace/projects/tbot-ruler/tbot-ruler-console/src/frontend/generated/jar-resources",
+  "themeName": "",
+  "clientServiceWorkerSource": "/Users/rposcro/workspace/projects/tbot-ruler/tbot-ruler-console/npm/build/sw.ts",
+  "pwaEnabled": false,
+  "offlineEnabled": false,
+  "offlinePath": "'offline.html'"
+}

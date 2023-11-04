@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/console.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/menu.css"/>
+    </head>
+    <body>
+        <div th:replace="fragments:: header('Actuators')"/>
+        <div class="desktop">
+            <table class="split">
+                <td class="split-left">
+                    <div class="list">
+                        <th:block th:each="actuator: ${actuators}">
+                            <div th:class="${actuator.actuatorUuid.equals(actuatorUuid) ? 'list-item-selected' : 'list-item'}">
+                                <a th:href="@{'/console/actuators/' + ${actuator.actuatorUuid}}">
+                                    <b>[[${actuator.name}]]</b> ([[${actuator.actuatorUuid}]])
+                                </a>
+                            </div>
+                        </th:block>
+                    </div>
+                </td>
+                <td class="split-right">
+                    <th:block th:if="${actuator != null}">
+                        <div class="section">
+                            <div class="property">Name: <span class="highlight">[[${actuator.name}]]</span></div>
+                            <div class="property">Id: <span class="highlight">[[${actuator.actuatorId}]]</span></div>
+                            <div class="property">Uuid: <span class="highlight">[[${actuator.actuatorUuid}]]</span></div>
+                            <div class="property">Version: <span class="highlight">[[${actuator.version}]]</span></div>
+                            <div class="property">Reference: <span class="highlight">[[${actuator.reference}]]</span></div>
+                            <div class="property">Description: <span class="highlight">[[${actuator.description}]]</span></div>
+                            <div class="property">Configuration: <span class="highlight">[[${actuator.configuration}]]</span></div>
+                            <div class="property"><span class="highlight"></span></div>
+                            <div class="property">Plugin Name: <span class="highlight">
+                                <a th:href="@{'/console/plugins/' + ${plugin.pluginUuid}}">[[${plugin.name}]]</a>
+                            </span></div>
+                            <div class="property">Plugin Uuid: <span class="highlight">[[${plugin.pluginUuid}]]</span></div>
+                            <div class="property"><span class="highlight"></span></div>
+                            <div class="property">Thing Name: <span class="highlight">
+                                <a th:href="@{'/console/things/' + ${thing.thingUuid}}">[[${thing.name}]]</a>
+                            </span></div>
+                            <div class="property">Thing Uuid: <span class="highlight">[[${thing.thingUuid}]]</span></div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">Inbound Bindings</div>
+                            <div class="property" th:each="binding: ${inboundBindings}">
+                                <th:block th:if="${binding.isActuatorUuid}">
+                                    <a th:href="@{'/console/actuators/' + ${binding.uuid}}">[[${binding.uuid}]]</a>
+                                </th:block>
+                                <th:block th:if="${!binding.isActuatorUuid}">
+                                    [[${binding.uuid}]]
+                                </th:block>
+                            </div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">Outbound Bindings</div>
+                            <div class="property" th:each="binding: ${outboundBindings}">
+                                <th:block th:if="${binding.isActuatorUuid}">
+                                    <a th:href="@{'/console/actuators/' + ${binding.uuid}}">[[${binding.uuid}]]</a>
+                                </th:block>
+                                <th:block th:if="${!binding.isActuatorUuid}">
+                                    [[${binding.uuid}]]
+                                </th:block>
+                            </div>
+                        </div>
+                    </th:block>
+                </td>
+            </table>
+        </div>
+    </body>
+</html>
