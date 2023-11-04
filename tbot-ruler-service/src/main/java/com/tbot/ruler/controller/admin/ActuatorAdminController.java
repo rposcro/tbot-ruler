@@ -1,12 +1,10 @@
 package com.tbot.ruler.controller.admin;
 
 import com.tbot.ruler.controller.AbstractController;
+import com.tbot.ruler.controller.admin.payload.ActuatorResponse;
 import com.tbot.ruler.controller.admin.payload.CreateActuatorRequest;
 import com.tbot.ruler.controller.admin.payload.UpdateActuatorRequest;
-import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.persistance.ActuatorsRepository;
-import com.tbot.ruler.persistance.PluginsRepository;
-import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
@@ -25,31 +23,28 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
-import static java.lang.String.format;
-
 @Slf4j
 @RestController
 @RequestMapping(path = "/admin/actuators")
 public class ActuatorAdminController extends AbstractController {
 
     @Autowired
-    private PluginsRepository pluginsRepository;
-
-    @Autowired
-    private ThingsRepository thingsRepository;
+    private SubjectsAccessor subjectsAccessor;
 
     @Autowired
     private ActuatorsRepository actuatorsRepository;
 
     @GetMapping
-    public ResponseEntity<List<ActuatorEntity>> getAllActuators() {
-        return ok(actuatorsRepository.findAll());
+    public ResponseEntity<List<ActuatorResponse>> getAllActuators() {
+        return ok(actuatorsRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList());
     }
 
     @PostMapping
-    public ResponseEntity<ActuatorEntity> createActuator(@RequestBody CreateActuatorRequest createActuatorRequest) {
-        PluginEntity pluginEntity = findPlugin(createActuatorRequest.getPluginUuid());
-        ThingEntity thingEntity = findThing(createActuatorRequest.getThingUuid());
+    public ResponseEntity<ActuatorResponse> createActuator(@RequestBody CreateActuatorRequest createActuatorRequest) {
+        PluginEntity pluginEntity = subjectsAccessor.findPlugin(createActuatorRequest.getPluginUuid());
+        ThingEntity thingEntity = subjectsAccessor.findThing(createActuatorRequest.getThingUuid());
         ActuatorEntity actuatorEntity = ActuatorEntity.builder()
                 .actuatorUuid("actr-" + UUID.randomUUID())
                 .name(createActuatorRequest.getName())
@@ -59,40 +54,37 @@ public class ActuatorAdminController extends AbstractController {
                 .thingId(thingEntity.getThingId())
                 .build();
         actuatorsRepository.save(actuatorEntity);
-        return ok(actuatorEntity);
+        return ok(toResponse(actuatorEntity));
     }
 
     @PatchMapping("/{actuatorUuid}")
-    public ResponseEntity<ActuatorEntity> updateActuator(
+    public ResponseEntity<ActuatorResponse> updateActuator(
             @PathVariable String actuatorUuid,
             @RequestBody UpdateActuatorRequest updateActuatorRequest) {
-        ActuatorEntity actuatorEntity = findActuator(actuatorUuid);
+        ActuatorEntity actuatorEntity = subjectsAccessor.findActuator(actuatorUuid);
         actuatorEntity.setName(updateActuatorRequest.getName());
         actuatorEntity.setDescription(updateActuatorRequest.getDescription());
         actuatorEntity.setConfiguration(updateActuatorRequest.getConfiguration());
-        actuatorsRepository.save(actuatorEntity);
-        return ok(actuatorEntity);
+        actuatorEntity = actuatorsRepository.save(actuatorEntity);
+        return ok(toResponse(actuatorEntity));
     }
 
     @DeleteMapping("/{actuatorUuid}")
-    public ResponseEntity<ActuatorEntity> deleteActuator(@PathVariable String actuatorUuid) {
-        ActuatorEntity actuatorEntity = findActuator(actuatorUuid);
+    public ResponseEntity<ActuatorResponse> deleteActuator(@PathVariable String actuatorUuid) {
+        ActuatorEntity actuatorEntity = subjectsAccessor.findActuator(actuatorUuid);
         actuatorsRepository.delete(actuatorEntity);
-        return ok(actuatorEntity);
+        return ok(toResponse(actuatorEntity));
     }
 
-    private ActuatorEntity findActuator(String actuatorUuid) {
-        return actuatorsRepository.findByUuid(actuatorUuid)
-                .orElseThrow(() -> new ServiceRequestException(format("Actuator %s not found!", actuatorUuid)));
-    }
-
-    private ThingEntity findThing(String thingUuid) {
-        return thingsRepository.findByUuid(thingUuid)
-                .orElseThrow(() -> new ServiceRequestException(format("Thing %s not found!", thingUuid)));
-    }
-
-    private PluginEntity findPlugin(String pluginUuid) {
-        return pluginsRepository.findByUuid(pluginUuid)
-                .orElseThrow(() -> new ServiceRequestException(format("Plugin %s not found!", pluginUuid)));
+    private ActuatorResponse toResponse(ActuatorEntity actuatorEntity) {
+        return ActuatorResponse.builder()
+                .actuatorUuid(actuatorEntity.getActuatorUuid())
+                .thingUuid(subjectsAccessor.findThing(actuatorEntity.getThingId()).getThingUuid())
+                .pluginUuid(subjectsAccessor.findPlugin(actuatorEntity.getPluginId()).getPluginUuid())
+                .name(actuatorEntity.getName())
+                .reference(actuatorEntity.getReference())
+                .description(actuatorEntity.getDescription())
+                .configuration(actuatorEntity.getConfiguration())
+                .build();
     }
 }

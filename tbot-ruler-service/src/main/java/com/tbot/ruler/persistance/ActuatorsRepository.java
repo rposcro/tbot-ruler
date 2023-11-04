@@ -23,9 +23,14 @@ public class ActuatorsRepository {
         return entities;
     }
 
+    public Optional<ActuatorEntity> findById(long actuatorId) {
+        Optional<ActuatorEntity> actuatorEntity = crudActuatorsRepository.findById(actuatorId);
+        return actuatorEntity;
+    }
+
     public Optional<ActuatorEntity> findByUuid(String actuatorUuid) {
-        Optional<ActuatorEntity> thingEntity = crudActuatorsRepository.findByUuid(actuatorUuid);
-        return thingEntity;
+        Optional<ActuatorEntity> actuatorEntity = crudActuatorsRepository.findByUuid(actuatorUuid);
+        return actuatorEntity;
     }
 
     public List<ActuatorEntity> findByThingId(long thingId) {

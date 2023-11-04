@@ -2,6 +2,7 @@ package com.tbot.ruler.controller.admin;
 
 import com.tbot.ruler.controller.AbstractController;
 import com.tbot.ruler.controller.admin.payload.CreateThingRequest;
+import com.tbot.ruler.controller.admin.payload.ThingResponse;
 import com.tbot.ruler.controller.admin.payload.UpdateThingRequest;
 import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.persistance.PluginsRepository;
@@ -31,7 +32,7 @@ import static java.lang.String.format;
 public class ThingAdminController extends AbstractController {
 
     @Autowired
-    private PluginsRepository pluginsRepository;
+    private SubjectsAccessor subjectsAccessor;
 
     @Autowired
     private ThingsRepository thingsRepository;
@@ -42,43 +43,42 @@ public class ThingAdminController extends AbstractController {
     }
 
     @PostMapping
-    public ResponseEntity<ThingEntity> createThing(@RequestBody CreateThingRequest createThingRequest) {
+    public ResponseEntity<ThingResponse> createThing(@RequestBody CreateThingRequest createThingRequest) {
         ThingEntity thingEntity = ThingEntity.builder()
                 .thingUuid("thng-" + UUID.randomUUID())
                 .name(createThingRequest.getName())
                 .description(createThingRequest.getDescription())
                 .configuration(createThingRequest.getConfiguration())
                 .build();
-        thingsRepository.save(thingEntity);
-        return ok(thingEntity);
+        thingEntity = thingsRepository.save(thingEntity);
+        return ok(toResponse(thingEntity));
     }
 
     @PatchMapping("/{thingUuid}")
-    public ResponseEntity<ThingEntity> updateThing(
+    public ResponseEntity<ThingResponse> updateThing(
             @PathVariable String thingUuid,
             @RequestBody UpdateThingRequest updateThingRequest) {
-        ThingEntity thingEntity = findThing(thingUuid);
+        ThingEntity thingEntity = subjectsAccessor.findThing(thingUuid);
         thingEntity.setName(updateThingRequest.getName());
         thingEntity.setDescription(updateThingRequest.getDescription());
         thingEntity.setConfiguration(updateThingRequest.getConfiguration());
-        thingsRepository.save(thingEntity);
-        return ok(thingEntity);
+        thingEntity = thingsRepository.save(thingEntity);
+        return ok(toResponse(thingEntity));
     }
 
     @DeleteMapping("/{thingUuid}")
-    public ResponseEntity<ThingEntity> deleteThing(@PathVariable String thingUuid) {
-        ThingEntity thingEntity = findThing(thingUuid);
+    public ResponseEntity<ThingResponse> deleteThing(@PathVariable String thingUuid) {
+        ThingEntity thingEntity = subjectsAccessor.findThing(thingUuid);
         thingsRepository.delete(thingEntity);
-        return ok(thingEntity);
+        return ok(toResponse(thingEntity));
     }
 
-    private ThingEntity findThing(String thingUuid) {
-        return thingsRepository.findByUuid(thingUuid)
-                .orElseThrow(() -> new ServiceRequestException(format("Thing %s not found!", thingUuid)));
-    }
-
-    private PluginEntity findPlugin(String pluginUuid) {
-        return pluginsRepository.findByUuid(pluginUuid)
-                .orElseThrow(() -> new ServiceRequestException(format("Plugin %s not found!", pluginUuid)));
+    private ThingResponse toResponse(ThingEntity entity) {
+        return ThingResponse.builder()
+                .thingUuid(entity.getThingUuid())
+                .name(entity.getName())
+                .description(entity.getDescription())
+                .configuration(entity.getConfiguration())
+                .build();
     }
 }

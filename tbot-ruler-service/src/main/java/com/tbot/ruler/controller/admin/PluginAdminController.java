@@ -2,8 +2,8 @@ package com.tbot.ruler.controller.admin;
 
 import com.tbot.ruler.controller.AbstractController;
 import com.tbot.ruler.controller.admin.payload.CreatePluginRequest;
+import com.tbot.ruler.controller.admin.payload.PluginResponse;
 import com.tbot.ruler.controller.admin.payload.UpdatePluginRequest;
-import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import lombok.extern.slf4j.Slf4j;
@@ -21,53 +21,60 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
-import static java.lang.String.format;
-
 @Slf4j
 @RestController
 @RequestMapping(path = "/admin/plugins")
 public class PluginAdminController extends AbstractController {
 
     @Autowired
+    private SubjectsAccessor subjectsAccessor;
+
+    @Autowired
     private PluginsRepository pluginsRepository;
 
     @GetMapping
-    public ResponseEntity<List<PluginEntity>> getAllPlugins() {
-        return ok(pluginsRepository.findAll());
+    public ResponseEntity<List<PluginResponse>> getAllPlugins() {
+        return ok(pluginsRepository.findAll().stream()
+                .map(this::toResponse)
+                .toList());
     }
 
     @PostMapping
-    public ResponseEntity<PluginEntity> createPlugin(@RequestBody CreatePluginRequest createPluginRequest) {
+    public ResponseEntity<PluginResponse> createPlugin(@RequestBody CreatePluginRequest createPluginRequest) {
         PluginEntity pluginEntity = pluginsRepository.save(PluginEntity.builder()
                 .pluginUuid("plgn-" + UUID.randomUUID())
                 .name(createPluginRequest.getName())
                 .factoryClass(createPluginRequest.getBuilderClass())
                 .configuration(createPluginRequest.getConfiguration())
                 .build());
-        return ok(pluginEntity);
+        return ok(toResponse(pluginEntity));
     }
 
     @PatchMapping("/{pluginUuid}")
-    public ResponseEntity<PluginEntity> updatePlugin(
+    public ResponseEntity<PluginResponse> updatePlugin(
             @PathVariable String pluginUuid,
             @RequestBody UpdatePluginRequest updatePluginRequest) {
-        PluginEntity pluginEntity = findPlugin(pluginUuid);
+        PluginEntity pluginEntity = subjectsAccessor.findPlugin(pluginUuid);
         pluginEntity.setName(updatePluginRequest.getName());
         pluginEntity.setConfiguration(updatePluginRequest.getConfiguration());
 
         pluginEntity = pluginsRepository.save(pluginEntity);
-        return ok(pluginEntity);
+        return ok(toResponse(pluginEntity));
     }
 
     @DeleteMapping("/{pluginUuid}")
-    public ResponseEntity<PluginEntity> deletePlugin(@PathVariable String pluginUuid) {
-        PluginEntity pluginEntity = findPlugin(pluginUuid);
+    public ResponseEntity<PluginResponse> deletePlugin(@PathVariable String pluginUuid) {
+        PluginEntity pluginEntity = subjectsAccessor.findPlugin(pluginUuid);
         pluginsRepository.delete(pluginEntity);
-        return ok(pluginEntity);
+        return ok(toResponse(pluginEntity));
     }
 
-    private PluginEntity findPlugin(String pluginUuid) {
-        return pluginsRepository.findByUuid(pluginUuid)
-                .orElseThrow(() -> new ServiceRequestException(format("Plugin %s not found!", pluginUuid)));
+    private PluginResponse toResponse(PluginEntity entity) {
+        return PluginResponse.builder()
+                .pluginUuid(entity.getPluginUuid())
+                .name(entity.getName())
+                .factoryClass(entity.getFactoryClass())
+                .configuration(entity.getConfiguration())
+                .build();
     }
 }

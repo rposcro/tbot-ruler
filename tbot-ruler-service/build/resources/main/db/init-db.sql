@@ -1,4 +1,0 @@
-CREATE SCHEMA IF NOT EXISTS ruler;
-USE ruler;
-
-
