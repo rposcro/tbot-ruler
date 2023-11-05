@@ -15,8 +15,8 @@ java {
 }
 
 vaadin {
-    frontendDirectory = file('src/frontend')
-    npmFolder = file('npm')
+//    frontendDirectory = file('src/frontend')
+//    npmFolder = file('npm')
 }
 
 project.group = tbotRulerGroup

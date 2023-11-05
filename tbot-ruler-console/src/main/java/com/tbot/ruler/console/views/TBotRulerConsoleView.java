@@ -35,6 +35,10 @@ public class TBotRulerConsoleView extends AppLayout {
     }
 
     private VerticalLayout setUpDrawer() {
-        return new VerticalLayout();
+        return new VerticalLayout(
+                new RouterLink("Plugins", PluginsDashboard.class),
+                new RouterLink("Things", ThingsDashboard.class),
+                new RouterLink("Actuators", ActuatorsDashboard.class)
+        );
     }
 }

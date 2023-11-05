@@ -1,0 +1,10 @@
+server:
+  port: 4142
+
+vaadin:
+  productionMode: false
+  disable-xsrf-protection: true
+  devmode:
+    liveReload:
+      enabled: true
+
