@@ -52,6 +52,10 @@ public class PackageScanner {
     }
 
     public <T> Set<Class<? extends T>> findAllClassesOfType(Class<T> classType, String... basePackages) {
+        if (basePackages == null || basePackages.length == 0) {
+            basePackages = new String[] { "." };
+        }
+
         return Stream.of(basePackages)
                 .map(packagePath -> forPackage(packagePath).getSubTypesOf(classType))
                 .flatMap(classes -> classes.stream())

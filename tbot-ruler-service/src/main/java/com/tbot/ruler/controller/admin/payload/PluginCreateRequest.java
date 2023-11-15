@@ -13,13 +13,13 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateActuatorRequest {
+public class PluginCreateRequest {
+
+    @JsonProperty(required = true)
+    private String builderClass;
 
     @JsonProperty(required = true)
     private String name;
-
-    @JsonProperty(required = true)
-    private String description;
 
     private JsonNode configuration;
 }
