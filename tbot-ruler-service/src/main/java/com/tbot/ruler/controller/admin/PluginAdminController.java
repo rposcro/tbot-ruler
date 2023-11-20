@@ -55,7 +55,7 @@ public class PluginAdminController extends AbstractController {
         PluginEntity pluginEntity = pluginsRepository.save(PluginEntity.builder()
                 .pluginUuid("plgn-" + UUID.randomUUID())
                 .name(pluginCreateRequest.getName())
-                .factoryClass(pluginCreateRequest.getBuilderClass())
+                .factoryClass(pluginCreateRequest.getFactoryClass())
                 .configuration(pluginCreateRequest.getConfiguration())
                 .build());
         return ok(toResponse(pluginEntity));

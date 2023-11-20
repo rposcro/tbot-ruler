@@ -16,9 +16,6 @@ import lombok.ToString;
 public class ThingCreateRequest {
 
     @JsonProperty(required = true)
-    private String pluginUuid;
-
-    @JsonProperty(required = true)
     private String name;
 
     @JsonProperty(required = true)

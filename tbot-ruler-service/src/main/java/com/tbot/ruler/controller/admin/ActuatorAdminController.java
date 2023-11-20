@@ -48,6 +48,7 @@ public class ActuatorAdminController extends AbstractController {
         ActuatorEntity actuatorEntity = ActuatorEntity.builder()
                 .actuatorUuid("actr-" + UUID.randomUUID())
                 .name(actuatorCreateRequest.getName())
+                .reference(actuatorCreateRequest.getReference())
                 .description(actuatorCreateRequest.getDescription())
                 .configuration(actuatorCreateRequest.getConfiguration())
                 .pluginId(pluginEntity.getPluginId())

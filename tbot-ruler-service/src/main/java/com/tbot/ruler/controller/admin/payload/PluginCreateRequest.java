@@ -16,7 +16,7 @@ import lombok.ToString;
 public class PluginCreateRequest {
 
     @JsonProperty(required = true)
-    private String builderClass;
+    private String factoryClass;
 
     @JsonProperty(required = true)
     private String name;

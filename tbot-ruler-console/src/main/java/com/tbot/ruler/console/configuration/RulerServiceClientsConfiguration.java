@@ -1,7 +1,9 @@
 package com.tbot.ruler.console.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.tbot.ruler.console.clients.ActuatorsAdminApi;
 import com.tbot.ruler.console.clients.PluginsAdminApi;
+import com.tbot.ruler.console.clients.ThingsAdminApi;
 import jakarta.annotation.PostConstruct;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
@@ -32,6 +34,16 @@ public class RulerServiceClientsConfiguration {
     @Bean
     public PluginsAdminApi pluginsAdminApi() {
         return retrofit().create(PluginsAdminApi.class);
+    }
+
+    @Bean
+    public ThingsAdminApi thingsAdminApi() {
+        return retrofit().create(ThingsAdminApi.class);
+    }
+
+    @Bean
+    public ActuatorsAdminApi actuatorsAdminApi() {
+        return retrofit().create(ActuatorsAdminApi.class);
     }
 
     private Retrofit retrofit() {

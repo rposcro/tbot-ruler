@@ -11,6 +11,10 @@ public class PopupNotifier {
         notify(message, NotificationVariant.LUMO_ERROR);
     }
 
+    public void notifyWarning(String message) {
+        notify(message, NotificationVariant.LUMO_WARNING);
+    }
+
     public void notifyInfo(String message) {
         notify(message, NotificationVariant.LUMO_PRIMARY);
     }

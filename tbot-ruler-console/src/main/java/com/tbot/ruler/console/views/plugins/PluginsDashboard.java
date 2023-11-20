@@ -1,12 +1,17 @@
-package com.tbot.ruler.console.views;
+package com.tbot.ruler.console.views.plugins;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.console.clients.PluginsClient;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
+import com.tbot.ruler.console.views.EntityPropertiesPanel;
+import com.tbot.ruler.console.views.PopupNotifier;
+import com.tbot.ruler.console.views.TBotRulerConsoleView;
+import com.tbot.ruler.controller.admin.payload.PluginCreateRequest;
 import com.tbot.ruler.controller.admin.payload.PluginResponse;
 import com.tbot.ruler.controller.admin.payload.PluginUpdateRequest;
+import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Span;
@@ -39,7 +44,7 @@ public class PluginsDashboard extends VerticalLayout {
         this.objectMapper = new ObjectMapper();
         this.pluginPanel = EntityPropertiesPanel.<PluginResponse>builder()
                 .beanType(PluginResponse.class)
-                .editHandler(this::handleEditRequest)
+                .editHandler(() -> handleEditRequest(true))
                 .properties(new String[] { "name", "pluginUuid", "factoryClass", "configuration"} )
                 .build();
         this.pluginsGrid = constructGrid();
@@ -50,7 +55,11 @@ public class PluginsDashboard extends VerticalLayout {
     }
 
     private HorizontalLayout constructToolbar() {
-        HorizontalLayout toolbar = new HorizontalLayout();
+        Button createButton = new Button("New Plugin");
+        createButton.addClickListener(event -> handleEditRequest(false));
+
+        HorizontalLayout toolbar = new HorizontalLayout(createButton);
+        toolbar.setAlignItems(Alignment.START);
         toolbar.setWidthFull();
         return toolbar;
     }
@@ -78,9 +87,9 @@ public class PluginsDashboard extends VerticalLayout {
 
     private Grid<PluginResponse> constructGrid() {
         Grid<PluginResponse> grid = new Grid<>();
-        setUpColumn(grid, PluginResponse::getName, "Name");
+        setUpColumn(grid, PluginResponse::getName, "Name").setSortable(true);
         setUpColumn(grid, PluginResponse::getPluginUuid, "UUID");
-        setUpColumn(grid, PluginResponse::getFactoryClass, "Factory");
+        setUpColumn(grid, PluginResponse::getFactoryClass, "Factory").setSortable(true);
 
         grid.setWidthFull();
         grid.addThemeVariants(
@@ -91,24 +100,32 @@ public class PluginsDashboard extends VerticalLayout {
         return grid;
     }
 
-    private void setUpColumn(Grid<PluginResponse> grid, Function<PluginResponse, ?> valueProvider, String headerTitle) {
-        grid.addColumn(plugin -> valueProvider.apply(plugin))
+    private Grid.Column<PluginResponse> setUpColumn(Grid<PluginResponse> grid, Function<PluginResponse, ?> valueProvider, String headerTitle) {
+        return grid.addColumn(plugin -> valueProvider.apply(plugin))
                 .setAutoWidth(true)
                 .setHeader(headerTitle);
     }
 
-    private void handleEditRequest() {
+    private void handleEditRequest(boolean updateMode) {
         try {
-            PluginResponse plugin = pluginsGrid.asSingleSelect().getValue();
-            PluginEditDialog dialog = PluginEditDialog.builder()
-                    .updateMode(true)
-                    .factories(pluginsClient.getFactories())
-                    .submitHandler(this::handlePluginUpdate)
-                    .uuid(plugin.getPluginUuid())
-                    .name(plugin.getName())
-                    .factory(plugin.getFactoryClass())
-                    .configuration(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(plugin.getConfiguration()))
-                    .build();
+            PluginEditDialog dialog;
+
+            if (updateMode) {
+                PluginResponse plugin = pluginsGrid.asSingleSelect().getValue();
+                dialog = PluginEditDialog.builder()
+                        .updateMode(true)
+                        .factories(pluginsClient.getFactories())
+                        .submitHandler(this::handlePluginUpdate)
+                        .original(plugin)
+                        .build();
+            } else {
+                dialog = PluginEditDialog.builder()
+                        .updateMode(false)
+                        .factories(pluginsClient.getFactories())
+                        .submitHandler(this::handlePluginUpdate)
+                        .build();
+            }
+
             dialog.open();
         } catch(Exception e) {
             log.error("WTF", e);
@@ -120,18 +137,37 @@ public class PluginsDashboard extends VerticalLayout {
         dialog.close();
 
         try {
-            String pluginUuid = pluginsGrid.asSingleSelect().getValue().getPluginUuid();
-            JsonNode configuration = objectMapper.readTree(dialog.getPluginConfiguration());
-            PluginUpdateRequest request = PluginUpdateRequest.builder()
-                    .name(dialog.getPluginName())
-                    .configuration(configuration)
-                .build();
-            pluginsClient.updatePlugin(pluginUuid, request);
-            pluginsGrid.setItems(pluginsClient.getAllPlugins());
+            if (dialog.isUpdateMode()) {
+                updatePlugin(dialog);
+            } else {
+                createPlugin(dialog);
+            }
         } catch(JsonMappingException e) {
             popupNotifier.notifyError("Configuration is not parsable!");
         } catch(Exception e) {
             popupNotifier.notifyError("Something's wrong!");
         }
+    }
+
+    private void updatePlugin(PluginEditDialog dialog) throws Exception {
+        String pluginUuid = pluginsGrid.asSingleSelect().getValue().getPluginUuid();
+        JsonNode configuration = objectMapper.readTree(dialog.getPluginConfiguration());
+        PluginUpdateRequest request = PluginUpdateRequest.builder()
+                .name(dialog.getPluginName())
+                .configuration(configuration)
+                .build();
+        pluginsClient.updatePlugin(pluginUuid, request);
+        pluginsGrid.setItems(pluginsClient.getAllPlugins());
+    }
+
+    private void createPlugin(PluginEditDialog dialog) throws Exception {
+        JsonNode configuration = objectMapper.readTree(dialog.getPluginConfiguration());
+        PluginCreateRequest request = PluginCreateRequest.builder()
+                .name(dialog.getPluginName())
+                .factoryClass(dialog.getFactory())
+                .configuration(configuration)
+                .build();
+        pluginsClient.createPlugin(request);
+        pluginsGrid.setItems(pluginsClient.getAllPlugins());
     }
 }

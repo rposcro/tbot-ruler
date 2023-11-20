@@ -3,6 +3,10 @@ a[highlight] {
     text-decoration: underline;
 }
 
+vaadin-grid::part(header-cell) {
+    font-weight: bold;
+}
+
 .property-label {
     font-weight: bold;
     font-size: 14px;
@@ -17,10 +21,6 @@ a[highlight] {
     margin-top: 0px;
 }
 
-vaadin-text-area > textarea {
+.content-code > textarea {
     font-family: "Courier New";
-}
-
-vaadin-grid::part(header-cell) {
-    font-weight: bold;
 }

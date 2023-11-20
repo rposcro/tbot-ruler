@@ -162,7 +162,9 @@ public class EntityPropertiesPanel<T> extends VerticalLayout {
             Object value = descriptor.getReadMethod().invoke(bean);
 
             if (value instanceof JsonNode) {
-                return new Pre(objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value));
+                JsonNode node = (JsonNode) value;
+                String valueText = node == null || node.isNull() ? "" : objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value);
+                return new Pre(valueText);
             } else {
                 return new Span(value == null ? "" : value.toString());
             }
