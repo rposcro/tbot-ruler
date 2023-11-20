@@ -19,6 +19,7 @@ import java.util.function.Consumer;
 import static com.tbot.ruler.console.utils.FormUtils.asJsonNode;
 import static com.tbot.ruler.console.utils.FormUtils.asString;
 import static com.tbot.ruler.console.utils.FormUtils.orEmpty;
+import static com.tbot.ruler.console.utils.StreamUtils.anyMatching;
 
 public class ActuatorEditDialog extends AbstractEditDialog<ActuatorEditDialog> {
 
@@ -119,12 +120,16 @@ public class ActuatorEditDialog extends AbstractEditDialog<ActuatorEditDialog> {
             txtReference.setValue(orEmpty(original.getReference()));
             txtDescription.setValue(orEmpty(original.getDescription()));
             txtConfiguration.setValue(asString(original.getConfiguration()));
+            selPlugin.setValue(anyMatching(plugins, plugin -> plugin.getPluginUuid().equals(original.getPluginUuid())));
+            selThing.setValue(anyMatching(things, thing -> thing.getThingUuid().equals(original.getThingUuid())));
         } else {
             txtUuid.setValue("");
             txtName.setValue("");
             txtReference.setValue("");
             txtDescription.setValue("");
             txtConfiguration.setValue("");
+            selPlugin.setValue(null);
+            selThing.setValue(null);
         }
     }
 

@@ -4,16 +4,12 @@ import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.EntityPropertiesPanel;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.function.Function;
 
 @Route(value = "actuators", layout = TBotRulerConsoleView.class)
 @PageTitle("TBot Ruler Console | Actuators Dashboard")
@@ -22,7 +18,7 @@ public class ActuatorsDashboard extends VerticalLayout {
     private final ActuatorEditSupport editSupport;
 
     private final EntityPropertiesPanel<ActuatorModel> actuatorPanel;
-    private final Grid<ActuatorModel> actuatorsGrid;
+    private final ActuatorsGrid actuatorsGrid;
 
     @Autowired
     public ActuatorsDashboard(ActuatorEditSupport editSupport) {
@@ -70,27 +66,8 @@ public class ActuatorsDashboard extends VerticalLayout {
         return content;
     }
 
-    private Grid<ActuatorModel> constructGrid() {
-        Grid<ActuatorModel> grid = new Grid<>();
-        setUpColumn(grid, ActuatorModel::getName, "Name").setSortable(true);
-        setUpColumn(grid, ActuatorModel::getReference, "Reference").setSortable(true);
-        setUpColumn(grid, ActuatorModel::getActuatorUuid, "UUID");
-        setUpColumn(grid, ActuatorModel::getPluginName, "Plugin").setSortable(true);
-        setUpColumn(grid, ActuatorModel::getThingName, "Thing").setSortable(true);
-
-        grid.setSizeFull();
-        grid.addThemeVariants(
-                GridVariant.LUMO_COMPACT,
-                GridVariant.LUMO_WRAP_CELL_CONTENT);
-        grid.asSingleSelect().addValueChangeListener(
-                event -> actuatorPanel.applyToEntity(event.getValue()));
-        return grid;
-    }
-
-    private Grid.Column<ActuatorModel> setUpColumn(Grid<ActuatorModel> grid, Function<ActuatorModel, ?> valueProvider, String headerTitle) {
-        return grid.addColumn(actuator -> valueProvider.apply(actuator))
-                .setAutoWidth(true)
-                .setHeader(headerTitle);
+    private ActuatorsGrid constructGrid() {
+        return new ActuatorsGrid(actuator -> actuatorPanel.applyToEntity(actuator));
     }
 
     private void handleUpdateActuator(ActuatorEditDialog dialog) {
