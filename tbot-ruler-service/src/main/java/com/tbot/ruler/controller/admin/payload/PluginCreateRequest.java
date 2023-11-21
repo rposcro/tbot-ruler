@@ -13,7 +13,10 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdatePluginRequest {
+public class PluginCreateRequest {
+
+    @JsonProperty(required = true)
+    private String factoryClass;
 
     @JsonProperty(required = true)
     private String name;

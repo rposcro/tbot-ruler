@@ -1,5 +1,8 @@
 package com.tbot.ruler.console.views;
 
+import com.tbot.ruler.console.views.actuators.ActuatorsDashboard;
+import com.tbot.ruler.console.views.plugins.PluginsDashboard;
+import com.tbot.ruler.console.views.things.ThingsDashboard;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;

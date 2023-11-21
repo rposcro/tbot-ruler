@@ -2,8 +2,8 @@ package com.tbot.ruler.controller.admin;
 
 import com.tbot.ruler.controller.AbstractController;
 import com.tbot.ruler.controller.admin.payload.ActuatorResponse;
-import com.tbot.ruler.controller.admin.payload.CreateActuatorRequest;
-import com.tbot.ruler.controller.admin.payload.UpdateActuatorRequest;
+import com.tbot.ruler.controller.admin.payload.ActuatorCreateRequest;
+import com.tbot.ruler.controller.admin.payload.ActuatorUpdateRequest;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
@@ -42,14 +42,15 @@ public class ActuatorAdminController extends AbstractController {
     }
 
     @PostMapping
-    public ResponseEntity<ActuatorResponse> createActuator(@RequestBody CreateActuatorRequest createActuatorRequest) {
-        PluginEntity pluginEntity = subjectsAccessor.findPlugin(createActuatorRequest.getPluginUuid());
-        ThingEntity thingEntity = subjectsAccessor.findThing(createActuatorRequest.getThingUuid());
+    public ResponseEntity<ActuatorResponse> createActuator(@RequestBody ActuatorCreateRequest actuatorCreateRequest) {
+        PluginEntity pluginEntity = subjectsAccessor.findPlugin(actuatorCreateRequest.getPluginUuid());
+        ThingEntity thingEntity = subjectsAccessor.findThing(actuatorCreateRequest.getThingUuid());
         ActuatorEntity actuatorEntity = ActuatorEntity.builder()
                 .actuatorUuid("actr-" + UUID.randomUUID())
-                .name(createActuatorRequest.getName())
-                .description(createActuatorRequest.getDescription())
-                .configuration(createActuatorRequest.getConfiguration())
+                .name(actuatorCreateRequest.getName())
+                .reference(actuatorCreateRequest.getReference())
+                .description(actuatorCreateRequest.getDescription())
+                .configuration(actuatorCreateRequest.getConfiguration())
                 .pluginId(pluginEntity.getPluginId())
                 .thingId(thingEntity.getThingId())
                 .build();
@@ -60,11 +61,11 @@ public class ActuatorAdminController extends AbstractController {
     @PatchMapping("/{actuatorUuid}")
     public ResponseEntity<ActuatorResponse> updateActuator(
             @PathVariable String actuatorUuid,
-            @RequestBody UpdateActuatorRequest updateActuatorRequest) {
+            @RequestBody ActuatorUpdateRequest actuatorUpdateRequest) {
         ActuatorEntity actuatorEntity = subjectsAccessor.findActuator(actuatorUuid);
-        actuatorEntity.setName(updateActuatorRequest.getName());
-        actuatorEntity.setDescription(updateActuatorRequest.getDescription());
-        actuatorEntity.setConfiguration(updateActuatorRequest.getConfiguration());
+        actuatorEntity.setName(actuatorUpdateRequest.getName());
+        actuatorEntity.setDescription(actuatorUpdateRequest.getDescription());
+        actuatorEntity.setConfiguration(actuatorUpdateRequest.getConfiguration());
         actuatorEntity = actuatorsRepository.save(actuatorEntity);
         return ok(toResponse(actuatorEntity));
     }

@@ -13,7 +13,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class CreateActuatorRequest {
+public class ActuatorCreateRequest {
 
     @JsonProperty(required = true)
     private String pluginUuid;

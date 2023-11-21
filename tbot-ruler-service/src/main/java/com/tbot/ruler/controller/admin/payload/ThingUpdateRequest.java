@@ -13,7 +13,7 @@ import lombok.ToString;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateThingRequest {
+public class ThingUpdateRequest {
 
     @JsonProperty(required = true)
     private String name;

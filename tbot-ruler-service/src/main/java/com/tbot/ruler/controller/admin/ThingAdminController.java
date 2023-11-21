@@ -1,13 +1,10 @@
 package com.tbot.ruler.controller.admin;
 
 import com.tbot.ruler.controller.AbstractController;
-import com.tbot.ruler.controller.admin.payload.CreateThingRequest;
+import com.tbot.ruler.controller.admin.payload.ThingCreateRequest;
 import com.tbot.ruler.controller.admin.payload.ThingResponse;
-import com.tbot.ruler.controller.admin.payload.UpdateThingRequest;
-import com.tbot.ruler.exceptions.ServiceRequestException;
-import com.tbot.ruler.persistance.PluginsRepository;
+import com.tbot.ruler.controller.admin.payload.ThingUpdateRequest;
 import com.tbot.ruler.persistance.ThingsRepository;
-import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,12 +40,12 @@ public class ThingAdminController extends AbstractController {
     }
 
     @PostMapping
-    public ResponseEntity<ThingResponse> createThing(@RequestBody CreateThingRequest createThingRequest) {
+    public ResponseEntity<ThingResponse> createThing(@RequestBody ThingCreateRequest thingCreateRequest) {
         ThingEntity thingEntity = ThingEntity.builder()
                 .thingUuid("thng-" + UUID.randomUUID())
-                .name(createThingRequest.getName())
-                .description(createThingRequest.getDescription())
-                .configuration(createThingRequest.getConfiguration())
+                .name(thingCreateRequest.getName())
+                .description(thingCreateRequest.getDescription())
+                .configuration(thingCreateRequest.getConfiguration())
                 .build();
         thingEntity = thingsRepository.save(thingEntity);
         return ok(toResponse(thingEntity));
@@ -57,11 +54,11 @@ public class ThingAdminController extends AbstractController {
     @PatchMapping("/{thingUuid}")
     public ResponseEntity<ThingResponse> updateThing(
             @PathVariable String thingUuid,
-            @RequestBody UpdateThingRequest updateThingRequest) {
+            @RequestBody ThingUpdateRequest thingUpdateRequest) {
         ThingEntity thingEntity = subjectsAccessor.findThing(thingUuid);
-        thingEntity.setName(updateThingRequest.getName());
-        thingEntity.setDescription(updateThingRequest.getDescription());
-        thingEntity.setConfiguration(updateThingRequest.getConfiguration());
+        thingEntity.setName(thingUpdateRequest.getName());
+        thingEntity.setDescription(thingUpdateRequest.getDescription());
+        thingEntity.setConfiguration(thingUpdateRequest.getConfiguration());
         thingEntity = thingsRepository.save(thingEntity);
         return ok(toResponse(thingEntity));
     }

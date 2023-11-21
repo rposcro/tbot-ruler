@@ -1,2 +1,9 @@
 server:
   port: 4140
+
+client:
+  ruler-service:
+    baseUrl: "http://192.168.100.14:4040"
+    timeoutInMilliseconds: 3000
+    maxIdleConnections: 3
+

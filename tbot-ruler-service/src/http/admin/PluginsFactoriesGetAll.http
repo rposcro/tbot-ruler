@@ -1,0 +1,5 @@
+### Get all plugins factories registered
+# @name = PluginsGetFactoriesAll
+
+GET http://{{host-tbot-ruler}}/admin/plugins/factories
+Content-Type: application/json

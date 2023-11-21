@@ -1,11 +1,12 @@
 package com.tbot.ruler.controller.admin;
 
 import com.tbot.ruler.controller.AbstractController;
-import com.tbot.ruler.controller.admin.payload.CreatePluginRequest;
+import com.tbot.ruler.controller.admin.payload.PluginCreateRequest;
 import com.tbot.ruler.controller.admin.payload.PluginResponse;
-import com.tbot.ruler.controller.admin.payload.UpdatePluginRequest;
+import com.tbot.ruler.controller.admin.payload.PluginUpdateRequest;
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.model.PluginEntity;
+import com.tbot.ruler.service.StructureService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,9 @@ import java.util.UUID;
 public class PluginAdminController extends AbstractController {
 
     @Autowired
+    private StructureService structureService;
+
+    @Autowired
     private SubjectsAccessor subjectsAccessor;
 
     @Autowired
@@ -39,13 +43,20 @@ public class PluginAdminController extends AbstractController {
                 .toList());
     }
 
+    @GetMapping("/factories")
+    public ResponseEntity<List<String>> getFactories() {
+        return ok(structureService.getPluginsFactories().stream()
+                .map(Class::getName)
+                .toList());
+    }
+
     @PostMapping
-    public ResponseEntity<PluginResponse> createPlugin(@RequestBody CreatePluginRequest createPluginRequest) {
+    public ResponseEntity<PluginResponse> createPlugin(@RequestBody PluginCreateRequest pluginCreateRequest) {
         PluginEntity pluginEntity = pluginsRepository.save(PluginEntity.builder()
                 .pluginUuid("plgn-" + UUID.randomUUID())
-                .name(createPluginRequest.getName())
-                .factoryClass(createPluginRequest.getBuilderClass())
-                .configuration(createPluginRequest.getConfiguration())
+                .name(pluginCreateRequest.getName())
+                .factoryClass(pluginCreateRequest.getFactoryClass())
+                .configuration(pluginCreateRequest.getConfiguration())
                 .build());
         return ok(toResponse(pluginEntity));
     }
@@ -53,10 +64,10 @@ public class PluginAdminController extends AbstractController {
     @PatchMapping("/{pluginUuid}")
     public ResponseEntity<PluginResponse> updatePlugin(
             @PathVariable String pluginUuid,
-            @RequestBody UpdatePluginRequest updatePluginRequest) {
+            @RequestBody PluginUpdateRequest pluginUpdateRequest) {
         PluginEntity pluginEntity = subjectsAccessor.findPlugin(pluginUuid);
-        pluginEntity.setName(updatePluginRequest.getName());
-        pluginEntity.setConfiguration(updatePluginRequest.getConfiguration());
+        pluginEntity.setName(pluginUpdateRequest.getName());
+        pluginEntity.setConfiguration(pluginUpdateRequest.getConfiguration());
 
         pluginEntity = pluginsRepository.save(pluginEntity);
         return ok(toResponse(pluginEntity));
