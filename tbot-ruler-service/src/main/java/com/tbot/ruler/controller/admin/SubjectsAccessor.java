@@ -4,9 +4,11 @@ import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
+import com.tbot.ruler.persistance.WebhooksRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
+import com.tbot.ruler.persistance.model.WebhookEntity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -24,14 +26,17 @@ public class SubjectsAccessor {
     @Autowired
     private ActuatorsRepository actuatorsRepository;
 
+    @Autowired
+    private WebhooksRepository webhooksRepository;
+
     public ActuatorEntity findActuator(String actuatorUuid) {
         return actuatorsRepository.findByUuid(actuatorUuid)
                 .orElseThrow(() -> new ServiceRequestException(format("Actuator %s not found!", actuatorUuid)));
     }
 
-    public ActuatorEntity findActuator(long actuatorId) {
-        return actuatorsRepository.findById(actuatorId)
-                .orElseThrow(() -> new ServiceRequestException(format("Actuator id %s not found!", actuatorId)));
+    public WebhookEntity findWebhook(String webhookUuid) {
+        return webhooksRepository.findByUuid(webhookUuid)
+                .orElseThrow(() -> new ServiceRequestException(format("Webhook %s not found!", webhookUuid)));
     }
 
     public ThingEntity findThing(String thingUuid) {

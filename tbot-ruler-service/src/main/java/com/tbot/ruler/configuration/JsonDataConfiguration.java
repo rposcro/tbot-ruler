@@ -5,6 +5,7 @@ import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.SchemasRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
+import com.tbot.ruler.persistance.WebhooksRepository;
 import com.tbot.ruler.persistance.json.JsonFileRepositoryReader;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
@@ -12,6 +13,7 @@ import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.SchemaEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
+import com.tbot.ruler.persistance.model.WebhookEntity;
 import com.tbot.ruler.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +42,9 @@ public class JsonDataConfiguration {
     private ActuatorsRepository actuatorsRepository;
 
     @Autowired
+    private WebhooksRepository webhooksRepository;
+
+    @Autowired
     private SchemasRepository schemasRepository;
 
     @Autowired
@@ -56,6 +61,7 @@ public class JsonDataConfiguration {
             loadPlugins();
             loadThings();
             loadActuators();
+            loadWebhooks();
             loadBindings();
             loadSchemas();
         } else {
@@ -131,6 +137,29 @@ public class JsonDataConfiguration {
                     } else {
                         log.info("Skipped actuator {} due to unknown thing {}", dto.getUuid(), dto.getThingUuid());
                     }
+                });
+    }
+
+    private void loadWebhooks() {
+        log.info("Loading webhooks ...");
+        jsonFileRepositoryReader.getWebhookDTOs().stream()
+                .filter(dto -> {
+                    if (!webhooksRepository.findByUuid(dto.getUuid()).isPresent()) {
+                        return true;
+                    } else {
+                        log.info("Skipped webhook {}, already exists", dto.getUuid());
+                        return false;
+                    }
+                })
+                .forEach(dto -> {
+                    WebhookEntity webhookEntity = WebhookEntity.builder()
+                            .webhookUuid(dto.getUuid())
+                            .owner(dto.getOwner())
+                            .name(dto.getName())
+                            .description(dto.getDescription())
+                            .build();
+                    webhooksRepository.save(webhookEntity);
+                    log.info("Loaded webhook {}", dto.getUuid());
                 });
     }
 

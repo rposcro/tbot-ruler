@@ -49,6 +49,20 @@ create table `actuators`
     foreign key (plugin_id) references plugins (plugin_id) on delete restrict
 );
 
+drop table if exists `webhooks`;
+
+create table `webhooks`
+(
+    webhook_id      long            auto_increment,
+    webhook_uuid    varchar(64)     not null unique,
+    owner           varchar(64)     not null,
+    name            varchar(64)     not null,
+    description     varchar(256),
+    version         int             not null default 0,
+
+    primary key (webhook_id)
+);
+
 drop table if exists `bindings`;
 
 create table `bindings`

@@ -25,7 +25,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping(path = "/admin/plugins")
-public class PluginAdminController extends AbstractController {
+public class PluginsAdminController extends AbstractController {
 
     @Autowired
     private StructureService structureService;

@@ -10,11 +10,13 @@ import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.SchemasRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
+import com.tbot.ruler.persistance.WebhooksRepository;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.json.dto.BindingDTO;
 import com.tbot.ruler.persistance.json.dto.PluginDTO;
 import com.tbot.ruler.persistance.json.dto.SchemaDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
+import com.tbot.ruler.persistance.json.dto.WebhookDTO;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.SchemaEntity;
@@ -85,6 +87,9 @@ public class DumpJsonService {
     private ActuatorsRepository actuatorsRepository;
 
     @Autowired
+    private WebhooksRepository webhooksRepository;
+
+    @Autowired
     private BindingsRepository bindingsRepository;
 
     @Autowired
@@ -101,6 +106,7 @@ public class DumpJsonService {
             dumpPlugins(dumpContext);
             dumpThings(dumpContext);
             dumpActuators(dumpContext);
+            dumpWebhooks(dumpContext);
             dumpBindings(dumpContext);
             dumpSchemas(dumpContext);
         } catch(IOException e) {
@@ -164,6 +170,28 @@ public class DumpJsonService {
                 }
             });
             log.info("Dumped actuators to {}", file);
+        }
+    }
+
+    private void dumpWebhooks(DumpContext dumpContext) throws IOException {
+        List<WebhookDTO> webhooks = webhooksRepository.findAll().stream()
+                .map(webhookEntity -> WebhookDTO.builder()
+                        .uuid(webhookEntity.getWebhookUuid())
+                        .owner(webhookEntity.getOwner())
+                        .name(webhookEntity.getName())
+                        .description(webhookEntity.getDescription())
+                        .build())
+                .collect(Collectors.toList());
+        Map<String, List<WebhookDTO>> webhooksMap = webhooks.stream()
+                .collect(Collectors.groupingBy(WebhookDTO::getOwner));
+        for (String owner: webhooksMap.keySet()) {
+            File file = formatFile("webhooks-" + owner.replace(' ', '_'), dumpContext);
+            objectMapper.writer(JSON_PRINTER).writeValue(file, new Object() {
+                public List<WebhookDTO> getWebhooks() {
+                    return webhooksMap.get(owner);
+                }
+            });
+            log.info("Dumped webhooks to {}", file);
         }
     }
 

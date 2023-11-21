@@ -21,12 +21,10 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 import java.util.UUID;
 
-import static java.lang.String.format;
-
 @Slf4j
 @RestController
 @RequestMapping(path = "/admin/things")
-public class ThingAdminController extends AbstractController {
+public class ThingsAdminController extends AbstractController {
 
     @Autowired
     private SubjectsAccessor subjectsAccessor;
@@ -35,8 +33,8 @@ public class ThingAdminController extends AbstractController {
     private ThingsRepository thingsRepository;
 
     @GetMapping
-    public ResponseEntity<List<ThingEntity>> getAllThings() {
-        return ok(thingsRepository.findAll());
+    public ResponseEntity<List<ThingResponse>> getAllThings() {
+        return ok(thingsRepository.findAll().stream().map(this::toResponse).toList());
     }
 
     @PostMapping

@@ -6,6 +6,7 @@ import com.tbot.ruler.persistance.json.dto.BindingDTO;
 import com.tbot.ruler.persistance.json.dto.SchemaDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
 import com.tbot.ruler.persistance.json.dto.PluginDTO;
+import com.tbot.ruler.persistance.json.dto.WebhookDTO;
 import com.tbot.ruler.util.FileUtil;
 import lombok.Builder;
 import lombok.Data;
@@ -90,6 +91,15 @@ public class JsonFileRepositoryReader {
         return dtos;
     }
 
+    public List<WebhookDTO> getWebhookDTOs() {
+        List<WebhookDTO> dtos = dtoWrappers.stream()
+                .filter(wrapper -> wrapper.webhooks != null)
+                .flatMap(wrapper -> wrapper.webhooks.stream())
+                .collect(Collectors.toList());
+        log.info("Found and read {} webhook DTOs", dtos.size());
+        return dtos;
+    }
+
     public List<BindingDTO> getBindingDTOs() {
         List<BindingDTO> dtos = dtoWrappers.stream()
                 .filter(wrapper -> wrapper.bindings != null)
@@ -126,6 +136,7 @@ public class JsonFileRepositoryReader {
         private List<PluginDTO> plugins;
         private List<ThingDTO> things;
         private List<ActuatorDTO> actuators;
+        private List<WebhookDTO> webhooks;
         private List<BindingDTO> bindings;
         private List<SchemaDTO> schemas;
     }

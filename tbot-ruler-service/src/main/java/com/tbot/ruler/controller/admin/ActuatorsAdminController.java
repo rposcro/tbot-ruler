@@ -26,7 +26,7 @@ import java.util.UUID;
 @Slf4j
 @RestController
 @RequestMapping(path = "/admin/actuators")
-public class ActuatorAdminController extends AbstractController {
+public class ActuatorsAdminController extends AbstractController {
 
     @Autowired
     private SubjectsAccessor subjectsAccessor;
