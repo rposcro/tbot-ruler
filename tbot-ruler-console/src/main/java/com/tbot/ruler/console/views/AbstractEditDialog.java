@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 public abstract class AbstractEditDialog<TDialog extends AbstractEditDialog> extends Dialog {
 
     protected final PopupNotifier popupNotifier = new PopupNotifier();
+    protected final boolean updateMode;
 
     private FormValidator formValidator;
 
@@ -20,6 +21,7 @@ public abstract class AbstractEditDialog<TDialog extends AbstractEditDialog> ext
     private final Button btnReset;
 
     protected AbstractEditDialog(boolean updateMode, Consumer<TDialog> submitHandler) {
+        this.updateMode = updateMode;
         this.btnSubmit = constructSubmitButton(updateMode, submitHandler);
         this.btnClose = constructCloseButton();
         this.btnReset = constructResetButton();

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.console.clients.ActuatorsAdminApi;
 import com.tbot.ruler.console.clients.PluginsAdminApi;
 import com.tbot.ruler.console.clients.ThingsAdminApi;
+import com.tbot.ruler.console.clients.WebhooksAdminApi;
 import jakarta.annotation.PostConstruct;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
@@ -44,6 +45,11 @@ public class RulerServiceClientsConfiguration {
     @Bean
     public ActuatorsAdminApi actuatorsAdminApi() {
         return retrofit().create(ActuatorsAdminApi.class);
+    }
+
+    @Bean
+    public WebhooksAdminApi webhooksAdminApi() {
+        return retrofit().create(WebhooksAdminApi.class);
     }
 
     private Retrofit retrofit() {
