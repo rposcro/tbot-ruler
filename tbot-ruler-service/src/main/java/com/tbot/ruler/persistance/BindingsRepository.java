@@ -38,7 +38,7 @@ public class BindingsRepository {
         crudBindingsRepository.delete(bindingEntity);
     }
 
-    public void insert(BindingEntity bindingEntity) {
-        crudBindingsRepository.save(bindingEntity);
+    public boolean insert(BindingEntity bindingEntity) {
+        return crudBindingsRepository.save(bindingEntity) == 1;
     }
 }

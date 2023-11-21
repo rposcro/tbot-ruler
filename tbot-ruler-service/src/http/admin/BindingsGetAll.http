@@ -1,0 +1,5 @@
+### Get all bindings in DB
+# @name = BindingsGetAll
+
+GET http://{{host-tbot-ruler}}/admin/bindings
+Content-Type: application/json

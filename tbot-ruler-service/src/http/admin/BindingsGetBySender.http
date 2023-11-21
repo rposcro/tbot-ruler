@@ -1,0 +1,5 @@
+### Get sender's bindings in DB
+# @name = BindingsGetBySender
+
+GET http://{{host-tbot-ruler}}/admin/bindings/senders/wbhk-ec01c493-1fa5-406a-a674-9c0e54e29857
+Content-Type: application/json
