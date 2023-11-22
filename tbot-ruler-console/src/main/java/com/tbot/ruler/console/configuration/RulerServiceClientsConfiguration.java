@@ -2,6 +2,7 @@ package com.tbot.ruler.console.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.console.clients.ActuatorsAdminApi;
+import com.tbot.ruler.console.clients.BindingsAdminApi;
 import com.tbot.ruler.console.clients.PluginsAdminApi;
 import com.tbot.ruler.console.clients.ThingsAdminApi;
 import com.tbot.ruler.console.clients.WebhooksAdminApi;
@@ -50,6 +51,11 @@ public class RulerServiceClientsConfiguration {
     @Bean
     public WebhooksAdminApi webhooksAdminApi() {
         return retrofit().create(WebhooksAdminApi.class);
+    }
+
+    @Bean
+    public BindingsAdminApi bindingsAdminApi() {
+        return retrofit().create(BindingsAdminApi.class);
     }
 
     private Retrofit retrofit() {

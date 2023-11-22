@@ -1,6 +1,7 @@
 package com.tbot.ruler.console.views;
 
 import com.tbot.ruler.console.views.actuators.ActuatorsDashboard;
+import com.tbot.ruler.console.views.bindings.BindingsDashboard;
 import com.tbot.ruler.console.views.plugins.PluginsDashboard;
 import com.tbot.ruler.console.views.things.ThingsDashboard;
 import com.tbot.ruler.console.views.webhooks.WebhooksDashboard;
@@ -43,7 +44,8 @@ public class TBotRulerConsoleView extends AppLayout {
                 new RouterLink("Plugins", PluginsDashboard.class),
                 new RouterLink("Things", ThingsDashboard.class),
                 new RouterLink("Actuators", ActuatorsDashboard.class),
-                new RouterLink("Webhooks", WebhooksDashboard.class)
+                new RouterLink("Webhooks", WebhooksDashboard.class),
+                new RouterLink("Bindings", BindingsDashboard.class)
         );
     }
 }
