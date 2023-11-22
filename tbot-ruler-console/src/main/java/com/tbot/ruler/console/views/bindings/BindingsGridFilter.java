@@ -1,9 +1,10 @@
 package com.tbot.ruler.console.views.bindings;
 
+import com.tbot.ruler.console.views.GridFilter;
 import lombok.Setter;
 
 @Setter
-public class BindingsGridFilter {
+public class BindingsGridFilter implements GridFilter<BindingModel> {
 
     private String senderUuidTerm;
     private String senderNameTerm;
@@ -11,16 +12,12 @@ public class BindingsGridFilter {
     private String receiverUuidTerm;
     private String receiverNameTerm;
 
+    @Override
     public boolean test(BindingModel binding) {
         return matches(binding.getSenderUuid(), senderUuidTerm)
                 && matches(binding.getSenderName(), senderNameTerm)
                 && matches(binding.getSenderType(), senderTypeTerm)
                 && matches(binding.getReceiverUuid(), receiverUuidTerm)
                 && matches(binding.getReceiverName(), receiverNameTerm);
-    }
-
-    private boolean matches(String value, String searchTerm) {
-        return searchTerm == null || searchTerm.isEmpty()
-                || value.toLowerCase().contains(searchTerm.toLowerCase());
     }
 }

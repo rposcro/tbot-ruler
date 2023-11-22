@@ -8,4 +8,8 @@ public interface GridFilter<T> {
         return searchTerm == null || searchTerm.isEmpty()
                 || value.toLowerCase().contains(searchTerm.toLowerCase());
     }
+
+    static <T> GridFilter<T> passThruFilter() {
+        return item -> true;
+    }
 }

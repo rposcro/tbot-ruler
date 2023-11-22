@@ -2,18 +2,30 @@ package com.tbot.ruler.console.views;
 
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.function.ValueProvider;
 
-public abstract class AbstractGridPanel<T> extends Grid<T> {
+import java.util.Collections;
+import java.util.function.Consumer;
+
+public abstract class AbstractGrid<T> extends Grid<T> {
 
     protected final HeaderRow headerRow;
 
-    protected AbstractGridPanel() {
+    protected AbstractGrid(Consumer<T> selectHandler) {
         getHeaderRows().clear();
         this.headerRow = appendHeaderRow();
+
+        setItems(Collections.emptyList());
+        setSizeFull();
+        addThemeVariants(
+                GridVariant.LUMO_COMPACT,
+                GridVariant.LUMO_WRAP_CELL_CONTENT);
+        asSingleSelect().addValueChangeListener(
+                event -> selectHandler.accept(event.getValue()));
     }
 
     protected Column<?> addColumn(String title, ValueProvider<T, ?> valueProvider) {

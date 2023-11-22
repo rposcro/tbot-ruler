@@ -12,8 +12,6 @@ import com.tbot.ruler.controller.admin.payload.ThingCreateRequest;
 import com.tbot.ruler.controller.admin.payload.ThingResponse;
 import com.tbot.ruler.controller.admin.payload.ThingUpdateRequest;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -21,9 +19,6 @@ import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import java.util.List;
-import java.util.function.Function;
 
 @Slf4j
 @Route(value = "things", layout = TBotRulerConsoleView.class)
@@ -35,18 +30,14 @@ public class ThingsDashboard extends VerticalLayout {
 
     private final ObjectMapper objectMapper;
     private final EntityPropertiesPanel<ThingResponse> thingPanel;
-    private final Grid<ThingResponse> thingsGrid;
+    private final ThingsGrid thingsGrid;
 
     @Autowired
     public ThingsDashboard(RouteThingsAccessor thingsAccessor, PopupNotifier popupNotifier) {
         this.thingsAccessor = thingsAccessor;
         this.popupNotifier = popupNotifier;
         this.objectMapper = new ObjectMapper();
-        this.thingPanel = EntityPropertiesPanel.<ThingResponse>builder()
-                .beanType(ThingResponse.class)
-                .editHandler(() -> handleEditRequest(true))
-                .properties(new String[] { "name", "thingUuid", "description", "configuration"} )
-                .build();
+        this.thingPanel = constructThingPanel();
         this.thingsGrid = constructGrid();
 
         setSizeFull();
@@ -66,13 +57,8 @@ public class ThingsDashboard extends VerticalLayout {
 
     private HorizontalLayout constructContent() {
         HorizontalLayout content = new HorizontalLayout();
-        content.setWidthFull();
-        content.setAlignItems(Alignment.START);
 
         try {
-            List<ThingResponse> things = thingsAccessor.getAllThings();
-            thingsGrid.setItems(things);
-            thingPanel.getStyle().set("margin-top", "0px");
             content.add(thingsGrid, thingPanel);
             content.setFlexGrow(3, thingsGrid);
             content.setFlexGrow(1, thingPanel);
@@ -82,28 +68,25 @@ public class ThingsDashboard extends VerticalLayout {
                     new Span(e.getMessage())));
         }
 
+        content.setSizeFull();
+        content.setAlignItems(Alignment.START);
         return content;
     }
 
-    private Grid<ThingResponse> constructGrid() {
-        Grid<ThingResponse> grid = new Grid<>();
-        setUpColumn(grid, ThingResponse::getName, "Name").setSortable(true);
-        setUpColumn(grid, ThingResponse::getThingUuid, "UUID");
-        setUpColumn(grid, ThingResponse::getDescription, "Description");
-
-        grid.setWidthFull();
-        grid.addThemeVariants(
-                GridVariant.LUMO_COMPACT,
-                GridVariant.LUMO_WRAP_CELL_CONTENT);
-        grid.asSingleSelect().addValueChangeListener(
-                event -> thingPanel.applyToEntity(event.getValue()));
+    private ThingsGrid constructGrid() {
+        ThingsGrid grid = new ThingsGrid(thing -> thingPanel.applyToEntity(thing));
+        grid.setItems(thingsAccessor.getAllThings());
         return grid;
     }
 
-    private Grid.Column<ThingResponse> setUpColumn(Grid<ThingResponse> grid, Function<ThingResponse, ?> valueProvider, String headerTitle) {
-        return grid.addColumn(thing -> valueProvider.apply(thing))
-                .setAutoWidth(true)
-                .setHeader(headerTitle);
+    private EntityPropertiesPanel<ThingResponse> constructThingPanel() {
+        EntityPropertiesPanel<ThingResponse> panel = EntityPropertiesPanel.<ThingResponse>builder()
+                .beanType(ThingResponse.class)
+                .editHandler(() -> handleEditRequest(true))
+                .properties(new String[] { "name", "thingUuid", "description", "configuration"} )
+                .build();
+        panel.getStyle().set("margin-top", "0px");
+        return panel;
     }
 
     private void handleEditRequest(boolean updateMode) {

@@ -12,13 +12,14 @@ import com.vaadin.flow.function.ValueProvider;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class AbstractFilterableGridPanel<T, F extends GridFilter<T>> extends AbstractGridPanel<T> {
+public abstract class AbstractFilterableGrid<T, F extends GridFilter<T>> extends AbstractGrid<T> {
 
     protected final F gridFilter;
 
     private GridListDataView<T> dataView;
 
-    protected AbstractFilterableGridPanel(F gridFilter) {
+    protected AbstractFilterableGrid(F gridFilter, Consumer<T> selectHandler) {
+        super(selectHandler);
         this.gridFilter = gridFilter;
     }
 

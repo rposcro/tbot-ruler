@@ -1,23 +1,15 @@
 package com.tbot.ruler.console.views.plugins;
 
-import com.tbot.ruler.console.views.AbstractGridPanel;
+import com.tbot.ruler.console.views.AbstractGrid;
 import com.tbot.ruler.controller.admin.payload.PluginResponse;
-import com.vaadin.flow.component.grid.GridVariant;
 
-import java.util.Collections;
 import java.util.function.Consumer;
 
-public class PluginsGrid extends AbstractGridPanel<PluginResponse> {
+public class PluginsGrid extends AbstractGrid<PluginResponse> {
 
     public PluginsGrid(Consumer<PluginResponse> selectHandler) {
-        setItems(Collections.emptyList());
+        super(selectHandler);
         setUpColumns();
-        setSizeFull();
-        addThemeVariants(
-                GridVariant.LUMO_COMPACT,
-                GridVariant.LUMO_WRAP_CELL_CONTENT);
-        asSingleSelect().addValueChangeListener(
-                event -> selectHandler.accept(event.getValue()));
     }
 
     private void setUpColumns() {
