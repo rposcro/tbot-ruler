@@ -1,5 +1,6 @@
 package com.tbot.ruler.console.views.routes.actuators;
 
+import com.tbot.ruler.console.accessors.model.ActuatorModel;
 import com.tbot.ruler.console.views.components.GridFilter;
 import lombok.Setter;
 

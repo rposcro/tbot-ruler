@@ -1,6 +1,6 @@
 package com.tbot.ruler.console.views.routes.bindings;
 
-import com.tbot.ruler.console.accessors.RouteBindingsAccessor;
+import com.tbot.ruler.console.accessors.BindingsAccessor;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.PopupNotifier;
 import com.vaadin.flow.spring.annotation.RouteScope;
@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 public class BindingEditSupport {
 
     @Autowired
-    private RouteBindingsAccessor bindingsAccessor;
+    private BindingsAccessor bindingsAccessor;
 
     @Autowired
     private PopupNotifier popupNotifier;

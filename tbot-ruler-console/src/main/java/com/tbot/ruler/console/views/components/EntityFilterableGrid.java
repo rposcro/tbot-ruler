@@ -12,13 +12,13 @@ import com.vaadin.flow.function.ValueProvider;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class AbstractFilterableGrid<T, F extends GridFilter<T>> extends AbstractGrid<T> {
+public abstract class EntityFilterableGrid<T, F extends GridFilter<T>> extends EntityGrid<T> {
 
     protected final F gridFilter;
 
     private GridListDataView<T> dataView;
 
-    protected AbstractFilterableGrid(F gridFilter, Consumer<T> selectHandler) {
+    protected EntityFilterableGrid(F gridFilter, Consumer<T> selectHandler) {
         super(selectHandler);
         this.gridFilter = gridFilter;
     }
@@ -28,7 +28,7 @@ public abstract class AbstractFilterableGrid<T, F extends GridFilter<T>> extends
         dataView.addFilter(gridFilter::test);
     }
 
-    protected Column<T> addFilteredColumn(
+    protected Column<T> addFilterableColumn(
             String title,
             ValueProvider<T, ?> valueProvider,
             Consumer<String> filterValueListener) {

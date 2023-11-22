@@ -1,5 +1,7 @@
 package com.tbot.ruler.console.views.routes.actuators;
 
+import com.tbot.ruler.console.accessors.ActuatorsModelAccessor;
+import com.tbot.ruler.console.accessors.model.ActuatorModel;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.components.EntityPropertiesPanel;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
@@ -16,13 +18,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ActuatorsDashboard extends VerticalLayout {
 
     private final ActuatorEditSupport editSupport;
-    private final ActuatorDataSupport dataSupport;
+    private final ActuatorsModelAccessor dataSupport;
 
     private final EntityPropertiesPanel<ActuatorModel> actuatorPanel;
     private final ActuatorsGrid actuatorsGrid;
 
     @Autowired
-    public ActuatorsDashboard(ActuatorEditSupport editSupport, ActuatorDataSupport dataSupport) {
+    public ActuatorsDashboard(ActuatorEditSupport editSupport, ActuatorsModelAccessor dataSupport) {
         this.editSupport = editSupport;
         this.dataSupport = dataSupport;
         this.actuatorsGrid = constructGrid();

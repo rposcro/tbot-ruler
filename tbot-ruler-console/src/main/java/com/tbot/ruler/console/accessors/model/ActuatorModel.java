@@ -1,4 +1,4 @@
-package com.tbot.ruler.console.views.routes.actuators;
+package com.tbot.ruler.console.accessors.model;
 
 import com.tbot.ruler.controller.admin.payload.ActuatorResponse;
 import com.tbot.ruler.controller.admin.payload.PluginResponse;

@@ -9,16 +9,24 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RouteScope
 @SpringComponent
-public class RouteThingsAccessor {
+public class ThingsAccessor {
 
     @Autowired
     private ThingsClient thingsClient;
 
     public List<ThingResponse> getAllThings() {
         return thingsClient.getAllThings();
+    }
+
+    public Map<String, ThingResponse> getThingsUuidMap() {
+        return getAllThings().stream()
+                .collect(Collectors.toMap(ThingResponse::getThingUuid, Function.identity()));
     }
 
     public void updateThing(String thingUuid, ThingUpdateRequest updateRequest) {

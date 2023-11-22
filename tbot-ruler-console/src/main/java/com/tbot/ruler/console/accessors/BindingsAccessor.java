@@ -10,7 +10,7 @@ import java.util.List;
 
 @RouteScope
 @SpringComponent
-public class RouteBindingsAccessor {
+public class BindingsAccessor {
 
     @Autowired
     private BindingsClient bindingsClient;

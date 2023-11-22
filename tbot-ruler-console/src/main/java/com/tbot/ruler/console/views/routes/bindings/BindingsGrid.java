@@ -1,8 +1,8 @@
 package com.tbot.ruler.console.views.routes.bindings;
 
-import com.tbot.ruler.console.views.components.AbstractFilterableGrid;
+import com.tbot.ruler.console.views.components.EntityFilterableGrid;
 
-public class BindingsGrid extends AbstractFilterableGrid<BindingModel, BindingsGridFilter> {
+public class BindingsGrid extends EntityFilterableGrid<BindingModel, BindingsGridFilter> {
 
     public BindingsGrid() {
         super(new BindingsGridFilter(), binding -> {});
@@ -10,9 +10,9 @@ public class BindingsGrid extends AbstractFilterableGrid<BindingModel, BindingsG
     }
 
     private void setUpColumns() {
-        addFilteredColumn("Sender Name", BindingModel::getSenderName, gridFilter::setSenderNameTerm);
-        addFilteredColumn("Sender UUID", BindingModel::getSenderUuid, gridFilter::setSenderUuidTerm);
-        addFilteredColumn("Receiver Name", BindingModel::getReceiverName, gridFilter::setReceiverNameTerm);
-        addFilteredColumn("Receiver UUID", BindingModel::getReceiverUuid, gridFilter::setReceiverUuidTerm);
+        addFilterableColumn("Sender Name", BindingModel::getSenderName, gridFilter::setSenderNameTerm);
+        addFilterableColumn("Sender UUID", BindingModel::getSenderUuid, gridFilter::setSenderUuidTerm);
+        addFilterableColumn("Receiver Name", BindingModel::getReceiverName, gridFilter::setReceiverNameTerm);
+        addFilterableColumn("Receiver UUID", BindingModel::getReceiverUuid, gridFilter::setReceiverUuidTerm);
     }
 }

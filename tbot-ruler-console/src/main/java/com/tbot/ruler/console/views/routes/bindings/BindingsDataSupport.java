@@ -1,8 +1,8 @@
 package com.tbot.ruler.console.views.routes.bindings;
 
-import com.tbot.ruler.console.accessors.RouteActuatorsAccessor;
-import com.tbot.ruler.console.accessors.RouteBindingsAccessor;
-import com.tbot.ruler.console.accessors.RouteWebhooksAccessor;
+import com.tbot.ruler.console.accessors.ActuatorsAccessor;
+import com.tbot.ruler.console.accessors.BindingsAccessor;
+import com.tbot.ruler.console.accessors.WebhooksAccessor;
 import com.tbot.ruler.controller.admin.payload.ActuatorResponse;
 import com.tbot.ruler.controller.admin.payload.BindingResponse;
 import com.tbot.ruler.controller.admin.payload.WebhookResponse;
@@ -18,13 +18,13 @@ import java.util.Map;
 public class BindingsDataSupport {
 
     @Autowired
-    private RouteBindingsAccessor bindingsAccessor;
+    private BindingsAccessor bindingsAccessor;
 
     @Autowired
-    private RouteActuatorsAccessor actuatorsAccessor;
+    private ActuatorsAccessor actuatorsAccessor;
 
     @Autowired
-    private RouteWebhooksAccessor webhooksAccessor;
+    private WebhooksAccessor webhooksAccessor;
 
     public List<BindingModel> getAllBindingsModels() {
         Map<String, ActuatorResponse> actuatorsMap = actuatorsAccessor.getActuatorsUuidMap();

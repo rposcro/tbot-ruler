@@ -3,7 +3,7 @@ package com.tbot.ruler.console.views.routes.things;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tbot.ruler.console.accessors.RouteThingsAccessor;
+import com.tbot.ruler.console.accessors.ThingsAccessor;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.components.EntityPropertiesPanel;
 import com.tbot.ruler.console.views.PopupNotifier;
@@ -25,7 +25,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 @PageTitle("TBot Ruler Console | Things Dashboard")
 public class ThingsDashboard extends VerticalLayout {
 
-    private final RouteThingsAccessor thingsAccessor;
+    private final ThingActionSupport thingActionSupport;
+    private final ThingsAccessor thingsAccessor;
     private final PopupNotifier popupNotifier;
 
     private final ObjectMapper objectMapper;
@@ -33,8 +34,9 @@ public class ThingsDashboard extends VerticalLayout {
     private final ThingsGrid thingsGrid;
 
     @Autowired
-    public ThingsDashboard(RouteThingsAccessor thingsAccessor, PopupNotifier popupNotifier) {
+    public ThingsDashboard(ThingsAccessor thingsAccessor, ThingActionSupport thingActionSupport, PopupNotifier popupNotifier) {
         this.thingsAccessor = thingsAccessor;
+        this.thingActionSupport = thingActionSupport;
         this.popupNotifier = popupNotifier;
         this.objectMapper = new ObjectMapper();
         this.thingPanel = constructThingPanel();
@@ -75,6 +77,7 @@ public class ThingsDashboard extends VerticalLayout {
 
     private ThingsGrid constructGrid() {
         ThingsGrid grid = new ThingsGrid(thing -> thingPanel.applyToEntity(thing));
+        grid.addContextAction("Show Actuators", thingActionSupport::openActuatorsDialog);
         grid.setItems(thingsAccessor.getAllThings());
         return grid;
     }

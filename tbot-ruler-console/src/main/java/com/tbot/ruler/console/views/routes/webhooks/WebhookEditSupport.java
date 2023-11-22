@@ -1,6 +1,6 @@
 package com.tbot.ruler.console.views.routes.webhooks;
 
-import com.tbot.ruler.console.accessors.RouteWebhooksAccessor;
+import com.tbot.ruler.console.accessors.WebhooksAccessor;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.PopupNotifier;
 import com.tbot.ruler.controller.admin.payload.WebhookCreateRequest;
@@ -18,7 +18,7 @@ import java.util.function.Consumer;
 public class WebhookEditSupport {
 
     @Autowired
-    private RouteWebhooksAccessor webhooksAccessor;
+    private WebhooksAccessor webhooksAccessor;
 
     @Autowired
     private PopupNotifier popupNotifier;

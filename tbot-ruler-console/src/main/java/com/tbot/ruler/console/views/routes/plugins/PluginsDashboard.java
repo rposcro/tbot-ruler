@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
-import com.tbot.ruler.console.accessors.RoutePluginsAccessor;
+import com.tbot.ruler.console.accessors.PluginsAccessor;
 import com.tbot.ruler.console.views.components.EntityPropertiesPanel;
 import com.tbot.ruler.console.views.PopupNotifier;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
@@ -25,7 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @PageTitle("TBot Ruler Console | Plugins Dashboard")
 public class PluginsDashboard extends VerticalLayout {
 
-    private final RoutePluginsAccessor pluginsAccessor;
+    private final PluginsAccessor pluginsAccessor;
     private final PopupNotifier popupNotifier;
 
     private final ObjectMapper objectMapper;
@@ -33,7 +33,7 @@ public class PluginsDashboard extends VerticalLayout {
     private final PluginsGrid pluginsGrid;
 
     @Autowired
-    public PluginsDashboard(RoutePluginsAccessor pluginsAccessor, PopupNotifier popupNotifier) {
+    public PluginsDashboard(PluginsAccessor pluginsAccessor, PopupNotifier popupNotifier) {
         this.pluginsAccessor = pluginsAccessor;
         this.popupNotifier = popupNotifier;
         this.objectMapper = new ObjectMapper();

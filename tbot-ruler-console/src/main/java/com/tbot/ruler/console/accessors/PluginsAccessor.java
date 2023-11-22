@@ -9,16 +9,24 @@ import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 @RouteScope
 @SpringComponent
-public class RoutePluginsAccessor {
+public class PluginsAccessor {
 
     @Autowired
     private PluginsClient pluginsClient;
 
     public List<PluginResponse> getAllPlugins() {
         return pluginsClient.getAllPlugins();
+    }
+
+    public Map<String, PluginResponse> getPluginsUuidMap() {
+        return getAllPlugins().stream()
+                .collect(Collectors.toMap(PluginResponse::getPluginUuid, Function.identity()));
     }
 
     public List<String> getAvailableFactories() {

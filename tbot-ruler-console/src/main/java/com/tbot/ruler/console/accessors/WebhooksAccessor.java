@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RouteScope
 @SpringComponent
-public class RouteWebhooksAccessor {
+public class WebhooksAccessor {
 
     @Autowired
     private WebhooksClient webhooksClient;

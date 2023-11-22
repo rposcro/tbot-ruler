@@ -1,8 +1,9 @@
 package com.tbot.ruler.console.views.routes.actuators;
 
-import com.tbot.ruler.console.accessors.RouteActuatorsAccessor;
-import com.tbot.ruler.console.accessors.RoutePluginsAccessor;
-import com.tbot.ruler.console.accessors.RouteThingsAccessor;
+import com.tbot.ruler.console.accessors.model.ActuatorModel;
+import com.tbot.ruler.console.accessors.ActuatorsAccessor;
+import com.tbot.ruler.console.accessors.PluginsAccessor;
+import com.tbot.ruler.console.accessors.ThingsAccessor;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.PopupNotifier;
 import com.tbot.ruler.controller.admin.payload.ActuatorCreateRequest;
@@ -18,13 +19,13 @@ import java.util.function.Consumer;
 public class ActuatorEditSupport {
 
     @Autowired
-    private RouteThingsAccessor thingsAccessor;
+    private ThingsAccessor thingsAccessor;
 
     @Autowired
-    private RoutePluginsAccessor pluginsAccessor;
+    private PluginsAccessor pluginsAccessor;
 
     @Autowired
-    private RouteActuatorsAccessor actuatorsAccessor;
+    private ActuatorsAccessor actuatorsAccessor;
 
     @Autowired
     private PopupNotifier popupNotifier;

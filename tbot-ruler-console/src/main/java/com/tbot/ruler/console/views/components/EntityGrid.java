@@ -11,11 +11,15 @@ import com.vaadin.flow.function.ValueProvider;
 import java.util.Collections;
 import java.util.function.Consumer;
 
-public abstract class AbstractGrid<T> extends Grid<T> {
+public class EntityGrid<T> extends Grid<T> {
 
     protected final HeaderRow headerRow;
 
-    protected AbstractGrid(Consumer<T> selectHandler) {
+    public EntityGrid() {
+        this(null);
+    }
+
+    public EntityGrid(Consumer<T> selectHandler) {
         getHeaderRows().clear();
         this.headerRow = appendHeaderRow();
 
@@ -24,11 +28,13 @@ public abstract class AbstractGrid<T> extends Grid<T> {
         addThemeVariants(
                 GridVariant.LUMO_COMPACT,
                 GridVariant.LUMO_WRAP_CELL_CONTENT);
-        asSingleSelect().addValueChangeListener(
-                event -> selectHandler.accept(event.getValue()));
+
+        if (selectHandler != null) {
+            asSingleSelect().addValueChangeListener(event -> selectHandler.accept(event.getValue()));
+        }
     }
 
-    protected Column<?> addColumn(String title, ValueProvider<T, ?> valueProvider) {
+    public Column<?> addColumn(String title, ValueProvider<T, ?> valueProvider) {
         Column<T> column = addColumn(valueProvider)
                 .setAutoWidth(true)
                 .setSortable(true);

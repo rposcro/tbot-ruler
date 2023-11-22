@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 
 @RouteScope
 @SpringComponent
-public class RouteActuatorsAccessor {
+public class ActuatorsAccessor {
 
     @Autowired
     private ActuatorsClient actuatorsClient;
