@@ -1,10 +1,10 @@
 package com.tbot.ruler.console.views;
 
-import com.tbot.ruler.console.views.actuators.ActuatorsDashboard;
-import com.tbot.ruler.console.views.bindings.BindingsDashboard;
-import com.tbot.ruler.console.views.plugins.PluginsDashboard;
-import com.tbot.ruler.console.views.things.ThingsDashboard;
-import com.tbot.ruler.console.views.webhooks.WebhooksDashboard;
+import com.tbot.ruler.console.views.routes.actuators.ActuatorsDashboard;
+import com.tbot.ruler.console.views.routes.bindings.BindingsDashboard;
+import com.tbot.ruler.console.views.routes.plugins.PluginsDashboard;
+import com.tbot.ruler.console.views.routes.things.ThingsDashboard;
+import com.tbot.ruler.console.views.routes.webhooks.WebhooksDashboard;
 import com.vaadin.flow.component.applayout.AppLayout;
 import com.vaadin.flow.component.applayout.DrawerToggle;
 import com.vaadin.flow.component.html.H1;
