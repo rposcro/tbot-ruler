@@ -51,7 +51,7 @@ public class WebhooksDashboard extends VerticalLayout {
         HorizontalLayout content = new HorizontalLayout();
 
         try {
-            webhooksGrid.setItems(editSupport.fetchAllWebhooks());
+            webhooksGrid.setItems(editSupport.getAllWebhooks());
             webhookPanel.getStyle().set("margin-top", "0px");
             content.add(webhooksGrid, webhookPanel);
             content.setFlexGrow(3, webhooksGrid);
@@ -73,14 +73,14 @@ public class WebhooksDashboard extends VerticalLayout {
 
     private void handleUpdateWebhook(WebhookEditDialog dialog) {
         if (editSupport.updateWebhook(dialog)) {
-            webhooksGrid.setItems(editSupport.fetchAllWebhooks());
+            webhooksGrid.setItems(editSupport.getAllWebhooks());
             dialog.close();
         }
     }
 
     private void handleCreateWebhook(WebhookEditDialog dialog) {
         if (editSupport.createWebhook(dialog)) {
-            webhooksGrid.setItems(editSupport.fetchAllWebhooks());
+            webhooksGrid.setItems(editSupport.getAllWebhooks());
             dialog.close();
         }
     }

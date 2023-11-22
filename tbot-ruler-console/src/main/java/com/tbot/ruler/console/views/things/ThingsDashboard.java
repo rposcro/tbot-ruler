@@ -3,7 +3,7 @@ package com.tbot.ruler.console.views.things;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tbot.ruler.console.clients.ThingsClient;
+import com.tbot.ruler.console.accessors.RouteThingsAccessor;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.EntityPropertiesPanel;
 import com.tbot.ruler.console.views.PopupNotifier;
@@ -30,7 +30,7 @@ import java.util.function.Function;
 @PageTitle("TBot Ruler Console | Things Dashboard")
 public class ThingsDashboard extends VerticalLayout {
 
-    private final ThingsClient thingsClient;
+    private final RouteThingsAccessor thingsAccessor;
     private final PopupNotifier popupNotifier;
 
     private final ObjectMapper objectMapper;
@@ -38,8 +38,8 @@ public class ThingsDashboard extends VerticalLayout {
     private final Grid<ThingResponse> thingsGrid;
 
     @Autowired
-    public ThingsDashboard(ThingsClient thingsClient, PopupNotifier popupNotifier) {
-        this.thingsClient = thingsClient;
+    public ThingsDashboard(RouteThingsAccessor thingsAccessor, PopupNotifier popupNotifier) {
+        this.thingsAccessor = thingsAccessor;
         this.popupNotifier = popupNotifier;
         this.objectMapper = new ObjectMapper();
         this.thingPanel = EntityPropertiesPanel.<ThingResponse>builder()
@@ -66,9 +66,11 @@ public class ThingsDashboard extends VerticalLayout {
 
     private HorizontalLayout constructContent() {
         HorizontalLayout content = new HorizontalLayout();
+        content.setWidthFull();
+        content.setAlignItems(Alignment.START);
 
         try {
-            List<ThingResponse> things = thingsClient.getAllThings();
+            List<ThingResponse> things = thingsAccessor.getAllThings();
             thingsGrid.setItems(things);
             thingPanel.getStyle().set("margin-top", "0px");
             content.add(thingsGrid, thingPanel);
@@ -80,8 +82,6 @@ public class ThingsDashboard extends VerticalLayout {
                     new Span(e.getMessage())));
         }
 
-        content.setWidthFull();
-        content.setAlignItems(Alignment.START);
         return content;
     }
 
@@ -158,8 +158,8 @@ public class ThingsDashboard extends VerticalLayout {
                 .description(dialog.getThingDescription())
                 .configuration(configuration)
                 .build();
-        thingsClient.updateThing(thingUuid, request);
-        thingsGrid.setItems(thingsClient.getAllThings());
+        thingsAccessor.updateThing(thingUuid, request);
+        thingsGrid.setItems(thingsAccessor.getAllThings());
     }
 
     private void createThing(ThingEditDialog dialog) throws Exception {
@@ -169,7 +169,7 @@ public class ThingsDashboard extends VerticalLayout {
                 .description(dialog.getThingDescription())
                 .configuration(configuration)
                 .build();
-        thingsClient.createThing(request);
-        thingsGrid.setItems(thingsClient.getAllThings());
+        thingsAccessor.createThing(request);
+        thingsGrid.setItems(thingsAccessor.getAllThings());
     }
 }

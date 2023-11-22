@@ -16,13 +16,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ActuatorsDashboard extends VerticalLayout {
 
     private final ActuatorEditSupport editSupport;
+    private final ActuatorDataSupport dataSupport;
 
     private final EntityPropertiesPanel<ActuatorModel> actuatorPanel;
     private final ActuatorsGrid actuatorsGrid;
 
     @Autowired
-    public ActuatorsDashboard(ActuatorEditSupport editSupport) {
+    public ActuatorsDashboard(ActuatorEditSupport editSupport, ActuatorDataSupport dataSupport) {
         this.editSupport = editSupport;
+        this.dataSupport = dataSupport;
         this.actuatorsGrid = constructGrid();
         this.actuatorPanel = EntityPropertiesPanel.<ActuatorModel>builder()
                 .beanType(ActuatorModel.class)
@@ -50,7 +52,7 @@ public class ActuatorsDashboard extends VerticalLayout {
         HorizontalLayout content = new HorizontalLayout();
 
         try {
-            actuatorsGrid.setItems(editSupport.fetchAllActuatorsModels());
+            actuatorsGrid.setItems(dataSupport.getAllActuatorsModels());
             actuatorPanel.getStyle().set("margin-top", "0px");
             content.add(actuatorsGrid, actuatorPanel);
             content.setFlexGrow(3, actuatorsGrid);
@@ -72,14 +74,14 @@ public class ActuatorsDashboard extends VerticalLayout {
 
     private void handleUpdateActuator(ActuatorEditDialog dialog) {
         if (editSupport.updateActuator(dialog)) {
-            actuatorsGrid.setItems(editSupport.fetchAllActuatorsModels());
+            actuatorsGrid.setItems(dataSupport.getAllActuatorsModels());
             dialog.close();
         }
     }
 
     private void handleCreateActuator(ActuatorEditDialog dialog) {
         if (editSupport.createActuator(dialog)) {
-            actuatorsGrid.setItems(editSupport.fetchAllActuatorsModels());
+            actuatorsGrid.setItems(dataSupport.getAllActuatorsModels());
             dialog.close();
         }
     }

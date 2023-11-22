@@ -1,34 +1,36 @@
 package com.tbot.ruler.console.views.webhooks;
 
-import com.tbot.ruler.console.clients.WebhooksClient;
+import com.tbot.ruler.console.accessors.RouteWebhooksAccessor;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.PopupNotifier;
 import com.tbot.ruler.controller.admin.payload.WebhookCreateRequest;
 import com.tbot.ruler.controller.admin.payload.WebhookResponse;
 import com.tbot.ruler.controller.admin.payload.WebhookUpdateRequest;
+import com.vaadin.flow.spring.annotation.RouteScope;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 import java.util.function.Consumer;
 
+@RouteScope
 @SpringComponent
 public class WebhookEditSupport {
 
     @Autowired
-    private WebhooksClient webhooksClient;
+    private RouteWebhooksAccessor webhooksAccessor;
 
     @Autowired
     private PopupNotifier popupNotifier;
 
-    public List<WebhookResponse> fetchAllWebhooks() {
-        return webhooksClient.getAllWebhooks();
+    public List<WebhookResponse> getAllWebhooks() {
+        return webhooksAccessor.getAllWebhooks();
     }
 
     public void launchWebhookEdit(WebhookResponse webhook, Consumer<WebhookEditDialog> submitHandler) {
         WebhookEditDialog.builder()
                 .updateMode(true)
-                .owners(webhooksClient.getOwners())
+                .owners(webhooksAccessor.getAvailableOwners())
                 .original(webhook)
                 .submitHandler(submitHandler)
                 .build()
@@ -38,7 +40,7 @@ public class WebhookEditSupport {
     public void launchWebhookCreate(Consumer<WebhookEditDialog> submitHandler) {
         WebhookEditDialog.builder()
                 .updateMode(false)
-                .owners(webhooksClient.getOwners())
+                .owners(webhooksAccessor.getAvailableOwners())
                 .submitHandler(submitHandler)
                 .build()
                 .open();
@@ -50,7 +52,7 @@ public class WebhookEditSupport {
                     .name(dialog.getWebhookName())
                     .description(dialog.getWebhookDescription())
                     .build();
-            webhooksClient.updateWebhook(dialog.getOriginal().getWebhookUuid(), request);
+            webhooksAccessor.updateWebhook(dialog.getOriginal().getWebhookUuid(), request);
             popupNotifier.notifyInfo("Webhook updated");
             return true;
         } catch(ClientCommunicationException e) {
@@ -69,7 +71,7 @@ public class WebhookEditSupport {
                     .owner(dialog.getWebhookOwner())
                     .description(dialog.getWebhookDescription())
                     .build();
-            webhooksClient.createWebhook(request);
+            webhooksAccessor.createWebhook(request);
             popupNotifier.notifyInfo("New webhook created");
             return true;
         } catch(ClientCommunicationException e) {

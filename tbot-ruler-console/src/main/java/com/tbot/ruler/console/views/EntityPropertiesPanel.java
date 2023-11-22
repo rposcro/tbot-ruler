@@ -71,7 +71,6 @@ public class EntityPropertiesPanel<T> extends VerticalLayout {
     }
 
     private void setUpPanel() {
-        setWidthFull();
         setVisible(false);
 
         for (PropertyDescriptor descriptor: descriptors) {

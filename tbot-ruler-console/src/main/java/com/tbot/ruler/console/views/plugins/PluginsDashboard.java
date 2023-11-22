@@ -3,8 +3,8 @@ package com.tbot.ruler.console.views.plugins;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tbot.ruler.console.clients.PluginsClient;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
+import com.tbot.ruler.console.accessors.RoutePluginsAccessor;
 import com.tbot.ruler.console.views.EntityPropertiesPanel;
 import com.tbot.ruler.console.views.PopupNotifier;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
@@ -12,8 +12,6 @@ import com.tbot.ruler.controller.admin.payload.PluginCreateRequest;
 import com.tbot.ruler.controller.admin.payload.PluginResponse;
 import com.tbot.ruler.controller.admin.payload.PluginUpdateRequest;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.grid.Grid;
-import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -22,31 +20,24 @@ import com.vaadin.flow.router.Route;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
-import java.util.function.Function;
-
 @Slf4j
 @Route(value = "plugins", layout = TBotRulerConsoleView.class)
 @PageTitle("TBot Ruler Console | Plugins Dashboard")
 public class PluginsDashboard extends VerticalLayout {
 
-    private final PluginsClient pluginsClient;
+    private final RoutePluginsAccessor pluginsAccessor;
     private final PopupNotifier popupNotifier;
 
     private final ObjectMapper objectMapper;
     private final EntityPropertiesPanel<PluginResponse> pluginPanel;
-    private final Grid<PluginResponse> pluginsGrid;
+    private final PluginsGrid pluginsGrid;
 
     @Autowired
-    public PluginsDashboard(PluginsClient pluginsClient, PopupNotifier popupNotifier) {
-        this.pluginsClient = pluginsClient;
+    public PluginsDashboard(RoutePluginsAccessor pluginsAccessor, PopupNotifier popupNotifier) {
+        this.pluginsAccessor = pluginsAccessor;
         this.popupNotifier = popupNotifier;
         this.objectMapper = new ObjectMapper();
-        this.pluginPanel = EntityPropertiesPanel.<PluginResponse>builder()
-                .beanType(PluginResponse.class)
-                .editHandler(() -> handleEditRequest(true))
-                .properties(new String[] { "name", "pluginUuid", "factoryClass", "configuration"} )
-                .build();
+        this.pluginPanel = constructPluginPanel();
         this.pluginsGrid = constructGrid();
 
         setSizeFull();
@@ -68,9 +59,6 @@ public class PluginsDashboard extends VerticalLayout {
         HorizontalLayout content = new HorizontalLayout();
 
         try {
-            List<PluginResponse> plugins = pluginsClient.getAllPlugins();
-            pluginsGrid.setItems(plugins);
-            pluginPanel.getStyle().set("margin-top", "0px");
             content.add(pluginsGrid, pluginPanel);
             content.setFlexGrow(3, pluginsGrid);
             content.setFlexGrow(1, pluginPanel);
@@ -80,30 +68,25 @@ public class PluginsDashboard extends VerticalLayout {
                     new Span(e.getMessage())));
         }
 
-        content.setWidthFull();
+        content.setSizeFull();
         content.setAlignItems(Alignment.START);
         return content;
     }
 
-    private Grid<PluginResponse> constructGrid() {
-        Grid<PluginResponse> grid = new Grid<>();
-        setUpColumn(grid, PluginResponse::getName, "Name").setSortable(true);
-        setUpColumn(grid, PluginResponse::getPluginUuid, "UUID");
-        setUpColumn(grid, PluginResponse::getFactoryClass, "Factory").setSortable(true);
-
-        grid.setWidthFull();
-        grid.addThemeVariants(
-                GridVariant.LUMO_COMPACT,
-                GridVariant.LUMO_WRAP_CELL_CONTENT);
-        grid.asSingleSelect().addValueChangeListener(
-                event -> pluginPanel.applyToEntity(event.getValue()));
-        return grid;
+    private EntityPropertiesPanel<PluginResponse> constructPluginPanel() {
+        EntityPropertiesPanel<PluginResponse> panel = EntityPropertiesPanel.<PluginResponse>builder()
+                .beanType(PluginResponse.class)
+                .editHandler(() -> handleEditRequest(true))
+                .properties(new String[] { "name", "pluginUuid", "factoryClass", "configuration"} )
+                .build();
+        panel.getStyle().set("margin-top", "0px");
+        return panel;
     }
 
-    private Grid.Column<PluginResponse> setUpColumn(Grid<PluginResponse> grid, Function<PluginResponse, ?> valueProvider, String headerTitle) {
-        return grid.addColumn(plugin -> valueProvider.apply(plugin))
-                .setAutoWidth(true)
-                .setHeader(headerTitle);
+    private PluginsGrid constructGrid() {
+        PluginsGrid grid = new PluginsGrid(plugin -> pluginPanel.applyToEntity(plugin));
+        grid.setItems(pluginsAccessor.getAllPlugins());
+        return grid;
     }
 
     private void handleEditRequest(boolean updateMode) {
@@ -114,14 +97,14 @@ public class PluginsDashboard extends VerticalLayout {
                 PluginResponse plugin = pluginsGrid.asSingleSelect().getValue();
                 dialog = PluginEditDialog.builder()
                         .updateMode(true)
-                        .factories(pluginsClient.getFactories())
+                        .factories(pluginsAccessor.getAvailableFactories())
                         .submitHandler(this::handlePluginUpdate)
                         .original(plugin)
                         .build();
             } else {
                 dialog = PluginEditDialog.builder()
                         .updateMode(false)
-                        .factories(pluginsClient.getFactories())
+                        .factories(pluginsAccessor.getAvailableFactories())
                         .submitHandler(this::handlePluginUpdate)
                         .build();
             }
@@ -156,8 +139,8 @@ public class PluginsDashboard extends VerticalLayout {
                 .name(dialog.getPluginName())
                 .configuration(configuration)
                 .build();
-        pluginsClient.updatePlugin(pluginUuid, request);
-        pluginsGrid.setItems(pluginsClient.getAllPlugins());
+        pluginsAccessor.updatePlugin(pluginUuid, request);
+        pluginsGrid.setItems(pluginsAccessor.getAllPlugins());
     }
 
     private void createPlugin(PluginEditDialog dialog) throws Exception {
@@ -167,7 +150,7 @@ public class PluginsDashboard extends VerticalLayout {
                 .factoryClass(dialog.getFactory())
                 .configuration(configuration)
                 .build();
-        pluginsClient.createPlugin(request);
-        pluginsGrid.setItems(pluginsClient.getAllPlugins());
+        pluginsAccessor.createPlugin(request);
+        pluginsGrid.setItems(pluginsAccessor.getAllPlugins());
     }
 }

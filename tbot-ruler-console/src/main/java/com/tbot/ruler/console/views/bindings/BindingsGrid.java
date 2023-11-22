@@ -56,7 +56,7 @@ public class BindingsGrid extends Grid<BindingModel> {
 
     private void setUpColumns() {
         setUpSenderNameColumn();
-        setUpSenderTypeColumn();
+//        setUpSenderTypeColumn();
         setUpSenderUuidColumn();
         setUpReceiverNameColumn();
         setUpReceiverUuidColumn();

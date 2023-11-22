@@ -1,7 +1,6 @@
 package com.tbot.ruler.console.views.bindings;
 
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
-import com.tbot.ruler.console.views.EntityPropertiesPanel;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
@@ -52,7 +51,7 @@ public class BindingsDashboard extends VerticalLayout {
         HorizontalLayout content = new HorizontalLayout();
 
         try {
-            bindingsGrid.setItems(dataSupport.fetchAllBindings());
+            bindingsGrid.setItems(dataSupport.getAllBindingsModels());
             content.add(bindingsGrid);
 //            actuatorPanel.getStyle().set("margin-top", "0px");
 //            content.add(bindingsGrid, actuatorPanel);
