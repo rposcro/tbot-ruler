@@ -1,5 +1,6 @@
 package com.tbot.ruler.console.views.routes.bindings;
 
+import com.tbot.ruler.console.accessors.BindingsModelAccessor;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
 import com.vaadin.flow.component.button.Button;
@@ -14,14 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 @PageTitle("TBot Ruler Console | Bindings Dashboard")
 public class BindingsDashboard extends VerticalLayout {
 
-    private final BindingsDataSupport dataSupport;
+    private final BindingsModelAccessor dataSupport;
     private final BindingEditSupport editSupport;
 
 //    private final EntityPropertiesPanel<BindingModel> actuatorPanel;
     private final BindingsGrid bindingsGrid;
 
     @Autowired
-    public BindingsDashboard(BindingsDataSupport dataSupport, BindingEditSupport editSupport) {
+    public BindingsDashboard(BindingsModelAccessor dataSupport, BindingEditSupport editSupport) {
         this.dataSupport = dataSupport;
         this.editSupport = editSupport;
         this.bindingsGrid = constructGrid();
@@ -69,6 +70,7 @@ public class BindingsDashboard extends VerticalLayout {
     }
 
     private BindingsGrid constructGrid() {
-        return new BindingsGrid();
+        BindingsGrid grid = new BindingsGrid();
+        return grid;
     }
 }

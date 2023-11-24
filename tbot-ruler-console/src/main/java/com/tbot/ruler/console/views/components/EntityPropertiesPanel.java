@@ -104,7 +104,7 @@ public class EntityPropertiesPanel<T> extends VerticalLayout {
     }
 
     private List<PropertyDescriptor> extractBeanProperties(Class<?> beanType, String[] properties) {
-        if (properties == null && properties.length == 0) {
+        if (properties == null || properties.length == 0) {
             return extractBeanProperties(beanType);
         }
 

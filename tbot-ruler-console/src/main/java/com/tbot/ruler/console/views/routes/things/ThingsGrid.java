@@ -15,22 +15,9 @@ public class ThingsGrid extends EntityGrid<ThingResponse> {
         setUpColumns();
     }
 
-    public void addContextAction(String name, Consumer<ThingResponse> actionHandler) {
-        if (contextMenu == null) {
-            contextMenu = addContextMenu();
-        }
-        contextMenu.addItem(name, event -> this.contextActionListener(event, actionHandler));
-    }
-
-    private void contextActionListener(
-            GridContextMenu.GridContextMenuItemClickEvent<ThingResponse> event,
-            Consumer<ThingResponse> actionHandler) {
-        event.getItem().ifPresent(actionHandler::accept);
-    }
-
     private void setUpColumns() {
         addColumn("Name", ThingResponse::getName);
         addColumn("UUID", ThingResponse::getThingUuid);
-        addColumn("Factory", ThingResponse::getDescription);
+        addColumn("Description", ThingResponse::getDescription);
     }
 }

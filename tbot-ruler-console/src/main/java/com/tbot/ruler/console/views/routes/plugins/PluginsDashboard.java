@@ -25,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 @PageTitle("TBot Ruler Console | Plugins Dashboard")
 public class PluginsDashboard extends VerticalLayout {
 
+    private final PluginActionSupport pluginActionSupport;
     private final PluginsAccessor pluginsAccessor;
     private final PopupNotifier popupNotifier;
 
@@ -33,8 +34,9 @@ public class PluginsDashboard extends VerticalLayout {
     private final PluginsGrid pluginsGrid;
 
     @Autowired
-    public PluginsDashboard(PluginsAccessor pluginsAccessor, PopupNotifier popupNotifier) {
+    public PluginsDashboard(PluginsAccessor pluginsAccessor, PluginActionSupport pluginActionSupport, PopupNotifier popupNotifier) {
         this.pluginsAccessor = pluginsAccessor;
+        this.pluginActionSupport = pluginActionSupport;
         this.popupNotifier = popupNotifier;
         this.objectMapper = new ObjectMapper();
         this.pluginPanel = constructPluginPanel();
@@ -85,6 +87,7 @@ public class PluginsDashboard extends VerticalLayout {
 
     private PluginsGrid constructGrid() {
         PluginsGrid grid = new PluginsGrid(plugin -> pluginPanel.applyToEntity(plugin));
+        grid.addContextAction("Show Actuators", pluginActionSupport::openActuatorsDialog);
         grid.setItems(pluginsAccessor.getAllPlugins());
         return grid;
     }

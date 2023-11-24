@@ -4,6 +4,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.function.ValueProvider;
@@ -13,7 +14,9 @@ import java.util.function.Consumer;
 
 public class EntityGrid<T> extends Grid<T> {
 
-    protected final HeaderRow headerRow;
+    private final HeaderRow headerRow;
+
+    private GridContextMenu<T> contextMenu;
 
     public EntityGrid() {
         this(null);
@@ -41,6 +44,13 @@ public class EntityGrid<T> extends Grid<T> {
         headerRow.getCell(column)
                 .setComponent(createHeader(title));
         return column;
+    }
+
+    public void addContextAction(String name, Consumer<T> actionHandler) {
+        if (contextMenu == null) {
+            contextMenu = addContextMenu();
+        }
+        contextMenu.addItem(name, event -> event.getItem().ifPresent(actionHandler::accept));
     }
 
     private Component createHeader(String headerTitle) {

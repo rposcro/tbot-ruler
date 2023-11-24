@@ -1,11 +1,13 @@
 package com.tbot.ruler.console.views.routes.actuators;
 
+import com.tbot.ruler.console.accessors.BindingsModelAccessor;
 import com.tbot.ruler.console.accessors.model.ActuatorModel;
 import com.tbot.ruler.console.accessors.ActuatorsAccessor;
 import com.tbot.ruler.console.accessors.PluginsAccessor;
 import com.tbot.ruler.console.accessors.ThingsAccessor;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.PopupNotifier;
+import com.tbot.ruler.console.views.routes.bindings.BindingsDialog;
 import com.tbot.ruler.controller.admin.payload.ActuatorCreateRequest;
 import com.tbot.ruler.controller.admin.payload.ActuatorUpdateRequest;
 import com.vaadin.flow.spring.annotation.RouteScope;
@@ -28,7 +30,19 @@ public class ActuatorEditSupport {
     private ActuatorsAccessor actuatorsAccessor;
 
     @Autowired
+    private BindingsModelAccessor bindingsAccessor;
+
+    @Autowired
     private PopupNotifier popupNotifier;
+
+    public void launchBindingsDialog(ActuatorModel actuator) {
+        BindingsDialog.builder()
+                .title("Bindings of actuator " + actuator.getName())
+                .inboundBindings(bindingsAccessor.getReceiverBindingsModels(actuator.getActuatorUuid()))
+                .outboundBindings(bindingsAccessor.getSenderBindingsModels(actuator.getActuatorUuid()))
+                .build()
+                .open();
+    }
 
     public void launchActuatorEdit(ActuatorModel actuator, Consumer<ActuatorEditDialog> submitHandler) {
         ActuatorEditDialog.builder()

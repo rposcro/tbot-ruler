@@ -1,0 +1,5 @@
+### Get receiver's bindings in DB
+# @name = BindingsGetByReceiver
+
+GET http://{{host-tbot-ruler}}/admin/bindings/receivers/actr-3733f45a-15e2-470d-b1c6-09d3c5930520
+Content-Type: application/json

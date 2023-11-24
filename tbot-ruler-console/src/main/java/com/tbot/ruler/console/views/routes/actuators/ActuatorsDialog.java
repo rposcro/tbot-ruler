@@ -1,8 +1,7 @@
-package com.tbot.ruler.console.views.routes.things;
+package com.tbot.ruler.console.views.routes.actuators;
 
-import com.tbot.ruler.console.views.components.EntityGrid;
 import com.tbot.ruler.console.accessors.model.ActuatorModel;
-import com.tbot.ruler.controller.admin.payload.ThingResponse;
+import com.tbot.ruler.console.views.components.EntityGrid;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.GridVariant;
@@ -11,7 +10,7 @@ import lombok.NonNull;
 
 import java.util.List;
 
-public class ThingActuatorsDialog extends Dialog {
+public class ActuatorsDialog extends Dialog {
 
     private final EntityGrid<ActuatorModel> actuatorsGrid;
     private final Button btnClose;
@@ -20,12 +19,12 @@ public class ThingActuatorsDialog extends Dialog {
 
     @Builder
     @NonNull
-    public ThingActuatorsDialog(ThingResponse thing, List<ActuatorModel> actuators) {
+    public ActuatorsDialog(String title, List<ActuatorModel> actuators) {
         this.actuators = actuators;
         this.btnClose = constructCloseButton();
         this.actuatorsGrid = constructActuatorsGrid();
 
-        setHeaderTitle("Actuators of " + thing.getName());
+        setHeaderTitle(title);
         setModal(true);
         setWidth("60%");
         setHeight("60%");

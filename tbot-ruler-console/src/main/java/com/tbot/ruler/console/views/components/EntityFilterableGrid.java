@@ -1,26 +1,68 @@
 package com.tbot.ruler.console.views.components;
 
+import com.tbot.ruler.console.utils.BeanReader;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.HeaderRow;
+import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
 import com.vaadin.flow.component.html.NativeLabel;
+import com.vaadin.flow.component.orderedlayout.FlexComponent;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.ValueProvider;
+import lombok.Builder;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.Consumer;
 
-public abstract class EntityFilterableGrid<T, F extends GridFilter<T>> extends EntityGrid<T> {
+public class EntityFilterableGrid<T> extends Grid<T> {
 
-    protected final F gridFilter;
+    private final BeanReader beanReader;
+    private final EntityGridFilter<T> gridFilter;
+    private final HeaderRow headerRow;
 
     private GridListDataView<T> dataView;
+    private GridContextMenu<T> contextMenu;
 
-    protected EntityFilterableGrid(F gridFilter, Consumer<T> selectHandler) {
-        super(selectHandler);
-        this.gridFilter = gridFilter;
+    @Builder
+    public EntityFilterableGrid(Class<?> beanType, String[] properties) {
+        this.beanReader = new BeanReader(beanType, properties);
+        this.gridFilter = new EntityGridFilter<>(beanReader, beanReader.getKnownProperties());
+
+        getHeaderRows().clear();
+        this.headerRow = appendHeaderRow();
+
+        setItems(Collections.emptyList());
+        setSizeFull();
+        addThemeVariants(
+                GridVariant.LUMO_COMPACT,
+                GridVariant.LUMO_WRAP_CELL_CONTENT);
+
+        Arrays.stream(beanReader.getKnownProperties()).forEach(property -> {
+            addFilterableColumn(
+                    beanReader.getDisplayName(property),
+                    bean -> beanReader.propertyAsString(bean, property),
+                    filterValue -> gridFilter.setFilterValue(property, filterValue),
+                    false);
+        });
+    }
+
+    public void setSelectHandler(Consumer<T> selectHandler) {
+        asSingleSelect().addValueChangeListener(event -> selectHandler.accept(event.getValue()));
+    }
+
+    public void addContextAction(String name, Consumer<T> actionHandler) {
+        if (contextMenu == null) {
+            contextMenu = addContextMenu();
+        }
+        contextMenu.addItem(name, event -> event.getItem().ifPresent(actionHandler::accept));
     }
 
     public void setItems(List<T> items) {
@@ -28,23 +70,23 @@ public abstract class EntityFilterableGrid<T, F extends GridFilter<T>> extends E
         dataView.addFilter(gridFilter::test);
     }
 
-    protected Column<T> addFilterableColumn(
+    private Column<T> addFilterableColumn(
             String title,
             ValueProvider<T, ?> valueProvider,
-            Consumer<String> filterValueListener) {
+            Consumer<String> filterValueListener,
+            boolean filterHorizontal) {
         Column<T> column = addColumn(valueProvider)
                 .setAutoWidth(true)
                 .setSortable(true);
         headerRow.getCell(column)
-                .setComponent(createFilteredHeader(title, filterValueListener));
+                .setComponent(createFilteredHeader(title, filterValueListener, filterHorizontal));
         return column;
     }
 
-    private Component createFilteredHeader(String headerTitle, Consumer<String> filterValueListener) {
+    private Component createFilteredHeader(String headerTitle, Consumer<String> filterValueListener, boolean horizontal) {
         NativeLabel label = new NativeLabel(headerTitle);
-        label.getStyle()
-                .set("padding-top", "var(--lumo-space-m)")
-                .set("font-size", "var(--lumo-font-size-xs)");
+        label.getStyle().set("font-size", "var(--lumo-font-size-xs)");
+        label.setWidthFull();
         TextField filterField = new TextField();
         filterField.setValueChangeMode(ValueChangeMode.EAGER);
         filterField.setClearButtonVisible(true);
@@ -55,10 +97,19 @@ public abstract class EntityFilterableGrid<T, F extends GridFilter<T>> extends E
             filterValueListener.accept(e.getValue());
             this.filterChanged();
         });
-        VerticalLayout layout = new VerticalLayout(label, filterField);
-        layout.getThemeList().clear();
-        layout.getThemeList().add("spacing-xs");
-        return layout;
+
+        if (horizontal) {
+            HorizontalLayout layout = new HorizontalLayout(label, filterField);
+            layout.setWidthFull();
+            layout.setAlignItems(FlexComponent.Alignment.CENTER);
+            return layout;
+        } else {
+            VerticalLayout layout = new VerticalLayout(label, filterField);
+            layout.setWidthFull();
+            layout.getThemeList().clear();
+            layout.getThemeList().add("spacing-xs");
+            return layout;
+        }
     }
 
     private void filterChanged() {

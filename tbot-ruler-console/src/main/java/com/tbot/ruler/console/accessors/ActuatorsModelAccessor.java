@@ -34,6 +34,12 @@ public class ActuatorsModelAccessor {
         return toModels(actuators);
     }
 
+    public List<ActuatorModel> getPluginActuators(String pluginUuid) {
+        List<ActuatorResponse> actuators = actuatorsAccessor.getAllActuators();
+        actuators.removeIf(actuator -> !pluginUuid.equals(actuator.getPluginUuid()));
+        return toModels(actuators);
+    }
+
     private List<ActuatorModel> toModels(List<ActuatorResponse> actuators) {
         Map<String, PluginResponse> pluginsMap = pluginsAccessor.getPluginsUuidMap();
         Map<String, ThingResponse> thingsMap = thingsAccessor.getThingsUuidMap();

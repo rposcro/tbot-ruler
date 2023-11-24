@@ -1,4 +1,4 @@
-package com.tbot.ruler.console.views.routes.bindings;
+package com.tbot.ruler.console.accessors.model;
 
 import lombok.Builder;
 import lombok.Getter;

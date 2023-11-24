@@ -68,7 +68,9 @@ public class WebhooksDashboard extends VerticalLayout {
     }
 
     private WebhooksGrid constructGrid() {
-        return new WebhooksGrid(webhook -> webhookPanel.applyToEntity(webhook));
+        WebhooksGrid grid = new WebhooksGrid();
+        grid.setSelectHandler(webhook -> webhookPanel.applyToEntity(webhook));
+        return grid;
     }
 
     private void handleUpdateWebhook(WebhookEditDialog dialog) {

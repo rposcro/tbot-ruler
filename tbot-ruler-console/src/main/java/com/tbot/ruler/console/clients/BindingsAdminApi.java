@@ -20,7 +20,7 @@ public interface BindingsAdminApi {
     @GET("/admin/bindings/senders/{senderUuid}")
     Call<List<BindingResponse>> getSenderBindings(@Path("senderUuid") String senderUuid);
 
-    @GET("/admin/bindings/senders/{receiverUuid}")
+    @GET("/admin/bindings/receivers/{receiverUuid}")
     Call<List<BindingResponse>> getReceiverBindings(@Path("receiverUuid") String receiverUuid);
 
     @POST("/admin/bindings")

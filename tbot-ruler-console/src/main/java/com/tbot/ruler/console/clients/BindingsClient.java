@@ -20,6 +20,14 @@ public class BindingsClient extends AbstractApiClient {
         return executeApiFunction(() -> bindingsAdminApi.getBindings().execute());
     }
 
+    public List<BindingResponse> getSenderBindings(String senderUuid) {
+        return executeApiFunction(() -> bindingsAdminApi.getSenderBindings(senderUuid).execute());
+    }
+
+    public List<BindingResponse> getReceiverBindings(String receiverUuid) {
+        return executeApiFunction(() -> bindingsAdminApi.getReceiverBindings(receiverUuid).execute());
+    }
+
     public void createBinding(String senderUuid, String receiverUuid) {
         executeApiFunction(() -> bindingsAdminApi.createThing(BindingCreateRequest.builder()
                         .senderUuid(senderUuid)

@@ -1,8 +1,6 @@
-package com.tbot.ruler.console.views.routes.bindings;
+package com.tbot.ruler.console.accessors;
 
-import com.tbot.ruler.console.accessors.ActuatorsAccessor;
-import com.tbot.ruler.console.accessors.BindingsAccessor;
-import com.tbot.ruler.console.accessors.WebhooksAccessor;
+import com.tbot.ruler.console.accessors.model.BindingModel;
 import com.tbot.ruler.controller.admin.payload.ActuatorResponse;
 import com.tbot.ruler.controller.admin.payload.BindingResponse;
 import com.tbot.ruler.controller.admin.payload.WebhookResponse;
@@ -15,7 +13,7 @@ import java.util.Map;
 
 @RouteScope
 @SpringComponent
-public class BindingsDataSupport {
+public class BindingsModelAccessor {
 
     @Autowired
     private BindingsAccessor bindingsAccessor;
@@ -27,10 +25,22 @@ public class BindingsDataSupport {
     private WebhooksAccessor webhooksAccessor;
 
     public List<BindingModel> getAllBindingsModels() {
+        return toModels(bindingsAccessor.getAllBindings());
+    }
+
+    public List<BindingModel> getSenderBindingsModels(String senderUuid) {
+        return toModels(bindingsAccessor.getSenderBindings(senderUuid));
+    }
+
+    public List<BindingModel> getReceiverBindingsModels(String receiverUuid) {
+        return toModels(bindingsAccessor.getReceiverBindings(receiverUuid));
+    }
+
+    private List<BindingModel> toModels(List<BindingResponse> responses) {
         Map<String, ActuatorResponse> actuatorsMap = actuatorsAccessor.getActuatorsUuidMap();
         Map<String, WebhookResponse> webhooksMap = webhooksAccessor.getWebhooksUuidMap();
 
-        return bindingsAccessor.getAllBindings().stream()
+        return responses.stream()
                 .map(response -> toModel(response, actuatorsMap, webhooksMap))
                 .toList();
     }

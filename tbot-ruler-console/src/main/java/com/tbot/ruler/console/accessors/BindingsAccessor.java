@@ -19,6 +19,14 @@ public class BindingsAccessor {
         return bindingsClient.getAllBindings();
     }
 
+    public List<BindingResponse> getSenderBindings(String senderUuid) {
+        return bindingsClient.getSenderBindings(senderUuid);
+    }
+
+    public List<BindingResponse> getReceiverBindings(String receiverUuid) {
+        return bindingsClient.getReceiverBindings(receiverUuid);
+    }
+
     public void createBinding(String senderUuid, String receiverUuid) {
         bindingsClient.createBinding(senderUuid, receiverUuid);
     }
