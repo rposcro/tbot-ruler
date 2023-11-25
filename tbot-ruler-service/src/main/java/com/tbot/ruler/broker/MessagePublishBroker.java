@@ -5,6 +5,7 @@ import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.MessagePublicationReport.publicationReportBuilder;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.service.things.BindingsService;
+import com.tbot.ruler.task.AbstractTask;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,7 +16,7 @@ import java.util.Collections;
 
 @Slf4j
 @Service
-public class MessagePublishBroker implements Runnable {
+public class MessagePublishBroker extends AbstractTask {
 
     private final MessageQueueComponent messageQueue;
     private final BindingsService bindingsService;
@@ -31,15 +32,13 @@ public class MessagePublishBroker implements Runnable {
     }
 
     @Override
-    public void run() {
-        while(true) {
-            try {
-                Message message = messageQueue.nextMessage();
-                MessagePublicationReport publicationReport = dispatchMessage(message);
-                messageQueue.enqueueReport(publicationReport);
-            } catch(Exception e) {
-                log.error("Dispatch interrupted by unexpected internal error", e);
-            }
+    public void runIteration() {
+        try {
+            Message message = messageQueue.nextMessage();
+            MessagePublicationReport publicationReport = dispatchMessage(message);
+            messageQueue.enqueueReport(publicationReport);
+        } catch(Exception e) {
+            log.error("Dispatch interrupted by unexpected internal error", e);
         }
     }
 

@@ -13,7 +13,7 @@ import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.task.Task;
+import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -37,7 +37,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
     private final long pollIntervalMilliseconds;
     private final boolean multiChannelOn;
 
-    private final Collection<Task> asynchronousTasks;
+    private final Collection<SubjectTask> asynchronousSubjectTasks;
 
     @Builder
     public UpdateSwitchBinaryActuator(
@@ -57,7 +57,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
         this.multiChannelOn = configuration.getNodeEndPointId() >= 0;
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchBinaryCommandBuilder();
         this.multiChannelCommandBuilder = applicationSupport.controlledCommandFactory().multiChannelCommandBuilder();
-        this.asynchronousTasks = asynchronousTasks();
+        this.asynchronousSubjectTasks = asynchronousTasks();
     }
 
     @Override
@@ -75,7 +75,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
     public void acceptMessage(Message message) {
     }
 
-    private Collection<Task> asynchronousTasks() {
+    private Collection<SubjectTask> asynchronousTasks() {
         if (configuration.getPollStateInterval() == 0) {
             return Collections.emptySet();
         } else {
@@ -91,7 +91,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
                     commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
                 }
             };
-            return Collections.singleton(Task.triggerableTask(runnable, pollIntervalMilliseconds));
+            return Collections.singleton(SubjectTask.triggerableTask(runnable, pollIntervalMilliseconds));
         }
     }
 }

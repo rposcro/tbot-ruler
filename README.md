@@ -30,4 +30,8 @@ If you need runnable docker image type:
 Now, you can export the image from local docker images.
 Note! Dockerfile specifies *linux/amd64* as the target platform, change it if needed.
 
+## Dynamic Runtime
+
+### Stopping 
+
 # Enjoy!

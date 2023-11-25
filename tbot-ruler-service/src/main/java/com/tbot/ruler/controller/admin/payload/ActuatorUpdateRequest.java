@@ -19,6 +19,9 @@ public class ActuatorUpdateRequest {
     private String name;
 
     @JsonProperty(required = true)
+    private String thingUuid;
+
+    @JsonProperty(required = true)
     private String description;
 
     private JsonNode configuration;

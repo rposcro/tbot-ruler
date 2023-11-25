@@ -1,6 +1,6 @@
 package com.tbot.ruler.subjects;
 
-import com.tbot.ruler.task.Task;
+import com.tbot.ruler.task.SubjectTask;
 import lombok.Getter;
 
 import java.util.Collection;
@@ -13,7 +13,7 @@ public abstract class AbstractSubject implements Subject {
     protected String uuid;
     protected String name;
     protected String description;
-    protected Collection<Task> asynchronousTasks;
+    protected Collection<SubjectTask> asynchronousSubjectTasks;
 
     protected AbstractSubject(String uuid, String name) {
         this(uuid, name, null, null);
@@ -23,10 +23,10 @@ public abstract class AbstractSubject implements Subject {
         this(uuid, name, description, null);
     }
 
-    protected AbstractSubject(String uuid, String name, String description, Collection<Task> asynchronousTasks) {
+    protected AbstractSubject(String uuid, String name, String description, Collection<SubjectTask> asynchronousSubjectTasks) {
         this.uuid = uuid;
         this.name = name;
         this.description = description;
-        this.asynchronousTasks = orEmpty(asynchronousTasks);
+        this.asynchronousSubjectTasks = orEmpty(asynchronousSubjectTasks);
     }
 }

@@ -6,7 +6,7 @@ import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.task.Task;
+import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +20,7 @@ public class BinaryActuator extends AbstractSubject implements Actuator {
 
     private final BinaryActuatorChannel binaryChannel;
     private final MessagePublisher messagePublisher;
-    private final Collection<Task> asynchronousTasks;
+    private final Collection<SubjectTask> asynchronousSubjectTasks;
 
     private boolean expectedState;
 
@@ -34,7 +34,7 @@ public class BinaryActuator extends AbstractSubject implements Actuator {
         super(id, name, description);
         this.binaryChannel = binaryChannel;
         this.messagePublisher = messagePublisher;
-        this.asynchronousTasks = Collections.singleton(Task.triggerableTask(
+        this.asynchronousSubjectTasks = Collections.singleton(SubjectTask.triggerableTask(
                 () -> binaryChannel.updateState(expectedState), 600_000));
     }
 

@@ -2,6 +2,7 @@ package com.tbot.ruler.broker;
 
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.service.things.BindingsService;
+import com.tbot.ruler.task.AbstractTask;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.extern.slf4j.Slf4j;
@@ -12,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class MessagePublicationReportBroker implements Runnable {
+public class MessagePublicationReportBroker extends AbstractTask {
 
     private MessageQueueComponent messageQueue;
     private BindingsService bindingsService;
@@ -30,14 +31,12 @@ public class MessagePublicationReportBroker implements Runnable {
     }
 
     @Override
-    public void run() {
-        while(true) {
-            try {
-                MessagePublicationReport publicationReport = messageQueue.nextReport();
-                deliverReport(publicationReport);
-            } catch(Exception e) {
-                log.error("Message delivery report broker interrupted by unexpected internal error", e);
-            }
+    public void runIteration() {
+        try {
+            MessagePublicationReport publicationReport = messageQueue.nextReport();
+            deliverReport(publicationReport);
+        } catch(Exception e) {
+            log.error("Message delivery report broker interrupted by unexpected internal error", e);
         }
     }
 

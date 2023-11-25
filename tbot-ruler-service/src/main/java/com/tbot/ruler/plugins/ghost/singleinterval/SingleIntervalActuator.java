@@ -4,7 +4,7 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
-import com.tbot.ruler.task.Task;
+import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.Singular;
@@ -23,8 +23,8 @@ public class SingleIntervalActuator extends AbstractActuator {
             @NonNull String name,
             String description,
             @NonNull SingleIntervalAgent singleIntervalAgent,
-            @NonNull @Singular Collection<Task> asynchronousTasks) {
-        super(uuid, name, description, asynchronousTasks);
+            @NonNull @Singular Collection<SubjectTask> asynchronousSubjectTasks) {
+        super(uuid, name, description, asynchronousSubjectTasks);
         this.singleIntervalAgent = singleIntervalAgent;
     }
 

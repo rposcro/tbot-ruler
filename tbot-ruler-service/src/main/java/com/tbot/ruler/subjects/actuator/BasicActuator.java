@@ -4,7 +4,7 @@ import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessageReceiver;
 import com.tbot.ruler.subjects.AbstractSubject;
-import com.tbot.ruler.task.Task;
+import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -23,10 +23,10 @@ public class BasicActuator extends AbstractSubject implements Actuator {
         @NonNull String uuid,
         @NonNull String name,
         String description,
-        @Singular Collection<Task> asynchronousTasks,
+        @Singular Collection<SubjectTask> asynchronousSubjectTasks,
         MessageReceiver messageReceiver
     ) {
-        super(uuid, name, description, asynchronousTasks);
+        super(uuid, name, description, asynchronousSubjectTasks);
         this.messageReceiver = Optional.ofNullable(messageReceiver);
     }
 

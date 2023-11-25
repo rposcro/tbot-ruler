@@ -25,22 +25,24 @@ public class MessageQueueComponent {
     }
 
     protected void enqueueMessage(Message message) {
-        this.messageQueue.add(message);
-        log.debug("Enqueued message from {} with payload {}",
-                message.getSenderId(), message.getPayload().getClass().getSimpleName());
+        if (this.messageQueue.offer(message)) {
+            log.debug("Enqueued message from {} with payload {}",
+                    message.getSenderId(), message.getPayload().getClass().getSimpleName());
+        } else {
+            log.warn("Message queue full, dropped message from {}", message.getSenderId());
+        }
     }
 
     protected void enqueueReport(MessagePublicationReport publicationReport) {
-        this.reportQueue.add(publicationReport);
-        log.debug("Enqueued delivery report for {}", publicationReport.getOriginalMessage().getSenderId());
+        if (this.reportQueue.offer(publicationReport)) {
+            log.debug("Enqueued delivery report for {}", publicationReport.getOriginalMessage().getSenderId());
+        } else {
+            log.warn("Report queue full, dropped report message for {}", publicationReport.getOriginalMessage().getSenderId());
+        }
     }
 
     protected Message nextMessage() throws InterruptedException {
         return messageQueue.take();
-    }
-
-    protected Message nextMessage(long timeout) throws InterruptedException {
-        return messageQueue.poll(timeout, TimeUnit.MILLISECONDS);
     }
 
     protected MessagePublicationReport nextReport() throws InterruptedException {

@@ -11,7 +11,7 @@ import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.task.Task;
+import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -34,7 +34,7 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
     private final SwitchMultiLevelCommandBuilder commandBuilder;
     private final long pollIntervalMilliseconds;
 
-    private final Collection<Task> asynchronousTasks;
+    private final Collection<SubjectTask> asynchronousSubjectTasks;
 
     @Builder
     public UpdateSwitchMultiLevelActuator(
@@ -52,7 +52,7 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
         this.configuration = configuration;
         this.pollIntervalMilliseconds = configuration.getPollStateInterval() <= 0 ? 0 : 1000 * Math.max(MIN_POLL_INTERVAL, configuration.getPollStateInterval());
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchMultiLevelCommandBuilder();
-        this.asynchronousTasks = asynchronousTasks();
+        this.asynchronousSubjectTasks = asynchronousTasks();
     }
 
     @Override
@@ -70,7 +70,7 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
     public void acceptMessage(Message message) {
     }
 
-    private Collection<Task> asynchronousTasks() {
+    private Collection<SubjectTask> asynchronousTasks() {
         if (pollIntervalMilliseconds == 0) {
             return Collections.emptySet();
         } else {
@@ -79,8 +79,8 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
                 commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
             };
             return List.of(
-                    Task.triggerableTask(runnable, pollIntervalMilliseconds),
-                    Task.startUpTask(runnable));
+                    SubjectTask.triggerableTask(runnable, pollIntervalMilliseconds),
+                    SubjectTask.startUpTask(runnable));
         }
     }
 }

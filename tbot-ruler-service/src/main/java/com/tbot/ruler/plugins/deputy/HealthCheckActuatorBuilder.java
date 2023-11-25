@@ -7,7 +7,7 @@ import com.tbot.ruler.subjects.actuator.BasicActuator;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 import com.tbot.ruler.task.RegularEmissionTrigger;
-import com.tbot.ruler.task.Task;
+import com.tbot.ruler.task.SubjectTask;
 
 class HealthCheckActuatorBuilder {
 
@@ -19,7 +19,7 @@ class HealthCheckActuatorBuilder {
                 .uuid(actuatorDTO.getUuid())
                 .name(actuatorDTO.getName())
                 .description(actuatorDTO.getDescription())
-                .asynchronousTask(Task.triggerableTask(
+                .asynchronousSubjectTask(SubjectTask.triggerableTask(
                         emissionTask(thingContext, actuatorDTO),
                         emissionTrigger(actuatorDTO)))
                 .build();

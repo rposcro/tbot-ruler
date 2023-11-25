@@ -13,7 +13,7 @@ import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.task.Task;
+import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -42,7 +42,7 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
     private final long pollIntervalMilliseconds;
     private final ColorMode colorMode;
 
-    private final Collection<Task> asynchronousTasks;
+    private final Collection<SubjectTask> asynchronousSubjectTasks;
 
     private final HashMap<Integer, Integer> collectedComponentsReports = new HashMap<>();
 
@@ -63,7 +63,7 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
         this.pollIntervalMilliseconds = configuration.getPollStateInterval() <= 0 ? 0 : 1000 * Math.max(MIN_POLL_INTERVAL, configuration.getPollStateInterval());
         this.colorMode = ColorMode.valueOf(configuration.getColorMode());
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchColorCommandBuilder();
-        this.asynchronousTasks = asynchronousTasks();
+        this.asynchronousSubjectTasks = asynchronousTasks();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
     public void acceptMessage(Message message) {
     }
 
-    private Collection<Task> asynchronousTasks() {
+    private Collection<SubjectTask> asynchronousTasks() {
         if (configuration.getPollStateInterval() == 0) {
             return Collections.emptySet();
         } else {
@@ -119,8 +119,8 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
                 });
             };
             return List.of(
-                    Task.triggerableTask(runnable, pollIntervalMilliseconds),
-                    Task.startUpTask(runnable));
+                    SubjectTask.triggerableTask(runnable, pollIntervalMilliseconds),
+                    SubjectTask.startUpTask(runnable));
         }
     }
 }
