@@ -34,9 +34,11 @@ public class MessagePublicationReportBroker extends AbstractTask {
     public void runIteration() {
         try {
             MessagePublicationReport publicationReport = messageQueue.nextReport();
-            deliverReport(publicationReport);
+            if (publicationReport != null) {
+                deliverReport(publicationReport);
+            }
         } catch(Exception e) {
-            log.error("Message delivery report broker interrupted by unexpected internal error", e);
+            log.error("Report delivery interrupted by unexpected internal error", e);
         }
     }
 
@@ -44,9 +46,11 @@ public class MessagePublicationReportBroker extends AbstractTask {
         MessageSender messageSender = bindingsService.findSenderByUuid(publicationReport.getOriginalMessage().getSenderId());
 
         if (messageSender != null) {
+            log.debug("Report delivery to {}", publicationReport.getOriginalMessage().getSenderId());
             messageSender.acceptPublicationReport(publicationReport);
             deliveryListeners.forEach(listener -> listener.publicationReportDelivered(publicationReport));
         } else {
+            log.debug("Report delivery to unknown sender");
             deliveryListeners.forEach(listener -> listener.publicationReportSkipped(publicationReport));
         }
     }

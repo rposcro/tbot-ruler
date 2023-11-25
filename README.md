@@ -33,5 +33,11 @@ Note! Dockerfile specifies *linux/amd64* as the target platform, change it if ne
 ## Dynamic Runtime
 
 ### Stopping 
+ * Stop broker tasks:
+ * ...
+
+### Restarting 
+ * Start broker tasks
+ * ...
 
 # Enjoy!

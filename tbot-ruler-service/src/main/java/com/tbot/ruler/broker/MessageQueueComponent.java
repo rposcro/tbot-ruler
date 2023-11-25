@@ -14,6 +14,8 @@ import java.util.concurrent.TimeUnit;
 @Component
 public class MessageQueueComponent {
 
+    private final static long POLL_TIMEOUT = 1000;
+
     private LinkedBlockingQueue<Message> messageQueue;
     private LinkedBlockingQueue<MessagePublicationReport> reportQueue;
 
@@ -22,6 +24,11 @@ public class MessageQueueComponent {
         log.info("Message queue length set to {}", queueSize);
         messageQueue = new LinkedBlockingQueue<>(queueSize);
         reportQueue = new LinkedBlockingQueue<>(queueSize);
+    }
+
+    public void emptyQueues() {
+        messageQueue.clear();
+        reportQueue.clear();
     }
 
     protected void enqueueMessage(Message message) {
@@ -41,12 +48,20 @@ public class MessageQueueComponent {
         }
     }
 
-    protected Message nextMessage() throws InterruptedException {
-        return messageQueue.take();
+    protected Message nextMessage() {
+        try {
+            return messageQueue.poll(POLL_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            return null;
+        }
     }
 
-    protected MessagePublicationReport nextReport() throws InterruptedException {
-        return reportQueue.take();
+    protected MessagePublicationReport nextReport() {
+        try {
+            return reportQueue.poll(POLL_TIMEOUT, TimeUnit.MILLISECONDS);
+        } catch (InterruptedException e) {
+            return null;
+        }
     }
 
     protected MessagePublicationReport nextReport(long timeout) throws InterruptedException {
