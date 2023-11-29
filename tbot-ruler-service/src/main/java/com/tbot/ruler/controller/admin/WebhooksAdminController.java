@@ -6,6 +6,7 @@ import com.tbot.ruler.controller.admin.payload.WebhookResponse;
 import com.tbot.ruler.controller.admin.payload.WebhookUpdateRequest;
 import com.tbot.ruler.persistance.WebhooksRepository;
 import com.tbot.ruler.persistance.model.WebhookEntity;
+import com.tbot.ruler.service.manipulators.WebhooksManipulator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -27,10 +28,13 @@ import java.util.UUID;
 public class WebhooksAdminController extends AbstractController {
 
     @Autowired
-    private SubjectsAccessor subjectsAccessor;
+    private RepositoryAccessor subjectsAccessor;
 
     @Autowired
     private WebhooksRepository webhooksRepository;
+
+    @Autowired
+    private WebhooksManipulator webhooksManipulator;
 
     @GetMapping("/owners")
     public ResponseEntity<List<String>> getFactories() {
@@ -68,7 +72,7 @@ public class WebhooksAdminController extends AbstractController {
     @DeleteMapping("/{webhookUuid}")
     public ResponseEntity<WebhookResponse> deleteWebhook(@PathVariable String webhookUuid) {
         WebhookEntity webhookEntity = subjectsAccessor.findWebhook(webhookUuid);
-        webhooksRepository.delete(webhookEntity);
+        webhooksManipulator.removeWebhook(webhookEntity);
         return ok(toResponse(webhookEntity));
     }
 

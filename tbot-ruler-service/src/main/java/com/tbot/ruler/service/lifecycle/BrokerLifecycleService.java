@@ -1,4 +1,4 @@
-package com.tbot.ruler.service.lifetime;
+package com.tbot.ruler.service.lifecycle;
 
 import com.tbot.ruler.broker.MessagePublicationReportBroker;
 import com.tbot.ruler.broker.MessagePublishBroker;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 @Service
 @Scope("singleton")
-public class BrokerLifetimeService {
+public class BrokerLifecycleService {
 
     @Autowired
     private MessagePublishBroker messagePublishBroker;

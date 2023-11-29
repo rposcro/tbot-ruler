@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class ControllerToServiceExceptionAdvisor {
+public class ServiceExceptionAdvisor {
 
     @ExceptionHandler(ServiceException.class)
     public ResponseEntity<ApplicationProblemDetails> handleServiceException(ServiceException ex) {

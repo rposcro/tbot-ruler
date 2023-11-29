@@ -1,4 +1,4 @@
-package com.tbot.ruler.service.lifetime;
+package com.tbot.ruler.service.lifecycle;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.ActuatorsRepository;
@@ -25,7 +25,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @Scope("singleton")
-public class SubjectLifetimeService {
+public class SubjectLifecycleService {
 
     @Autowired
     private PluginsRepository pluginsRepository;

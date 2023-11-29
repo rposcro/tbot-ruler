@@ -2,8 +2,9 @@ package com.tbot.ruler.service.things;
 
 import com.tbot.ruler.broker.MessageSender;
 import com.tbot.ruler.broker.MessageReceiver;
-import com.tbot.ruler.service.lifetime.BindingsLifetimeService;
-import com.tbot.ruler.service.lifetime.SubjectLifetimeService;
+import com.tbot.ruler.service.lifecycle.BindingsLifecycleService;
+import com.tbot.ruler.service.lifecycle.SubjectLifecycleService;
+import com.tbot.ruler.service.lifecycle.WebhooksLifecycleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,25 +14,27 @@ import java.util.Collection;
 public class BindingsService {
 
     @Autowired
-    private BindingsLifetimeService bindingsLifetimeService;
+    private BindingsLifecycleService bindingsLifecycleService;
 
     @Autowired
-    private SubjectLifetimeService subjectLifetimeService;
+    private SubjectLifecycleService subjectLifecycleService;
+
+    @Autowired
+    private WebhooksLifecycleService webhooksLifecycleService;
 
     public Collection<String> findReceiversUuidsBySenderUuid(String senderUuid) {
-        return bindingsLifetimeService.getReceiversForSender(senderUuid);
+        return bindingsLifecycleService.getReceiversForSender(senderUuid);
     }
 
     public MessageReceiver findReceiverByUuid(String receiverUuid) {
-        return findSubject(receiverUuid);
+        return subjectLifecycleService.getActuatorByUuid(receiverUuid);
     }
 
     public MessageSender findSenderByUuid(String senderUuid) {
-        return findSubject(senderUuid);
-    }
-
-    private <T> T findSubject(String uuid) {
-        T subject = (T) subjectLifetimeService.getActuatorByUuid(uuid);
-        return subject;
+        MessageSender sender = subjectLifecycleService.getActuatorByUuid(senderUuid);
+        if (sender == null) {
+            sender = webhooksLifecycleService.getWebhookByUuid(senderUuid);
+        }
+        return sender;
     }
 }

@@ -1,4 +1,4 @@
-package com.tbot.ruler.service.lifetime;
+package com.tbot.ruler.service.lifecycle;
 
 import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.model.BindingEntity;
@@ -17,24 +17,27 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @Scope("singleton")
-public class BindingsLifetimeService {
+public class BindingsLifecycleService {
 
     @Autowired
     private BindingsRepository bindingsRepository;
 
-    private Map<String, Set<String>> bindingsMap;
+    private Map<String, Set<String>> sendersToReceiversMap;
 
     @EventListener
     public void initialize(ApplicationStartedEvent event) {
-        Collectors.mapping(BindingEntity::getReceiverUuid, Collectors.<String>toSet());
-        this.bindingsMap = bindingsRepository.findAll().stream()
-                .collect(Collectors.groupingBy(
-                        BindingEntity::getSenderUuid,
-                        Collectors.mapping(BindingEntity::getReceiverUuid, Collectors.<String>toSet())));
+        reloadCache();
     }
 
     public Set<String> getReceiversForSender(String senderUuid) {
-        Set<String> receivers = bindingsMap.get(senderUuid);
+        Set<String> receivers = sendersToReceiversMap.get(senderUuid);
         return receivers != null ? Collections.unmodifiableSet(receivers) : Collections.emptySet();
+    }
+
+    public void reloadCache() {
+        this.sendersToReceiversMap = bindingsRepository.findAll().stream()
+                .collect(Collectors.groupingBy(
+                        BindingEntity::getSenderUuid,
+                        Collectors.mapping(BindingEntity::getReceiverUuid, Collectors.<String>toSet())));
     }
 }

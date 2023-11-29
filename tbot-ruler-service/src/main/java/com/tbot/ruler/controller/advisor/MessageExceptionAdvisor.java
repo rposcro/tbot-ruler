@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 @Slf4j
 @RestControllerAdvice
-public class ControllerToMessageExceptionAdvisor {
+public class MessageExceptionAdvisor {
 
     @ExceptionHandler(MessageException.class)
     public ResponseEntity<ApplicationProblemDetails> handleMessageException(MessageException ex) {

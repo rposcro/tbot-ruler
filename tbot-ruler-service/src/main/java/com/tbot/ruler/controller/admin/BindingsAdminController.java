@@ -6,6 +6,7 @@ import com.tbot.ruler.controller.admin.payload.BindingDeleteRequest;
 import com.tbot.ruler.controller.admin.payload.BindingResponse;
 import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.model.BindingEntity;
+import com.tbot.ruler.service.manipulators.BindingsManipulator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +26,13 @@ import java.util.List;
 public class BindingsAdminController extends AbstractController {
 
     @Autowired
+    private RepositoryAccessor repositoryAccessor;
+
+    @Autowired
     private BindingsRepository bindingsRepository;
+
+    @Autowired
+    private BindingsManipulator bindingsManipulator;
 
     @GetMapping
     public ResponseEntity<List<BindingResponse>> getAllBindings() {
@@ -44,24 +51,16 @@ public class BindingsAdminController extends AbstractController {
 
     @PostMapping
     public ResponseEntity<BindingResponse> createBinding(@RequestBody BindingCreateRequest bindingCreateRequest) {
-        BindingEntity bindingEntity = BindingEntity.builder()
-                .senderUuid(bindingCreateRequest.getSenderUuid())
-                .receiverUuid(bindingCreateRequest.getReceiverUuid())
-                .build();
-        if (bindingsRepository.insert(bindingEntity)) {
-            return ok(toResponse(bindingEntity));
-        } else {
-            return response(ResponseEntity.internalServerError()).build();
-        }
+        bindingsManipulator.addBinding(bindingCreateRequest.getSenderUuid(), bindingCreateRequest.getReceiverUuid());
+        return ok(toResponse(repositoryAccessor.findBinding(
+                bindingCreateRequest.getSenderUuid(), bindingCreateRequest.getReceiverUuid())));
     }
 
     @DeleteMapping
-    public ResponseEntity<BindingResponse> deleteWebhook(@RequestBody BindingDeleteRequest bindingDeleteRequest) {
-        BindingEntity bindingEntity = BindingEntity.builder()
-                .senderUuid(bindingDeleteRequest.getSenderUuid())
-                .receiverUuid(bindingDeleteRequest.getReceiverUuid())
-                .build();
-        bindingsRepository.delete(bindingEntity);
+    public ResponseEntity<BindingResponse> deleteBinding(@RequestBody BindingDeleteRequest bindingDeleteRequest) {
+        BindingEntity bindingEntity = repositoryAccessor.findBinding(
+                bindingDeleteRequest.getSenderUuid(), bindingDeleteRequest.getReceiverUuid());
+        bindingsManipulator.removeBinding(bindingEntity);
         return ok(toResponse(bindingEntity));
     }
 

@@ -1,6 +1,6 @@
 package com.tbot.ruler.service.things;
 
-import com.tbot.ruler.service.lifetime.SubjectLifetimeService;
+import com.tbot.ruler.service.lifecycle.SubjectLifecycleService;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,14 +12,14 @@ import java.util.List;
 public class ActuatorsService {
 
     @Autowired
-    private SubjectLifetimeService subjectLifetimeService;
+    private SubjectLifecycleService subjectLifecycleService;
 
     public List<Actuator> findAllActuators() {
-        return subjectLifetimeService.getAllActuators();
+        return subjectLifecycleService.getAllActuators();
     }
 
     public ActuatorState getActuatorState(String actuatorUuid) {
-        Actuator actuator = subjectLifetimeService.getActuatorByUuid(actuatorUuid);
+        Actuator actuator = subjectLifecycleService.getActuatorByUuid(actuatorUuid);
         return actuator != null ? actuator.getState() : null;
     }
 }

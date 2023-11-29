@@ -12,7 +12,7 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
-public class WebhooksRepository {
+public class WebhooksRepository extends AbstractRepository<WebhookEntity> {
 
     @Autowired
     private CrudWebhooksRepository crudWebhooksRepository;
@@ -36,11 +36,19 @@ public class WebhooksRepository {
     @Transactional
     public void delete(WebhookEntity webhookEntity) {
         crudWebhooksRepository.delete(webhookEntity);
+        triggerDeleted(webhookEntity);
     }
 
     @Transactional
     public WebhookEntity save(WebhookEntity webhookEntity) {
         WebhookEntity savedWebhookEntity = crudWebhooksRepository.save(webhookEntity);
+
+        if (webhookEntity.getWebhookId() == 0) {
+            triggerInserted(savedWebhookEntity);
+        } else {
+            triggerUpdated(savedWebhookEntity);
+        }
+
         return savedWebhookEntity;
     }
 }

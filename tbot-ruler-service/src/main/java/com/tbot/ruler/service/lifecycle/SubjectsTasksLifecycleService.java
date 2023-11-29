@@ -1,4 +1,4 @@
-package com.tbot.ruler.service.lifetime;
+package com.tbot.ruler.service.lifecycle;
 
 import com.tbot.ruler.subjects.Subject;
 import com.tbot.ruler.task.EmissionTriggerContext;
@@ -20,14 +20,17 @@ import java.util.List;
 @Slf4j
 @Service
 @Scope("singleton")
-public class SubjectsTasksLifetimeService {
+public class SubjectsTasksLifecycleService {
 
     @Autowired
-    private SubjectLifetimeService subjectLifetimeService;
+    private SubjectLifecycleService subjectLifecycleService;
+
     @Autowired
     private ThreadPoolTaskScheduler triggerableTasksScheduler;
+
     @Autowired
     private ConcurrentTaskExecutor continuousTasksExecutor;
+
     @Autowired
     private ConcurrentTaskExecutor startUpTasksExecutor;
 
@@ -64,9 +67,9 @@ public class SubjectsTasksLifetimeService {
 
     private List<Subject> subjects() {
         LinkedList<Subject> subjects = new LinkedList<>();
-        subjects.addAll(subjectLifetimeService.getAllPlugins());
-        subjects.addAll(subjectLifetimeService.getAllThings());
-        subjects.addAll(subjectLifetimeService.getAllActuators());
+        subjects.addAll(subjectLifecycleService.getAllPlugins());
+        subjects.addAll(subjectLifecycleService.getAllThings());
+        subjects.addAll(subjectLifecycleService.getAllActuators());
         return subjects;
     }
 }

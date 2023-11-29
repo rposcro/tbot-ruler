@@ -31,7 +31,7 @@ public class PluginsAdminController extends AbstractController {
     private StructureService structureService;
 
     @Autowired
-    private SubjectsAccessor subjectsAccessor;
+    private RepositoryAccessor subjectsAccessor;
 
     @Autowired
     private PluginsRepository pluginsRepository;

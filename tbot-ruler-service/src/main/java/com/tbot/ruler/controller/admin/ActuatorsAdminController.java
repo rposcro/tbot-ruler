@@ -29,7 +29,7 @@ import java.util.UUID;
 public class ActuatorsAdminController extends AbstractController {
 
     @Autowired
-    private SubjectsAccessor subjectsAccessor;
+    private RepositoryAccessor subjectsAccessor;
 
     @Autowired
     private ActuatorsRepository actuatorsRepository;

@@ -1,6 +1,6 @@
 package com.tbot.ruler.exceptions;
 
-public class PluginException extends ThingException {
+public class PluginException extends RulerException {
 
     public PluginException(String message) {
         super(message);

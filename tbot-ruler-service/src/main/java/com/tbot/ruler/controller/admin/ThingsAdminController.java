@@ -27,7 +27,7 @@ import java.util.UUID;
 public class ThingsAdminController extends AbstractController {
 
     @Autowired
-    private SubjectsAccessor subjectsAccessor;
+    private RepositoryAccessor subjectsAccessor;
 
     @Autowired
     private ThingsRepository thingsRepository;

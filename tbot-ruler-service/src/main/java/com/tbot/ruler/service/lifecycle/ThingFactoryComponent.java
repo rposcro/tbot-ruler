@@ -1,4 +1,4 @@
-package com.tbot.ruler.service.lifetime;
+package com.tbot.ruler.service.lifecycle;
 
 import com.tbot.ruler.broker.DefaultMessagePublisher;
 import com.tbot.ruler.broker.MessagePublisher;
