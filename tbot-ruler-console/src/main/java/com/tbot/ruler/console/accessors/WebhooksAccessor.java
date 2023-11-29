@@ -40,4 +40,8 @@ public class WebhooksAccessor {
     public void createWebhook(WebhookCreateRequest createRequest) {
         webhooksClient.createWebhook(createRequest);
     }
+
+    public void deleteWebhook(String webhookUuid) {
+        webhooksClient.deleteWebhook(webhookUuid);
+    }
 }

@@ -6,7 +6,7 @@ import com.tbot.ruler.console.accessors.ActuatorsAccessor;
 import com.tbot.ruler.console.accessors.PluginsAccessor;
 import com.tbot.ruler.console.accessors.ThingsAccessor;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
-import com.tbot.ruler.console.views.PopupNotifier;
+import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
 import com.tbot.ruler.console.views.routes.bindings.BindingsDialog;
 import com.tbot.ruler.controller.admin.payload.ActuatorCreateRequest;
 import com.tbot.ruler.controller.admin.payload.ActuatorUpdateRequest;
@@ -14,7 +14,8 @@ import com.vaadin.flow.spring.annotation.RouteScope;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.function.Consumer;
+import static com.tbot.ruler.console.views.PopupNotifier.notifyError;
+import static com.tbot.ruler.console.views.PopupNotifier.notifyInfo;
 
 @RouteScope
 @SpringComponent
@@ -32,9 +33,6 @@ public class ActuatorEditSupport {
     @Autowired
     private BindingsModelAccessor bindingsAccessor;
 
-    @Autowired
-    private PopupNotifier popupNotifier;
-
     public void launchBindingsDialog(ActuatorModel actuator) {
         BindingsDialog.builder()
                 .title("Bindings of actuator " + actuator.getName())
@@ -44,7 +42,7 @@ public class ActuatorEditSupport {
                 .open();
     }
 
-    public void launchActuatorEdit(ActuatorModel actuator, Consumer<ActuatorEditDialog> submitHandler) {
+    public void launchActuatorEdit(ActuatorModel actuator, EditDialogSubmittedHandler<ActuatorEditDialog> submitHandler) {
         ActuatorEditDialog.builder()
                 .updateMode(true)
                 .original(actuator.getActuator())
@@ -55,7 +53,7 @@ public class ActuatorEditSupport {
                 .open();
     }
 
-    public void launchActuatorCreate(Consumer<ActuatorEditDialog> submitHandler) {
+    public void launchActuatorCreate(EditDialogSubmittedHandler<ActuatorEditDialog> submitHandler) {
         ActuatorEditDialog.builder()
                 .updateMode(false)
                 .plugins(pluginsAccessor.getAllPlugins())
@@ -73,12 +71,12 @@ public class ActuatorEditSupport {
                     .configuration(dialog.getConfiguration())
                     .build();
             actuatorsAccessor.updateActuator(dialog.getOriginal().getActuatorUuid(), request);
-            popupNotifier.notifyInfo("Actuator updated");
+            notifyInfo("Actuator updated");
             return true;
         } catch(ClientCommunicationException e) {
-            popupNotifier.notifyError("Failed to request service update!");
+            notifyError("Failed to request service update!");
         } catch(Exception e) {
-            popupNotifier.notifyError("Something's wrong!");
+            notifyError("Something's wrong!");
         }
 
         return false;
@@ -95,12 +93,12 @@ public class ActuatorEditSupport {
                     .thingUuid(dialog.getThing().getThingUuid())
                     .build();
             actuatorsAccessor.createActuator(request);
-            popupNotifier.notifyInfo("New actuator created");
+            notifyInfo("New actuator created");
             return true;
         } catch(ClientCommunicationException e) {
-            popupNotifier.notifyError("Failed to request service create!");
+            notifyError("Failed to request service create!");
         } catch(Exception e) {
-            popupNotifier.notifyError("Something's wrong!");
+            notifyError("Something's wrong!");
         }
 
         return false;

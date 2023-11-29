@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.console.accessors.ThingsAccessor;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.components.EntityPropertiesPanel;
-import com.tbot.ruler.console.views.PopupNotifier;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
 import com.tbot.ruler.controller.admin.payload.ThingCreateRequest;
 import com.tbot.ruler.controller.admin.payload.ThingResponse;
@@ -20,6 +19,8 @@ import com.vaadin.flow.router.Route;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static com.tbot.ruler.console.views.PopupNotifier.notifyError;
+
 @Slf4j
 @Route(value = "things", layout = TBotRulerConsoleView.class)
 @PageTitle("TBot Ruler Console | Things Dashboard")
@@ -27,17 +28,15 @@ public class ThingsDashboard extends VerticalLayout {
 
     private final ThingActionSupport thingActionSupport;
     private final ThingsAccessor thingsAccessor;
-    private final PopupNotifier popupNotifier;
 
     private final ObjectMapper objectMapper;
     private final EntityPropertiesPanel<ThingResponse> thingPanel;
     private final ThingsGrid thingsGrid;
 
     @Autowired
-    public ThingsDashboard(ThingsAccessor thingsAccessor, ThingActionSupport thingActionSupport, PopupNotifier popupNotifier) {
+    public ThingsDashboard(ThingsAccessor thingsAccessor, ThingActionSupport thingActionSupport) {
         this.thingsAccessor = thingsAccessor;
         this.thingActionSupport = thingActionSupport;
-        this.popupNotifier = popupNotifier;
         this.objectMapper = new ObjectMapper();
         this.thingPanel = constructThingPanel();
         this.thingsGrid = constructGrid();
@@ -129,9 +128,9 @@ public class ThingsDashboard extends VerticalLayout {
                 createThing(dialog);
             }
         } catch(JsonMappingException e) {
-            popupNotifier.notifyError("Configuration is not parsable!");
+            notifyError("Configuration is not parsable!");
         } catch(Exception e) {
-            popupNotifier.notifyError("Something's wrong!");
+            notifyError("Something's wrong!");
             log.error("Something went wrong when saving thing", e);
         }
     }

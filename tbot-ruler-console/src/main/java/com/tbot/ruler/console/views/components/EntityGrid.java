@@ -26,6 +26,7 @@ public class EntityGrid<T> extends Grid<T> {
         getHeaderRows().clear();
         this.headerRow = appendHeaderRow();
 
+        setSelectionMode(SelectionMode.SINGLE);
         setItems(Collections.emptyList());
         setSizeFull();
         addThemeVariants(

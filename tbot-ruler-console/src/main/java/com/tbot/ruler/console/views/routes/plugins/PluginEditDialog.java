@@ -2,6 +2,7 @@ package com.tbot.ruler.console.views.routes.plugins;
 
 import com.tbot.ruler.console.utils.FormUtils;
 import com.tbot.ruler.console.views.components.AbstractEditDialog;
+import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
 import com.tbot.ruler.console.views.validation.FormValidator;
 import com.tbot.ruler.controller.admin.payload.PluginResponse;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -12,7 +13,6 @@ import lombok.Builder;
 import lombok.NonNull;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static com.tbot.ruler.console.utils.FormUtils.orEmpty;
 
@@ -30,7 +30,7 @@ public class PluginEditDialog extends AbstractEditDialog<PluginEditDialog> {
     public PluginEditDialog(
             @NonNull Boolean updateMode,
             @NonNull List<String> factories,
-            @NonNull Consumer<PluginEditDialog> submitHandler,
+            @NonNull EditDialogSubmittedHandler<PluginEditDialog> submitHandler,
             PluginResponse original
     ) {
         super(updateMode, submitHandler);

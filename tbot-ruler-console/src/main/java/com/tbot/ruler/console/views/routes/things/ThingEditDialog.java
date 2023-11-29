@@ -2,6 +2,7 @@ package com.tbot.ruler.console.views.routes.things;
 
 import com.tbot.ruler.console.utils.FormUtils;
 import com.tbot.ruler.console.views.components.AbstractEditDialog;
+import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
 import com.tbot.ruler.console.views.validation.FormValidator;
 import com.tbot.ruler.controller.admin.payload.ThingResponse;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -9,8 +10,6 @@ import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Builder;
 import lombok.NonNull;
-
-import java.util.function.Consumer;
 
 import static com.tbot.ruler.console.utils.FormUtils.orEmpty;
 
@@ -27,7 +26,7 @@ public class ThingEditDialog extends AbstractEditDialog<ThingEditDialog> {
     @Builder
     public ThingEditDialog(
             @NonNull Boolean updateMode,
-            @NonNull Consumer<ThingEditDialog> submitHandler,
+            @NonNull EditDialogSubmittedHandler<ThingEditDialog> submitHandler,
             ThingResponse original
     ) {
         super(updateMode, submitHandler);

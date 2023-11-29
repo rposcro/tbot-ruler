@@ -12,6 +12,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.internal.BeanUtil;
 import lombok.Builder;
+import lombok.Getter;
 
 import java.beans.IntrospectionException;
 import java.beans.PropertyDescriptor;
@@ -29,6 +30,9 @@ public class EntityPropertiesPanel<T> extends VerticalLayout {
 
     private final Button btnEdit = new Button("Edit");
     private final Button btnDelete = new Button("Delete");
+
+    @Getter
+    private T currentEntity;
 
     @Builder
     public EntityPropertiesPanel(Class<?> beanType, Runnable editHandler, Runnable deleteHandler, String... properties) {
@@ -51,6 +55,8 @@ public class EntityPropertiesPanel<T> extends VerticalLayout {
             setVisible(false);
             labelsMap.values().stream().forEach(span -> span.setText(""));
         }
+
+        this.currentEntity = entity;
     }
 
     private void setUpButtons(Runnable editHandler, Runnable deleteHandler) {

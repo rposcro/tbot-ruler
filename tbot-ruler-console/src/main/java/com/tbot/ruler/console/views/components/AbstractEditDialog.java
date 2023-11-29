@@ -1,16 +1,15 @@
 package com.tbot.ruler.console.views.components;
 
-import com.tbot.ruler.console.views.PopupNotifier;
+import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
 import com.tbot.ruler.console.views.validation.FormValidator;
 import com.tbot.ruler.console.views.validation.FormValidationResult;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 
-import java.util.function.Consumer;
+import static com.tbot.ruler.console.views.PopupNotifier.notifyWarning;
 
-public abstract class AbstractEditDialog<TDialog extends AbstractEditDialog> extends Dialog {
+public abstract class AbstractEditDialog<ED extends AbstractEditDialog> extends Dialog {
 
-    protected final PopupNotifier popupNotifier = new PopupNotifier();
     protected final boolean updateMode;
 
     private FormValidator formValidator;
@@ -19,7 +18,7 @@ public abstract class AbstractEditDialog<TDialog extends AbstractEditDialog> ext
     private final Button btnClose;
     private final Button btnReset;
 
-    protected AbstractEditDialog(boolean updateMode, Consumer<TDialog> submitHandler) {
+    protected AbstractEditDialog(boolean updateMode, EditDialogSubmittedHandler<ED> submitHandler) {
         this.updateMode = updateMode;
         this.btnSubmit = constructSubmitButton(updateMode, submitHandler);
         this.btnClose = constructCloseButton();
@@ -37,7 +36,7 @@ public abstract class AbstractEditDialog<TDialog extends AbstractEditDialog> ext
         FormValidationResult result = formValidator.validate();
 
         if (!result.validationPassed()) {
-            popupNotifier.notifyWarning("Please address form issues");
+            notifyWarning("Please address form issues");
         }
         return result.validationPassed();
     }
@@ -46,12 +45,12 @@ public abstract class AbstractEditDialog<TDialog extends AbstractEditDialog> ext
         getFooter().add(btnSubmit, btnClose, btnReset);
     }
 
-    private Button constructSubmitButton(boolean updateMode, Consumer<TDialog> clickHandler) {
+    private Button constructSubmitButton(boolean updateMode, EditDialogSubmittedHandler<ED> submitHandler) {
         Button button = new Button(updateMode ? "Update" : "Create");
         button.getStyle().set("margin-left", "auto");
         button.addClickListener(event -> {
             if (validateForm()) {
-                clickHandler.accept((TDialog) this);
+                submitHandler.dialogSubmitted((ED) this);
             }
         });
         return button;

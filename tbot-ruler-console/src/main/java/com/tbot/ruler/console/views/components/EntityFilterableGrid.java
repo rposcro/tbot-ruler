@@ -39,6 +39,7 @@ public class EntityFilterableGrid<T> extends Grid<T> {
         getHeaderRows().clear();
         this.headerRow = appendHeaderRow();
 
+        setSelectionMode(SelectionMode.SINGLE);
         setItems(Collections.emptyList());
         setSizeFull();
         addThemeVariants(
@@ -61,6 +62,9 @@ public class EntityFilterableGrid<T> extends Grid<T> {
     public void addContextAction(String name, Consumer<T> actionHandler) {
         if (contextMenu == null) {
             contextMenu = addContextMenu();
+            contextMenu.addGridContextMenuOpenedListener(event -> {
+               event.getItem().ifPresent(this::select);
+            });
         }
         contextMenu.addItem(name, event -> event.getItem().ifPresent(actionHandler::accept));
     }

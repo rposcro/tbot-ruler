@@ -31,4 +31,8 @@ public class WebhooksClient extends AbstractApiClient {
     public void createWebhook(WebhookCreateRequest createRequest) {
         executeApiFunction(() -> webhooksAdminApi.createWebhook(createRequest).execute());
     }
+
+    public void deleteWebhook(String webhookUuid) {
+        executeApiFunction(() -> webhooksAdminApi.deleteWebhook(webhookUuid).execute());
+    }
 }

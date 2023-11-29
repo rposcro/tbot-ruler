@@ -6,7 +6,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.accessors.PluginsAccessor;
 import com.tbot.ruler.console.views.components.EntityPropertiesPanel;
-import com.tbot.ruler.console.views.PopupNotifier;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
 import com.tbot.ruler.controller.admin.payload.PluginCreateRequest;
 import com.tbot.ruler.controller.admin.payload.PluginResponse;
@@ -20,6 +19,8 @@ import com.vaadin.flow.router.Route;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import static com.tbot.ruler.console.views.PopupNotifier.notifyError;
+
 @Slf4j
 @Route(value = "plugins", layout = TBotRulerConsoleView.class)
 @PageTitle("TBot Ruler Console | Plugins Dashboard")
@@ -27,17 +28,15 @@ public class PluginsDashboard extends VerticalLayout {
 
     private final PluginActionSupport pluginActionSupport;
     private final PluginsAccessor pluginsAccessor;
-    private final PopupNotifier popupNotifier;
 
     private final ObjectMapper objectMapper;
     private final EntityPropertiesPanel<PluginResponse> pluginPanel;
     private final PluginsGrid pluginsGrid;
 
     @Autowired
-    public PluginsDashboard(PluginsAccessor pluginsAccessor, PluginActionSupport pluginActionSupport, PopupNotifier popupNotifier) {
+    public PluginsDashboard(PluginsAccessor pluginsAccessor, PluginActionSupport pluginActionSupport) {
         this.pluginsAccessor = pluginsAccessor;
         this.pluginActionSupport = pluginActionSupport;
-        this.popupNotifier = popupNotifier;
         this.objectMapper = new ObjectMapper();
         this.pluginPanel = constructPluginPanel();
         this.pluginsGrid = constructGrid();
@@ -129,9 +128,9 @@ public class PluginsDashboard extends VerticalLayout {
                 createPlugin(dialog);
             }
         } catch(JsonMappingException e) {
-            popupNotifier.notifyError("Configuration is not parsable!");
+            notifyError("Configuration is not parsable!");
         } catch(Exception e) {
-            popupNotifier.notifyError("Something's wrong!");
+            notifyError("Something's wrong!");
         }
     }
 

@@ -1,28 +1,36 @@
 package com.tbot.ruler.console.views;
 
+import com.tbot.ruler.console.views.components.PromptDialog;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
-import com.vaadin.flow.spring.annotation.SpringComponent;
 
-@SpringComponent
 public class PopupNotifier {
 
-    public void notifyError(String message) {
+    public static void promptError(String... promptLines) {
+        PromptDialog.builder()
+                .title("Error")
+                .prompt(promptLines)
+                .action("Ok", PromptDialog::close)
+                .build()
+                .open();
+    }
+
+    public static void notifyError(String message) {
         notify(message, NotificationVariant.LUMO_ERROR);
     }
 
-    public void notifyWarning(String message) {
+    public static void notifyWarning(String message) {
         notify(message, NotificationVariant.LUMO_WARNING);
     }
 
-    public void notifyInfo(String message) {
+    public static void notifyInfo(String message) {
         notify(message, NotificationVariant.LUMO_PRIMARY);
     }
 
-    public void notify(String message, NotificationVariant variant) {
+    public static void notify(String message, NotificationVariant variant) {
         Notification notification = new Notification(message);
         notification.addThemeVariants(variant);
-        notification.setDuration(2500);
+        notification.setDuration(3000);
         notification.open();
     }
 }

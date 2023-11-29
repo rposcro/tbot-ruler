@@ -1,6 +1,7 @@
 package com.tbot.ruler.console.views.routes.bindings;
 
 import com.tbot.ruler.console.views.components.AbstractEditDialog;
+import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
 import com.tbot.ruler.console.views.validation.FormValidator;
 import com.tbot.ruler.controller.admin.payload.ActuatorResponse;
 import com.tbot.ruler.controller.admin.payload.PluginResponse;
@@ -13,7 +14,6 @@ import lombok.Builder;
 import lombok.NonNull;
 
 import java.util.List;
-import java.util.function.Consumer;
 
 import static com.tbot.ruler.console.utils.FormUtils.asString;
 import static com.tbot.ruler.console.utils.FormUtils.orEmpty;
@@ -39,7 +39,7 @@ public class BindingEditDialog extends AbstractEditDialog<BindingEditDialog> {
             @NonNull Boolean updateMode,
             @NonNull List<PluginResponse> plugins,
             @NonNull List<ThingResponse> things,
-            @NonNull Consumer<BindingEditDialog> submitHandler,
+            @NonNull EditDialogSubmittedHandler<BindingEditDialog> submitHandler,
             ActuatorResponse original) {
         super(updateMode, submitHandler);
 

@@ -1,8 +1,10 @@
 package com.tbot.ruler.console.views.routes.webhooks;
 
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
+import com.tbot.ruler.console.views.PopupNotifier;
 import com.tbot.ruler.console.views.components.EntityPropertiesPanel;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
+import com.tbot.ruler.console.views.components.PromptDialog;
 import com.tbot.ruler.controller.admin.payload.WebhookResponse;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
@@ -25,12 +27,7 @@ public class WebhooksDashboard extends VerticalLayout {
     public WebhooksDashboard(WebhookEditSupport webhookEditSupport) {
         this.editSupport = webhookEditSupport;
         this.webhooksGrid = constructGrid();
-        this.webhookPanel = EntityPropertiesPanel.<WebhookResponse>builder()
-                .beanType(WebhookResponse.class)
-                .editHandler(() -> editSupport.launchWebhookEdit(
-                        webhooksGrid.asSingleSelect().getValue(), this::handleUpdateWebhook))
-                .properties(new String[] { "name", "owner", "webhookUuid", "description" } )
-                .build();
+        this.webhookPanel = constructWebhookPanel();
 
         setSizeFull();
         add(constructToolbar());
@@ -73,6 +70,19 @@ public class WebhooksDashboard extends VerticalLayout {
         return grid;
     }
 
+    private EntityPropertiesPanel<WebhookResponse> constructWebhookPanel() {
+        return EntityPropertiesPanel.<WebhookResponse>builder()
+                .beanType(WebhookResponse.class)
+                .properties(new String[] { "name", "owner", "webhookUuid", "description" } )
+                .editHandler(() -> editSupport.launchWebhookEdit(gridSelection(), this::handleUpdateWebhook))
+                .deleteHandler(() -> editSupport.launchWebhookDelete(gridSelection(), this::handleDeleteWebhook))
+                .build();
+    }
+
+    private WebhookResponse gridSelection() {
+        return webhooksGrid.asSingleSelect().getValue();
+    }
+
     private void handleUpdateWebhook(WebhookEditDialog dialog) {
         if (editSupport.updateWebhook(dialog)) {
             webhooksGrid.setItems(editSupport.getAllWebhooks());
@@ -82,6 +92,13 @@ public class WebhooksDashboard extends VerticalLayout {
 
     private void handleCreateWebhook(WebhookEditDialog dialog) {
         if (editSupport.createWebhook(dialog)) {
+            webhooksGrid.setItems(editSupport.getAllWebhooks());
+            dialog.close();
+        }
+    }
+
+    private void handleDeleteWebhook(PromptDialog dialog) {
+        if (editSupport.deleteWebhook(webhookPanel.getCurrentEntity())) {
             webhooksGrid.setItems(editSupport.getAllWebhooks());
             dialog.close();
         }

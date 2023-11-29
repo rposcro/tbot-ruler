@@ -1,17 +1,19 @@
-package com.tbot.ruler.broker.payload;
+package com.tbot.ruler.controller.advisor.payload;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.NonNull;
 
 import static com.fasterxml.jackson.annotation.JsonInclude.Include.NON_NULL;
 
 @Getter
 @Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class ApplicationProblemDetails {
+public class ErrorResponse {
 
     @NonNull
     private String message;
