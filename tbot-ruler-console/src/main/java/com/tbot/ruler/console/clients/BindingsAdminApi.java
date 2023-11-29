@@ -7,6 +7,7 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -26,6 +27,6 @@ public interface BindingsAdminApi {
     @POST("/admin/bindings")
     Call<BindingResponse> createThing(@Body BindingCreateRequest request);
 
-    @DELETE("/admin/bindings")
+    @HTTP(method = "DELETE", path = "/admin/bindings", hasBody = true)
     Call<BindingResponse> deleteThing(@Body BindingDeleteRequest request);
 }

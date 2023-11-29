@@ -72,7 +72,7 @@ public class ActuatorsDashboard extends VerticalLayout {
 
     private ActuatorsGrid constructGrid() {
         ActuatorsGrid grid = new ActuatorsGrid();
-        grid.addContextAction("Bindings", actuatorModel -> editSupport.launchBindingsDialog(actuatorModel));
+        grid.addContextMenuAction("Bindings", actuatorModel -> editSupport.launchBindingsDialog(actuatorModel));
         grid.setSelectHandler(actuatorModel -> actuatorPanel.applyToEntity(actuatorModel));
         return grid;
     }

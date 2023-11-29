@@ -4,6 +4,8 @@ import com.tbot.ruler.console.views.components.PromptDialog;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.notification.NotificationVariant;
 
+import static java.lang.String.format;
+
 public class PopupNotifier {
 
     public static void promptError(String... promptLines) {
@@ -25,6 +27,10 @@ public class PopupNotifier {
 
     public static void notifyInfo(String message) {
         notify(message, NotificationVariant.LUMO_PRIMARY);
+    }
+
+    public static void notifyInfo(String message, Object... arguments) {
+        notify(format(message, arguments), NotificationVariant.LUMO_PRIMARY);
     }
 
     public static void notify(String message, NotificationVariant variant) {

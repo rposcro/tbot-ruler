@@ -5,7 +5,7 @@ import com.tbot.ruler.console.accessors.model.ActuatorModel;
 import com.tbot.ruler.console.accessors.ActuatorsAccessor;
 import com.tbot.ruler.console.accessors.PluginsAccessor;
 import com.tbot.ruler.console.accessors.ThingsAccessor;
-import com.tbot.ruler.console.exceptions.ClientCommunicationException;
+import com.tbot.ruler.console.views.AbstractEditSupport;
 import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
 import com.tbot.ruler.console.views.routes.bindings.BindingsDialog;
 import com.tbot.ruler.controller.admin.payload.ActuatorCreateRequest;
@@ -14,12 +14,11 @@ import com.vaadin.flow.spring.annotation.RouteScope;
 import com.vaadin.flow.spring.annotation.SpringComponent;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import static com.tbot.ruler.console.views.PopupNotifier.notifyError;
 import static com.tbot.ruler.console.views.PopupNotifier.notifyInfo;
 
 @RouteScope
 @SpringComponent
-public class ActuatorEditSupport {
+public class ActuatorEditSupport extends AbstractEditSupport {
 
     @Autowired
     private ThingsAccessor thingsAccessor;
@@ -64,7 +63,7 @@ public class ActuatorEditSupport {
     }
 
     public boolean updateActuator(ActuatorEditDialog dialog) {
-        try {
+        return handlingExceptions(() -> {
             ActuatorUpdateRequest request = ActuatorUpdateRequest.builder()
                     .name(dialog.getName())
                     .description(dialog.getDescription())
@@ -72,18 +71,11 @@ public class ActuatorEditSupport {
                     .build();
             actuatorsAccessor.updateActuator(dialog.getOriginal().getActuatorUuid(), request);
             notifyInfo("Actuator updated");
-            return true;
-        } catch(ClientCommunicationException e) {
-            notifyError("Failed to request service update!");
-        } catch(Exception e) {
-            notifyError("Something's wrong!");
-        }
-
-        return false;
+        });
     }
 
     public boolean createActuator(ActuatorEditDialog dialog) {
-        try {
+        return handlingExceptions(() -> {
             ActuatorCreateRequest request = ActuatorCreateRequest.builder()
                     .name(dialog.getName())
                     .reference(dialog.getReference())
@@ -94,13 +86,6 @@ public class ActuatorEditSupport {
                     .build();
             actuatorsAccessor.createActuator(request);
             notifyInfo("New actuator created");
-            return true;
-        } catch(ClientCommunicationException e) {
-            notifyError("Failed to request service create!");
-        } catch(Exception e) {
-            notifyError("Something's wrong!");
-        }
-
-        return false;
+        });
     }
 }

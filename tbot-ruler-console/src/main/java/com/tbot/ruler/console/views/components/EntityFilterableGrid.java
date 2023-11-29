@@ -7,6 +7,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
+import com.vaadin.flow.component.html.Hr;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -59,19 +60,27 @@ public class EntityFilterableGrid<T> extends Grid<T> {
         asSingleSelect().addValueChangeListener(event -> selectHandler.accept(event.getValue()));
     }
 
-    public void addContextAction(String name, Consumer<T> actionHandler) {
-        if (contextMenu == null) {
-            contextMenu = addContextMenu();
-            contextMenu.addGridContextMenuOpenedListener(event -> {
-               event.getItem().ifPresent(this::select);
-            });
-        }
-        contextMenu.addItem(name, event -> event.getItem().ifPresent(actionHandler::accept));
+    public void addContextMenuAction(String name, Consumer<T> actionHandler) {
+        contextMenu().addItem(name, event -> event.getItem().ifPresent(actionHandler::accept));
+    }
+
+    public void addContextMenuDivider() {
+        contextMenu().add(new Hr());
     }
 
     public void setItems(List<T> items) {
         this.dataView = super.setItems(items);
         dataView.addFilter(gridFilter::test);
+    }
+
+    private GridContextMenu<T> contextMenu() {
+        if (contextMenu == null) {
+            contextMenu = addContextMenu();
+            contextMenu.addGridContextMenuOpenedListener(event -> {
+                event.getItem().ifPresent(this::select);
+            });
+        }
+        return contextMenu;
     }
 
     private Column<T> addFilterableColumn(

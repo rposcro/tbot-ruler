@@ -6,7 +6,7 @@ import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Span;
+import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import lombok.Builder;
 
@@ -16,16 +16,11 @@ public class BindingsDialog extends Dialog {
 
     private final EntityGrid<BindingModel> inboundGrid;
     private final EntityGrid<BindingModel> outboundGrid;
-//    private final Details outboundDetails;
-//    private final Details inboundDetails;
 
     @Builder
     public BindingsDialog(String title, List<BindingModel> inboundBindings, List<BindingModel> outboundBindings) {
         this.inboundGrid = constructInboundGrid(inboundBindings);
         this.outboundGrid = constructOutboundGrid(outboundBindings);
-
-//        this.inboundDetails = constructInboundDetails(inboundBindings);
-//        this.outboundDetails = constructOutboundDetails(outboundBindings);
 
         setHeaderTitle(title);
         setModal(true);
@@ -37,7 +32,15 @@ public class BindingsDialog extends Dialog {
     }
 
     private Component constructContent() {
-        VerticalLayout layout = new VerticalLayout(inboundGrid, outboundGrid);
+        VerticalLayout layout = new VerticalLayout();
+        if (inboundGrid != null) {
+            layout.add(new NativeLabel("Inbound Bindings"));
+            layout.add(inboundGrid);
+        }
+        if (outboundGrid != null) {
+            layout.add(new NativeLabel("Outbound Bindings"));
+            layout.add(outboundGrid);
+        }
         layout.setSizeFull();
         return layout;
     }
@@ -59,6 +62,9 @@ public class BindingsDialog extends Dialog {
     }
 
     private EntityGrid<BindingModel> constructInboundGrid(List<BindingModel> bindings) {
+        if (bindings == null) {
+            return null;
+        }
         EntityGrid<BindingModel> grid = new EntityGrid<>();
         grid.addColumn("Sender Name", BindingModel::getSenderName);
         grid.addColumn("Sender UUID", BindingModel::getSenderUuid);
@@ -69,6 +75,9 @@ public class BindingsDialog extends Dialog {
     }
 
     private EntityGrid<BindingModel> constructOutboundGrid(List<BindingModel> bindings) {
+        if (bindings == null) {
+            return null;
+        }
         EntityGrid<BindingModel> grid = new EntityGrid<>();
         grid.addColumn("Receiver Name", BindingModel::getReceiverName);
         grid.addColumn("Receiver UUID", BindingModel::getReceiverUuid);

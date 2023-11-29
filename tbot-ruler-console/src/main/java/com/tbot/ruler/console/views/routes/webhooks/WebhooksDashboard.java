@@ -1,7 +1,6 @@
 package com.tbot.ruler.console.views.routes.webhooks;
 
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
-import com.tbot.ruler.console.views.PopupNotifier;
 import com.tbot.ruler.console.views.components.EntityPropertiesPanel;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
 import com.tbot.ruler.console.views.components.PromptDialog;
@@ -66,6 +65,11 @@ public class WebhooksDashboard extends VerticalLayout {
 
     private WebhooksGrid constructGrid() {
         WebhooksGrid grid = new WebhooksGrid();
+        grid.addContextMenuAction("Show Bindings", webhookResponse -> editSupport.launchShowBindings(webhookResponse));
+        grid.addContextMenuAction("Delete All Bindings", webhookResponse -> editSupport.launchAllBindingsDelete(webhookResponse, this::handleDeleteAllBindings));
+        grid.addContextMenuDivider();
+        grid.addContextMenuAction("Edit", webhookResponse -> editSupport.launchWebhookEdit(webhookResponse, this::handleUpdateWebhook));
+        grid.addContextMenuAction("Delete", webhookResponse -> editSupport.launchWebhookDelete(webhookResponse, this::handleDeleteWebhook));
         grid.setSelectHandler(webhook -> webhookPanel.applyToEntity(webhook));
         return grid;
     }
@@ -100,6 +104,12 @@ public class WebhooksDashboard extends VerticalLayout {
     private void handleDeleteWebhook(PromptDialog dialog) {
         if (editSupport.deleteWebhook(webhookPanel.getCurrentEntity())) {
             webhooksGrid.setItems(editSupport.getAllWebhooks());
+            dialog.close();
+        }
+    }
+
+    private void handleDeleteAllBindings(PromptDialog dialog) {
+        if (editSupport.deleteAllBindings(webhookPanel.getCurrentEntity())) {
             dialog.close();
         }
     }

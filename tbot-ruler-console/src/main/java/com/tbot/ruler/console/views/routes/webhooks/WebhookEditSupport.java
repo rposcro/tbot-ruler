@@ -1,11 +1,14 @@
 package com.tbot.ruler.console.views.routes.webhooks;
 
+import com.tbot.ruler.console.accessors.BindingsAccessor;
+import com.tbot.ruler.console.accessors.BindingsModelAccessor;
 import com.tbot.ruler.console.accessors.WebhooksAccessor;
-import com.tbot.ruler.console.exceptions.ClientCommunicationException;
+import com.tbot.ruler.console.views.AbstractEditSupport;
 import com.tbot.ruler.console.views.components.Prompt;
 import com.tbot.ruler.console.views.components.PromptDialog;
 import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
 import com.tbot.ruler.console.views.components.handlers.PromptActionHandler;
+import com.tbot.ruler.console.views.routes.bindings.BindingsDialog;
 import com.tbot.ruler.controller.admin.payload.WebhookCreateRequest;
 import com.tbot.ruler.controller.admin.payload.WebhookResponse;
 import com.tbot.ruler.controller.admin.payload.WebhookUpdateRequest;
@@ -16,14 +19,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 
 import static com.tbot.ruler.console.views.PopupNotifier.notifyInfo;
-import static com.tbot.ruler.console.views.PopupNotifier.promptError;
 
 @RouteScope
 @SpringComponent
-public class WebhookEditSupport {
+public class WebhookEditSupport extends AbstractEditSupport {
 
     @Autowired
     private WebhooksAccessor webhooksAccessor;
+
+    @Autowired
+    private BindingsModelAccessor bindingsModelAccessor;
+
+    @Autowired
+    private BindingsAccessor bindingsAccessor;
 
     public List<WebhookResponse> getAllWebhooks() {
         return webhooksAccessor.getAllWebhooks();
@@ -50,14 +58,34 @@ public class WebhookEditSupport {
 
     public void launchWebhookDelete(WebhookResponse webhook, PromptActionHandler deleteHandler) {
         PromptDialog.builder()
-                .title("Delete?")
+                .title("Delete Webhook?")
                 .action("Delete", deleteHandler)
                 .action("Cancel", PromptDialog::close)
                 .prompt(new Prompt()
-                        .addLine("Are you sure to delete")
-                        .addLine("Webhook named " + webhook.getName())
-                        .addLine("UUID: " + webhook.getWebhookUuid())
-                        .addLine("?"))
+                        .addLine("Are you sure to delete the webhook?")
+                        .addLine("Name: " + webhook.getName())
+                        .addLine("UUID: " + webhook.getWebhookUuid()))
+                .build()
+                .open();
+    }
+
+    public void launchAllBindingsDelete(WebhookResponse webhook, PromptActionHandler deleteHandler) {
+        PromptDialog.builder()
+                .title("Delete All Bindings?")
+                .action("Delete", deleteHandler)
+                .action("Cancel", PromptDialog::close)
+                .prompt(new Prompt()
+                        .addLine("Are you sure to delete all bindings for the webhook?")
+                        .addLine("Name: " + webhook.getName())
+                        .addLine("UUID: " + webhook.getWebhookUuid()))
+                .build()
+                .open();
+    }
+
+    public void launchShowBindings(WebhookResponse webhook) {
+        BindingsDialog.builder()
+                .title("Bindings of webhook " + webhook.getName())
+                .outboundBindings(bindingsModelAccessor.getSenderBindingsModels(webhook.getWebhookUuid()))
                 .build()
                 .open();
     }
@@ -88,18 +116,15 @@ public class WebhookEditSupport {
     public boolean deleteWebhook(WebhookResponse webhook) {
         return handlingExceptions(() -> {
             webhooksAccessor.deleteWebhook(webhook.getWebhookUuid());
+            notifyInfo("Webhook '%s' deleted", webhook.getName());
         });
     }
 
-    private boolean handlingExceptions(Runnable procedure) {
-        try {
-            procedure.run();
-            return true;
-        } catch(ClientCommunicationException e) {
-            promptError(e.getMessage(), e.getResponseMessage());
-        } catch(Exception e) {
-            promptError("Something's wrong, check logs for details!", e.getMessage());
-        }
-        return false;
+    public boolean deleteAllBindings(WebhookResponse webhook) {
+        return handlingExceptions(() -> {
+            bindingsAccessor.getSenderBindings(webhook.getWebhookUuid()).forEach(
+                    binding -> bindingsAccessor.deleteBinding(webhook.getWebhookUuid(), binding.getReceiverUuid()));
+            notifyInfo("All bindings for webhook '%s' deleted", webhook.getName());
+        });
     }
 }
