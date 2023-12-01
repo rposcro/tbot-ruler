@@ -97,7 +97,7 @@ public class WebhookEditSupport extends AbstractEditSupport {
                     .description(dialog.getWebhookDescription())
                     .build();
             webhooksAccessor.updateWebhook(dialog.getOriginal().getWebhookUuid(), request);
-            notifyInfo("Webhook updated");
+            notifyInfo("Webhook %s updated", dialog.getOriginal().getWebhookUuid());
         });
     }
 

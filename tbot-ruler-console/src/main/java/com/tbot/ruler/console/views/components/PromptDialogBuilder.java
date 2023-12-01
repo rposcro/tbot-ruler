@@ -8,14 +8,14 @@ import com.vaadin.flow.component.dialog.Dialog;
 import java.util.LinkedList;
 import java.util.List;
 
-public class PromptDialogBuilder {
+public class PromptDialogBuilder<T> {
 
-    private final PromptDialog dialog;
+    private final PromptDialog<T> dialog;
     private final List<Button> actionButtons;
 
     public PromptDialogBuilder() {
         this.actionButtons = new LinkedList<>();
-        this.dialog = new PromptDialog();
+        this.dialog = new PromptDialog<T>();
     }
 
     public Dialog build() {
@@ -38,6 +38,11 @@ public class PromptDialogBuilder {
 
     public PromptDialogBuilder prompt(String... promptLines) {
         dialog.add(new Prompt(promptLines));
+        return this;
+    }
+
+    public PromptDialogBuilder promptedObject(T promptedObject) {
+        dialog.setPromptedObject(promptedObject);
         return this;
     }
 

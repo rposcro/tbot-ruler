@@ -1,8 +1,14 @@
 package com.tbot.ruler.console.views.components;
 
 import com.vaadin.flow.component.dialog.Dialog;
+import lombok.Getter;
+import lombok.Setter;
 
-public class PromptDialog extends Dialog {
+@Getter
+@Setter
+public class PromptDialog<T> extends Dialog {
+
+    private T promptedObject;
 
     public PromptDialog() {
         setModal(true);

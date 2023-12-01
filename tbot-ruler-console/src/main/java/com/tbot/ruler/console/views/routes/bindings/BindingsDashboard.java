@@ -1,8 +1,10 @@
 package com.tbot.ruler.console.views.routes.bindings;
 
 import com.tbot.ruler.console.accessors.BindingsModelAccessor;
+import com.tbot.ruler.console.accessors.model.BindingModel;
 import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
+import com.tbot.ruler.console.views.components.PromptDialog;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -18,7 +20,6 @@ public class BindingsDashboard extends VerticalLayout {
     private final BindingsModelAccessor dataSupport;
     private final BindingEditSupport editSupport;
 
-//    private final EntityPropertiesPanel<BindingModel> actuatorPanel;
     private final BindingsGrid bindingsGrid;
 
     @Autowired
@@ -26,12 +27,6 @@ public class BindingsDashboard extends VerticalLayout {
         this.dataSupport = dataSupport;
         this.editSupport = editSupport;
         this.bindingsGrid = constructGrid();
-//        this.actuatorPanel = EntityPropertiesPanel.<ActuatorModel>builder()
-//                .beanType(ActuatorModel.class)
-//                .editHandler(() -> editSupport.launchActuatorEdit(
-//                        bindingsGrid.asSingleSelect().getValue(), this::handleUpdateActuator))
-//                .properties(new String[] { "name", "reference", "actuatorUuid", "pluginName", "thingName", "description", "configuration"} )
-//                .build();
 
         setSizeFull();
         add(constructToolbar());
@@ -39,8 +34,9 @@ public class BindingsDashboard extends VerticalLayout {
     }
 
     private HorizontalLayout constructToolbar() {
-        Button createButton = new Button("New Binding");
-        createButton.addClickListener(event -> {});
+        Button createButton = new Button("New Binding(s)");
+        createButton.addClickListener(event -> editSupport.launchBindingCreate(
+                this::handleBindingCreate, this::handleBindingsFinish));
 
         HorizontalLayout toolbar = new HorizontalLayout(createButton);
         toolbar.setAlignItems(Alignment.START);
@@ -54,10 +50,6 @@ public class BindingsDashboard extends VerticalLayout {
         try {
             bindingsGrid.setItems(dataSupport.getAllBindingsModels());
             content.add(bindingsGrid);
-//            actuatorPanel.getStyle().set("margin-top", "0px");
-//            content.add(bindingsGrid, actuatorPanel);
-//            content.setFlexGrow(3, bindingsGrid);
-//            content.setFlexGrow(1, actuatorPanel);
         } catch(ClientCommunicationException e) {
             content.add(new VerticalLayout(
                     new Span("Error loading bindings ..."),
@@ -71,6 +63,34 @@ public class BindingsDashboard extends VerticalLayout {
 
     private BindingsGrid constructGrid() {
         BindingsGrid grid = new BindingsGrid();
+        grid.addContextMenuAction("Show All Senders", bindingModel -> editSupport.launchAllSendersDialog(bindingModel));
+        grid.addContextMenuAction("Show All Receivers", bindingModel -> editSupport.launchAllReceiversDialog(bindingModel));
+        grid.addContextMenuDivider();
+        grid.addContextMenuAction("Delete Binding", bindingModel -> editSupport.launchBindingDelete(gridSelection(), this::handleBindingDelete));
         return grid;
+    }
+
+    private BindingModel gridSelection() {
+        return bindingsGrid.asSingleSelect().getValue();
+    }
+
+    private void handleBindingDelete(PromptDialog<BindingModel> dialog) {
+        if (editSupport.deleteBinding(dialog.getPromptedObject())) {
+            dialog.close();
+        }
+    }
+
+    private void handleBindingCreate(BindingsCreateDialog dialog) {
+        String senderUuid = dialog.getSelectedSender().getUuid();
+        String receiverUuid = dialog.getSelectedReceiver().getUuid();
+
+        if (editSupport.createBinding(senderUuid, receiverUuid)) {
+            dialog.addBinding(senderUuid, receiverUuid);
+        }
+    }
+
+    private void handleBindingsFinish(BindingsCreateDialog dialog) {
+        dialog.close();
+        bindingsGrid.setItems(dataSupport.getAllBindingsModels());
     }
 }
