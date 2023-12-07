@@ -39,6 +39,14 @@ public class ActuatorsRepository {
         return entities;
     }
 
+    public boolean actuatorsForThingExist(long thingId) {
+        return crudActuatorsRepository.countByThingId(thingId) > 0;
+    }
+
+    public boolean actuatorsForPluginExist(long pluginId) {
+        return crudActuatorsRepository.countByPluginId(pluginId) > 0;
+    }
+
     @Transactional
     public void delete(ActuatorEntity actuatorEntity) {
         crudActuatorsRepository.delete(actuatorEntity);

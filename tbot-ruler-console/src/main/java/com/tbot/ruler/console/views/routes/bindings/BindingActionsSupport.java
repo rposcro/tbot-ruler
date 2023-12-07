@@ -5,7 +5,7 @@ import com.tbot.ruler.console.accessors.BindingsAccessor;
 import com.tbot.ruler.console.accessors.BindingsModelAccessor;
 import com.tbot.ruler.console.accessors.WebhooksAccessor;
 import com.tbot.ruler.console.accessors.model.BindingModel;
-import com.tbot.ruler.console.views.AbstractEditSupport;
+import com.tbot.ruler.console.views.AbstractActionsSupport;
 import com.tbot.ruler.console.views.components.Prompt;
 import com.tbot.ruler.console.views.components.PromptDialog;
 import com.tbot.ruler.console.views.components.handlers.DialogActionHandler;
@@ -18,7 +18,7 @@ import static com.tbot.ruler.console.views.PopupNotifier.notifyInfo;
 
 @RouteScope
 @SpringComponent
-public class BindingEditSupport extends AbstractEditSupport {
+public class BindingActionsSupport extends AbstractActionsSupport {
 
     @Autowired
     private ActuatorsAccessor actuatorsAccessor;

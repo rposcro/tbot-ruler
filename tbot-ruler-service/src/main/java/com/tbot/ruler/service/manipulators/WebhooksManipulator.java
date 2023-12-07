@@ -20,12 +20,6 @@ public class WebhooksManipulator {
     @Autowired
     private WebhooksLifecycleService webhooksLifecycleService;
 
-    public void removeWebhook(String webhookUuid) {
-        assertConsistency(webhookUuid);
-        webhooksLifecycleService.shutDownWebhook(webhookUuid);
-        webhooksRepository.findByUuid(webhookUuid).ifPresent(webhooksRepository::delete);
-    }
-
     public void removeWebhook(WebhookEntity webhookEntity) {
         assertConsistency(webhookEntity.getWebhookUuid());
         webhooksLifecycleService.shutDownWebhook(webhookEntity.getWebhookUuid());
@@ -34,7 +28,7 @@ public class WebhooksManipulator {
 
     private void assertConsistency(String webhookUuid) {
         if (bindingsRepository.bindingWithUuidExists(webhookUuid)) {
-            throw new LifecycleException("Cannot remove webhook %s, binding(s) exists!", webhookUuid);
+            throw new LifecycleException("Cannot remove webhook %s, binding(s) exist(s)!", webhookUuid);
         }
     }
 }

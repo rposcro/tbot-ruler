@@ -5,8 +5,11 @@ import com.tbot.ruler.console.accessors.model.ActuatorModel;
 import com.tbot.ruler.console.accessors.ActuatorsAccessor;
 import com.tbot.ruler.console.accessors.PluginsAccessor;
 import com.tbot.ruler.console.accessors.ThingsAccessor;
-import com.tbot.ruler.console.views.AbstractEditSupport;
+import com.tbot.ruler.console.views.AbstractActionsSupport;
+import com.tbot.ruler.console.views.components.Prompt;
+import com.tbot.ruler.console.views.components.PromptDialog;
 import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
+import com.tbot.ruler.console.views.components.handlers.PromptActionHandler;
 import com.tbot.ruler.console.views.routes.bindings.BindingsDialog;
 import com.tbot.ruler.controller.admin.payload.ActuatorCreateRequest;
 import com.tbot.ruler.controller.admin.payload.ActuatorUpdateRequest;
@@ -18,7 +21,7 @@ import static com.tbot.ruler.console.views.PopupNotifier.notifyInfo;
 
 @RouteScope
 @SpringComponent
-public class ActuatorEditSupport extends AbstractEditSupport {
+public class ActuatorActionsSupport extends AbstractActionsSupport {
 
     @Autowired
     private ThingsAccessor thingsAccessor;
@@ -32,7 +35,7 @@ public class ActuatorEditSupport extends AbstractEditSupport {
     @Autowired
     private BindingsModelAccessor bindingsAccessor;
 
-    public void launchBindingsDialog(ActuatorModel actuator) {
+    public void launchShowBindings(ActuatorModel actuator) {
         BindingsDialog.builder()
                 .title("Bindings of actuator " + actuator.getName())
                 .inboundBindings(bindingsAccessor.getReceiverBindingsModels(actuator.getActuatorUuid()))
@@ -62,6 +65,19 @@ public class ActuatorEditSupport extends AbstractEditSupport {
                 .open();
     }
 
+    public void launchActuatorDelete(ActuatorModel actuator, PromptActionHandler deleteHandler) {
+        PromptDialog.builder()
+                .title("Delete Actuator?")
+                .action("Delete", deleteHandler)
+                .action("Cancel", PromptDialog::close)
+                .prompt(new Prompt()
+                        .addLine("Are you sure to delete the actuator?")
+                        .addLine("Name: " + actuator.getName())
+                        .addLine("UUID: " + actuator.getActuatorUuid()))
+                .build()
+                .open();
+    }
+
     public boolean updateActuator(ActuatorEditDialog dialog) {
         return handlingExceptions(() -> {
             ActuatorUpdateRequest request = ActuatorUpdateRequest.builder()
@@ -86,6 +102,13 @@ public class ActuatorEditSupport extends AbstractEditSupport {
                     .build();
             actuatorsAccessor.createActuator(request);
             notifyInfo("New actuator created");
+        });
+    }
+
+    public boolean deleteActuator(ActuatorModel actuator) {
+        return handlingExceptions(() -> {
+            actuatorsAccessor.deleteActuator(actuator.getActuatorUuid());
+            notifyInfo("Actuator '%s' deleted", actuator.getName());
         });
     }
 }

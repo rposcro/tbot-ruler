@@ -16,4 +16,10 @@ public interface CrudActuatorsRepository extends CrudRepository<ActuatorEntity, 
 
     @Query("SELECT * FROM actuators WHERE actuator_uuid = :actuatorUuid")
     Optional<ActuatorEntity> findByUuid(String actuatorUuid);
+
+    @Query("SELECT count(*) FROM actuators WHERE thing_id = :thingId")
+    int countByThingId(long thingId);
+
+    @Query("SELECT count(*) FROM actuators WHERE plugin_id = :pluginId")
+    int countByPluginId(long pluginId);
 }

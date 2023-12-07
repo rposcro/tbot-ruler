@@ -6,6 +6,7 @@ import com.tbot.ruler.controller.admin.payload.ThingResponse;
 import com.tbot.ruler.controller.admin.payload.ThingUpdateRequest;
 import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.persistance.model.ThingEntity;
+import com.tbot.ruler.service.manipulators.ThingsManipulator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -31,6 +32,9 @@ public class ThingsAdminController extends AbstractController {
 
     @Autowired
     private ThingsRepository thingsRepository;
+
+    @Autowired
+    private ThingsManipulator thingsManipulator;
 
     @GetMapping
     public ResponseEntity<List<ThingResponse>> getAllThings() {
@@ -64,7 +68,7 @@ public class ThingsAdminController extends AbstractController {
     @DeleteMapping("/{thingUuid}")
     public ResponseEntity<ThingResponse> deleteThing(@PathVariable String thingUuid) {
         ThingEntity thingEntity = subjectsAccessor.findThing(thingUuid);
-        thingsRepository.delete(thingEntity);
+        thingsManipulator.removeThing(thingEntity);
         return ok(toResponse(thingEntity));
     }
 

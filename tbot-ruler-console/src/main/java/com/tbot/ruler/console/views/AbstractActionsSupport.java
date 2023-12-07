@@ -4,7 +4,7 @@ import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 
 import static com.tbot.ruler.console.views.PopupNotifier.promptError;
 
-public abstract class AbstractEditSupport {
+public abstract class AbstractActionsSupport {
 
     protected boolean handlingExceptions(Runnable procedure) {
         try {

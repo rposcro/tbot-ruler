@@ -36,4 +36,8 @@ public class ThingsAccessor {
     public void createThing(ThingCreateRequest createRequest) {
         thingsClient.createThing(createRequest);
     }
+
+    public void deleteThing(String thingUuid) {
+        thingsClient.deleteThing(thingUuid);
+    }
 }

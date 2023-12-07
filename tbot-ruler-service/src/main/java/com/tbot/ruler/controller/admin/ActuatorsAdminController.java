@@ -8,6 +8,7 @@ import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
+import com.tbot.ruler.service.manipulators.ActuatorsManipulator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -33,6 +34,9 @@ public class ActuatorsAdminController extends AbstractController {
 
     @Autowired
     private ActuatorsRepository actuatorsRepository;
+
+    @Autowired
+    private ActuatorsManipulator actuatorsManipulator;
 
     @GetMapping
     public ResponseEntity<List<ActuatorResponse>> getAllActuators() {
@@ -73,7 +77,7 @@ public class ActuatorsAdminController extends AbstractController {
     @DeleteMapping("/{actuatorUuid}")
     public ResponseEntity<ActuatorResponse> deleteActuator(@PathVariable String actuatorUuid) {
         ActuatorEntity actuatorEntity = subjectsAccessor.findActuator(actuatorUuid);
-        actuatorsRepository.delete(actuatorEntity);
+        actuatorsManipulator.removeActuator(actuatorEntity);
         return ok(toResponse(actuatorEntity));
     }
 

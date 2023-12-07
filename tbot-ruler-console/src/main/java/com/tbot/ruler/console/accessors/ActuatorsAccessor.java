@@ -36,4 +36,8 @@ public class ActuatorsAccessor {
     public void createActuator(ActuatorCreateRequest createRequest) {
         actuatorsClient.createActuator(createRequest);
     }
+
+    public void deleteActuator(String actuatorUuid) {
+        actuatorsClient.deleteActuator(actuatorUuid);
+    }
 }

@@ -1,5 +1,6 @@
 package com.tbot.ruler.console.views.routes.plugins;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.tbot.ruler.console.utils.FormUtils;
 import com.tbot.ruler.console.views.components.AbstractEditDialog;
 import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
@@ -14,6 +15,7 @@ import lombok.NonNull;
 
 import java.util.List;
 
+import static com.tbot.ruler.console.utils.FormUtils.asJsonNode;
 import static com.tbot.ruler.console.utils.FormUtils.orEmpty;
 
 public class PluginEditDialog extends AbstractEditDialog<PluginEditDialog> {
@@ -50,11 +52,11 @@ public class PluginEditDialog extends AbstractEditDialog<PluginEditDialog> {
         add(constructForm());
     }
 
-    public boolean isUpdateMode() {
-        return updateMode;
+    public PluginResponse getOriginal() {
+        return original;
     }
 
-    public String getPluginName() {
+    public String getName() {
         return txtName.getValue().trim();
     }
 
@@ -62,8 +64,8 @@ public class PluginEditDialog extends AbstractEditDialog<PluginEditDialog> {
         return selFactory.getValue();
     }
 
-    public String getPluginConfiguration() {
-        return txtConfiguration.getValue().trim().replaceAll("\n", " ");
+    public JsonNode getConfiguration() {
+        return asJsonNode(txtConfiguration.getValue());
     }
 
     @Override

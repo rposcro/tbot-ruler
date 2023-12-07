@@ -27,4 +27,8 @@ public class ThingsClient extends AbstractApiClient {
     public void createThing(ThingCreateRequest createRequest) {
         executeApiFunction(() -> thingsAdminApi.createThing(createRequest).execute());
     }
+
+    public void deleteThing(String thingUuid) {
+        executeApiFunction(() -> thingsAdminApi.deleteThing(thingUuid).execute());
+    }
 }

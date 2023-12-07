@@ -23,7 +23,13 @@ import java.util.List;
 public class SubjectsTasksLifecycleService {
 
     @Autowired
-    private SubjectLifecycleService subjectLifecycleService;
+    private PluginsLifecycleService pluginsLifecycleService;
+
+    @Autowired
+    private ThingsLifecycleService thingsLifecycleService;
+
+    @Autowired
+    private ActuatorsLifecycleService actuatorsLifecycleService;
 
     @Autowired
     private ThreadPoolTaskScheduler triggerableTasksScheduler;
@@ -34,8 +40,7 @@ public class SubjectsTasksLifecycleService {
     @Autowired
     private ConcurrentTaskExecutor startUpTasksExecutor;
 
-    @EventListener
-    public void initialize(ApplicationReadyEvent event) {
+    public void startUpAllTasks() {
         List<Subject> subjects = subjects();
         subjects.stream()
                 .flatMap(subject -> subject.getAsynchronousTasks().stream())
@@ -67,9 +72,9 @@ public class SubjectsTasksLifecycleService {
 
     private List<Subject> subjects() {
         LinkedList<Subject> subjects = new LinkedList<>();
-        subjects.addAll(subjectLifecycleService.getAllPlugins());
-        subjects.addAll(subjectLifecycleService.getAllThings());
-        subjects.addAll(subjectLifecycleService.getAllActuators());
+        subjects.addAll(pluginsLifecycleService.getAllPlugins());
+        subjects.addAll(thingsLifecycleService.getAllThings());
+        subjects.addAll(actuatorsLifecycleService.getAllActuators());
         return subjects;
     }
 }

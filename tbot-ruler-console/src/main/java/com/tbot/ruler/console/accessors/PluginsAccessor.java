@@ -40,4 +40,8 @@ public class PluginsAccessor {
     public void createPlugin(PluginCreateRequest createRequest) {
         pluginsClient.createPlugin(createRequest);
     }
+
+    public void deletePlugin(String pluginUuid) {
+        pluginsClient.deletePlugin(pluginUuid);
+    }
 }

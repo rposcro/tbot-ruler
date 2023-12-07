@@ -9,6 +9,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
+import com.vaadin.flow.data.provider.DataCommunicator;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,14 +18,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 @PageTitle("TBot Ruler Console | Webhooks Dashboard")
 public class WebhooksDashboard extends VerticalLayout {
 
-    private final WebhookEditSupport editSupport;
+    private final WebhookActionsSupport actionsSupport;
 
     private final EntityPropertiesPanel<WebhookResponse> webhookPanel;
     private final WebhooksGrid webhooksGrid;
 
     @Autowired
-    public WebhooksDashboard(WebhookEditSupport webhookEditSupport) {
-        this.editSupport = webhookEditSupport;
+    public WebhooksDashboard(WebhookActionsSupport webhookActionsSupport) {
+        this.actionsSupport = webhookActionsSupport;
         this.webhooksGrid = constructGrid();
         this.webhookPanel = constructWebhookPanel();
 
@@ -33,9 +34,22 @@ public class WebhooksDashboard extends VerticalLayout {
         add(constructContent());
     }
 
+    public void selectWebhook(String webhookUuid) {
+        if (webhookUuid != null) {
+            DataCommunicator<WebhookResponse> dataCommunicator = webhooksGrid.getDataCommunicator();
+            for (int idx = 0; idx < dataCommunicator.getItemCount(); idx++) {
+                if (dataCommunicator.getItem(idx).getWebhookUuid().equals(webhookUuid)) {
+                    webhooksGrid.select(dataCommunicator.getItem(idx));
+                    webhooksGrid.scrollToIndex(idx);
+                    return;
+                }
+            }
+        }
+    }
+
     private HorizontalLayout constructToolbar() {
         Button createButton = new Button("New Webhook");
-        createButton.addClickListener(event -> editSupport.launchWebhookCreate(this::handleCreateWebhook));
+        createButton.addClickListener(event -> actionsSupport.launchWebhookCreate(this::handleCreateWebhook));
 
         HorizontalLayout toolbar = new HorizontalLayout(createButton);
         toolbar.setAlignItems(Alignment.START);
@@ -47,7 +61,7 @@ public class WebhooksDashboard extends VerticalLayout {
         HorizontalLayout content = new HorizontalLayout();
 
         try {
-            webhooksGrid.setItems(editSupport.getAllWebhooks());
+            webhooksGrid.setItems(actionsSupport.getAllWebhooks());
             webhookPanel.getStyle().set("margin-top", "0px");
             content.add(webhooksGrid, webhookPanel);
             content.setFlexGrow(3, webhooksGrid);
@@ -65,11 +79,11 @@ public class WebhooksDashboard extends VerticalLayout {
 
     private WebhooksGrid constructGrid() {
         WebhooksGrid grid = new WebhooksGrid();
-        grid.addContextMenuAction("Show Bindings", webhookResponse -> editSupport.launchShowBindings(webhookResponse));
-        grid.addContextMenuAction("Delete All Bindings", webhookResponse -> editSupport.launchAllBindingsDelete(webhookResponse, this::handleDeleteAllBindings));
+        grid.addContextMenuAction("Show Bindings", webhookResponse -> actionsSupport.launchShowBindings(webhookResponse));
+        grid.addContextMenuAction("Delete All Bindings", webhookResponse -> actionsSupport.launchAllBindingsDelete(webhookResponse, this::handleDeleteAllBindings));
         grid.addContextMenuDivider();
-        grid.addContextMenuAction("Edit", webhookResponse -> editSupport.launchWebhookEdit(webhookResponse, this::handleUpdateWebhook));
-        grid.addContextMenuAction("Delete", webhookResponse -> editSupport.launchWebhookDelete(webhookResponse, this::handleDeleteWebhook));
+        grid.addContextMenuAction("Edit", webhookResponse -> actionsSupport.launchWebhookEdit(webhookResponse, this::handleUpdateWebhook));
+        grid.addContextMenuAction("Delete", webhookResponse -> actionsSupport.launchWebhookDelete(webhookResponse, this::handleDeleteWebhook));
         grid.setSelectHandler(webhook -> webhookPanel.applyToEntity(webhook));
         return grid;
     }
@@ -78,8 +92,8 @@ public class WebhooksDashboard extends VerticalLayout {
         return EntityPropertiesPanel.<WebhookResponse>builder()
                 .beanType(WebhookResponse.class)
                 .properties(new String[] { "name", "owner", "webhookUuid", "description" } )
-                .editHandler(() -> editSupport.launchWebhookEdit(gridSelection(), this::handleUpdateWebhook))
-                .deleteHandler(() -> editSupport.launchWebhookDelete(gridSelection(), this::handleDeleteWebhook))
+                .editHandler(() -> actionsSupport.launchWebhookEdit(gridSelection(), this::handleUpdateWebhook))
+                .deleteHandler(() -> actionsSupport.launchWebhookDelete(gridSelection(), this::handleDeleteWebhook))
                 .build();
     }
 
@@ -88,28 +102,28 @@ public class WebhooksDashboard extends VerticalLayout {
     }
 
     private void handleUpdateWebhook(WebhookEditDialog dialog) {
-        if (editSupport.updateWebhook(dialog)) {
-            webhooksGrid.setItems(editSupport.getAllWebhooks());
+        if (actionsSupport.updateWebhook(dialog)) {
+            webhooksGrid.setItems(actionsSupport.getAllWebhooks());
             dialog.close();
         }
     }
 
     private void handleCreateWebhook(WebhookEditDialog dialog) {
-        if (editSupport.createWebhook(dialog)) {
-            webhooksGrid.setItems(editSupport.getAllWebhooks());
+        if (actionsSupport.createWebhook(dialog)) {
+            webhooksGrid.setItems(actionsSupport.getAllWebhooks());
             dialog.close();
         }
     }
 
     private void handleDeleteWebhook(PromptDialog dialog) {
-        if (editSupport.deleteWebhook(webhookPanel.getCurrentEntity())) {
-            webhooksGrid.setItems(editSupport.getAllWebhooks());
+        if (actionsSupport.deleteWebhook(webhookPanel.getCurrentEntity())) {
+            webhooksGrid.setItems(actionsSupport.getAllWebhooks());
             dialog.close();
         }
     }
 
     private void handleDeleteAllBindings(PromptDialog dialog) {
-        if (editSupport.deleteAllBindings(webhookPanel.getCurrentEntity())) {
+        if (actionsSupport.deleteAllBindings(webhookPanel.getCurrentEntity())) {
             dialog.close();
         }
     }

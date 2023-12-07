@@ -18,12 +18,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class BindingsDashboard extends VerticalLayout {
 
     private final BindingsModelAccessor dataSupport;
-    private final BindingEditSupport editSupport;
+    private final BindingActionsSupport editSupport;
 
     private final BindingsGrid bindingsGrid;
 
     @Autowired
-    public BindingsDashboard(BindingsModelAccessor dataSupport, BindingEditSupport editSupport) {
+    public BindingsDashboard(BindingsModelAccessor dataSupport, BindingActionsSupport editSupport) {
         this.dataSupport = dataSupport;
         this.editSupport = editSupport;
         this.bindingsGrid = constructGrid();
@@ -77,6 +77,7 @@ public class BindingsDashboard extends VerticalLayout {
     private void handleBindingDelete(PromptDialog<BindingModel> dialog) {
         if (editSupport.deleteBinding(dialog.getPromptedObject())) {
             dialog.close();
+            bindingsGrid.setItems(dataSupport.getAllBindingsModels());
         }
     }
 

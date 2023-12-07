@@ -31,4 +31,8 @@ public class PluginsClient extends AbstractApiClient {
     public void createPlugin(PluginCreateRequest createRequest) {
         executeApiFunction(() -> pluginsAdminApi.createPlugin(createRequest).execute());
     }
+
+    public void deletePlugin(String pluginUuid) {
+        executeApiFunction(() -> pluginsAdminApi.deletePlugin(pluginUuid).execute());
+    }
 }

@@ -2,10 +2,12 @@ package com.tbot.ruler.console.views.routes.bindings;
 
 import com.tbot.ruler.console.views.components.EntityGrid;
 import com.tbot.ruler.console.accessors.model.BindingModel;
+import com.tbot.ruler.console.views.routes.actuators.ActuatorsDashboard;
+import com.tbot.ruler.console.views.routes.webhooks.WebhooksDashboard;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.details.Details;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import lombok.Builder;
@@ -45,27 +47,12 @@ public class BindingsDialog extends Dialog {
         return layout;
     }
 
-    private Details constructInboundDetails(List<BindingModel> bindings) {
-        EntityGrid<BindingModel> grid = constructInboundGrid(bindings);
-        Details details = new Details("Inbound Bindings", grid);
-        details.setSizeFull();
-        details.setOpened(true);
-        return details;
-    }
-
-    private Details constructOutboundDetails(List<BindingModel> bindings) {
-        EntityGrid<BindingModel> grid = constructOutboundGrid(bindings);
-        Details details = new Details("Outbound Bindings", grid);
-        details.setSizeFull();
-        details.setOpened(true);
-        return details;
-    }
-
     private EntityGrid<BindingModel> constructInboundGrid(List<BindingModel> bindings) {
         if (bindings == null) {
             return null;
         }
         EntityGrid<BindingModel> grid = new EntityGrid<>();
+        grid.addItemDoubleClickListener(this::handleInboundBindingNavigate);
         grid.addColumn("Sender Name", BindingModel::getSenderName);
         grid.addColumn("Sender UUID", BindingModel::getSenderUuid);
         grid.addColumn("Sender Type", BindingModel::getSenderType);
@@ -79,6 +66,7 @@ public class BindingsDialog extends Dialog {
             return null;
         }
         EntityGrid<BindingModel> grid = new EntityGrid<>();
+        grid.addItemDoubleClickListener(this::handleOutboundBindingNavigate);
         grid.addColumn("Receiver Name", BindingModel::getReceiverName);
         grid.addColumn("Receiver UUID", BindingModel::getReceiverUuid);
         grid.setSizeFull();
@@ -92,5 +80,24 @@ public class BindingsDialog extends Dialog {
         btnClose.getStyle().set("margin-left", "auto");
         btnClose.getStyle().set("margin-right", "auto");
         getFooter().add(btnClose);
+    }
+
+    private void handleInboundBindingNavigate(ItemDoubleClickEvent<BindingModel> event) {
+        BindingModel binding = event.getItem();
+        if (binding.isSenderActuator()) {
+            getUI().ifPresent(ui -> ui.navigate(ActuatorsDashboard.class).ifPresent(
+                    dashboard -> dashboard.selectActuator(binding.getSenderUuid())));
+        } else {
+            getUI().ifPresent(ui -> ui.navigate(WebhooksDashboard.class).ifPresent(
+                    dashboard -> dashboard.selectWebhook(binding.getSenderUuid())));
+        }
+        close();
+    }
+
+    private void handleOutboundBindingNavigate(ItemDoubleClickEvent<BindingModel> event) {
+        BindingModel binding = event.getItem();
+        getUI().ifPresent(ui -> ui.navigate(ActuatorsDashboard.class).ifPresent(
+                dashboard -> dashboard.selectActuator(binding.getReceiverUuid())));
+        close();
     }
 }

@@ -1,5 +1,6 @@
 package com.tbot.ruler.console.views.routes.things;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.tbot.ruler.console.utils.FormUtils;
 import com.tbot.ruler.console.views.components.AbstractEditDialog;
 import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
@@ -11,6 +12,7 @@ import com.vaadin.flow.component.textfield.TextField;
 import lombok.Builder;
 import lombok.NonNull;
 
+import static com.tbot.ruler.console.utils.FormUtils.asJsonNode;
 import static com.tbot.ruler.console.utils.FormUtils.orEmpty;
 
 public class ThingEditDialog extends AbstractEditDialog<ThingEditDialog> {
@@ -50,16 +52,20 @@ public class ThingEditDialog extends AbstractEditDialog<ThingEditDialog> {
         return updateMode;
     }
 
-    public String getThingName() {
+    public ThingResponse getOriginal() {
+        return original;
+    }
+
+    public String getName() {
         return txtName.getValue().trim();
     }
 
-    public String getThingDescription() {
+    public String getDescription() {
         return txtDescription.getValue();
     }
 
-    public String getThingConfiguration() {
-        return txtConfiguration.getValue().trim().replaceAll("\n", " ");
+    public JsonNode getConfiguration() {
+        return asJsonNode(txtConfiguration.getValue());
     }
 
     @Override

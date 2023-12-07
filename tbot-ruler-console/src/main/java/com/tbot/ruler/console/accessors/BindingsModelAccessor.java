@@ -54,10 +54,10 @@ public class BindingsModelAccessor {
 
         if (actuatorsMap.containsKey(response.getSenderUuid())) {
             senderName = actuatorsMap.get(response.getSenderUuid()).getName();
-            senderType = "Actuator";
+            senderType = BindingModel.SENDER_TYPE_ACTUATOR;
         } else {
             senderName = webhooksMap.get(response.getSenderUuid()).getName();
-            senderType = "Webhook";
+            senderType = BindingModel.SENDER_TYPE_WEBHOOK;
         }
 
         return BindingModel.builder()

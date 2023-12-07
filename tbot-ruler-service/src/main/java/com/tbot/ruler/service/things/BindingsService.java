@@ -2,8 +2,8 @@ package com.tbot.ruler.service.things;
 
 import com.tbot.ruler.broker.MessageSender;
 import com.tbot.ruler.broker.MessageReceiver;
+import com.tbot.ruler.service.lifecycle.ActuatorsLifecycleService;
 import com.tbot.ruler.service.lifecycle.BindingsLifecycleService;
-import com.tbot.ruler.service.lifecycle.SubjectLifecycleService;
 import com.tbot.ruler.service.lifecycle.WebhooksLifecycleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class BindingsService {
     private BindingsLifecycleService bindingsLifecycleService;
 
     @Autowired
-    private SubjectLifecycleService subjectLifecycleService;
+    private ActuatorsLifecycleService actuatorsLifecycleService;
 
     @Autowired
     private WebhooksLifecycleService webhooksLifecycleService;
@@ -27,11 +27,11 @@ public class BindingsService {
     }
 
     public MessageReceiver findReceiverByUuid(String receiverUuid) {
-        return subjectLifecycleService.getActuatorByUuid(receiverUuid);
+        return actuatorsLifecycleService.getActuatorByUuid(receiverUuid);
     }
 
     public MessageSender findSenderByUuid(String senderUuid) {
-        MessageSender sender = subjectLifecycleService.getActuatorByUuid(senderUuid);
+        MessageSender sender = actuatorsLifecycleService.getActuatorByUuid(senderUuid);
         if (sender == null) {
             sender = webhooksLifecycleService.getWebhookByUuid(senderUuid);
         }
