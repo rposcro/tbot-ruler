@@ -1,0 +1,5 @@
+### Loads things data from json files
+# @name = LoadJson
+
+PUT http://{{host-tbot-ruler}}/admin/files/load/json
+Content-Type: application/json

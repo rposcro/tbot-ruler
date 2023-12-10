@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @ReadingConverter
-public class JsonNodeReadingConverter implements Converter<byte[], JsonNode> {
+public class BytesToJsonNodeReadingConverter implements Converter<byte[], JsonNode> {
 
     @Autowired
     private ObjectMapper objectMapper;

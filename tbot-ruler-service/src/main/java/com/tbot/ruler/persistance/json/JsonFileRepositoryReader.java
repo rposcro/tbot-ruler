@@ -3,7 +3,7 @@ package com.tbot.ruler.persistance.json;
 import com.tbot.ruler.exceptions.ConfigurationException;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.json.dto.BindingDTO;
-import com.tbot.ruler.persistance.json.dto.SchemaDTO;
+import com.tbot.ruler.persistance.json.dto.StencilDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
 import com.tbot.ruler.persistance.json.dto.PluginDTO;
 import com.tbot.ruler.persistance.json.dto.WebhookDTO;
@@ -109,12 +109,12 @@ public class JsonFileRepositoryReader {
         return dtos;
     }
 
-    public List<SchemaDTO> getSchemaDTOs() {
-        List<SchemaDTO> dtos = dtoWrappers.stream()
-                .filter(wrapper -> wrapper.schemas != null)
-                .flatMap(wrapper -> wrapper.schemas.stream())
+    public List<StencilDTO> getStencilDTOs() {
+        List<StencilDTO> dtos = dtoWrappers.stream()
+                .filter(wrapper -> wrapper.stencils != null)
+                .flatMap(wrapper -> wrapper.stencils.stream())
                 .collect(Collectors.toList());
-        log.info("Found and read {} schemas DTOs", dtos.size());
+        log.info("Found and read {} stencils DTOs", dtos.size());
         return dtos;
     }
 
@@ -138,6 +138,6 @@ public class JsonFileRepositoryReader {
         private List<ActuatorDTO> actuators;
         private List<WebhookDTO> webhooks;
         private List<BindingDTO> bindings;
-        private List<SchemaDTO> schemas;
+        private List<StencilDTO> stencils;
     }
 }

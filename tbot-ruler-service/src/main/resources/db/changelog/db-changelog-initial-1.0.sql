@@ -6,7 +6,7 @@ drop table if exists `plugins`;
 
 create table `plugins`
 (
-    plugin_id       long            auto_increment,
+    plugin_id       int             auto_increment,
     plugin_uuid     varchar(64)     not null unique,
     factory_class   varchar(256)    not null,
     name            varchar(64)     not null,
@@ -20,12 +20,12 @@ drop table if exists `things`;
 
 create table `things`
 (
-    thing_id      long          auto_increment,
+    thing_id      int           auto_increment,
     thing_uuid    varchar(64)   not null unique,
     name          varchar(64)   not null,
     description   varchar(256),
     configuration json,
-    version         int         not null default 0,
+    version       int         not null default 0,
 
     primary key (thing_id)
 );
@@ -34,10 +34,10 @@ drop table if exists `actuators`;
 
 create table `actuators`
 (
-    actuator_id     long            auto_increment,
+    actuator_id     int             auto_increment,
     actuator_uuid   varchar(64)     not null unique,
-    thing_id        long            not null,
-    plugin_id       long            not null,
+    thing_id        int             not null,
+    plugin_id       int             not null,
     reference       varchar(32)     not null,
     name            varchar(64)     not null,
     description     varchar(256),
@@ -53,7 +53,7 @@ drop table if exists `webhooks`;
 
 create table `webhooks`
 (
-    webhook_id      long            auto_increment,
+    webhook_id      int             auto_increment,
     webhook_uuid    varchar(64)     not null unique,
     owner           varchar(64)     not null,
     name            varchar(64)     not null,
@@ -85,17 +85,17 @@ create table `subject_states`
     primary key (subject_uuid)
 );
 
-drop table if exists `schemas`;
+drop table if exists `stencils`;
 
-create table `schemas`
+create table `stencils`
 (
-    schema_id       long            auto_increment,
-    schema_uuid     varchar(64)     not null unique,
+    stencil_id       int             auto_increment,
+    stencil_uuid     varchar(64)     not null unique,
     owner           varchar(64)     not null,
     type            varchar(64)     not null,
     payload         json            not null,
     version         int             not null default 0,
 
-    primary key (schema_id),
-    constraint uq_schema unique (owner, type)
+    primary key (stencil_id),
+    constraint uq_stencil unique (owner, type)
 );

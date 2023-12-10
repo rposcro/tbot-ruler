@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @WritingConverter
-public class JsonNodeWritingConverter implements Converter<JsonNode, byte[]> {
+public class JsonNodeToBytesWritingConverter implements Converter<JsonNode, byte[]> {
 
     @Autowired
     private ObjectMapper objectMapper;

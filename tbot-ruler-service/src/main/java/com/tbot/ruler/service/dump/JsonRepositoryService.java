@@ -1,9 +1,10 @@
-package com.tbot.ruler.configuration;
+package com.tbot.ruler.service.dump;
 
+import com.tbot.ruler.exceptions.ConfigurationException;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
-import com.tbot.ruler.persistance.SchemasRepository;
+import com.tbot.ruler.persistance.StencilsRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.persistance.WebhooksRepository;
 import com.tbot.ruler.persistance.json.JsonFileRepositoryReader;
@@ -11,23 +12,26 @@ import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
-import com.tbot.ruler.persistance.model.SchemaEntity;
+import com.tbot.ruler.persistance.model.StencilEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.persistance.model.WebhookEntity;
 import com.tbot.ruler.util.FileUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Configuration;
+import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
-import org.springframework.context.event.EventListener;
+import org.springframework.stereotype.Service;
 
 @Slf4j
-@Configuration
-public class JsonDataConfiguration {
+@Service
+public class JsonRepositoryService implements ApplicationListener<ContextRefreshedEvent> {
 
-    @Value("${ruler.thingsConfig.path:@null}")
-    private String filaConfigPath;
+    @Value("${ruler.fileRepository.load.path:@null}")
+    private String repositoryPath;
+
+    @Value("${ruler.fileRepository.load.loadOnStartup:false}")
+    private boolean loadOnStartup;
 
     @Autowired
     private FileUtil fileUtil;
@@ -45,31 +49,35 @@ public class JsonDataConfiguration {
     private WebhooksRepository webhooksRepository;
 
     @Autowired
-    private SchemasRepository schemasRepository;
+    private StencilsRepository stencilsRepository;
 
     @Autowired
     private BindingsRepository bindingsRepository;
 
-    private JsonFileRepositoryReader jsonFileRepositoryReader;
-
-    @EventListener
-    public void loadConfigData(ContextRefreshedEvent e) {
-        this.jsonFileRepositoryReader = new JsonFileRepositoryReader(filaConfigPath, fileUtil);
-
-        if (filaConfigPath != null) {
-            log.info("File based config found, loading into repository ...");
-            loadPlugins();
-            loadThings();
-            loadActuators();
-            loadWebhooks();
-            loadBindings();
-            loadSchemas();
-        } else {
-            log.info("No file based config to load");
+    @Override
+    public void onApplicationEvent(ContextRefreshedEvent e) {
+        if (loadOnStartup) {
+            loadJsonRepository();
         }
     }
 
-    private void loadPlugins() {
+    public void loadJsonRepository() {
+        if (repositoryPath == null) {
+            throw new ConfigurationException("JSON repository path is not specified!");
+        }
+
+        JsonFileRepositoryReader jsonFileRepositoryReader = new JsonFileRepositoryReader(repositoryPath, fileUtil);
+
+        log.info("File based config found, loading into repository ...");
+        loadPlugins(jsonFileRepositoryReader);
+        loadThings(jsonFileRepositoryReader);
+        loadActuators(jsonFileRepositoryReader);
+        loadWebhooks(jsonFileRepositoryReader);
+        loadBindings(jsonFileRepositoryReader);
+        loadStencils(jsonFileRepositoryReader);
+    }
+
+    private void loadPlugins(JsonFileRepositoryReader jsonFileRepositoryReader) {
         log.info("Loading plugins data ...");
         jsonFileRepositoryReader.getPluginDTOs().stream()
                 .filter(dto -> {
@@ -92,7 +100,7 @@ public class JsonDataConfiguration {
                 });
     }
 
-    private void loadThings() {
+    private void loadThings(JsonFileRepositoryReader jsonFileRepositoryReader) {
         log.info("Loading things data ...");
         jsonFileRepositoryReader.getThingDTOs().stream()
                 .filter(dto -> {
@@ -115,7 +123,7 @@ public class JsonDataConfiguration {
                 });
     }
 
-    private void loadActuators() {
+    private void loadActuators(JsonFileRepositoryReader jsonFileRepositoryReader) {
         log.info("Loading actuators ...");
         jsonFileRepositoryReader.getActuatorDTOs().stream()
                 .filter(this::checkActuator)
@@ -140,7 +148,7 @@ public class JsonDataConfiguration {
                 });
     }
 
-    private void loadWebhooks() {
+    private void loadWebhooks(JsonFileRepositoryReader jsonFileRepositoryReader) {
         log.info("Loading webhooks ...");
         jsonFileRepositoryReader.getWebhookDTOs().stream()
                 .filter(dto -> {
@@ -177,7 +185,7 @@ public class JsonDataConfiguration {
         return true;
     }
 
-    private void loadBindings() {
+    private void loadBindings(JsonFileRepositoryReader jsonFileRepositoryReader) {
         log.info("Loading bindings data ...");
         jsonFileRepositoryReader.getBindingDTOs().stream().forEach(dto -> {
             dto.getReceiversUuid().forEach(receiverUuid -> {
@@ -195,26 +203,26 @@ public class JsonDataConfiguration {
         });
     }
 
-    private void loadSchemas() {
-        log.info("Loading schemas data ...");
-        jsonFileRepositoryReader.getSchemaDTOs().stream()
+    private void loadStencils(JsonFileRepositoryReader jsonFileRepositoryReader) {
+        log.info("Loading stencils data ...");
+        jsonFileRepositoryReader.getStencilDTOs().stream()
                 .filter(dto -> {
-                    if (!schemasRepository.findByUuid(dto.getUuid()).isPresent()) {
+                    if (!stencilsRepository.findByUuid(dto.getUuid()).isPresent()) {
                         return true;
                     } else {
-                        log.info("Skipped schema {}, already exists", dto.getUuid());
+                        log.info("Skipped stencil {}, already exists", dto.getUuid());
                         return false;
                     }
                 })
                 .forEach(dto -> {
-                    SchemaEntity schemaEntity = SchemaEntity.builder()
-                            .schemaUuid(dto.getUuid())
+                    StencilEntity stencilEntity = StencilEntity.builder()
+                            .stencilUuid(dto.getUuid())
                             .owner(dto.getOwner())
                             .type(dto.getType())
                             .payload(dto.getPayload())
                             .build();
-                    schemasRepository.save(schemaEntity);
-                    log.info("Loaded schema {}", dto.getUuid());
+                    stencilsRepository.save(stencilEntity);
+                    log.info("Loaded stencil {}", dto.getUuid());
                 });
     }
 }

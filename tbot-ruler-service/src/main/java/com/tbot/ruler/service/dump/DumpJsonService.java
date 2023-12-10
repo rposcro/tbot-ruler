@@ -8,18 +8,18 @@ import com.tbot.ruler.exceptions.ConfigurationException;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
-import com.tbot.ruler.persistance.SchemasRepository;
+import com.tbot.ruler.persistance.StencilsRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.persistance.WebhooksRepository;
 import com.tbot.ruler.persistance.json.dto.ActuatorDTO;
 import com.tbot.ruler.persistance.json.dto.BindingDTO;
 import com.tbot.ruler.persistance.json.dto.PluginDTO;
-import com.tbot.ruler.persistance.json.dto.SchemaDTO;
+import com.tbot.ruler.persistance.json.dto.StencilDTO;
 import com.tbot.ruler.persistance.json.dto.ThingDTO;
 import com.tbot.ruler.persistance.json.dto.WebhookDTO;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
-import com.tbot.ruler.persistance.model.SchemaEntity;
+import com.tbot.ruler.persistance.model.StencilEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +71,7 @@ public class DumpJsonService {
             .withObjectIndenter(new DefaultIndenter("    ", DefaultIndenter.SYS_LF))
             .withArrayIndenter(new DefaultIndenter("    ", DefaultIndenter.SYS_LF));
 
-    @Value("${ruler.dump.jsonFiles:@null}")
+    @Value("${ruler.fileRepository.dump.jsonFiles:@null}")
     private String dumpJsonFiles;
 
     @Autowired
@@ -93,7 +93,7 @@ public class DumpJsonService {
     private BindingsRepository bindingsRepository;
 
     @Autowired
-    private SchemasRepository schemasRepository;
+    private StencilsRepository stencilsRepository;
 
     public void dumpToJson() {
         if (dumpJsonFiles == null) {
@@ -108,7 +108,7 @@ public class DumpJsonService {
             dumpActuators(dumpContext);
             dumpWebhooks(dumpContext);
             dumpBindings(dumpContext);
-            dumpSchemas(dumpContext);
+            dumpStencils(dumpContext);
         } catch(IOException e) {
             throw new ConfigurationException("Could not use the file system to store json dumps!", e);
         }
@@ -217,22 +217,22 @@ public class DumpJsonService {
         log.info("Dumped bindings to {}", file);
     }
 
-    private void dumpSchemas(DumpContext dumpContext) throws IOException {
-        List<SchemaEntity> schemaEntities = schemasRepository.findAll();
-        for (SchemaEntity schemaEntity: schemaEntities) {
-            SchemaDTO dto = SchemaDTO.builder()
-                    .uuid(schemaEntity.getSchemaUuid())
-                    .owner(schemaEntity.getOwner())
-                    .type(schemaEntity.getType())
-                    .payload(schemaEntity.getPayload())
+    private void dumpStencils(DumpContext dumpContext) throws IOException {
+        List<StencilEntity> stencilsEntities = stencilsRepository.findAll();
+        for (StencilEntity stencilEntity : stencilsEntities) {
+            StencilDTO dto = StencilDTO.builder()
+                    .uuid(stencilEntity.getStencilUuid())
+                    .owner(stencilEntity.getOwner())
+                    .type(stencilEntity.getType())
+                    .payload(stencilEntity.getPayload())
                     .build();
-            File file = formatFile(format("schema-%s-%s", schemaEntity.getOwner(), schemaEntity.getType()), dumpContext);
+            File file = formatFile(format("stencil-%s-%s", stencilEntity.getOwner(), stencilEntity.getType()), dumpContext);
             objectMapper.writer(JSON_PRINTER).writeValue(file, new Object() {
-                public List<SchemaDTO> getSchemas() {
+                public List<StencilDTO> getStencils() {
                     return Collections.singletonList(dto);
                 }
             });
-            log.info("Dumped schema to {}", file);
+            log.info("Dumped stencil to {}", file);
         }
     }
 

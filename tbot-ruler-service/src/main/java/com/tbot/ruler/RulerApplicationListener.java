@@ -17,7 +17,7 @@ public class RulerApplicationListener implements ApplicationListener<Application
         logProperty(environment, "spring.thymeleaf.suffix");
         logProperty(environment, "spring.thymeleaf.mode");
         logProperty(environment, "spring.thymeleaf.servlet.content-type");
-        logProperty(environment, "ruler.thingsConfig.path");
+        logProperty(environment, "ruler.jsonRepository.path");
     }
 
     private static void logProperty(ConfigurableEnvironment environment, String propertyName) {

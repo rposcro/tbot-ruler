@@ -16,15 +16,15 @@ import org.springframework.data.relational.core.mapping.Table;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table("schemas")
-public class SchemaEntity {
+@Table("stencils")
+public class StencilEntity {
 
     @Id
-    @Column("schema_id")
-    private long schemaId;
+    @Column("stencil_id")
+    private long stencilId;
 
-    @Column("schema_uuid")
-    private String schemaUuid;
+    @Column("stencil_uuid")
+    private String stencilUuid;
 
     @Column("owner")
     private String owner;

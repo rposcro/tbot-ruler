@@ -14,7 +14,7 @@ import lombok.experimental.SuperBuilder;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SchemaDTO {
+public class StencilDTO {
 
     @NonNull
     @JsonProperty(required = true)

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @WritingConverter
-public class ObjectNodeWritingConverter implements Converter<ObjectNode, byte[]> {
+public class ObjectNodeToBytesWritingConverter implements Converter<ObjectNode, byte[]> {
 
     @Autowired
     private ObjectMapper objectMapper;
