@@ -4,24 +4,23 @@ plugins {
 }
 
 project.group = tbotRulerGroup
-project.version = tbotRulerVersion
-project.description = 'TBot Ruler DB'
+project.description = 'TBot DB'
 
-def imageName = 'tbot-ruler-db'
+def imageName = 'tbot-db'
 
 repositories {
     mavenCentral()
 }
 
 docker {
-    name "${imageName}:${project.version}"
+    name "${imageName}"
     copySpec.from("sql-files").into("sql-files")
     noCache true
 }
 
 dockerRun {
     name "${imageName}"
-    image "${imageName}:${project.version}"
+    image "${imageName}"
     ports '4340:3306'
     volumes "${parent.projectDir}/ignore/db": '/var/lib/mysql'
     clean
