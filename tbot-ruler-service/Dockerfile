@@ -1,6 +1,7 @@
 FROM --platform=linux/amd64 amazoncorretto:17-alpine
 
-WORKDIR /cache
+WORKDIR /data
+WORKDIR /logs
 WORKDIR /app
 
 COPY run-ruler-service.sh /app/

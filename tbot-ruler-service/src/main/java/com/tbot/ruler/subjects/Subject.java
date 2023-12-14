@@ -14,6 +14,6 @@ public interface Subject {
         return "";
     }
 
-    default Collection<SubjectTask> getAsynchronousTasks() { return Collections.emptyList(); }
+    default Collection<SubjectTask> getAsynchronousSubjectTasks() { return Collections.emptyList(); }
 
 }

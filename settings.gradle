@@ -1,5 +1,5 @@
 rootProject.name = 'tbot-ruler'
 include 'tbot-ruler-service'
 include 'tbot-ruler-console'
-include 'tbot-db'
+include 'tbot-ruler-dev-db'
 

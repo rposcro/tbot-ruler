@@ -4,9 +4,9 @@ plugins {
 }
 
 project.group = tbotRulerGroup
-project.description = 'TBot DB'
+project.description = 'TBot Ruler Dev DB'
 
-def imageName = 'tbot-db'
+def imageName = 'tbot-ruler-dev-db'
 
 repositories {
     mavenCentral()
@@ -14,8 +14,8 @@ repositories {
 
 docker {
     name "${imageName}"
-    copySpec.from("sql-files").into("sql-files")
     noCache true
+    copySpec.from("sql-files").into("sql-files")
 }
 
 dockerRun {

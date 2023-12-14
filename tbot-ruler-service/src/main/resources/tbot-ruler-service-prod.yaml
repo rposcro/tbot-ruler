@@ -3,14 +3,14 @@ server:
 
 spring:
     datasource:
-        url: jdbc:mariadb://localhost:4340/ruler
+        url: ${DB_URL}
         driverClassName: org.mariadb.jdbc.Driver
         username: ${DB_APP_USERNAME}
         password: ${DB_APP_PASSWORD}
         hikari:
             schema: ruler
     liquibase:
-        url: jdbc:mariadb://localhost:4340/ruler
+        url: ${DB_URL}
         liquibase-schema: ruler
         user: ${DB_ADMIN_USERNAME}
         password: ${DB_ADMIN_PASSWORD}

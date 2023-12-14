@@ -16,6 +16,9 @@ spring:
         liquibase-schema: ruler
         user: ${DB_ADMIN_USERNAME}
         password: ${DB_ADMIN_PASSWORD}
+    h2:
+        console:
+            enabled: true
 
 ruler:
     fileRepository:
