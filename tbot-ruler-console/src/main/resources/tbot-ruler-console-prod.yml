@@ -3,7 +3,11 @@ server:
 
 client:
   ruler-service:
-    baseUrl: "http://192.168.100.14:4040"
+    baseUrl: "${TBOT_HOST_URL}/tbot/ruler/"
     timeoutInMilliseconds: 3000
     maxIdleConnections: 3
 
+vaadin:
+  productionMode: true
+  disable-xsrf-protection: false
+  urlMapping: "/*"

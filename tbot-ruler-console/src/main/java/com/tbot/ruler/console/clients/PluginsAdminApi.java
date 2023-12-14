@@ -15,20 +15,20 @@ import java.util.List;
 
 public interface PluginsAdminApi {
 
-    @GET("/admin/plugins")
+    @GET("admin/plugins")
     Call<List<PluginResponse>> getPlugins();
 
-    @GET("/admin/plugins/factories")
+    @GET("admin/plugins/factories")
     Call<List<String>> getFactories();
 
-    @POST("/admin/plugins")
+    @POST("admin/plugins")
     Call<PluginResponse> createPlugin(@Body PluginCreateRequest createPluginRequest);
 
-    @PATCH("/admin/plugins/{pluginUuid}")
+    @PATCH("admin/plugins/{pluginUuid}")
     Call<PluginResponse> updatePlugin(
             @Path("pluginUuid") String pluginUuid,
             @Body PluginUpdateRequest updatePluginRequest);
 
-    @DELETE("/admin/plugins/{pluginUuid}")
+    @DELETE("admin/plugins/{pluginUuid}")
     Call<PluginResponse> deletePlugin(@Path("pluginUuid") String pluginUuid);
 }

@@ -3,7 +3,7 @@ server:
 
 client:
   ruler-service:
-    baseUrl: "http://localhost:4042"
+    baseUrl: "http://localhost:4042/"
     timeoutInMilliseconds: 3000
     maxIdleConnections: 3
 

@@ -94,7 +94,7 @@ project.tasks.named('test') {
 }
 
 project.tasks.named('bootJar') {
-    mainClass = 'com.tbot.ruler.RulerApp'
+    mainClass = 'com.tbot.ruler.console.TBotRulerConsoleApplication'
     archiveClassifier = 'boot'
 }
 
@@ -106,3 +106,14 @@ project.tasks.withType(JavaCompile) {
     options.encoding = 'UTF-8'
 }
 
+docker {
+    name = "${project.name}"
+    noCache true
+
+    copySpec.with {
+        from("build/libs") {
+            include "${project.name}-${version}-boot.jar"
+            rename(name -> "${project.name}.jar")
+        }
+    }
+}

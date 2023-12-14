@@ -15,18 +15,18 @@ import java.util.List;
 
 public interface BindingsAdminApi {
 
-    @GET("/admin/bindings")
+    @GET("admin/bindings")
     Call<List<BindingResponse>> getBindings();
 
-    @GET("/admin/bindings/senders/{senderUuid}")
+    @GET("admin/bindings/senders/{senderUuid}")
     Call<List<BindingResponse>> getSenderBindings(@Path("senderUuid") String senderUuid);
 
-    @GET("/admin/bindings/receivers/{receiverUuid}")
+    @GET("admin/bindings/receivers/{receiverUuid}")
     Call<List<BindingResponse>> getReceiverBindings(@Path("receiverUuid") String receiverUuid);
 
-    @POST("/admin/bindings")
+    @POST("admin/bindings")
     Call<BindingResponse> createThing(@Body BindingCreateRequest request);
 
-    @HTTP(method = "DELETE", path = "/admin/bindings", hasBody = true)
+    @HTTP(method = "DELETE", path = "admin/bindings", hasBody = true)
     Call<BindingResponse> deleteThing(@Body BindingDeleteRequest request);
 }

@@ -15,17 +15,17 @@ import java.util.List;
 
 public interface ThingsAdminApi {
 
-    @GET("/admin/things")
+    @GET("admin/things")
     Call<List<ThingResponse>> getThings();
 
-    @POST("/admin/things")
+    @POST("admin/things")
     Call<ThingResponse> createThing(@Body ThingCreateRequest thingCreateRequest);
 
-    @PATCH("/admin/things/{thingUuid}")
+    @PATCH("admin/things/{thingUuid}")
     Call<ThingResponse> updateThing(
             @Path("thingUuid") String thingUuid,
             @Body ThingUpdateRequest thingUpdateRequest);
 
-    @DELETE("/admin/things/{thingUuid}")
+    @DELETE("admin/things/{thingUuid}")
     Call<ThingResponse> deleteThing(@Path("thingUuid") String thingUuid);
 }

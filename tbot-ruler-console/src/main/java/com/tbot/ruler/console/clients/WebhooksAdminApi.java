@@ -15,20 +15,20 @@ import java.util.List;
 
 public interface WebhooksAdminApi {
 
-    @GET("/admin/webhooks")
+    @GET("admin/webhooks")
     Call<List<WebhookResponse>> getWebhooks();
 
-    @GET("/admin/webhooks/owners")
+    @GET("admin/webhooks/owners")
     Call<List<String>> getOwners();
 
-    @POST("/admin/webhooks")
+    @POST("admin/webhooks")
     Call<WebhookResponse> createWebhook(@Body WebhookCreateRequest webhookCreateRequest);
 
-    @PATCH("/admin/webhooks/{webhookUuid}")
+    @PATCH("admin/webhooks/{webhookUuid}")
     Call<WebhookResponse> updateWebhook(
             @Path("webhookUuid") String webhookUuid,
             @Body WebhookUpdateRequest webhookUpdateRequest);
 
-    @DELETE("/admin/webhooks/{webhookUuid}")
+    @DELETE("admin/webhooks/{webhookUuid}")
     Call<WebhookResponse> deleteWebhook(@Path("webhookUuid") String webhookUuid);
 }

@@ -7,6 +7,7 @@ import com.tbot.ruler.console.clients.PluginsAdminApi;
 import com.tbot.ruler.console.clients.ThingsAdminApi;
 import com.tbot.ruler.console.clients.WebhooksAdminApi;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import okhttp3.ConnectionPool;
 import okhttp3.OkHttpClient;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,7 @@ import retrofit2.converter.jackson.JacksonConverterFactory;
 
 import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
+@Slf4j
 @Configuration
 public class RulerServiceClientsConfiguration {
 
@@ -30,6 +32,10 @@ public class RulerServiceClientsConfiguration {
 
     @PostConstruct
     public void init() {
+        log.info("Ruler clients configuration, baseurl: {}, timeout: {}, maxIdles: {}",
+                clientsProperties.getBaseUrl(),
+                clientsProperties.getTimeoutInMilliseconds(),
+                clientsProperties.getMaxIdleConnections());
         this.httpClient = buildOkHttp3();
     }
 

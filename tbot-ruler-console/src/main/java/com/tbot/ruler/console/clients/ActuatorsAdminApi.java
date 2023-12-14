@@ -15,17 +15,17 @@ import java.util.List;
 
 public interface ActuatorsAdminApi {
 
-    @GET("/admin/actuators")
+    @GET("admin/actuators")
     Call<List<ActuatorResponse>> getActuators();
 
-    @POST("/admin/actuators")
+    @POST("admin/actuators")
     Call<ActuatorResponse> createActuator(@Body ActuatorCreateRequest actuatorCreateRequest);
 
-    @PATCH("/admin/actuators/{actuatorUuid}")
+    @PATCH("admin/actuators/{actuatorUuid}")
     Call<ActuatorResponse> updateActuator(
             @Path("actuatorUuid") String actuatorUuid,
             @Body ActuatorUpdateRequest actuatorUpdateRequest);
 
-    @DELETE("/admin/actuators/{actuatorUuid}")
+    @DELETE("admin/actuators/{actuatorUuid}")
     Call<ActuatorResponse> deleteActuator(@Path("actuatorUuid") String actuatorUuid);
 }
