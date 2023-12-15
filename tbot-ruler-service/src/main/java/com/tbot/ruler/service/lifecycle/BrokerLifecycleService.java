@@ -3,6 +3,8 @@ package com.tbot.ruler.service.lifecycle;
 import com.tbot.ruler.broker.MessagePublicationReportBroker;
 import com.tbot.ruler.broker.MessagePublishBroker;
 import com.tbot.ruler.broker.MessageQueueComponent;
+import com.tbot.ruler.jobs.JobRunner;
+import com.tbot.ruler.jobs.JobTrigger;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -28,19 +30,24 @@ public class BrokerLifecycleService {
     @Autowired
     private ThreadPoolTaskExecutor rulerTaskExecutor;
 
+    private JobRunner messageBrokerJobRunner;
+    private JobRunner reportBrokerJobRunner;
+
     @EventListener
     public void initialize(ApplicationReadyEvent event) {
+        this.messageBrokerJobRunner = new JobRunner(messagePublishBroker, JobTrigger.instantTrigger());
+        this.reportBrokerJobRunner = new JobRunner(publicationReportBroker, JobTrigger.instantTrigger());
         startBroker();
     }
 
     public void startBroker() {
         messageQueue.emptyQueues();
-        rulerTaskExecutor.execute(messagePublishBroker);
-        rulerTaskExecutor.execute(publicationReportBroker);
+        rulerTaskExecutor.execute(messageBrokerJobRunner);
+        rulerTaskExecutor.execute(reportBrokerJobRunner);
     }
 
     public void stopBroker() {
-        messagePublishBroker.stop();
-        publicationReportBroker.stop();
+        messageBrokerJobRunner.stop();
+        reportBrokerJobRunner.stop();
     }
 }

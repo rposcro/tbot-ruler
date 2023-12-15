@@ -4,8 +4,8 @@ import com.tbot.ruler.exceptions.MessageException;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.MessagePublicationReport.publicationReportBuilder;
 import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.jobs.Job;
 import com.tbot.ruler.service.things.BindingsService;
-import com.tbot.ruler.task.AbstractTask;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +16,7 @@ import java.util.Collections;
 
 @Slf4j
 @Service
-public class MessagePublishBroker extends AbstractTask {
+public class MessagePublishBroker implements Job {
 
     private final MessageQueueComponent messageQueue;
     private final BindingsService bindingsService;
@@ -32,7 +32,7 @@ public class MessagePublishBroker extends AbstractTask {
     }
 
     @Override
-    public void runIteration() {
+    public void doJob() {
         try {
             Message message = messageQueue.nextMessage();
             if (message != null) {
@@ -43,8 +43,6 @@ public class MessagePublishBroker extends AbstractTask {
             log.error("Message dispatch interrupted by unexpected internal error", e);
         }
     }
-
-
 
     private MessagePublicationReport dispatchMessage(Message message) {
         publicationReportBuilder reportBuilder = MessagePublicationReport.builder().originalMessage(message);

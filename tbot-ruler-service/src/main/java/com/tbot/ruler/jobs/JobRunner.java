@@ -33,17 +33,16 @@ public class JobRunner implements Runnable {
             log.info("Job Runner: {} started", this.job.getName());
 
             try {
-                while (!isStopping.get()) {
+                while (shouldContinue()) {
                     long nextDoJobTime = jobTrigger.nextDoJobTime(triggerContext);
-                    log.info("Job Runner: Next emission time for {} is {}", job.getName(), new Date(nextDoJobTime));
-
                     long sleepTime = nextDoJobTime - System.currentTimeMillis();
+
                     if (sleepTime > 0) {
+                        log.info("Job Runner: Next emission time for {} is {}", job.getName(), new Date(nextDoJobTime));
                         Thread.sleep(sleepTime);
                     }
 
                     job.doJob();
-
                     triggerContext.setLastScheduledExecutionTime(nextDoJobTime);
                     triggerContext.setLastCompletionTime(System.currentTimeMillis());
                 }
@@ -63,5 +62,11 @@ public class JobRunner implements Runnable {
         log.info("Job Runner: {} stop requested: {}", job.getName());
         isStopping.set(true);
         while(!isStopping.get());
+    }
+
+    private boolean shouldContinue() {
+        return !isStopping.get()
+                && (jobTrigger.shouldRunAgain() || triggerContext.isFirstRun())
+                ;
     }
 }

@@ -1,8 +1,8 @@
 package com.tbot.ruler.broker;
 
 import com.tbot.ruler.broker.model.MessagePublicationReport;
+import com.tbot.ruler.jobs.Job;
 import com.tbot.ruler.service.things.BindingsService;
-import com.tbot.ruler.task.AbstractTask;
 import lombok.Builder;
 import lombok.Singular;
 import lombok.extern.slf4j.Slf4j;
@@ -13,7 +13,7 @@ import java.util.List;
 
 @Slf4j
 @Service
-public class MessagePublicationReportBroker extends AbstractTask {
+public class MessagePublicationReportBroker implements Job {
 
     private MessageQueueComponent messageQueue;
     private BindingsService bindingsService;
@@ -31,7 +31,7 @@ public class MessagePublicationReportBroker extends AbstractTask {
     }
 
     @Override
-    public void runIteration() {
+    public void doJob() {
         try {
             MessagePublicationReport publicationReport = messageQueue.nextReport();
             if (publicationReport != null) {
