@@ -23,7 +23,6 @@ public class SingleIntervalActuatorBuilder extends GhostActuatorBuilder {
     @Override
     public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext, GhostPluginContext ghostPluginContext) {
         SingleIntervalConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SingleIntervalConfiguration.class);
-        RulerPluginContext rulerPluginContext = ghostPluginContext.getRulerPluginContext();
 
         SingleIntervalAgent actuatorAgent = SingleIntervalAgent.builder()
                 .actuatorUuid(actuatorEntity.getActuatorUuid())

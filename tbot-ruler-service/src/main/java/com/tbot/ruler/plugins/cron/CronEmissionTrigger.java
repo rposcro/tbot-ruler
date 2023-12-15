@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.cron;
 
-import com.tbot.ruler.task.TaskTrigger;
-import com.tbot.ruler.task.EmissionTriggerContext;
+import com.tbot.ruler.jobs.JobTrigger;
+import com.tbot.ruler.jobs.JobTriggerContext;
 import org.springframework.scheduling.support.CronExpression;
 
 import java.time.ZoneId;
@@ -9,9 +9,7 @@ import java.time.ZonedDateTime;
 import java.util.Date;
 import java.util.TimeZone;
 
-import static com.rposcro.jwavez.core.utils.ObjectsUtil.orDefault;
-
-public class CronEmissionTrigger implements TaskTrigger {
+public class CronEmissionTrigger implements JobTrigger {
 
     private final CronExpression cronExpression;
     private final ZoneId zoneId;
@@ -22,9 +20,9 @@ public class CronEmissionTrigger implements TaskTrigger {
     }
 
     @Override
-    public Date nextEmissionTime(EmissionTriggerContext context) {
-        Date lastExecutionTime = orDefault(context.getLastScheduledExecutionTime(), () -> new Date());
+    public long nextDoJobTime(JobTriggerContext context) {
+        Date lastExecutionTime = context.isFirstRun() ? new Date() : new Date(context.getLastScheduledExecutionTime());
         ZonedDateTime lastExecutionDateTime = ZonedDateTime.ofInstant(lastExecutionTime.toInstant(), zoneId);
-        return new Date(cronExpression.next(lastExecutionDateTime).toEpochSecond() * 1000);
+        return new Date(cronExpression.next(lastExecutionDateTime).toEpochSecond() * 1000).getTime();
     }
 }
