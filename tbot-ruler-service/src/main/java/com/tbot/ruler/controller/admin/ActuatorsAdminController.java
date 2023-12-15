@@ -67,9 +67,11 @@ public class ActuatorsAdminController extends AbstractController {
             @PathVariable String actuatorUuid,
             @RequestBody ActuatorUpdateRequest actuatorUpdateRequest) {
         ActuatorEntity actuatorEntity = subjectsAccessor.findActuator(actuatorUuid);
+        ThingEntity thingEntity = subjectsAccessor.findThing(actuatorUpdateRequest.getThingUuid());
         actuatorEntity.setName(actuatorUpdateRequest.getName());
         actuatorEntity.setDescription(actuatorUpdateRequest.getDescription());
         actuatorEntity.setConfiguration(actuatorUpdateRequest.getConfiguration());
+        actuatorEntity.setThingId(thingEntity.getThingId());
         actuatorEntity = actuatorsRepository.save(actuatorEntity);
         return ok(toResponse(actuatorEntity));
     }

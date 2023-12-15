@@ -84,6 +84,7 @@ public class ActuatorActionsSupport extends AbstractActionsSupport {
                     .name(dialog.getName())
                     .description(dialog.getDescription())
                     .configuration(dialog.getConfiguration())
+                    .thingUuid(dialog.getThing().getThingUuid())
                     .build();
             actuatorsAccessor.updateActuator(dialog.getOriginal().getActuatorUuid(), request);
             notifyInfo("Actuator updated");

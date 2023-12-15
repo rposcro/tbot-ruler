@@ -90,14 +90,14 @@ public class ThingsDashboard extends VerticalLayout {
     }
 
     private void handleThingCreate(ThingEditDialog dialog) {
-        if (actionsSupport.updateThing(dialog)) {
+        if (actionsSupport.createThing(dialog)) {
             thingsGrid.setItems(thingsAccessor.getAllThings());
             dialog.close();
         }
     }
 
     private void handleThingUpdate(ThingEditDialog dialog) {
-        if (actionsSupport.createThing(dialog)) {
+        if (actionsSupport.updateThing(dialog)) {
             thingsGrid.setItems(thingsAccessor.getAllThings());
             dialog.close();
         }

@@ -13,7 +13,7 @@ public abstract class AbstractTask implements Task {
     protected abstract void runIteration() throws InterruptedException;
 
     @Override
-    public void run() {
+    public final void run() {
         if (!isRunning.compareAndExchange(false, true)) {
             log.info("Task started: {}", this.getName());
 

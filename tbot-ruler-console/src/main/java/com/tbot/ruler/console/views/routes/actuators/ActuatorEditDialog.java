@@ -111,7 +111,7 @@ public class ActuatorEditDialog extends AbstractEditDialog<ActuatorEditDialog> {
 
         selThing.setLabel("Thing");
         selThing.setItems(things);
-        selThing.setEnabled(!updateMode);
+        selThing.setEnabled(true);
         selThing.setItemLabelGenerator(thing -> String.format("%s (%s)", thing.getName(), thing.getThingUuid()));
 
         if (updateMode) {
