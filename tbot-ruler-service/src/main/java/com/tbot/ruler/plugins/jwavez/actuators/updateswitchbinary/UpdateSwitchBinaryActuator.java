@@ -8,12 +8,12 @@ import com.rposcro.jwavez.core.commands.supported.binaryswitch.BinarySwitchRepor
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.jobs.Job;
+import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -37,11 +37,11 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
     private final long pollIntervalMilliseconds;
     private final boolean multiChannelOn;
 
-    private final Collection<SubjectTask> asynchronousSubjectTasks;
+    private final Collection<JobBundle> jobBundles;
 
     @Builder
     public UpdateSwitchBinaryActuator(
-            @NonNull String id,
+            @NonNull String uuid,
             @NonNull String name,
             String description,
             @NonNull MessagePublisher messagePublisher,
@@ -49,7 +49,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
             @NonNull UpdateSwitchBinaryConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
     ) {
-        super(id, name, description);
+        super(uuid, name, description);
         this.messagePublisher = messagePublisher;
         this.commandSender = commandSender;
         this.configuration = configuration;
@@ -57,11 +57,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
         this.multiChannelOn = configuration.getNodeEndPointId() >= 0;
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchBinaryCommandBuilder();
         this.multiChannelCommandBuilder = applicationSupport.controlledCommandFactory().multiChannelCommandBuilder();
-        this.asynchronousSubjectTasks = asynchronousTasks();
-    }
-
-    @Override
-    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
+        this.jobBundles = jobBundles();
     }
 
     public void acceptCommand(BinarySwitchReport report) {
@@ -71,15 +67,21 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
                 .build());
     }
 
-    @Override
-    public void acceptMessage(Message message) {
-    }
-
-    private Collection<SubjectTask> asynchronousTasks() {
-        if (configuration.getPollStateInterval() == 0) {
+    private Collection<JobBundle> jobBundles() {
+        if (pollIntervalMilliseconds == 0) {
             return Collections.emptySet();
         } else {
-            Runnable runnable = () -> {
+            return Collections.singleton(JobBundle.periodicalJobBundle(updateRequestJob(), pollIntervalMilliseconds));
+        }
+    }
+
+    private Job updateRequestJob() {
+        return new Job() {
+            @Getter
+            private final String name = UpdateSwitchBinaryActuator.class.getSimpleName() + "-Job@" + UpdateSwitchBinaryActuator.this.getUuid();
+
+            @Override
+            public void doJob() {
                 if (multiChannelOn) {
                     log.debug("Sending multi channel switch binary report request for node {} endPoint {}",
                             configuration.getNodeId(), configuration.getNodeEndPointId());
@@ -90,8 +92,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
                     log.debug("Sending switch binary report request for node " + configuration.getNodeId());
                     commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
                 }
-            };
-            return Collections.singleton(SubjectTask.triggerableTask(runnable, pollIntervalMilliseconds));
-        }
+            }
+        };
     }
 }

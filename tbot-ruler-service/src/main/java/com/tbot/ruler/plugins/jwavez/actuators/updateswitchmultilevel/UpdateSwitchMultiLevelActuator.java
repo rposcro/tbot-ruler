@@ -6,12 +6,12 @@ import com.rposcro.jwavez.core.commands.supported.switchmultilevel.SwitchMultile
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.jobs.Job;
+import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -19,7 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
 
 @Slf4j
 @Getter
@@ -34,11 +33,11 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
     private final SwitchMultiLevelCommandBuilder commandBuilder;
     private final long pollIntervalMilliseconds;
 
-    private final Collection<SubjectTask> asynchronousSubjectTasks;
+    private final Collection<JobBundle> jobBundles;
 
     @Builder
     public UpdateSwitchMultiLevelActuator(
-            @NonNull String id,
+            @NonNull String uuid,
             @NonNull String name,
             String description,
             @NonNull MessagePublisher messagePublisher,
@@ -46,17 +45,13 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
             @NonNull UpdateSwitchMultiLevelConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
             ) {
-        super(id, name, description);
+        super(uuid, name, description);
         this.messagePublisher = messagePublisher;
         this.commandSender = commandSender;
         this.configuration = configuration;
         this.pollIntervalMilliseconds = configuration.getPollStateInterval() <= 0 ? 0 : 1000 * Math.max(MIN_POLL_INTERVAL, configuration.getPollStateInterval());
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchMultiLevelCommandBuilder();
-        this.asynchronousSubjectTasks = asynchronousTasks();
-    }
-
-    @Override
-    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
+        this.jobBundles = jobBundles();
     }
 
     public void acceptCommand(SwitchMultilevelReport command) {
@@ -66,21 +61,24 @@ public class UpdateSwitchMultiLevelActuator extends AbstractSubject implements A
                 .build());
     }
 
-    @Override
-    public void acceptMessage(Message message) {
-    }
-
-    private Collection<SubjectTask> asynchronousTasks() {
+    private Collection<JobBundle> jobBundles() {
         if (pollIntervalMilliseconds == 0) {
             return Collections.emptySet();
         } else {
-            Runnable runnable = () -> {
+            return Collections.singleton(JobBundle.periodicalJobBundle(updateRequestJob(), pollIntervalMilliseconds));
+        }
+    }
+
+    private Job updateRequestJob() {
+        return new Job() {
+            @Getter
+            private final String name = UpdateSwitchMultiLevelActuator.class.getSimpleName() + "-Job@" + UpdateSwitchMultiLevelActuator.this.getUuid();
+
+            @Override
+            public void doJob() {
                 log.debug("Sending multi level report request for node " + configuration.getNodeId());
                 commandSender.enqueueCommand(new NodeId((byte) configuration.getNodeId()), commandBuilder.v1().buildGetCommand());
-            };
-            return List.of(
-                    SubjectTask.triggerableTask(runnable, pollIntervalMilliseconds),
-                    SubjectTask.startUpTask(runnable));
-        }
+            }
+        };
     }
 }

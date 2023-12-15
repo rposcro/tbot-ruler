@@ -8,12 +8,12 @@ import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.RGBWColor;
+import com.tbot.ruler.jobs.Job;
+import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -22,7 +22,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -42,13 +41,13 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
     private final long pollIntervalMilliseconds;
     private final ColorMode colorMode;
 
-    private final Collection<SubjectTask> asynchronousSubjectTasks;
+    private final Collection<JobBundle> jobBundles;
 
     private final HashMap<Integer, Integer> collectedComponentsReports = new HashMap<>();
 
     @Builder
     public UpdateColorActuator(
-            @NonNull String id,
+            @NonNull String uuid,
             @NonNull String name,
             String description,
             @NonNull MessagePublisher messagePublisher,
@@ -56,18 +55,14 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
             @NonNull UpdateColorConfiguration configuration,
             @NonNull JwzApplicationSupport applicationSupport
     ) {
-        super(id, name, description);
+        super(uuid, name, description);
         this.messagePublisher = messagePublisher;
         this.commandSender = commandSender;
         this.configuration = configuration;
         this.pollIntervalMilliseconds = configuration.getPollStateInterval() <= 0 ? 0 : 1000 * Math.max(MIN_POLL_INTERVAL, configuration.getPollStateInterval());
         this.colorMode = ColorMode.valueOf(configuration.getColorMode());
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchColorCommandBuilder();
-        this.asynchronousSubjectTasks = asynchronousTasks();
-    }
-
-    @Override
-    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
+        this.jobBundles = jobBundles();
     }
 
     public void acceptCommand(SwitchColorReport command) {
@@ -99,16 +94,22 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
                 .build();
     }
 
-    @Override
-    public void acceptMessage(Message message) {
-    }
-
-    private Collection<SubjectTask> asynchronousTasks() {
-        if (configuration.getPollStateInterval() == 0) {
+    private Collection<JobBundle> jobBundles() {
+        if (pollIntervalMilliseconds == 0) {
             return Collections.emptySet();
         } else {
-            Runnable runnable = () -> {
-                this.collectedComponentsReports.clear();
+            return Collections.singleton(JobBundle.periodicalJobBundle(updateRequestJob(), pollIntervalMilliseconds));
+        }
+    }
+
+    private Job updateRequestJob() {
+        return new Job() {
+            @Getter
+            private final String name = UpdateColorActuator.class.getSimpleName() + "-Job@" + UpdateColorActuator.this.getUuid();
+
+            @Override
+            public void doJob() {
+                UpdateColorActuator.this.collectedComponentsReports.clear();
                 log.debug("Sending color components report request for node " + configuration.getNodeId());
                 IntStream.of(colorMode.getComponentCodes()).forEach(componentCode -> {
                     try {
@@ -117,10 +118,7 @@ public class UpdateColorActuator extends AbstractSubject implements Actuator {
                         log.warn("Failed to send request for color component {} from node {}", componentCode, configuration.getNodeId());
                     }
                 });
-            };
-            return List.of(
-                    SubjectTask.triggerableTask(runnable, pollIntervalMilliseconds),
-                    SubjectTask.startUpTask(runnable));
-        }
+            }
+        };
     }
 }

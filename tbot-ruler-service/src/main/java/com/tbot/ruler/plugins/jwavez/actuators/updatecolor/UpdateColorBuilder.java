@@ -21,7 +21,7 @@ public class UpdateColorBuilder extends JWaveZActuatorBuilder {
     public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         UpdateColorConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(),  UpdateColorConfiguration.class);
         UpdateColorActuator actuator = UpdateColorActuator.builder()
-                .id(actuatorEntity.getActuatorUuid())
+                .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
                 .commandSender(pluginContext.getJwzCommandSender())

@@ -18,6 +18,8 @@ public interface Actuator extends Subject, MessageReceiver, MessageSender {
     }
 
     default void acceptPublicationReport(MessagePublicationReport publicationReport) {
+        LoggerFactory.getLogger(Actuator.class)
+                .info("Actuator {} ignored publication report", getUuid());
     }
 
     default ActuatorState getState() {

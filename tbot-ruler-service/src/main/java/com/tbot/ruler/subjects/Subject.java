@@ -1,5 +1,6 @@
 package com.tbot.ruler.subjects;
 
+import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.task.SubjectTask;
 
 import java.util.Collection;
@@ -16,4 +17,7 @@ public interface Subject {
 
     default Collection<SubjectTask> getAsynchronousSubjectTasks() { return Collections.emptyList(); }
 
+    default Collection<JobBundle> getJobBundles() {
+        return Collections.emptyList();
+    }
 }

@@ -44,4 +44,10 @@ public class TasksExecutorsConfiguration {
         ConcurrentTaskExecutor executor = new ConcurrentTaskExecutor(Executors.newScheduledThreadPool(2));
         return executor;
     }
+
+    @Bean
+    public ConcurrentTaskExecutor jobRunnersExecutor() {
+        ConcurrentTaskExecutor executor = new ConcurrentTaskExecutor(Executors.newCachedThreadPool());
+        return executor;
+    }
 }

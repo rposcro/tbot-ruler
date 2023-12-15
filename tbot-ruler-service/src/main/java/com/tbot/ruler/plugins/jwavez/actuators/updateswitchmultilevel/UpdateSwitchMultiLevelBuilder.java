@@ -21,7 +21,7 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
     public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         UpdateSwitchMultiLevelConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), UpdateSwitchMultiLevelConfiguration.class);
         UpdateSwitchMultiLevelActuator actuator = UpdateSwitchMultiLevelActuator.builder()
-                .id(actuatorEntity.getActuatorUuid())
+                .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
                 .commandSender(pluginContext.getJwzCommandSender())
