@@ -1,6 +1,9 @@
 package com.tbot.ruler.plugins.sunwatch.sunevent;
 
 import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.jobs.Job;
+import com.tbot.ruler.jobs.JobBundle;
+import com.tbot.ruler.jobs.JobTrigger;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
@@ -8,8 +11,6 @@ import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.BasicActuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
-import com.tbot.ruler.task.SubjectTask;
-import com.tbot.ruler.task.TaskTrigger;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
@@ -25,25 +26,27 @@ public class SunsetActuatorBuilder extends SunWatchActuatorBuilder {
     public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext, SunLocale eventLocale) {
         SunEventActuatorConfiguration configuration = parseConfiguration(
                 actuatorEntity.getConfiguration(), SunEventActuatorConfiguration.class);
-        TaskTrigger emissionTrigger = emissionTrigger(configuration, eventLocale);
-        Runnable emissionTask = emissionTask(actuatorEntity, thingContext, configuration);
+        JobTrigger emissionJobTrigger = emissionJobTrigger(configuration, eventLocale);
+        Job emissionJob = emissionJob(actuatorEntity, thingContext, configuration);
 
         return BasicActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
-                .asynchronousSubjectTask(SubjectTask.triggerableTask(emissionTask, emissionTrigger))
+                .jobBundle(JobBundle.triggerableJobBundle(emissionJob, emissionJobTrigger))
                 .build();
     }
 
-    private Runnable emissionTask(ActuatorEntity actuatorEntity, RulerThingContext thingContext, SunEventActuatorConfiguration emitterConfiguration) {
+    private Job emissionJob(ActuatorEntity actuatorEntity, RulerThingContext thingContext, SunEventActuatorConfiguration emitterConfiguration) {
         Message message = emitterMessage(actuatorEntity, emitterConfiguration.getSignal());
-        return () -> thingContext.getMessagePublisher().publishMessage(message);
+        return Job.namedJob(
+                "SunWatch-Sunset-Job@" + actuatorEntity.getActuatorUuid(),
+                () -> thingContext.getMessagePublisher().publishMessage(message));
     }
 
-    private TaskTrigger emissionTrigger(SunEventActuatorConfiguration configuration, SunLocale eventLocale) {
+    private JobTrigger emissionJobTrigger(SunEventActuatorConfiguration configuration, SunLocale eventLocale) {
         SunEventTimer eventTimer = sunEvent(configuration.getShift(), eventLocale);
-        return SunEventTrigger.builder()
+        return SunEventJobTrigger.builder()
             .timer(eventTimer)
             .zoneId(eventLocale.getZoneId())
             .plusMinutes(configuration.getShift())

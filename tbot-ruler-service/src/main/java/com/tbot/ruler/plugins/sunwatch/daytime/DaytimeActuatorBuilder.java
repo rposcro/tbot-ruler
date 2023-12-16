@@ -1,5 +1,6 @@
 package com.tbot.ruler.plugins.sunwatch.daytime;
 
+import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
@@ -7,7 +8,6 @@ import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.BasicActuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
-import com.tbot.ruler.task.SubjectTask;
 
 import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
 
@@ -21,27 +21,26 @@ public class DaytimeActuatorBuilder extends SunWatchActuatorBuilder {
 
     @Override
     public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext, SunLocale eventLocale) {
-        DaytimeActuatorConfiguration emitterConfiguration = parseConfiguration(actuatorEntity.getConfiguration(), DaytimeActuatorConfiguration.class);
-        SunCalculator sunCalculator = sunCalculator(emitterConfiguration, eventLocale);
-        DaytimeEmissionTrigger emissionTrigger = emissionTrigger(emitterConfiguration, sunCalculator);
-        DaytimeEmissionTask emissionTask = emissionTask(actuatorEntity, thingContext, sunCalculator, emitterConfiguration);
+        DaytimeActuatorConfiguration actuatorConfiguration = parseConfiguration(actuatorEntity.getConfiguration(), DaytimeActuatorConfiguration.class);
+        SunCalculator sunCalculator = sunCalculator(actuatorConfiguration, eventLocale);
+        DaytimeEmissionJobTrigger emissionJobTrigger = emissionJobTrigger(actuatorConfiguration, sunCalculator);
+        DaytimeEmissionJob emissionJob = emissionJob(actuatorEntity, thingContext, sunCalculator, actuatorConfiguration);
 
         return BasicActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
-                .asynchronousSubjectTask(SubjectTask.startUpTask(emissionTask))
-                .asynchronousSubjectTask(SubjectTask.triggerableTask(emissionTask, emissionTrigger))
+                .jobBundle(JobBundle.triggerableJobBundle(emissionJob, emissionJobTrigger))
                 .build();
     }
 
-    private DaytimeEmissionTask emissionTask(
+    private DaytimeEmissionJob emissionJob(
             ActuatorEntity actuatorEntity,
             RulerThingContext thingContext,
             SunCalculator sunCalculator,
             DaytimeActuatorConfiguration emitterConfiguration) {
-        return DaytimeEmissionTask.builder()
-                .emitterId(actuatorEntity.getActuatorUuid())
+        return DaytimeEmissionJob.builder()
+                .actuatorUuid(actuatorEntity.getActuatorUuid())
                 .messagePublisher(thingContext.getMessagePublisher())
                 .dayTimeMessage(emitterMessage(actuatorEntity, emitterConfiguration.getDayTimeSignal()))
                 .nightTimeMessage(emitterMessage(actuatorEntity, emitterConfiguration.getNightTimeSignal()))
@@ -49,8 +48,8 @@ public class DaytimeActuatorBuilder extends SunWatchActuatorBuilder {
                 .build();
     }
 
-    private DaytimeEmissionTrigger emissionTrigger(DaytimeActuatorConfiguration configuration, SunCalculator sunCalculator) {
-        return DaytimeEmissionTrigger.builder()
+    private DaytimeEmissionJobTrigger emissionJobTrigger(DaytimeActuatorConfiguration configuration, SunCalculator sunCalculator) {
+        return DaytimeEmissionJobTrigger.builder()
                 .sunCalculator(sunCalculator)
                 .emissionIntervalMinutes(configuration.getEmissionInterval())
                 .build();
