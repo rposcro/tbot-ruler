@@ -4,6 +4,8 @@ import com.tbot.ruler.exceptions.MessageException;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.Notification;
+import com.tbot.ruler.jobs.JobBundle;
+import com.tbot.ruler.jobs.JobRunner;
 import com.tbot.ruler.service.things.BindingsService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +58,7 @@ public class MessagePublishBrokerTest {
                 .build();
 
         this.brokerExecutorService = Executors.newSingleThreadExecutor();
-        this.brokerExecutorService.execute(messagePublishBroker);
+        this.brokerExecutorService.execute(new JobRunner(JobBundle.continuousJobBundle(messagePublishBroker)));
     }
 
     @AfterEach

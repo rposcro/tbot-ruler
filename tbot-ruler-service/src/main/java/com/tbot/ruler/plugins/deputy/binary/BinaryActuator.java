@@ -1,40 +1,37 @@
-package com.tbot.ruler.plugins.deputy;
+package com.tbot.ruler.plugins.deputy.binary;
 
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.Notification;
 import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collection;
 import java.util.Collections;
 
 @Slf4j
 public class BinaryActuator extends AbstractSubject implements Actuator {
 
-
     private final BinaryActuatorChannel binaryChannel;
     private final MessagePublisher messagePublisher;
-    private final Collection<SubjectTask> asynchronousSubjectTasks;
 
     private boolean expectedState;
 
     @Builder
     public BinaryActuator(
-            @NonNull String id,
+            @NonNull String uuid,
             @NonNull String name,
             String description,
             @NonNull BinaryActuatorChannel binaryChannel,
             @NonNull MessagePublisher messagePublisher) {
-        super(id, name, description);
+        super(uuid, name, description);
         this.binaryChannel = binaryChannel;
         this.messagePublisher = messagePublisher;
-        this.asynchronousSubjectTasks = Collections.singleton(SubjectTask.triggerableTask(
+        this.jobBundles = Collections.singleton(JobBundle.periodicalJobBundle(
                 () -> binaryChannel.updateState(expectedState), 600_000));
     }
 

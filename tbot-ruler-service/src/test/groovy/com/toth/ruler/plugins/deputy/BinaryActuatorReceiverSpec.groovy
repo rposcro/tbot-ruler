@@ -8,7 +8,7 @@ import com.tbot.ruler.broker.model.payloads.BooleanTogglePayload
 import com.tbot.ruler.broker.model.payloads.BooleanUpdatePayload
 import com.tbot.ruler.broker.model.payloads.UpdateRequestPayload
 import com.tbot.ruler.plugins.deputy.BinaryActuatorReceiver
-import com.tbot.ruler.plugins.deputy.model.BinOutState
+import com.tbot.ruler.plugins.deputy.api.BinOutStateResponse
 import com.tbot.ruler.rest.RestGetCommand
 import com.tbot.ruler.rest.RestPatchCommand
 import com.tbot.ruler.rest.RestResponse
@@ -86,8 +86,8 @@ class BinaryActuatorReceiverSpec extends Specification {
         actuatorReceiver.acceptMessage(message);
 
         then:
-        1 * getCommand.sendGet(BinOutState.class) >> {
-            BinOutState state = new BinOutState();
+        1 * getCommand.sendGet(BinOutStateResponse.class) >> {
+            BinOutStateResponse state = new BinOutStateResponse();
             state.setState(param);
             return new RestResponse<>(new ResponseEntity<>(state, HttpStatus.OK));
         };

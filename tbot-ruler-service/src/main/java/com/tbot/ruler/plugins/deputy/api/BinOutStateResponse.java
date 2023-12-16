@@ -1,9 +1,9 @@
-package com.tbot.ruler.plugins.deputy.model;
+package com.tbot.ruler.plugins.deputy.api;
 
 import lombok.Data;
 
 @Data
-public class BinOutState {
+public class BinOutStateResponse {
 
   private int outputNumber;
   private String state;

@@ -1,48 +1,49 @@
-package com.tbot.ruler.plugins.deputy;
+package com.tbot.ruler.plugins.deputy.healthcheck;
 
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.ReportLog;
 import com.tbot.ruler.broker.payload.ReportLogLevel;
-import com.tbot.ruler.rest.RestGetCommand;
-import com.tbot.ruler.rest.RestResponse;
+import com.tbot.ruler.jobs.Job;
+import com.tbot.ruler.plugins.deputy.api.DeputyServiceApi;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
+import retrofit2.Response;
 
 import java.time.ZonedDateTime;
 import java.util.Optional;
 
 @Slf4j
-class  HealthCheckEmissionTask implements Runnable {
+class HealthCheckJob implements Job {
 
-    private String actuatorId;
+    private String actuatorUuid;
     private MessagePublisher messagePublisher;
-    private RestGetCommand healthCheckCommand;
+    private DeputyServiceApi deputyServiceApi;
 
     private Optional<Boolean> isHealthy;
 
     @Builder
-    public HealthCheckEmissionTask(
-        @NonNull String actuatorId,
+    public HealthCheckJob(
+        @NonNull String actuatorUuid,
         @NonNull MessagePublisher messagePublisher,
-        @NonNull RestGetCommand healthCheckCommand
+        @NonNull DeputyServiceApi deputyServiceApi
     ) {
-        this.actuatorId = actuatorId;
+        this.actuatorUuid = actuatorUuid;
         this.messagePublisher = messagePublisher;
-        this.healthCheckCommand = healthCheckCommand;
+        this.deputyServiceApi = deputyServiceApi;
         this.isHealthy = Optional.empty();
     }
 
     @Override
-    public void run() {
+    public void doJob() {
         try {
-            log.info("[EMISSION] Deputy health check for actuator {}", actuatorId);
-            RestResponse response = healthCheckCommand.sendGet();
-            if (response.getStatusCode() == 200) {
+            log.info("[EMISSION] Deputy health check for actuator {}", actuatorUuid);
+            Response<?> response = deputyServiceApi.ping().execute();
+            if (response.isSuccessful()) {
                 handleHealthy();
             } else {
-                handleUnhealthy(response.getStatusCode());
+                handleUnhealthy(response.code());
             }
         }
         catch(Exception e) {
@@ -69,7 +70,7 @@ class  HealthCheckEmissionTask implements Runnable {
 
     private Message buildMessage(String message, ReportLogLevel entryLevel) {
         return Message.builder()
-            .senderId(actuatorId)
+            .senderId(actuatorUuid)
             .payload(ReportLog.builder()
                     .logLevel(entryLevel)
                     .timestamp(ZonedDateTime.now())
