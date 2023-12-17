@@ -6,6 +6,7 @@ import com.rposcro.jwavez.serial.JwzSerialSupport;
 import com.rposcro.jwavez.serial.SerialRequestFactory;
 import com.rposcro.jwavez.serial.exceptions.SerialException;
 import com.rposcro.jwavez.serial.rxtx.SerialRequest;
+import com.tbot.ruler.jobs.Job;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -13,7 +14,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
-public class CommandSender implements Runnable {
+public class CommandSender implements Job {
 
     private final static long MAX_ACTIVATION_WAIT_TIME = 300_000;
 
@@ -44,7 +45,8 @@ public class CommandSender implements Runnable {
         }
     }
 
-    public void run() {
+    @Override
+    public void doJob() {
         log.info("JWaveZ Command Sender thread is running");
         waitForJwzController();
 

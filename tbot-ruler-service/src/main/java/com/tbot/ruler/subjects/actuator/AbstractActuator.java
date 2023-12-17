@@ -9,14 +9,14 @@ import java.util.Collections;
 public abstract class AbstractActuator extends AbstractSubject implements Actuator {
 
     protected AbstractActuator(String uuid, String name, String description) {
-        this(uuid, name, description, (Collection<JobBundle>) null);
-    }
-
-    protected AbstractActuator(String uuid, String name, String description, Collection<JobBundle> jobBundles) {
-        super(uuid, name, description, null, jobBundles);
+        super(uuid, name, description);
     }
 
     protected AbstractActuator(String uuid, String name, String description, JobBundle jobBundle) {
-        super(uuid, name, description, null, Collections.singleton(jobBundle));
+        super(uuid, name, description, Collections.singleton(jobBundle));
+    }
+
+    protected AbstractActuator(String uuid, String name, String description, Collection<JobBundle> jobBundles) {
+        super(uuid, name, description, jobBundles);
     }
 }

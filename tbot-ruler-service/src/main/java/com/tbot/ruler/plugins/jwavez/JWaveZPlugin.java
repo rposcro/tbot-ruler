@@ -3,6 +3,7 @@ package com.tbot.ruler.plugins.jwavez;
 import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.rposcro.jwavez.serial.handlers.ApplicationCommandHandler;
 import com.tbot.ruler.exceptions.PluginException;
+import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.RulerPluginContext;
@@ -15,7 +16,6 @@ import com.tbot.ruler.plugins.jwavez.controller.SerialController;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
-import com.tbot.ruler.task.SubjectTask;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -43,9 +43,9 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
         this.actuatorsBuilders = instantiateActuatorsBuilders(
                 JWaveZActuatorBuilder.class, "com.tbot.ruler.plugins.jwavez", jwzPluginContext).stream()
                 .collect(Collectors.toMap(JWaveZActuatorBuilder::getReference, Function.identity()));
-        this.asynchronousSubjectTasks = List.of(
-                SubjectTask.startUpTask(() -> jwzPluginContext.getSerialController().connect()),
-                SubjectTask.continuousTask(jwzPluginContext.getJwzCommandSender())
+        this.jobBundles = List.of(
+                JobBundle.oneTimeJobBundle(() -> jwzPluginContext.getSerialController().connect()),
+                JobBundle.continuousJobBundle(jwzPluginContext.getJwzCommandSender())
         );
     }
 

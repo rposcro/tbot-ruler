@@ -4,17 +4,12 @@ import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.plugins.PluginFactory;
 import com.tbot.ruler.plugins.Plugin;
 import com.tbot.ruler.plugins.RulerPluginContext;
-import com.tbot.ruler.subjects.service.ServiceProvider;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 @Slf4j
 @Component
 public class PluginFactoryComponent {
-
-    @Autowired
-    private ServiceProvider serviceProvider;
 
     public Plugin buildPlugin(PluginEntity pluginEntity) {
         try {
@@ -22,7 +17,6 @@ public class PluginFactoryComponent {
                     .pluginUuid(pluginEntity.getPluginUuid())
                     .pluginName(pluginEntity.getName())
                     .pluginConfiguration(pluginEntity.getConfiguration())
-                    .serviceProvider(serviceProvider)
                     .build();
             PluginFactory factory = instantiateFactory(pluginEntity);
             Plugin plugin = factory.producePlugin(context);
