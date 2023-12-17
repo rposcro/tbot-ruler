@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-	<jmxConfigurator />
+
+	<variable name="LOGS_HOME" value="${LOGS_PATH:-./logs}" />
 
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
@@ -9,9 +10,9 @@
 	</appender>
 
 	<appender name="file" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOGS_PATH:-./logs}/tbot-ruler.log</file>
+		<file>${LOGS_HOME}/tbot-ruler.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${LOGS_PATH:-./logs}/tbot-ruler-%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>${LOGS_HOME}/tbot-ruler-%d{yyyy-MM-dd}.log</fileNamePattern>
 			<maxHistory>30</maxHistory>
 			<totalSizeCap>100MB</totalSizeCap>
 		</rollingPolicy>
@@ -21,9 +22,9 @@
 	</appender>
 
 	<appender name="jwavezFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOGS_PATH:-./logs}/jwavez.log</file>
+		<file>${LOGS_HOME}/jwavez.log</file>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${LOGS_PATH:-./logs}/jwavez-%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>${LOGS_HOME}/jwavez-%d{yyyy-MM-dd}.log</fileNamePattern>
 			<maxHistory>30</maxHistory>
 			<totalSizeCap>100MB</totalSizeCap>
 		</rollingPolicy>
@@ -33,14 +34,14 @@
 	</appender>
 
 	<appender name="errorFile" class="ch.qos.logback.core.rolling.RollingFileAppender">
-		<file>${LOGS_PATH:-./logs}/tbot-ruler-errors.log</file>
+		<file>${LOGS_HOME}/tbot-ruler-errors.log</file>
 		<filter class="ch.qos.logback.classic.filter.LevelFilter">
 			<level>ERROR</level>
 			<onMatch>ACCEPT</onMatch>
 			<onMismatch>DENY</onMismatch>
 		</filter>
 		<rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-			<fileNamePattern>${LOGS_PATH:-./logs}/tbot-ruler-errors-%d{yyyy-MM-dd}.log</fileNamePattern>
+			<fileNamePattern>${LOGS_HOME}/tbot-ruler-errors-%d{yyyy-MM-dd}.log</fileNamePattern>
 			<maxHistory>30</maxHistory>
 			<totalSizeCap>100MB</totalSizeCap>
 		</rollingPolicy>
@@ -61,7 +62,7 @@
 		<appender-ref ref="errorFile" />
 	</logger>
 	
-	<logger level="${RPOSCRO_LOGGING_LEVEL:-DEBUG}" name="com.rposcro.jwavez" additivity="false">
+	<logger level="${RPOSCRO_LOGGING_LEVEL:-INFO}" name="com.rposcro.jwavez" additivity="false">
         <appender-ref ref="console" />
 		<appender-ref ref="jwavezFile" />
 	</logger>
