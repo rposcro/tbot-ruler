@@ -1,12 +1,12 @@
 package com.tbot.ruler.plugins.ghost.singleinterval;
 
+import com.tbot.ruler.jobs.Job;
+import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.RulerPluginContext;
 import com.tbot.ruler.plugins.ghost.GhostActuatorBuilder;
 import com.tbot.ruler.plugins.ghost.GhostPluginContext;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
-import com.tbot.ruler.task.SubjectTask;
 
 import java.time.ZoneId;
 
@@ -29,7 +29,7 @@ public class SingleIntervalActuatorBuilder extends GhostActuatorBuilder {
                 .defaultState(configuration.isActivatedByDefault())
                 .subjectStateService(thingContext.getSubjectStateService())
                 .build();
-        Runnable emissionTask = SingleIntervalEmissionTask.builder()
+        Job emissionJob = SingleIntervalEmissionJob.builder()
                 .singleIntervalAgent(actuatorAgent)
                 .configuration(configuration)
                 .actuatorUuid(actuatorEntity.getActuatorUuid())
@@ -42,8 +42,7 @@ public class SingleIntervalActuatorBuilder extends GhostActuatorBuilder {
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
                 .singleIntervalAgent(actuatorAgent)
-                .asynchronousSubjectTask(SubjectTask.startUpTask(emissionTask))
-                .asynchronousSubjectTask(SubjectTask.triggerableTask(emissionTask, configuration.getEmissionIntervalMinutes() * 60_000))
+                .jobBundle(JobBundle.periodicalJobBundle(emissionJob, configuration.getEmissionIntervalMinutes() * 60_000))
                 .build();
     }
 }

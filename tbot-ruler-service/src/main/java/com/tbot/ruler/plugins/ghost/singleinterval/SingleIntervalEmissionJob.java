@@ -3,8 +3,8 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.jobs.Job;
 import com.tbot.ruler.plugins.ghost.DateTimeRange;
-import com.tbot.ruler.subjects.thing.RulerThingAgent;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -18,7 +18,7 @@ import java.util.Random;
 import java.util.function.Supplier;
 
 @Slf4j
-public class SingleIntervalEmissionTask implements Runnable {
+public class SingleIntervalEmissionJob implements Job {
 
     private final SingleIntervalAgent singleIntervalAgent;
     private final SingleIntervalConfiguration configuration;
@@ -31,7 +31,7 @@ public class SingleIntervalEmissionTask implements Runnable {
     private DateTimeRange onInterval;
 
     @Builder
-    public SingleIntervalEmissionTask(
+    public SingleIntervalEmissionJob(
             @NonNull SingleIntervalAgent singleIntervalAgent,
             @NonNull SingleIntervalConfiguration configuration,
             @NonNull ZoneId zoneId,
@@ -48,7 +48,8 @@ public class SingleIntervalEmissionTask implements Runnable {
         resetOnInterval();
     }
 
-    public void run() {
+    @Override
+    public void doJob() {
         boolean isActivated = singleIntervalAgent.isActivated();
         log.debug("Ghost actuator {} activation is {}", actuatorUuid, isActivated);
         if (isActivated) {

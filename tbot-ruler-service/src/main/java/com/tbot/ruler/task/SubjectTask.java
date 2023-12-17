@@ -25,14 +25,6 @@ public final class SubjectTask {
         return taskTrigger == null && runContinuously;
     }
 
-    public static SubjectTask triggerableTask(@NonNull Runnable runnable, @NonNull TaskTrigger taskTrigger) {
-        return new SubjectTask(runnable, taskTrigger, true);
-    }
-
-    public static SubjectTask triggerableTask(@NonNull Runnable runnable, long periodMilliseconds) {
-        return new SubjectTask(runnable, new RegularEmissionTrigger(periodMilliseconds), true);
-    }
-
     public static SubjectTask startUpTask(@NonNull Runnable runnable) {
         return new SubjectTask(runnable, null, false);
     }

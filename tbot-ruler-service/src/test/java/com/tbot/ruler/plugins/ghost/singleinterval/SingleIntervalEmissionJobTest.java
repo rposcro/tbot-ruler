@@ -14,7 +14,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.ZoneId;
-import java.util.UUID;
 import java.util.function.Supplier;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -27,7 +26,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class SingleIntervalEmissionTaskTest {
+public class SingleIntervalEmissionJobTest {
 
     private final ZoneId ZONE_ID = ZoneId.of("GMT+2");
     private final String EMITTER_ID = "Dummy One";
@@ -46,7 +45,7 @@ public class SingleIntervalEmissionTaskTest {
     public void initialIntervalWithoutSpanIsCorrect() {
         when(timer.get()).thenReturn(NOW);
 
-        SingleIntervalEmissionTask emissionTask = createTask(10, 15, 0);
+        SingleIntervalEmissionJob emissionTask = createTask(10, 15, 0);
         LocalDateTime expectedStart = NOW.toLocalDate().atTime(10, 0);
         LocalDateTime expectedEnd = NOW.toLocalDate().atTime(15, 0);
 
@@ -58,7 +57,7 @@ public class SingleIntervalEmissionTaskTest {
     public void initialIntervalWithSpanIsCorrect() {
         when(timer.get()).thenReturn(NOW);
 
-        SingleIntervalEmissionTask emissionTask = createTask(20, 4, 0);
+        SingleIntervalEmissionJob emissionTask = createTask(20, 4, 0);
         LocalDateTime expectedStart = NOW.toLocalDate().atTime(20, 0);
         LocalDateTime expectedEnd = NOW.toLocalDate().atTime(4, 0).plusDays(1);
 
@@ -70,7 +69,7 @@ public class SingleIntervalEmissionTaskTest {
     public void initialIntervalWithVariation() {
         when(timer.get()).thenReturn(NOW);
 
-        SingleIntervalEmissionTask emissionTask = createTask(10, 15, 30);
+        SingleIntervalEmissionJob emissionTask = createTask(10, 15, 30);
         LocalDateTime expectedStartLowerLimit = NOW.toLocalDate().atTime(9, 30);
         LocalDateTime expectedStartUpperLimit = NOW.toLocalDate().atTime(10, 30);
         LocalDateTime expectedEndLowerLimit = NOW.toLocalDate().atTime(14, 30);
@@ -91,9 +90,9 @@ public class SingleIntervalEmissionTaskTest {
         when(timer.get()).thenReturn(NOW);
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
 
-        SingleIntervalEmissionTask emissionTask = createTask(15, 20, 0);
+        SingleIntervalEmissionJob emissionTask = createTask(15, 20, 0);
         DateTimeRange onIntervalBefore = emissionTask.getOnInterval();
-        emissionTask.run();
+        emissionTask.doJob();
 
         verify(messagePublisher).publishMessage(messageCaptor.capture());
         Message message = messageCaptor.getValue();
@@ -108,9 +107,9 @@ public class SingleIntervalEmissionTaskTest {
         when(timer.get()).thenReturn(NOW);
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
 
-        SingleIntervalEmissionTask emissionTask = createTask(13, 20, 0);
+        SingleIntervalEmissionJob emissionTask = createTask(13, 20, 0);
         DateTimeRange onIntervalBefore = emissionTask.getOnInterval();
-        emissionTask.run();
+        emissionTask.doJob();
 
         verify(messagePublisher).publishMessage(messageCaptor.capture());
         Message message = messageCaptor.getValue();
@@ -125,9 +124,9 @@ public class SingleIntervalEmissionTaskTest {
         when(timer.get()).thenReturn(NOW);
         ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
 
-        SingleIntervalEmissionTask emissionTask = createTask(10, 12, 0);
+        SingleIntervalEmissionJob emissionTask = createTask(10, 12, 0);
         DateTimeRange onIntervalBefore = emissionTask.getOnInterval();
-        emissionTask.run();
+        emissionTask.doJob();
 
         verify(messagePublisher).publishMessage(messageCaptor.capture());
         Message message = messageCaptor.getValue();
@@ -143,19 +142,19 @@ public class SingleIntervalEmissionTaskTest {
     public void doesNotEmitWhenDeactivated() {
         when(timer.get()).thenReturn(NOW);
 
-        SingleIntervalEmissionTask emissionTask = createTask(10, 12, 0, false);
+        SingleIntervalEmissionJob emissionTask = createTask(10, 12, 0, false);
         DateTimeRange onIntervalBefore = emissionTask.getOnInterval();
-        emissionTask.run();
+        emissionTask.doJob();
 
         verify(messagePublisher, never()).publishMessage(any(Message.class));
         assertEquals(onIntervalBefore, emissionTask.getOnInterval());
     }
 
-    private SingleIntervalEmissionTask createTask(int startHour, int endHour, long variation) {
+    private SingleIntervalEmissionJob createTask(int startHour, int endHour, long variation) {
         return createTask(startHour, endHour, variation, true);
     }
 
-    private SingleIntervalEmissionTask createTask(int startHour, int endHour, long variation, boolean active) {
+    private SingleIntervalEmissionJob createTask(int startHour, int endHour, long variation, boolean active) {
         SingleIntervalAgent stateAgent = SingleIntervalAgent.builder()
                 .subjectStateService(subjectStateService)
                 .actuatorUuid("act-test-id")
@@ -167,7 +166,7 @@ public class SingleIntervalEmissionTaskTest {
                 .deactivationTime(LocalTime.of(endHour, 0))
                 .variationMinutes(variation)
                 .build();
-        return SingleIntervalEmissionTask.builder()
+        return SingleIntervalEmissionJob.builder()
                 .singleIntervalAgent(stateAgent)
                 .configuration(configuration)
                 .zoneId(ZONE_ID)
