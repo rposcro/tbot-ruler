@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.deputy;
 
-import com.tbot.ruler.plugins.RulerPluginContext;
+import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import com.tbot.ruler.plugins.deputy.api.DeputyServiceApi;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Getter;

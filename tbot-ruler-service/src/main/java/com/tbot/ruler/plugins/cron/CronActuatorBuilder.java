@@ -13,7 +13,7 @@ import lombok.Getter;
 
 import java.util.TimeZone;
 
-import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
+import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
 public class CronActuatorBuilder {
 

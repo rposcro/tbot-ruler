@@ -1,8 +1,8 @@
 package com.tbot.ruler.plugins.agent;
 
-import com.tbot.ruler.plugins.Plugin;
-import com.tbot.ruler.plugins.PluginFactory;
-import com.tbot.ruler.plugins.RulerPluginContext;
+import com.tbot.ruler.subjects.plugin.Plugin;
+import com.tbot.ruler.subjects.plugin.PluginFactory;
+import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 
 public class AgentPluginFactory implements PluginFactory {
 

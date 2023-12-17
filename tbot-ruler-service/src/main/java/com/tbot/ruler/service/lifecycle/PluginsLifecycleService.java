@@ -1,7 +1,7 @@
 package com.tbot.ruler.service.lifecycle;
 
 import com.tbot.ruler.persistance.PluginsRepository;
-import com.tbot.ruler.plugins.Plugin;
+import com.tbot.ruler.subjects.plugin.Plugin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;

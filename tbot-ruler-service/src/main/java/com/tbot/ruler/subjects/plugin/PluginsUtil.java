@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins;
+package com.tbot.ruler.subjects.plugin;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;

@@ -6,7 +6,7 @@ import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 
-import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
+import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
 public class SceneActivationBuilder extends JWaveZActuatorBuilder {
 

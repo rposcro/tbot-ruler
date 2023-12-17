@@ -7,7 +7,7 @@ import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 
-import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
+import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
 public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
 

@@ -12,7 +12,7 @@ import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import java.io.IOException;
 
-import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
+import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
 public class SignalerActuatorBuilder extends AgentActuatorBuilder {
 

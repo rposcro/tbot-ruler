@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins;
+package com.tbot.ruler.subjects.plugin;
 
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.subjects.actuator.Actuator;

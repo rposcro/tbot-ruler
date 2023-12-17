@@ -3,9 +3,9 @@ package com.tbot.ruler.plugins.sunwatch;
 import com.luckycatlabs.sunrisesunset.dto.Location;
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.Plugin;
-import com.tbot.ruler.plugins.RulerPluginContext;
-import com.tbot.ruler.plugins.PluginsUtil;
+import com.tbot.ruler.subjects.plugin.Plugin;
+import com.tbot.ruler.subjects.plugin.RulerPluginContext;
+import com.tbot.ruler.subjects.plugin.PluginsUtil;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
@@ -16,7 +16,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
+import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
 public class SunWatchPlugin extends AbstractSubject implements Plugin {
 

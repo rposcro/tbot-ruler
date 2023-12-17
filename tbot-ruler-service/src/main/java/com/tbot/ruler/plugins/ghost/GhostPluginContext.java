@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.ghost;
 
-import com.tbot.ruler.plugins.RulerPluginContext;
+import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;

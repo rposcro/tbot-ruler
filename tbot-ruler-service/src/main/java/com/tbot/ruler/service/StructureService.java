@@ -1,6 +1,6 @@
 package com.tbot.ruler.service;
 
-import com.tbot.ruler.plugins.PluginFactory;
+import com.tbot.ruler.subjects.plugin.PluginFactory;
 import com.tbot.ruler.util.PackageScanner;
 import lombok.Getter;
 import org.springframework.boot.context.event.ApplicationStartedEvent;

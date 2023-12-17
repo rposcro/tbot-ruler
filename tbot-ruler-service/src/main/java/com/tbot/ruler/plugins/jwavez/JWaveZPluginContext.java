@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.jwavez;
 
 import com.rposcro.jwavez.core.JwzApplicationSupport;
-import com.tbot.ruler.plugins.RulerPluginContext;
+import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import com.tbot.ruler.plugins.jwavez.controller.CommandRouteRegistry;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.plugins.jwavez.controller.SerialController;

@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins;
+package com.tbot.ruler.subjects.plugin;
 
 public interface PluginFactory {
 

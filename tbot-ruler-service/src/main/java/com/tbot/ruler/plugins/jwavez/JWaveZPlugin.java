@@ -5,8 +5,8 @@ import com.rposcro.jwavez.serial.handlers.ApplicationCommandHandler;
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.Plugin;
-import com.tbot.ruler.plugins.RulerPluginContext;
+import com.tbot.ruler.subjects.plugin.Plugin;
+import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import com.tbot.ruler.plugins.jwavez.controller.CommandRouteRegistry;
 import com.tbot.ruler.plugins.jwavez.controller.CommandRouter;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
@@ -24,8 +24,8 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static com.tbot.ruler.plugins.PluginsUtil.instantiateActuatorsBuilders;
-import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
+import static com.tbot.ruler.subjects.plugin.PluginsUtil.instantiateActuatorsBuilders;
+import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 import static java.lang.String.format;
 
 @Getter

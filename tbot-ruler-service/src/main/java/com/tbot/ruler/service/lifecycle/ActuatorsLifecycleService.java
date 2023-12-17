@@ -2,7 +2,7 @@ package com.tbot.ruler.service.lifecycle;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.ActuatorsRepository;
-import com.tbot.ruler.plugins.Plugin;
+import com.tbot.ruler.subjects.plugin.Plugin;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThing;
 import lombok.extern.slf4j.Slf4j;

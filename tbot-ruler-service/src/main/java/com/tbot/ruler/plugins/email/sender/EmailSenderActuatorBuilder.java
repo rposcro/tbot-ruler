@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.email.sender;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.RulerPluginContext;
+import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import com.tbot.ruler.plugins.email.EmailActuatorBuilder;
 import com.tbot.ruler.plugins.email.EmailSenderConfiguration;
 import com.tbot.ruler.subjects.actuator.Actuator;
@@ -11,7 +11,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
 
-import static com.tbot.ruler.plugins.PluginsUtil.parseConfiguration;
+import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
 public class EmailSenderActuatorBuilder extends EmailActuatorBuilder {
 
