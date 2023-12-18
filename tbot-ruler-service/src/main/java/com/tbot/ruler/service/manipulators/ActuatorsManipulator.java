@@ -20,9 +20,24 @@ public class ActuatorsManipulator {
     @Autowired
     private ActuatorsLifecycleService actuatorsLifecycleService;
 
+    public ActuatorEntity createActuator(ActuatorEntity actuatorEntity) {
+        actuatorEntity = actuatorsRepository.save(actuatorEntity);
+        actuatorsLifecycleService.markActuatorAsStale(actuatorEntity.getActuatorUuid());
+        return actuatorEntity;
+    }
+
+    public ActuatorEntity updateActuator(ActuatorEntity actuatorEntity) {
+        actuatorEntity = actuatorsRepository.save(actuatorEntity);
+        actuatorsLifecycleService.markActuatorAsStale(actuatorEntity.getActuatorUuid());
+        return actuatorEntity;
+    }
+
     public void removeActuator(ActuatorEntity actuatorEntity) {
         assertConsistency(actuatorEntity.getActuatorUuid());
-        actuatorsRepository.findByUuid(actuatorEntity.getActuatorUuid()).ifPresent(actuatorsRepository::delete);
+        actuatorsRepository.findByUuid(actuatorEntity.getActuatorUuid()).ifPresent(actuator -> {
+            actuatorsRepository.delete(actuator);
+            actuatorsLifecycleService.markActuatorAsStale(actuatorEntity.getActuatorUuid());
+        });
     }
 
     private void assertConsistency(String actuatorUuid) {

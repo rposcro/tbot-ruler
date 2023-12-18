@@ -27,4 +27,6 @@ public class ActuatorResponse {
     private String description;
 
     private JsonNode configuration;
+
+    private boolean relaunchRequired;
 }

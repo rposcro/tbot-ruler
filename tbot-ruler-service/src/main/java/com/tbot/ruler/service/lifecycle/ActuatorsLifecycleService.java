@@ -11,9 +11,11 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -28,6 +30,7 @@ public class ActuatorsLifecycleService {
     @Autowired
     private ThingsLifecycleService thingsLifecycleService;
 
+    private Set<String> staleActuators = new HashSet<>();
     private List<Actuator> actuators;
     private Map<String, Actuator> actuatorsUuidMap;
 
@@ -56,4 +59,11 @@ public class ActuatorsLifecycleService {
         });
     }
 
+    public void markActuatorAsStale(String actuatorUuid) {
+        staleActuators.add(actuatorUuid);
+    }
+
+    public boolean isActuatorStale(String actuatorUuid) {
+        return staleActuators.contains(actuatorUuid);
+    }
 }

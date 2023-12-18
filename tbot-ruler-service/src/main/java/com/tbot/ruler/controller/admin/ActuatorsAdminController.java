@@ -8,6 +8,7 @@ import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
+import com.tbot.ruler.service.lifecycle.ActuatorsLifecycleService;
 import com.tbot.ruler.service.manipulators.ActuatorsManipulator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,9 @@ public class ActuatorsAdminController extends AbstractController {
     @Autowired
     private ActuatorsManipulator actuatorsManipulator;
 
+    @Autowired
+    private ActuatorsLifecycleService actuatorsLifecycleService;
+
     @GetMapping
     public ResponseEntity<List<ActuatorResponse>> getAllActuators() {
         return ok(actuatorsRepository.findAll().stream()
@@ -58,7 +62,7 @@ public class ActuatorsAdminController extends AbstractController {
                 .pluginId(pluginEntity.getPluginId())
                 .thingId(thingEntity.getThingId())
                 .build();
-        actuatorsRepository.save(actuatorEntity);
+        actuatorEntity = actuatorsManipulator.createActuator(actuatorEntity);
         return ok(toResponse(actuatorEntity));
     }
 
@@ -72,7 +76,7 @@ public class ActuatorsAdminController extends AbstractController {
         actuatorEntity.setDescription(actuatorUpdateRequest.getDescription());
         actuatorEntity.setConfiguration(actuatorUpdateRequest.getConfiguration());
         actuatorEntity.setThingId(thingEntity.getThingId());
-        actuatorEntity = actuatorsRepository.save(actuatorEntity);
+        actuatorEntity = actuatorsManipulator.updateActuator(actuatorEntity);
         return ok(toResponse(actuatorEntity));
     }
 
@@ -92,6 +96,7 @@ public class ActuatorsAdminController extends AbstractController {
                 .reference(actuatorEntity.getReference())
                 .description(actuatorEntity.getDescription())
                 .configuration(actuatorEntity.getConfiguration())
+                .relaunchRequired(actuatorsLifecycleService.isActuatorStale(actuatorEntity.getActuatorUuid()))
                 .build();
     }
 }
