@@ -24,6 +24,10 @@ public final class RulerThing extends AbstractSubject implements Thing {
     }
 
     public void addActuator(Actuator actuator) {
-        this.actuators.add(actuator);
+        actuators.add(actuator);
+    }
+
+    public void removeActuator(Actuator actuator) {
+        actuators.remove(actuator);
     }
 }

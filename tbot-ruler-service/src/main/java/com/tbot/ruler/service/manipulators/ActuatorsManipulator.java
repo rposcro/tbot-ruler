@@ -22,21 +22,22 @@ public class ActuatorsManipulator {
 
     public ActuatorEntity createActuator(ActuatorEntity actuatorEntity) {
         actuatorEntity = actuatorsRepository.save(actuatorEntity);
-        actuatorsLifecycleService.markActuatorAsStale(actuatorEntity.getActuatorUuid());
+        actuatorsLifecycleService.activateActuator(actuatorEntity);
         return actuatorEntity;
     }
 
     public ActuatorEntity updateActuator(ActuatorEntity actuatorEntity) {
+        actuatorsLifecycleService.deactivateActuator(actuatorEntity);
         actuatorEntity = actuatorsRepository.save(actuatorEntity);
-        actuatorsLifecycleService.markActuatorAsStale(actuatorEntity.getActuatorUuid());
+        actuatorsLifecycleService.activateActuator(actuatorEntity);
         return actuatorEntity;
     }
 
     public void removeActuator(ActuatorEntity actuatorEntity) {
         assertConsistency(actuatorEntity.getActuatorUuid());
-        actuatorsRepository.findByUuid(actuatorEntity.getActuatorUuid()).ifPresent(actuator -> {
-            actuatorsRepository.delete(actuator);
-            actuatorsLifecycleService.markActuatorAsStale(actuatorEntity.getActuatorUuid());
+        actuatorsRepository.findByUuid(actuatorEntity.getActuatorUuid()).ifPresent(entity -> {
+            actuatorsLifecycleService.deactivateActuator(entity);
+            actuatorsRepository.delete(entity);
         });
     }
 

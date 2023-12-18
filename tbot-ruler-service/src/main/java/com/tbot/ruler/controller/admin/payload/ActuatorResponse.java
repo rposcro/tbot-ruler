@@ -28,5 +28,5 @@ public class ActuatorResponse {
 
     private JsonNode configuration;
 
-    private boolean relaunchRequired;
+    private boolean active;
 }

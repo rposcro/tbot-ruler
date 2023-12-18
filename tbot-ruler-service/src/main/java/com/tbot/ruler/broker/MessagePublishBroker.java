@@ -60,7 +60,7 @@ public class MessagePublishBroker implements Job {
                         log.debug("Message dispatch from {}: Delivering to {}", message.getSenderId(), receiverId);
                         this.deliverMessage(message, receiverId);
                         reportBuilder.successfulReceiver(receiverId);
-                    } catch(MessageException e) {
+                    } catch(Exception e) {
                         reportBuilder.failedReceiver(receiverId);
                         log.error("Message dispatch from " + message.getSenderId() + ": Failed to deliver to " + receiverId, e);
                     }
@@ -78,8 +78,11 @@ public class MessagePublishBroker implements Job {
         }
     }
 
-    private void deliverMessage(Message message, String receiverId) {
-        MessageReceiver messageReceiver = bindingsService.findReceiverByUuid(receiverId);
+    private void deliverMessage(Message message, String receiverUuid) {
+        MessageReceiver messageReceiver = bindingsService.findReceiverByUuid(receiverUuid);
+        if (messageReceiver == null) {
+            throw new MessageException("No active receiver found for uuid: " + receiverUuid);
+        }
         messageReceiver.acceptMessage(message);
     }
 }

@@ -96,7 +96,7 @@ public class ActuatorsAdminController extends AbstractController {
                 .reference(actuatorEntity.getReference())
                 .description(actuatorEntity.getDescription())
                 .configuration(actuatorEntity.getConfiguration())
-                .relaunchRequired(actuatorsLifecycleService.isActuatorStale(actuatorEntity.getActuatorUuid()))
+                .active(actuatorsLifecycleService.isActuatorActive(actuatorEntity.getActuatorUuid()))
                 .build();
     }
 }

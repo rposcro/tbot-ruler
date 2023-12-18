@@ -2,6 +2,7 @@ package com.tbot.ruler.plugins.email;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.plugins.agent.AgentActuatorBuilder;
 import com.tbot.ruler.subjects.plugin.Plugin;
 import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import com.tbot.ruler.subjects.plugin.PluginsUtil;
@@ -34,6 +35,15 @@ public class EmailPlugin extends AbstractSubject implements Plugin {
     @Override
     public Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         return buildActuator(actuatorEntity);
+    }
+
+    @Override
+    public void stopActuator(Actuator actuator, String reference) {
+        EmailActuatorBuilder builder = buildersMap.get(reference);
+        if (builder == null) {
+            throw new PluginException("Unknown builder reference " + reference);
+        }
+        builder.destroyActuator(actuator);
     }
 
     private Actuator buildActuator(ActuatorEntity actuatorEntity) {

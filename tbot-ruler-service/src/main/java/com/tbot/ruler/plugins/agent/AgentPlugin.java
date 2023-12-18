@@ -16,13 +16,11 @@ import java.util.stream.Collectors;
 
 public class AgentPlugin extends AbstractSubject implements Plugin {
 
-    private final RulerPluginContext rulerPluginContext;
     private final Map<String, AgentActuatorBuilder> buildersMap;
 
     @Builder
     public AgentPlugin(RulerPluginContext rulerPluginContext) {
         super(rulerPluginContext.getPluginUuid(), rulerPluginContext.getPluginName());
-        this.rulerPluginContext = rulerPluginContext;
         this.buildersMap = PluginsUtil.instantiateActuatorsBuilders(AgentActuatorBuilder.class, "com.tbot.ruler.plugins.agent").stream()
                 .collect(Collectors.toMap(AgentActuatorBuilder::getReference, Function.identity()));
     }
@@ -30,6 +28,15 @@ public class AgentPlugin extends AbstractSubject implements Plugin {
     @Override
     public Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         return buildActuator(actuatorEntity, rulerThingContext);
+    }
+
+    @Override
+    public void stopActuator(Actuator actuator, String reference) {
+        AgentActuatorBuilder builder = buildersMap.get(reference);
+        if (builder == null) {
+            throw new PluginException("Unknown builder reference " + reference);
+        }
+        builder.destroyActuator(actuator);
     }
 
     private Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {

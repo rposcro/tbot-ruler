@@ -36,6 +36,10 @@ public class ThingsLifecycleService {
         return thingsIdMap.get(id);
     }
 
+    public RulerThing getThingByUuid(String uuid) {
+        return thingsUuidMap.get(uuid);
+    }
+
     public void startUpAllThings() {
         things = new LinkedList<>();
         thingsIdMap = new HashMap<>();
