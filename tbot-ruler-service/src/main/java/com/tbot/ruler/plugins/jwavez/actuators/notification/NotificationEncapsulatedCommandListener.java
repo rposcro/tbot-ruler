@@ -4,15 +4,16 @@ import com.rposcro.jwavez.core.buffer.ImmutableBuffer;
 import com.rposcro.jwavez.core.commands.JwzSupportedCommandParser;
 import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
 import com.rposcro.jwavez.core.commands.supported.notification.NotificationReport;
+import com.rposcro.jwavez.core.commands.types.NotificationCommandType;
+import com.tbot.ruler.plugins.jwavez.controller.AbstractCommandListener;
 import com.tbot.ruler.plugins.jwavez.controller.CommandFilter;
-import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class NotificationEncapsulatedCommandListener implements CommandListener<MultiChannelCommandEncapsulation> {
+public class NotificationEncapsulatedCommandListener extends AbstractCommandListener<MultiChannelCommandEncapsulation> {
 
     private NotificationActuator actuator;
     private JwzSupportedCommandParser supportedCommandParser;
@@ -24,6 +25,7 @@ public class NotificationEncapsulatedCommandListener implements CommandListener<
             JwzSupportedCommandParser supportedCommandParser,
             int sourceNodeId,
             int sourceEndPointId) {
+        super(NotificationCommandType.NOTIFICATION_REPORT, actuator.getUuid());
         this.actuator = actuator;
         this.supportedCommandParser = supportedCommandParser;
         this.commandFilter = CommandFilter.encapsulatedSourceFilter(sourceNodeId, sourceEndPointId);

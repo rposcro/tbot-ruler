@@ -20,7 +20,6 @@ import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
 public class SunWatchPlugin extends AbstractSubject implements Plugin {
 
-    private final RulerPluginContext rulerPluginContext;
     private final SunWatchPluginConfiguration pluginConfiguration;
     private final SunLocale sunLocale;
     private final Map<String, SunWatchActuatorBuilder> buildersMap;
@@ -28,7 +27,6 @@ public class SunWatchPlugin extends AbstractSubject implements Plugin {
     @Builder
     public SunWatchPlugin(RulerPluginContext rulerPluginContext) {
         super(rulerPluginContext.getPluginUuid(), rulerPluginContext.getPluginName());
-        this.rulerPluginContext = rulerPluginContext;
         this.pluginConfiguration = parseConfiguration(rulerPluginContext.getPluginConfiguration(), SunWatchPluginConfiguration.class);
         this.sunLocale = sunLocale(pluginConfiguration);
         this.buildersMap = PluginsUtil.instantiateActuatorsBuilders(SunWatchActuatorBuilder.class, "com.tbot.ruler.plugins.sunwatch").stream()
@@ -38,6 +36,15 @@ public class SunWatchPlugin extends AbstractSubject implements Plugin {
     @Override
     public Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext) {
         return buildActuator(actuatorEntity, thingContext, sunLocale);
+    }
+
+    @Override
+    public void stopActuator(Actuator actuator, String reference) {
+        SunWatchActuatorBuilder builder = buildersMap.get(reference);
+        if (builder == null) {
+            throw new PluginException("Unknown builder reference " + reference);
+        }
+        builder.destroyActuator(actuator);
     }
 
     private Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext, SunLocale sunLocale) {

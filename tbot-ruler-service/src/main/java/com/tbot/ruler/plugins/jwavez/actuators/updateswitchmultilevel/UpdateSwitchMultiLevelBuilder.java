@@ -1,6 +1,5 @@
 package com.tbot.ruler.plugins.jwavez.actuators.updateswitchmultilevel;
 
-import com.rposcro.jwavez.core.commands.types.SwitchMultiLevelCommandType;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
@@ -30,11 +29,15 @@ public class UpdateSwitchMultiLevelBuilder extends JWaveZActuatorBuilder {
                 .applicationSupport(pluginContext.getJwzApplicationSupport())
                 .build();
         pluginContext.getCommandRouteRegistry().registerListener(
-                SwitchMultiLevelCommandType.SWITCH_MULTILEVEL_REPORT,
                 SwitchMultiLevelReportListener.builder()
                         .actuator(actuator)
                         .sourceNodeId(configuration.getNodeId())
                         .build());
         return actuator;
+    }
+
+    @Override
+    public void destroyActuator(Actuator actuator) {
+        pluginContext.getCommandRouteRegistry().unregisterListener(actuator.getUuid());
     }
 }

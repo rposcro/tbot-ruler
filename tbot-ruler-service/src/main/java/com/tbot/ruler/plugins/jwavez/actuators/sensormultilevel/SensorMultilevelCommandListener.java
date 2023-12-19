@@ -1,15 +1,16 @@
 package com.tbot.ruler.plugins.jwavez.actuators.sensormultilevel;
 
 import com.rposcro.jwavez.core.commands.supported.sensormultilevel.SensorMultilevelReport;
+import com.rposcro.jwavez.core.commands.types.SensorMultilevelCommandType;
+import com.tbot.ruler.plugins.jwavez.controller.AbstractCommandListener;
 import com.tbot.ruler.plugins.jwavez.controller.CommandFilter;
-import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class SensorMultilevelCommandListener implements CommandListener<SensorMultilevelReport> {
+public class SensorMultilevelCommandListener extends AbstractCommandListener<SensorMultilevelReport> {
 
     private SensorMultilevelActuator actuator;
     private CommandFilter commandFilter;
@@ -18,13 +19,14 @@ public class SensorMultilevelCommandListener implements CommandListener<SensorMu
     public SensorMultilevelCommandListener(
             SensorMultilevelActuator actuator,
             int sourceNodeId) {
+        super(SensorMultilevelCommandType.SENSOR_MULTILEVEL_REPORT, actuator.getUuid());
         this.actuator = actuator;
         this.commandFilter = CommandFilter.sourceNodeFilter(sourceNodeId);
     }
 
     @Override
     public void handleCommand(SensorMultilevelReport report) {
-        log.debug("Handling sensor multilevel report command from {}", report.getSourceNodeId().getId());
+        log.debug("Plugin Jwz: Handling sensor multilevel report command from {}", report.getSourceNodeId().getId());
         actuator.acceptCommand(report);
     }
 }

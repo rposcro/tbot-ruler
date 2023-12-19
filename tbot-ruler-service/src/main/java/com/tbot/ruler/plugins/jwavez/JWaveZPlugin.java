@@ -5,6 +5,7 @@ import com.rposcro.jwavez.serial.handlers.ApplicationCommandHandler;
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.subjects.plugin.Plugin;
 import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import com.tbot.ruler.plugins.jwavez.controller.CommandRouteRegistry;
@@ -52,6 +53,15 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
     @Override
     public Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         return buildActuator(actuatorEntity, rulerThingContext);
+    }
+
+    @Override
+    public void stopActuator(Actuator actuator, String reference) {
+        JWaveZActuatorBuilder builder = actuatorsBuilders.get(reference);
+        if (builder == null) {
+            throw new PluginException("Unknown builder reference " + reference);
+        }
+        builder.destroyActuator(actuator);
     }
 
     private Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {

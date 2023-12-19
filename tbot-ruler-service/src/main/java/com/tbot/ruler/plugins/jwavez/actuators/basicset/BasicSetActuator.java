@@ -32,14 +32,6 @@ public class BasicSetActuator extends AbstractSubject implements Actuator {
         this.configuration = configuration;
     }
 
-    @Override
-    public void acceptMessage(Message message) {
-    }
-
-    @Override
-    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
-    }
-
     public void acceptCommandValue(byte commandValue) {
         messagePublisher.publishMessage(Message.builder()
                 .senderId(this.getUuid())

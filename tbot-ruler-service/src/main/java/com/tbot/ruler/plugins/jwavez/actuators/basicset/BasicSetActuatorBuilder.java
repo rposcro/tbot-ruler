@@ -11,11 +11,11 @@ import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
-public class BasicSetBuilder extends JWaveZActuatorBuilder {
+public class BasicSetActuatorBuilder extends JWaveZActuatorBuilder {
 
     private static final String REFERENCE = "basic-set";
 
-    public BasicSetBuilder(JWaveZPluginContext pluginContext) {
+    public BasicSetActuatorBuilder(JWaveZPluginContext pluginContext) {
         super(REFERENCE, pluginContext);
     }
 
@@ -30,8 +30,12 @@ public class BasicSetBuilder extends JWaveZActuatorBuilder {
                 .messagePublisher(rulerThingContext.getMessagePublisher())
                 .build();
         CommandListener<? extends ZWaveSupportedCommand> listener = buildCommandListener(actuator, configuration);
-        pluginContext.getCommandRouteRegistry().registerListener(BasicCommandType.BASIC_SET, listener);
+        pluginContext.getCommandRouteRegistry().registerListener(listener);
         return actuator;
+    }
+
+    public void destroyActuator(Actuator actuator) {
+        pluginContext.getCommandRouteRegistry().unregisterListener(actuator.getUuid());
     }
 
     private CommandListener<? extends ZWaveSupportedCommand> buildCommandListener(BasicSetActuator actuator, BasicSetConfiguration configuration) {

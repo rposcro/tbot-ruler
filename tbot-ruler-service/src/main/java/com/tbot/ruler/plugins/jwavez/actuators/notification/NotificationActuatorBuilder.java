@@ -1,7 +1,6 @@
 package com.tbot.ruler.plugins.jwavez.actuators.notification;
 
 import com.rposcro.jwavez.core.commands.supported.ZWaveSupportedCommand;
-import com.rposcro.jwavez.core.commands.types.NotificationCommandType;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
@@ -30,8 +29,12 @@ public class NotificationActuatorBuilder extends JWaveZActuatorBuilder {
                 .messagePublisher(rulerThingContext.getMessagePublisher())
                 .build();
         CommandListener<? extends ZWaveSupportedCommand> listener = buildCommandListener(actuator, configuration);
-        pluginContext.getCommandRouteRegistry().registerListener(NotificationCommandType.NOTIFICATION_REPORT, listener);
+        pluginContext.getCommandRouteRegistry().registerListener(listener);
         return actuator;
+    }
+
+    public void destroyActuator(Actuator actuator) {
+        pluginContext.getCommandRouteRegistry().unregisterListener(actuator.getUuid());
     }
 
     private CommandListener<? extends ZWaveSupportedCommand> buildCommandListener(NotificationActuator actuator, NotificationConfiguration configuration) {

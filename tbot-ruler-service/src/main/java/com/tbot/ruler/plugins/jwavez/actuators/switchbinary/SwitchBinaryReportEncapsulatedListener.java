@@ -4,16 +4,17 @@ import com.rposcro.jwavez.core.buffer.ImmutableBuffer;
 import com.rposcro.jwavez.core.commands.JwzSupportedCommandParser;
 import com.rposcro.jwavez.core.commands.supported.binaryswitch.BinarySwitchReport;
 import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
+import com.rposcro.jwavez.core.commands.types.SwitchBinaryCommandType;
 import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.plugins.jwavez.controller.AbstractCommandListener;
 import com.tbot.ruler.plugins.jwavez.controller.CommandFilter;
-import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class SwitchBinaryReportEncapsulatedListener implements CommandListener<MultiChannelCommandEncapsulation> {
+public class SwitchBinaryReportEncapsulatedListener extends AbstractCommandListener<MultiChannelCommandEncapsulation> {
 
     private final SwitchBinaryActuator actuator;
     private final JwzSupportedCommandParser commandParser;
@@ -25,6 +26,7 @@ public class SwitchBinaryReportEncapsulatedListener implements CommandListener<M
             JwzSupportedCommandParser commandParser,
             int sourceNodeId,
             int sourceEndPointId) {
+        super(SwitchBinaryCommandType.BINARY_SWITCH_REPORT, actuator.getUuid());
         this.actuator = actuator;
         this.commandParser = commandParser;
         this.commandFilter = CommandFilter.encapsulatedSourceFilter(sourceNodeId, sourceEndPointId);
@@ -32,7 +34,7 @@ public class SwitchBinaryReportEncapsulatedListener implements CommandListener<M
 
     @Override
     public void handleCommand(MultiChannelCommandEncapsulation encapsulation) {
-        log.debug("Handling switch binary report command");
+        log.debug("Plugin Jwz: Handling switch binary report command");
         BinarySwitchReport report = commandParser.parseCommand(
                 ImmutableBuffer.overBuffer(encapsulation.getEncapsulatedCommandPayload()),
                 encapsulation.getSourceNodeId());

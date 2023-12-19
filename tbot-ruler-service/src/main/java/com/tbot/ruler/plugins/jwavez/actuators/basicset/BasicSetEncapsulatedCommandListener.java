@@ -4,8 +4,9 @@ import com.rposcro.jwavez.core.buffer.ImmutableBuffer;
 import com.rposcro.jwavez.core.commands.JwzSupportedCommandParser;
 import com.rposcro.jwavez.core.commands.supported.basic.BasicSet;
 import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
+import com.rposcro.jwavez.core.commands.types.BasicCommandType;
+import com.tbot.ruler.plugins.jwavez.controller.AbstractCommandListener;
 import com.tbot.ruler.plugins.jwavez.controller.CommandFilter;
-import com.tbot.ruler.plugins.jwavez.controller.CommandListener;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -14,7 +15,7 @@ import static com.tbot.ruler.plugins.jwavez.controller.CommandFilter.encapsulate
 
 @Slf4j
 @Getter
-public class BasicSetEncapsulatedCommandListener implements CommandListener<MultiChannelCommandEncapsulation> {
+public class BasicSetEncapsulatedCommandListener extends AbstractCommandListener<MultiChannelCommandEncapsulation> {
 
     private final BasicSetActuator actuator;
     private final JwzSupportedCommandParser supportedCommandParser;
@@ -26,6 +27,7 @@ public class BasicSetEncapsulatedCommandListener implements CommandListener<Mult
             JwzSupportedCommandParser supportedCommandParser,
             int sourceNodeId,
             int sourceEndPointId) {
+        super(BasicCommandType.BASIC_SET, actuator.getUuid());
         this.actuator = actuator;
         this.supportedCommandParser = supportedCommandParser;
         this.commandFilter = encapsulatedSourceFilter(sourceNodeId, sourceEndPointId);
