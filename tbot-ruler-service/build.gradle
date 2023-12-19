@@ -97,10 +97,6 @@ project.dependencies {
     testImplementation "org.mockito:mockito-core:${junitMockitoVersion}"
     testImplementation "org.mockito:mockito-junit-jupiter:${junitMockitoVersion}"
 
-    testImplementation 'org.spockframework:spock-core:1.1-groovy-2.4'
-    testImplementation 'org.codehaus.groovy:groovy-all:2.4.6'
-    testImplementation 'cglib:cglib-nodep:3.3.0'
-
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }

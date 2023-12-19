@@ -1,7 +1,9 @@
 package com.tbot.ruler.broker.model;
 
-import org.junit.Assert;
 import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class MessagePublicationReportTest {
 
@@ -12,11 +14,11 @@ public class MessagePublicationReportTest {
                 .senderSuspended(true)
                 .build();
 
-        Assert.assertTrue(report.isSenderSuspended());
-        Assert.assertFalse(report.noReceiversFound());
-        Assert.assertFalse(report.publicationFailed());
-        Assert.assertFalse(report.publicationPartiallyFailed());
-        Assert.assertFalse(report.publicationSuccessful());
+        assertTrue(report.isSenderSuspended());
+        assertFalse(report.noReceiversFound());
+        assertFalse(report.publicationFailed());
+        assertFalse(report.publicationPartiallyFailed());
+        assertFalse(report.publicationSuccessful());
     }
 
     @Test
@@ -25,11 +27,11 @@ public class MessagePublicationReportTest {
                 .originalMessage(mockMessage())
                 .build();
 
-        Assert.assertFalse(report.isSenderSuspended());
-        Assert.assertTrue(report.noReceiversFound());
-        Assert.assertFalse(report.publicationFailed());
-        Assert.assertFalse(report.publicationPartiallyFailed());
-        Assert.assertFalse(report.publicationSuccessful());
+        assertFalse(report.isSenderSuspended());
+        assertTrue(report.noReceiversFound());
+        assertFalse(report.publicationFailed());
+        assertFalse(report.publicationPartiallyFailed());
+        assertFalse(report.publicationSuccessful());
     }
 
     @Test
@@ -39,11 +41,11 @@ public class MessagePublicationReportTest {
                 .successfulReceiver("success-receiver-id")
                 .build();
 
-        Assert.assertFalse(report.isSenderSuspended());
-        Assert.assertFalse(report.noReceiversFound());
-        Assert.assertFalse(report.publicationFailed());
-        Assert.assertFalse(report.publicationPartiallyFailed());
-        Assert.assertTrue(report.publicationSuccessful());
+        assertFalse(report.isSenderSuspended());
+        assertFalse(report.noReceiversFound());
+        assertFalse(report.publicationFailed());
+        assertFalse(report.publicationPartiallyFailed());
+        assertTrue(report.publicationSuccessful());
     }
 
     @Test
@@ -53,11 +55,11 @@ public class MessagePublicationReportTest {
                 .failedReceiver("fail-receiver-id")
                 .build();
 
-        Assert.assertFalse(report.isSenderSuspended());
-        Assert.assertFalse(report.noReceiversFound());
-        Assert.assertTrue(report.publicationFailed());
-        Assert.assertFalse(report.publicationPartiallyFailed());
-        Assert.assertFalse(report.publicationSuccessful());
+        assertFalse(report.isSenderSuspended());
+        assertFalse(report.noReceiversFound());
+        assertTrue(report.publicationFailed());
+        assertFalse(report.publicationPartiallyFailed());
+        assertFalse(report.publicationSuccessful());
     }
 
     @Test
@@ -68,11 +70,11 @@ public class MessagePublicationReportTest {
                 .successfulReceiver("success-receiver-id")
                 .build();
 
-        Assert.assertFalse(report.isSenderSuspended());
-        Assert.assertFalse(report.noReceiversFound());
-        Assert.assertFalse(report.publicationFailed());
-        Assert.assertTrue(report.publicationPartiallyFailed());
-        Assert.assertFalse(report.publicationSuccessful());
+        assertFalse(report.isSenderSuspended());
+        assertFalse(report.noReceiversFound());
+        assertFalse(report.publicationFailed());
+        assertTrue(report.publicationPartiallyFailed());
+        assertFalse(report.publicationSuccessful());
     }
 
     private Message mockMessage() {
