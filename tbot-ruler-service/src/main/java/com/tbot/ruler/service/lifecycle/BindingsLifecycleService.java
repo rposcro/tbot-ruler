@@ -4,9 +4,7 @@ import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.event.ApplicationStartedEvent;
 import org.springframework.context.annotation.Scope;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
@@ -23,11 +21,6 @@ public class BindingsLifecycleService {
     private BindingsRepository bindingsRepository;
 
     private Map<String, Set<String>> sendersToReceiversMap;
-
-    @EventListener
-    public void initialize(ApplicationStartedEvent event) {
-        reloadCache();
-    }
 
     public Set<String> getReceiversForSender(String senderUuid) {
         Set<String> receivers = sendersToReceiversMap.get(senderUuid);

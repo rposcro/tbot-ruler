@@ -24,6 +24,9 @@ public class ThingsLifecycleService {
     @Autowired
     private ThingFactoryComponent thingFactoryComponent;
 
+    @Autowired
+    private JobsLifecycleService jobsLifecycleService;
+
     private List<RulerThing> things;
     private Map<Long, RulerThing> thingsIdMap;
     private Map<String, RulerThing> thingsUuidMap;
@@ -40,7 +43,7 @@ public class ThingsLifecycleService {
         return thingsUuidMap.get(uuid);
     }
 
-    public void startUpAllThings() {
+    public void activateAllThings() {
         things = new LinkedList<>();
         thingsIdMap = new HashMap<>();
         thingsUuidMap = new HashMap<>();
@@ -49,6 +52,10 @@ public class ThingsLifecycleService {
             things.add(thing);
             thingsIdMap.put(thingEntity.getThingId(), thing);
             thingsUuidMap.put(thingEntity.getThingUuid(), thing);
+
+            if (thing.hasJobs()) {
+                jobsLifecycleService.startSubjectJobs(thing);
+            }
         });
     }
 }

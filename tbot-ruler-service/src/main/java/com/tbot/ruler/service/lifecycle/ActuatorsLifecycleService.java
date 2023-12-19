@@ -1,5 +1,6 @@
 package com.tbot.ruler.service.lifecycle;
 
+import com.tbot.ruler.exceptions.LifecycleException;
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
@@ -45,31 +46,6 @@ public class ActuatorsLifecycleService {
         return actuatorsUuidMap.get(uuid);
     }
 
-    public void deactivateActuator(ActuatorEntity actuatorEntity) {
-        String actuatorUuid = actuatorEntity.getActuatorUuid();
-
-        if (actuatorsUuidMap.containsKey(actuatorUuid)) {
-            log.warn("Actuators' Lifecycle: Deactivation skipped, actuator is not active {} {}",
-                    actuatorEntity.getActuatorUuid(), actuatorEntity.getName());
-            return;
-        }
-
-        Actuator actuator = actuatorsUuidMap.get(actuatorUuid);
-        RulerThing thing = thingsByActuatorsUuidMap.get(actuatorUuid);
-        Plugin plugin = pluginsByActuatorsUuidMap.get(actuatorUuid);
-
-        jobsLifecycleService.stopSubjectJobs(actuator);
-        thing.removeActuator(actuator);
-        plugin.stopActuator(actuator, actuatorEntity.getReference());
-
-        actuatorsUuidMap.remove(actuatorUuid);
-        thingsByActuatorsUuidMap.remove(actuatorUuid);
-        pluginsByActuatorsUuidMap.remove(actuatorUuid);
-        actuators.remove(actuator);
-
-        log.info("Actuators' Lifecycle: Actuator deactivated {} {}", actuator.getUuid(), actuator.getName());
-    }
-
     public void activateAllActuators() {
         actuators = new LinkedList<>();
         actuatorsUuidMap = new HashMap<>();
@@ -87,9 +63,8 @@ public class ActuatorsLifecycleService {
 
     public void activateActuator(ActuatorEntity actuatorEntity) {
         if (actuatorsUuidMap.containsKey(actuatorEntity.getActuatorUuid())) {
-            log.warn("Actuators' Lifecycle: Activation skipped, actuator is already active {} {}",
-                    actuatorEntity.getActuatorUuid(), actuatorEntity.getName());
-            return;
+                throw new LifecycleException("Actuators' Lifecycle: Actuator already active %s %s",
+                        actuatorEntity.getActuatorUuid(), actuatorEntity.getName());
         }
 
         Plugin plugin = pluginsLifecycleService.getPluginById(actuatorEntity.getPluginId());
@@ -104,6 +79,30 @@ public class ActuatorsLifecycleService {
         pluginsByActuatorsUuidMap.put(actuator.getUuid(), plugin);
 
         log.info("Actuators' Lifecycle: Actuator activated {} {}", actuator.getUuid(), actuator.getName());
+    }
+
+    public void deactivateActuator(ActuatorEntity actuatorEntity) {
+        String actuatorUuid = actuatorEntity.getActuatorUuid();
+
+        if (!actuatorsUuidMap.containsKey(actuatorUuid)) {
+            throw new LifecycleException("Actuators' Lifecycle: Cannot deactivate inactive actuator %s %s",
+                    actuatorEntity.getActuatorUuid(), actuatorEntity.getName());
+        }
+
+        Actuator actuator = actuatorsUuidMap.get(actuatorUuid);
+        RulerThing thing = thingsByActuatorsUuidMap.get(actuatorUuid);
+        Plugin plugin = pluginsByActuatorsUuidMap.get(actuatorUuid);
+
+        jobsLifecycleService.stopSubjectJobs(actuator);
+        thing.removeActuator(actuator);
+        plugin.stopActuator(actuator, actuatorEntity.getReference());
+
+        actuatorsUuidMap.remove(actuatorUuid);
+        thingsByActuatorsUuidMap.remove(actuatorUuid);
+        pluginsByActuatorsUuidMap.remove(actuatorUuid);
+        actuators.remove(actuator);
+
+        log.info("Actuators' Lifecycle: Actuator deactivated {} {}", actuator.getUuid(), actuator.getName());
     }
 
     public boolean isActuatorActive(String actuatorUuid) {

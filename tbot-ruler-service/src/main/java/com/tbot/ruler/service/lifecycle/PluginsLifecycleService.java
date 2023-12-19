@@ -25,6 +25,9 @@ public class PluginsLifecycleService {
     @Autowired
     private PluginFactoryComponent pluginFactoryComponent;
 
+    @Autowired
+    private JobsLifecycleService jobsLifecycleService;
+
     private List<Plugin> plugins;
     private Map<Long, Plugin> pluginsIdMap;
     private Map<String, Plugin> pluginsUuidMap;
@@ -37,7 +40,7 @@ public class PluginsLifecycleService {
         return pluginsIdMap.get(id);
     }
 
-    public void startUpAllPlugins() {
+    public void activateAllPlugins() {
         plugins = new LinkedList<>();
         pluginsIdMap = new HashMap<>();
         pluginsUuidMap = new HashMap<>();
@@ -47,6 +50,10 @@ public class PluginsLifecycleService {
                 plugins.add(plugin);
                 pluginsIdMap.put(pluginEntity.getPluginId(), plugin);
                 pluginsUuidMap.put(pluginEntity.getPluginUuid(), plugin);
+
+                if (plugin.hasJobs()) {
+                    jobsLifecycleService.startSubjectJobs(plugin);
+                }
             }
         });
     }

@@ -17,4 +17,8 @@ public interface Subject {
     default Collection<JobBundle> getJobBundles() {
         return Collections.emptyList();
     }
+
+    default boolean hasJobs() {
+        return getJobBundles() != null && !getJobBundles().isEmpty();
+    }
 }

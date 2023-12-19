@@ -50,6 +50,7 @@ public class JobsLifecycleService {
 
         if (runners != null) {
             runners.forEach(JobRunner::stop);
+            jobsPerSubjectUuid.remove(subject.getUuid());
             log.info("Job Lifecycle: Jobs stopped for subject {}", subject.getUuid());
         } else {
             log.info("Job Lifecycle: No jobs running for subject {}, nothing to stop", subject.getUuid());

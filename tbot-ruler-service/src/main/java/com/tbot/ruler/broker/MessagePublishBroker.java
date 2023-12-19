@@ -1,6 +1,5 @@
 package com.tbot.ruler.broker;
 
-import com.tbot.ruler.exceptions.MessageException;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.MessagePublicationReport.publicationReportBuilder;
 import com.tbot.ruler.broker.model.Message;
@@ -40,7 +39,7 @@ public class MessagePublishBroker implements Job {
                 messageQueue.enqueueReport(publicationReport);
             }
         } catch(RuntimeException e) {
-            log.error("Message dispatch interrupted by unexpected internal error", e);
+            log.error("Message Dispatch: Interrupted by unexpected internal error", e);
         }
     }
 
@@ -49,20 +48,23 @@ public class MessagePublishBroker implements Job {
         Collection<String> receivers = extractReceivers(message);
 
         if (messagePublicationManager.isSenderSuspended(message.getSenderId())) {
-            log.info("Message dispatch from {}: Suspended", message.getSenderId());
+            log.info("Message Dispatch: Suspended from sender {}", message.getSenderId());
             reportBuilder.senderSuspended(true);
         } else if (receivers.isEmpty()) {
-            log.warn("Message dispatch from {}: No bindings found", message.getSenderId());
+            log.warn("Message Dispatch: No bindings found for sender {}", message.getSenderId());
         } else {
             receivers.stream()
                 .forEach(receiverId -> {
                     try {
-                        log.debug("Message dispatch from {}: Delivering to {}", message.getSenderId(), receiverId);
-                        this.deliverMessage(message, receiverId);
-                        reportBuilder.successfulReceiver(receiverId);
+                        log.debug("Message Dispatch: Delivering from {} to {}", message.getSenderId(), receiverId);
+                        if (deliverMessage(message, receiverId)) {
+                            reportBuilder.successfulReceiver(receiverId);
+                        } else {
+                            reportBuilder.failedReceiver(receiverId);
+                        }
                     } catch(Exception e) {
                         reportBuilder.failedReceiver(receiverId);
-                        log.error("Message dispatch from " + message.getSenderId() + ": Failed to deliver to " + receiverId, e);
+                        log.error("Message Dispatch: Failed to deliver from " + message.getSenderId() + " to " + receiverId, e);
                     }
                 });
         }
@@ -78,11 +80,13 @@ public class MessagePublishBroker implements Job {
         }
     }
 
-    private void deliverMessage(Message message, String receiverUuid) {
+    private boolean deliverMessage(Message message, String receiverUuid) {
         MessageReceiver messageReceiver = bindingsService.findReceiverByUuid(receiverUuid);
         if (messageReceiver == null) {
-            throw new MessageException("No active receiver found for uuid: " + receiverUuid);
+            log.warn("Message Dispatch: No active receiver found for uuid {}", receiverUuid);
+            return false;
         }
         messageReceiver.acceptMessage(message);
+        return true;
     }
 }

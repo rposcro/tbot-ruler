@@ -38,7 +38,7 @@ public class MessagePublicationReportBroker implements Job {
                 deliverReport(publicationReport);
             }
         } catch(Exception e) {
-            log.error("Report delivery interrupted by unexpected internal error", e);
+            log.error("Report Delivery: Interrupted by unexpected internal error", e);
         }
     }
 
@@ -46,11 +46,11 @@ public class MessagePublicationReportBroker implements Job {
         MessageSender messageSender = bindingsService.findSenderByUuid(publicationReport.getOriginalMessage().getSenderId());
 
         if (messageSender != null) {
-            log.debug("Report delivery to {}", publicationReport.getOriginalMessage().getSenderId());
+            log.debug("Report Delivery: To {}", publicationReport.getOriginalMessage().getSenderId());
             messageSender.acceptPublicationReport(publicationReport);
             deliveryListeners.forEach(listener -> listener.publicationReportDelivered(publicationReport));
         } else {
-            log.debug("Report delivery to unknown sender");
+            log.debug("Report Delivery: To unknown sender");
             deliveryListeners.forEach(listener -> listener.publicationReportSkipped(publicationReport));
         }
     }

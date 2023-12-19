@@ -64,6 +64,10 @@ public class JobRunner implements Runnable {
         while(!isStopping.get());
     }
 
+    public boolean isRunning() {
+        return isRunning.get();
+    }
+
     private boolean shouldContinue() {
         return !isStopping.get()
                 && (jobTrigger.shouldRunAgain() || triggerContext.isFirstRun())
