@@ -1,43 +1,65 @@
 # ThingBot Ruler
 
-## Profiles
-By default profiles are pre-prepared:
- * dev  (development), listening on 4042, running from IDE
- * prod (production), listening on 4040, running in docker on production host
+This project consists in multiple modules currently: 
+<b>
+ * tbot-ruler-dev-db
+ * tbot-ruler-service
+ * tbot-ruler-console
+</b>
 
-## Run
-Note! Running docker on MacOS will fail to access USB devices due to docker's VM limitations, consider Linux based OS 
-when Z-Wave or other USB devices should be connected.   
+## Dev DB
+Builds and manages development cycle MariaDB docker. When the ruler service is configured to use an external repository, 
+this database can be used.
 
-### Development
+### DB Files
+By default, an external file folder is mapped for the image in order to persist data between subsequent container 
+runs and stops. When it is required to clean up the DB each time the container and restarted, go to `build.gradle`,
+find `dockerRun` configuration, and remove corresponding volume mapping. 
+
+### Initialisation
+When the container is run on an empty engine, initialisation scripts are used to set up an empty DB:
+- Database `ruler`
+- User `rulerApp` used by the ruler service for regular persistence layer access
+- User `rulerAdmin` used by the ruler service to run liquibase scripts where actual DB schema tables are created
+
+### Production Notes
+This project doesn't provide an image for production run. It is too individual and should be handled separately.
+
+## Ruler Service
+### Profiles
+By default these profiles are available:
+ * __dev__  (development), listening on 4042, running from IDE
+ * __prod__ (production), listening on 4040, running in a docker on a production host
+
+#### Development
 Simply run from IDE. Check `tbot-ruler-dev.yaml` for configuration paths.
 
-### Production
-* Build docker image, run `./build-docker.sh`. You may need to consider platform other than default, for example linux/arm/v7.
+__Note!__ Running docker on MacOS will fail to access USB devices due to docker's VM limitations, consider Linux based OS
+when Z-Wave or any other USB device should be connected.
+
+#### Production
+* Build a docker image, run `./gradlew tbot-ruler-service:docker`. You may need to consider platform other than 
+  default, for example `linux/arm/v7` or any other.
 * Check with `tbot-host` repo for details on how to set up, deploy and run production environment.
 
-## Logs
-For running in DEBUG mode use another env variables:
- * for tbot logs add --env TBOT_LOGGING_LEVEL=DEBUG
- * for all others add --env APP_LOGGING_LEVEL=DEBUG
+### Configuring Logs
+Logback configuration can be found in `src/main/resources/logback.xml`.
+Default log level is INFO, but when another level is needed, system variables should be used:
+ * __APP_LOGGING_LEVEL__ everything which comes from the Spring Boot application framework
+ * __TBOT_LOGGING_LEVEL__ everything specific to the ruler service
+ * __RPOSCRO_LOGGING_LEVEL__ everything coming from the `com.rposcro` dependency group, for example JWaveZ library
 
-In order to specify logs directory add --env LOGS_PATH=<path_to_logs_dir>
+There is also possibility to configure log file folder by setting __LOGS_HOME__ variable.
 
-If you need runnable docker image type:
+## Ruler Console
+The ruler console is a separate deployable Spring Boot application used to manage ruler's data and configuration.
+This module is based on the Vaadin framework, when a production docker build is requested, consider using
+corresponding flags so the `node` build is done in production mode. 
 
-`./gradlew docker`
+### Profiles
+By default these profiles are available:
+* __dev__  (development), listening on 4142, running from IDE
+* __prod__ (production), listening on 4140, running in a docker on a production host
 
-Now, you can export the image from local docker images.
-Note! Dockerfile specifies *linux/amd64* as the target platform, change it if needed.
-
-## Dynamic Runtime
-
-### Stopping 
- * Stop broker tasks:
- * ...
-
-### Restarting 
- * Start broker tasks
- * ...
 
 # Enjoy!
