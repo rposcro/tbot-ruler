@@ -1,0 +1,5 @@
+### Get all webhooks in DB
+# @name = WebhooksGetAll
+
+GET http://{{host-tbot-ruler}}/admin/webhooks
+Content-Type: application/json

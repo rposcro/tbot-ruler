@@ -1,0 +1,4 @@
+### Sets delivery state
+# @name = SetDeliveryState
+
+PATCH http://{{host-tbot-ruler}}/broker/delivery/true

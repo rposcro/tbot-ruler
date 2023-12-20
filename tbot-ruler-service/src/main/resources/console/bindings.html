@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/console.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/menu.css"/>
+    </head>
+    <body>
+        <div th:replace="fragments:: header('Bindings')"/>
+        <div class="desktop">
+            <table class="split" th:each="senderUuid: ${senders}">
+                <td class="split-left">[[${senderUuid}]]</td>
+                <td class="split-right">
+                    <div th:each="receiver: ${bindingsMap.get(senderUuid)}">
+                        [[${receiver}]]
+                    </div>
+                </td>
+            </table>
+        </div>
+    </body>
+</html>

@@ -1,0 +1,16 @@
+server:
+  port: 4142
+
+client:
+  ruler-service:
+    baseUrl: "http://localhost:4042/"
+    timeoutInMilliseconds: 3000
+    maxIdleConnections: 3
+
+vaadin:
+  productionMode: false
+  disable-xsrf-protection: true
+  devmode:
+    liveReload:
+      enabled: true
+

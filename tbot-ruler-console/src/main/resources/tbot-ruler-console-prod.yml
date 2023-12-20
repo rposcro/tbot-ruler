@@ -1,0 +1,13 @@
+server:
+  port: 4140
+
+client:
+  ruler-service:
+    baseUrl: "${TBOT_HOST_URL}/tbot/ruler/"
+    timeoutInMilliseconds: 3000
+    maxIdleConnections: 3
+
+vaadin:
+  productionMode: true
+  disable-xsrf-protection: false
+  urlMapping: "/*"

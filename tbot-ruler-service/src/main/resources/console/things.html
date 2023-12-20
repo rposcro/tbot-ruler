@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" type="text/css" href="/css/console.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/menu.css"/>
+    </head>
+    <body>
+        <div th:replace="fragments:: header('Things')"/>
+        <div class="desktop">
+            <table class="split">
+                <td class="split-left">
+                    <div class="list">
+                        <th:block th:each="thing: ${things}">
+                            <div th:class="${thing.thingUuid.equals(thingUuid) ? 'list-item-selected' : 'list-item'}">
+                                <a th:href="@{'/console/things/' + ${thing.thingUuid}}">
+                                    <b>[[${thing.name}]]</b> ([[${thing.thingUuid}]])
+                                </a>
+                            </div>
+                        </th:block>
+                    </div>
+                </td>
+                <td class="split-right">
+                    <th:block th:if="${thing != null}">
+                        <div class="section">
+                            <div class="property">Name: <span class="highlight">[[${thing.name}]]</span></div>
+                            <div class="property">Id: <span class="highlight">[[${thing.thingId}]]</span></div>
+                            <div class="property">Uuid: <span class="highlight">[[${thing.thingUuid}]]</span></div>
+                            <div class="property">Version: <span class="highlight">[[${thing.version}]]</span></div>
+                            <div class="property">Description: <span class="highlight">[[${thing.description}]]</span></div>
+                            <div class="property">Configuration: <span class="highlight">[[${thing.configuration}]]</span></div>
+                            <div class="property"></div>
+                        </div>
+                        <div class="section">
+                            <div class="section-title">Actuators</div>
+                            <div class="property" th:each="actuator: ${actuators}">
+                                <a th:href="@{'/console/actuators/' + ${actuator.actuatorUuid}}">[[${actuator.name}]]</a>
+                            </div>
+                        </div>
+                    </th:block>
+                </td>
+            </table>
+        </div>
+    </body>
+</html>

@@ -1,9 +1,9 @@
 # Project specific
-/build/
 /target/
 /logs/
 /config/
 /.idea/
+build/
 .gradle/
 *.iml
 *.bak

@@ -1,0 +1,27 @@
+server:
+    port: 4040
+
+spring:
+    datasource:
+        url: ${DB_URL}
+        driverClassName: org.mariadb.jdbc.Driver
+        username: ${DB_APP_USERNAME}
+        password: ${DB_APP_PASSWORD}
+        hikari:
+            schema: ruler
+    liquibase:
+        url: ${DB_URL}
+        liquibase-schema: ruler
+        user: ${DB_ADMIN_USERNAME}
+        password: ${DB_ADMIN_PASSWORD}
+
+ruler:
+    fileRepository:
+        load:
+            path: /data/load
+            loadOnStartup: false
+        dump:
+            jsonFiles:
+                data/dump/json
+            sqlFiles:
+                data/dump/sql

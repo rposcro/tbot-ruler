@@ -1,0 +1,39 @@
+plugins {
+    id 'com.palantir.docker' version '0.35.0'
+    id 'com.palantir.docker-run' version '0.35.0'
+}
+
+project.group = tbotRulerGroup
+project.description = 'TBot Ruler Dev DB'
+
+def imageName = 'tbot-ruler-dev-db'
+
+repositories {
+    mavenCentral()
+}
+
+docker {
+    name "${imageName}"
+    noCache true
+    copySpec.from("sql-files").into("sql-files")
+}
+
+dockerRun {
+    name "${imageName}"
+    image "${imageName}"
+    ports '4340:3306'
+    volumes "${parent.projectDir}/ignore/db": '/var/lib/mysql'
+    clean
+}
+
+tasks.dockerRun.dependsOn = [
+        dockerRemoveContainer
+]
+
+task dockerStopRemoveRun {
+    dependsOn 'dockerStop'
+    dependsOn 'dockerRemoveContainer'
+    dependsOn 'dockerRun'
+    tasks.findByName('dockerRun').mustRunAfter 'dockerRemoveContainer'
+    tasks.findByName('dockerRemoveContainer').mustRunAfter 'dockerStop'
+}

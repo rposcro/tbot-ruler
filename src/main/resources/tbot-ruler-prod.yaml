@@ -1,9 +1,0 @@
-server:
-    port: 4040
-
-ruler:
-    thingsConfig:
-        path: /config
-    cache:
-        states:
-            path: /cache/states.json

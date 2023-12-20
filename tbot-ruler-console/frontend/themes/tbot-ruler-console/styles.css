@@ -1,0 +1,26 @@
+a[highlight] {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
+vaadin-grid::part(header-cell) {
+    font-weight: bold;
+}
+
+.property-label {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.property-value {
+}
+
+.property-value pre {
+    background-color: white;
+    padding-top: 0px;
+    margin-top: 0px;
+}
+
+.content-code > textarea {
+    font-family: "Courier New";
+}
