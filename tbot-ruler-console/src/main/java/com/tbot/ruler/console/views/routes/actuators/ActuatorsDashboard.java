@@ -12,13 +12,16 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataCommunicator;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "actuators", layout = TBotRulerConsoleView.class)
 @PageTitle("TBot Ruler Console | Actuators Dashboard")
-public class ActuatorsDashboard extends VerticalLayout {
+public class ActuatorsDashboard extends VerticalLayout implements HasUrlParameter<String> {
 
     private final ActuatorActionsSupport actionsSupport;
     private final ActuatorsModelAccessor dataSupport;
@@ -38,13 +41,18 @@ public class ActuatorsDashboard extends VerticalLayout {
         add(constructContent());
     }
 
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String actuatorUuid) {
+        selectActuator(actuatorUuid);
+    }
+
     public void selectActuator(String actuatorUuid) {
         if (actuatorUuid != null) {
             DataCommunicator<ActuatorModel> dataCommunicator = actuatorsGrid.getDataCommunicator();
             for (int idx = 0; idx < dataCommunicator.getItemCount(); idx++) {
                 if (dataCommunicator.getItem(idx).getActuatorUuid().equals(actuatorUuid)) {
                     actuatorsGrid.select(dataCommunicator.getItem(idx));
-                    actuatorsGrid.scrollToIndex(idx);
+                    actuatorsGrid.getElement().executeJs("setTimeout(function() { $0.scrollToIndex($1) })", actuatorsGrid.getElement(), idx);
                     return;
                 }
             }

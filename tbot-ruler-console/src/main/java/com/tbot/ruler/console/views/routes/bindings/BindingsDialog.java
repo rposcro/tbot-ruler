@@ -7,6 +7,7 @@ import com.tbot.ruler.console.views.routes.webhooks.WebhooksDashboard;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -66,9 +67,11 @@ public class BindingsDialog extends Dialog {
             return null;
         }
         EntityGrid<BindingModel> grid = new EntityGrid<>();
-        grid.addItemDoubleClickListener(this::handleOutboundBindingNavigate);
         grid.addColumn("Receiver Name", BindingModel::getReceiverName);
         grid.addColumn("Receiver UUID", BindingModel::getReceiverUuid);
+
+        grid.addItemDoubleClickListener(this::handleOutboundBindingNavigate);
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.setSizeFull();
         grid.setItems(bindings);
         return grid;
@@ -85,19 +88,16 @@ public class BindingsDialog extends Dialog {
     private void handleInboundBindingNavigate(ItemDoubleClickEvent<BindingModel> event) {
         BindingModel binding = event.getItem();
         if (binding.isSenderActuator()) {
-            getUI().ifPresent(ui -> ui.navigate(ActuatorsDashboard.class).ifPresent(
-                    dashboard -> dashboard.selectActuator(binding.getSenderUuid())));
+            getUI().ifPresent(ui -> ui.navigate(ActuatorsDashboard.class, binding.getSenderUuid()));
         } else {
-            getUI().ifPresent(ui -> ui.navigate(WebhooksDashboard.class).ifPresent(
-                    dashboard -> dashboard.selectWebhook(binding.getSenderUuid())));
+            getUI().ifPresent(ui -> ui.navigate(WebhooksDashboard.class, binding.getSenderUuid()));
         }
         close();
     }
 
     private void handleOutboundBindingNavigate(ItemDoubleClickEvent<BindingModel> event) {
         BindingModel binding = event.getItem();
-        getUI().ifPresent(ui -> ui.navigate(ActuatorsDashboard.class).ifPresent(
-                dashboard -> dashboard.selectActuator(binding.getReceiverUuid())));
+        getUI().ifPresent(ui -> ui.navigate(ActuatorsDashboard.class, binding.getReceiverUuid()));
         close();
     }
 }

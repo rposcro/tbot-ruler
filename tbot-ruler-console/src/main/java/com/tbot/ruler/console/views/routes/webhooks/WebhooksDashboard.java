@@ -10,13 +10,16 @@ import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.provider.DataCommunicator;
+import com.vaadin.flow.router.BeforeEvent;
+import com.vaadin.flow.router.HasUrlParameter;
+import com.vaadin.flow.router.OptionalParameter;
 import com.vaadin.flow.router.PageTitle;
 import com.vaadin.flow.router.Route;
 import org.springframework.beans.factory.annotation.Autowired;
 
 @Route(value = "webhooks", layout = TBotRulerConsoleView.class)
 @PageTitle("TBot Ruler Console | Webhooks Dashboard")
-public class WebhooksDashboard extends VerticalLayout {
+public class WebhooksDashboard extends VerticalLayout implements HasUrlParameter<String> {
 
     private final WebhookActionsSupport actionsSupport;
 
@@ -34,13 +37,18 @@ public class WebhooksDashboard extends VerticalLayout {
         add(constructContent());
     }
 
+    @Override
+    public void setParameter(BeforeEvent event, @OptionalParameter String webhookUuid) {
+        selectWebhook(webhookUuid);
+    }
+
     public void selectWebhook(String webhookUuid) {
         if (webhookUuid != null) {
             DataCommunicator<WebhookResponse> dataCommunicator = webhooksGrid.getDataCommunicator();
             for (int idx = 0; idx < dataCommunicator.getItemCount(); idx++) {
                 if (dataCommunicator.getItem(idx).getWebhookUuid().equals(webhookUuid)) {
                     webhooksGrid.select(dataCommunicator.getItem(idx));
-                    webhooksGrid.scrollToIndex(idx);
+                    webhooksGrid.getElement().executeJs("setTimeout(function() { $0.scrollToIndex($1) })", webhooksGrid.getElement(), idx);
                     return;
                 }
             }

@@ -68,9 +68,10 @@ public class EntityFilterableGrid<T> extends Grid<T> {
         contextMenu().add(new Hr());
     }
 
-    public void setItems(List<T> items) {
+    public GridListDataView<T> setItems(List<T> items) {
         this.dataView = super.setItems(items);
         dataView.addFilter(gridFilter::test);
+        return dataView;
     }
 
     private GridContextMenu<T> contextMenu() {

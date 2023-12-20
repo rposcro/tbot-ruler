@@ -1,10 +1,14 @@
 package com.tbot.ruler.console.views.routes.actuators;
 
 import com.tbot.ruler.console.accessors.model.ActuatorModel;
+import com.tbot.ruler.console.accessors.model.BindingModel;
 import com.tbot.ruler.console.views.components.EntityGrid;
+import com.tbot.ruler.console.views.routes.webhooks.WebhooksDashboard;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
+import com.vaadin.flow.component.grid.ItemDoubleClickEvent;
 import lombok.Builder;
 import lombok.NonNull;
 
@@ -52,10 +56,17 @@ public class ActuatorsDialog extends Dialog {
         grid.addColumn("UUID", ActuatorModel::getActuatorUuid);
         grid.addColumn("Plugin", ActuatorModel::getPluginName);
 
+        grid.addItemDoubleClickListener(this::handleActuatorNavigate);
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.setSizeFull();
         grid.removeThemeVariants(GridVariant.LUMO_WRAP_CELL_CONTENT);
-
         grid.setItems(actuators);
         return grid;
+    }
+
+    private void handleActuatorNavigate(ItemDoubleClickEvent<ActuatorModel> event) {
+        ActuatorModel actuator = event.getItem();
+        getUI().ifPresent(ui -> ui.navigate(ActuatorsDashboard.class, actuator.getActuatorUuid()));
+        close();
     }
 }
