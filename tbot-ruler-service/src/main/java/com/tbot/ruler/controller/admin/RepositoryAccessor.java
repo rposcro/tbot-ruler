@@ -4,11 +4,13 @@ import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.PluginsRepository;
+import com.tbot.ruler.persistance.StencilsRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.persistance.WebhooksRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
+import com.tbot.ruler.persistance.model.StencilEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.persistance.model.WebhookEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +33,9 @@ public class RepositoryAccessor {
 
     @Autowired
     private BindingsRepository bindingsRepository;
+
+    @Autowired
+    private StencilsRepository stencilsRepository;
 
     public ActuatorEntity findActuator(String actuatorUuid) {
         return actuatorsRepository.findByUuid(actuatorUuid)
@@ -65,5 +70,10 @@ public class RepositoryAccessor {
     public BindingEntity findBinding(String senderUuid, String receiverUuid) {
         return bindingsRepository.find(senderUuid, receiverUuid)
                 .orElseThrow(() -> new ServiceRequestException("Binding of sender %s and receiver %s not found!", senderUuid, receiverUuid));
+    }
+
+    public StencilEntity findStencil(String stencilUuid) {
+        return stencilsRepository.findByUuid(stencilUuid)
+                .orElseThrow(() -> new ServiceRequestException("Stencil %s not found!", stencilUuid));
     }
 }

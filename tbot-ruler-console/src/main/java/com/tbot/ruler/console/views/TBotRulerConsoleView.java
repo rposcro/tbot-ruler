@@ -3,6 +3,7 @@ package com.tbot.ruler.console.views;
 import com.tbot.ruler.console.views.routes.actuators.ActuatorsDashboard;
 import com.tbot.ruler.console.views.routes.bindings.BindingsDashboard;
 import com.tbot.ruler.console.views.routes.plugins.PluginsDashboard;
+import com.tbot.ruler.console.views.routes.stencils.StencilsDashboard;
 import com.tbot.ruler.console.views.routes.things.ThingsDashboard;
 import com.tbot.ruler.console.views.routes.webhooks.WebhooksDashboard;
 import com.vaadin.flow.component.applayout.AppLayout;
@@ -45,7 +46,8 @@ public class TBotRulerConsoleView extends AppLayout {
                 new RouterLink("Things", ThingsDashboard.class),
                 new RouterLink("Actuators", ActuatorsDashboard.class),
                 new RouterLink("Webhooks", WebhooksDashboard.class),
-                new RouterLink("Bindings", BindingsDashboard.class)
+                new RouterLink("Bindings", BindingsDashboard.class),
+                new RouterLink("Stencils", StencilsDashboard.class)
         );
     }
 }

@@ -3,6 +3,7 @@
 /logs/
 /config/
 /.idea/
+**/node_modules/
 build/
 .gradle/
 *.iml

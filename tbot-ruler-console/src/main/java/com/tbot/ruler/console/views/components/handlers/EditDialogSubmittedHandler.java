@@ -1,8 +1,8 @@
 package com.tbot.ruler.console.views.components.handlers;
 
-import com.tbot.ruler.console.views.components.AbstractEditDialog;
+import com.vaadin.flow.component.dialog.Dialog;
 
-public interface EditDialogSubmittedHandler<ED extends AbstractEditDialog> {
+public interface EditDialogSubmittedHandler<ED extends Dialog> {
 
     void dialogSubmitted(ED entity);
 }

@@ -5,7 +5,6 @@ import com.rposcro.jwavez.serial.handlers.ApplicationCommandHandler;
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.subjects.plugin.Plugin;
 import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import com.tbot.ruler.plugins.jwavez.controller.CommandRouteRegistry;
@@ -90,24 +89,25 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
     }
 
     private SerialController prepareSerialController(
-            RulerPluginContext rulerPluginContext,
-            CommandRouteRegistry commandRouteRegistry) {
+            RulerPluginContext rulerPluginContext, CommandRouteRegistry commandRouteRegistry) {
+
         JWaveZPluginConfiguration configuration = parseConfiguration(rulerPluginContext.getPluginConfiguration(), JWaveZPluginConfiguration.class);
+        CommandRouter commandRouter = CommandRouter.builder()
+                .commandRouteRegistry(commandRouteRegistry)
+                .supportedCommandParser(JwzApplicationSupport.defaultSupport().supportedCommandParser())
+                .build();
+        ApplicationCommandHandler serialHandler = ApplicationCommandHandler.builder()
+                .supportBroadcasts(false)
+                .supportMulticasts(false)
+                .supportedCommandDispatcher(commandRouter)
+                .build();
 
         if (configuration.isMockDevice()) {
             return MockedSerialController.builder()
                     .configuration(configuration)
+                    .callbackHandler(serialHandler)
                     .build();
         } else {
-            CommandRouter commandRouter = CommandRouter.builder()
-                    .commandRouteRegistry(commandRouteRegistry)
-                    .supportedCommandParser(JwzApplicationSupport.defaultSupport().supportedCommandParser())
-                    .build();
-            ApplicationCommandHandler serialHandler = ApplicationCommandHandler.builder()
-                    .supportBroadcasts(false)
-                    .supportMulticasts(false)
-                    .supportedCommandDispatcher(commandRouter)
-                    .build();
             return JWaveZSerialController.builder()
                     .configuration(configuration)
                     .callbackHandler(serialHandler)

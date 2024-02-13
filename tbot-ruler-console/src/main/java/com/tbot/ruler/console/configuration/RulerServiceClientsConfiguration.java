@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.tbot.ruler.console.clients.ActuatorsAdminApi;
 import com.tbot.ruler.console.clients.BindingsAdminApi;
 import com.tbot.ruler.console.clients.PluginsAdminApi;
+import com.tbot.ruler.console.clients.StencilsAdminApi;
 import com.tbot.ruler.console.clients.ThingsAdminApi;
 import com.tbot.ruler.console.clients.WebhooksAdminApi;
 import jakarta.annotation.PostConstruct;
@@ -62,6 +63,11 @@ public class RulerServiceClientsConfiguration {
     @Bean
     public BindingsAdminApi bindingsAdminApi() {
         return retrofit().create(BindingsAdminApi.class);
+    }
+
+    @Bean
+    public StencilsAdminApi stencilsAdminApi() {
+        return retrofit().create(StencilsAdminApi.class);
     }
 
     private Retrofit retrofit() {
