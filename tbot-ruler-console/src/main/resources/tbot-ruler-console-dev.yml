@@ -8,9 +8,9 @@ client:
     maxIdleConnections: 3
 
 vaadin:
-  productionMode: false
+  productionMode: true
   disable-xsrf-protection: true
   devmode:
     liveReload:
-      enabled: true
+      enabled: false
 

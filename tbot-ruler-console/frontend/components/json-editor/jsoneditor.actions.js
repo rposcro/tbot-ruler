@@ -1,8 +1,9 @@
 window.saySomething = function() {
-    console.log("saying something");
+    console.log("jsonEditor actions loaded");
 }
 
 window.jsonEditorInit = function(divId) {
+    console.log("jsonEditor init @" + divId);
     const container = document.getElementById(divId);
     const options = {
         "modes": [ "tree", "code", "form", "text", "view" ],
@@ -12,9 +13,11 @@ window.jsonEditorInit = function(divId) {
 }
 
 window.jsonEditorSet = function(payload) {
+    console.log("jsonEditor init set payload");
     window._jsonEditor.set(payload);
 }
 
 window.jsonEditorGet = function() {
+    console.log("jsonEditor init get payload");
     return window._jsonEditor.get();
 }
