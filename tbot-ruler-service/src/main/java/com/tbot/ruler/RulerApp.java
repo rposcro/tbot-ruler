@@ -2,7 +2,6 @@ package com.tbot.ruler;
 
 import java.util.Optional;
 import java.util.Properties;
-import java.util.stream.StreamSupport;
 
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
@@ -31,8 +30,6 @@ public class RulerApp implements CommandLineRunner {
             .properties(getCustomProperties())
             .profiles(determineActiveProfiles())
             .run(args);
-
-        StreamSupport.stream()
     }
 
     static Properties getCustomProperties() {
