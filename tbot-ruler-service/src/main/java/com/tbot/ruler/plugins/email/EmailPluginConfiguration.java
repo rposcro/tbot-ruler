@@ -12,7 +12,7 @@ import lombok.Setter;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class EmailSenderConfiguration {
+public class EmailPluginConfiguration {
 
     @JsonProperty(required = true)
     private String mailSenderHost;
