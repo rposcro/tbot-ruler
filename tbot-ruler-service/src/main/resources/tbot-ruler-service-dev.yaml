@@ -23,7 +23,7 @@ spring:
 ruler:
     fileRepository:
         load:
-            loadOnStartup: false
+            loadOnStartup: true
             path: ignore/config-dev
         dump:
             jsonFiles:
