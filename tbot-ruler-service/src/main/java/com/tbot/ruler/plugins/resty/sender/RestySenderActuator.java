@@ -1,6 +1,7 @@
 package com.tbot.ruler.plugins.resty.sender;
 
 import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import lombok.Builder;
@@ -42,6 +43,13 @@ public class RestySenderActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
+        OnOffState onOffState = message.getPayloadAs(OnOffState.class);
+
+        if (!onOffState.isOn()) {
+            log.info("Received Off state from {}, ignoring it", message.getSenderId());
+            return;
+        }
+
         try {
             HttpHeaders headers = new HttpHeaders();
             restySenderConfiguration.getHeaders().forEach(headers::add);

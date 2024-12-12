@@ -2,6 +2,7 @@ package com.tbot.ruler.plugins.resty;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.plugins.ghost.GhostActuatorBuilder;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.plugin.Plugin;
@@ -39,7 +40,11 @@ public class RestyPlugin extends AbstractSubject implements Plugin {
 
     @Override
     public void stopActuator(Actuator actuator, String reference) {
-        Plugin.super.stopActuator(actuator, reference);
+        RestyActuatorBuilder builder = actuatorsBuilders.get(reference);
+        if (builder == null) {
+            throw new PluginException("Unknown builder reference " + reference);
+        }
+        builder.destroyActuator(actuator);
     }
 
     @Override

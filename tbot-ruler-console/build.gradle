@@ -4,7 +4,7 @@ plugins {
     id 'com.palantir.docker' version '0.35.0'
     id 'org.springframework.boot' version '3.1.4'
     id 'io.spring.dependency-management' version '1.1.6'
-    id 'com.vaadin' version '24.1.12'
+    id 'com.vaadin' version '24.5.7'
     id 'tbot-ruler.java-conventions'
 }
 
@@ -40,7 +40,7 @@ project.ext {
 project.dependencyManagement {
     imports {
         mavenBom "org.springframework.cloud:spring-cloud-dependencies:2021.0.0"
-        mavenBom "com.vaadin:vaadin-bom:24.1.12"
+        mavenBom "com.vaadin:vaadin-bom:24.5.7"
     }
 }
 
@@ -62,7 +62,7 @@ project.dependencies {
     implementation "ch.qos.logback:logback-classic:${logLockbackVersion}"
     implementation "ch.qos.logback:logback-core:${logLockbackVersion}"
 
-    implementation "jakarta.validation:jakarta.validation-api:${javaxValidationVersion}"
+//    implementation "jakarta.validation:jakarta.validation-api:${javaxValidationVersion}"
 
     implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"

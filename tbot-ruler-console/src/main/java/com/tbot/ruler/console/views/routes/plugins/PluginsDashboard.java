@@ -90,7 +90,7 @@ public class PluginsDashboard extends VerticalLayout {
     }
 
     private void handlePluginCreate(PluginEditDialog dialog) {
-        if (actionsSupport.updatePlugin(dialog)) {
+        if (actionsSupport.createPlugin(dialog)) {
             pluginsGrid.setItems(pluginsAccessor.getAllPlugins());
             dialog.close();
         }

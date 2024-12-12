@@ -8,8 +8,6 @@ import com.tbot.ruler.controller.admin.payload.WebhookResponse;
 import com.vaadin.flow.component.Component;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
-import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.icon.VaadinIcon;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import lombok.Builder;
@@ -42,8 +40,7 @@ public class BindingsCreateDialog extends Dialog {
             @NonNull List<ActuatorResponse> actuators,
             @NonNull List<WebhookResponse> webhooks,
             @NonNull List<BindingResponse> existingBindings,
-            @NonNull DialogActionHandler<BindingsCreateDialog> bindHandler,
-            @NonNull DialogActionHandler<BindingsCreateDialog> finishHandler) {
+            @NonNull DialogActionHandler<BindingsCreateDialog> bindHandler) {
         this.senders = gatherSendersList(actuators, webhooks);
         this.receivers = gatherRecipientsList(actuators);
         this.sendersToReceiversMap = existingBindings.stream().collect(
@@ -55,8 +52,6 @@ public class BindingsCreateDialog extends Dialog {
         this.gridReceivers = constructReceiversGrid(receivers);
         this.assignButton = constructAssignButton(bindHandler);
 
-        this.addDialogCloseActionListener(event -> finishHandler.execute(this));
-
         setHeaderTitle("Create Binding");
         setModal(true);
         setResizable(true);
@@ -65,7 +60,7 @@ public class BindingsCreateDialog extends Dialog {
         setHeight("90%");
 
         add(constructContent());
-        getFooter().add(constructFinishButton(finishHandler));
+        getFooter().add(constructCloseButton(), assignButton);
     }
 
     public void addBinding(String senderUuid, String receiverUuid) {
@@ -99,24 +94,23 @@ public class BindingsCreateDialog extends Dialog {
     }
 
     private Button constructAssignButton(DialogActionHandler<BindingsCreateDialog> bindHandler) {
-        return new Button(VaadinIcon.ANGLE_DOUBLE_DOWN.create(), event -> {
+        Button btnAssign = new Button("Assign", event -> {
             bindHandler.execute(this);
-            gridSenders.asSingleSelect().clear();
-            gridReceivers.asSingleSelect().clear();
         });
+        btnAssign.getStyle().set("margin-right", "auto");
+        btnAssign.setEnabled(false);
+        return btnAssign;
     }
 
-    private Button constructFinishButton(DialogActionHandler<BindingsCreateDialog> finishHandler) {
-        Button btnFinish = new Button("Finish", event -> finishHandler.execute(this));
-        btnFinish.getStyle().set("margin-left", "auto");
-        btnFinish.getStyle().set("margin-right", "auto");
-        return btnFinish;
+    private Button constructCloseButton() {
+        Button btnClose = new Button("Close", event -> this.close());
+        btnClose.getStyle().set("margin-left", "auto");
+        return btnClose;
     }
 
     private Component constructContent() {
         VerticalLayout layout = new VerticalLayout(
                 gridSenders,
-                new Div(assignButton),
                 gridReceivers);
         layout.setSizeFull();
         layout.setAlignItems(FlexComponent.Alignment.CENTER);

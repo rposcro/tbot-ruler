@@ -71,7 +71,7 @@ project.dependencies {
     implementation "ch.qos.logback:logback-core:${logLockbackVersion}"
 
     implementation "org.reflections:reflections:${reflectionsVersion}"
-    implementation "jakarta.validation:jakarta.validation-api:${javaxValidationVersion}"
+//    implementation "jakarta.validation:jakarta.validation-api:${javaxValidationVersion}"
 
     implementation "com.fasterxml.jackson.core:jackson-core:${jacksonVersion}"
     implementation "com.fasterxml.jackson.core:jackson-annotations:${jacksonVersion}"

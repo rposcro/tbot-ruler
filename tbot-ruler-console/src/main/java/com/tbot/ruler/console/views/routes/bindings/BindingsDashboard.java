@@ -35,8 +35,7 @@ public class BindingsDashboard extends VerticalLayout {
 
     private HorizontalLayout constructToolbar() {
         Button createButton = new Button("New Binding(s)");
-        createButton.addClickListener(event -> editSupport.launchBindingCreate(
-                this::handleBindingCreate, this::handleBindingsFinish));
+        createButton.addClickListener(event -> editSupport.launchBindingCreate(this::handleBindingCreate));
 
         HorizontalLayout toolbar = new HorizontalLayout(createButton);
         toolbar.setAlignItems(Alignment.START);
@@ -86,12 +85,8 @@ public class BindingsDashboard extends VerticalLayout {
         String receiverUuid = dialog.getSelectedReceiver().getUuid();
 
         if (editSupport.createBinding(senderUuid, receiverUuid)) {
+            dialog.close();
             dialog.addBinding(senderUuid, receiverUuid);
         }
-    }
-
-    private void handleBindingsFinish(BindingsCreateDialog dialog) {
-        dialog.close();
-        bindingsGrid.setItems(dataSupport.getAllBindingsModels());
     }
 }
