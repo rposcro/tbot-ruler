@@ -1,6 +1,6 @@
 plugins {
-    id 'com.palantir.docker' version '0.35.0'
-    id 'com.palantir.docker-run' version '0.35.0'
+    id 'com.palantir.docker' version '0.36.0'
+    id 'com.palantir.docker-run' version '0.36.0'
 }
 
 project.group = tbotRulerGroup
@@ -9,6 +9,7 @@ project.description = 'TBot Ruler Dev DB'
 def imageName = 'tbot-ruler-dev-db'
 
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
