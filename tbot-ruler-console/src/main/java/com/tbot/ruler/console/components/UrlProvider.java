@@ -19,6 +19,7 @@ public class UrlProvider {
             .host(baseURI.getHost())
             .port(baseURI.getPort())
             .scheme(baseURI.getScheme())
+            .path(baseURI.getPath())
             .path("/admin/files/dump/zip")
             .build()
             .toString();

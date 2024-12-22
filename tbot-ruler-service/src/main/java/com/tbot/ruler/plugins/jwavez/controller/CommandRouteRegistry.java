@@ -41,6 +41,7 @@ public class CommandRouteRegistry {
             CommandType commandType = listener.getCommandType();
             listenersMap.remove(listenerKey);
             listenersMap.get(commandType).remove(listener);
+            listenersPerKey.remove(listenerKey);
             log.info("Plugin Jwz: Unregistered listener {} for command type {}", listenerKey, commandType);
         } else {
             log.warn("Plugin Jwz: No listener key {} in the registry", listenerKey);
