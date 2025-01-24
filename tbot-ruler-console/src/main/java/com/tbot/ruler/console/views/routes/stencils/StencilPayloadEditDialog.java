@@ -28,7 +28,7 @@ public class StencilPayloadEditDialog extends AbstractEditDialog<StencilPayloadE
         super(updateMode, submitHandler);
 
         this.originalStencil = originalStencil;
-        this.txtJson = new JsonEditor("Payload");
+        this.txtJson = new JsonEditor("Stencil Payload");
 
         setHeaderTitle(updateMode ? "Edit Stencil Payload" : "Create Stencil Payload");
         setModal(true);
@@ -53,8 +53,7 @@ public class StencilPayloadEditDialog extends AbstractEditDialog<StencilPayloadE
 
     @Override
     protected FormValidator constructFormValidator() {
-        return new FormValidator()
-                .validJson(txtJson);
+        return new FormValidator().validJson(txtJson);
     }
 
     private Component constructForm() {
