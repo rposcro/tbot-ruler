@@ -41,7 +41,6 @@ export class TbotJsonEditor extends LitElement {
 
     render(): TemplateResult {
         return html`
-            <vaadin-button id='tbot-json-editor-button'>click</vaadin-button>
             <div id='tbot-json-editor-container'></div>
         `;
     }
