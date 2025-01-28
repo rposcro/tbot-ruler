@@ -45,7 +45,6 @@ public class StencilsActionsSupport extends AbstractActionsSupport {
 
     public void launchStencilPayloadEdit(StencilResponse stencil, EditDialogSubmittedHandler<StencilPayloadEditDialog> submitHandler) {
         StencilPayloadEditDialog.builder()
-                .updateMode(true)
                 .submitHandler(submitHandler)
                 .originalStencil(stencil)
                 .build()

@@ -4,6 +4,7 @@ import com.tbot.ruler.console.exceptions.ClientCommunicationException;
 import com.tbot.ruler.console.views.TBotRulerConsoleView;
 import com.tbot.ruler.controller.admin.payload.StencilResponse;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Span;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -58,6 +59,7 @@ public class StencilsDashboard extends VerticalLayout {
 
     private StencilsGrid constructGrid() {
         StencilsGrid grid = new StencilsGrid();
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.addContextMenuAction("Edit", stencilResponse -> actionsSupport.launchStencilEdit(stencilResponse, this::handleStencilUpdate));
         grid.addContextMenuAction("Edit Payload", stencilResponse -> actionsSupport.launchStencilPayloadEdit(stencilResponse, this::handleStencilPayloadUpdate));
         grid.setItems(actionsSupport.getAllStencils());

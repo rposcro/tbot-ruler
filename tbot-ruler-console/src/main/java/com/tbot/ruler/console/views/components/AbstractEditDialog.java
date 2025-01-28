@@ -26,7 +26,13 @@ public abstract class AbstractEditDialog<ED extends AbstractEditDialog> extends 
         setUpFooter();
     }
 
-    protected abstract void setUpFormFields();
+    protected void resetFormFields() {
+        setUpFormFields();
+    }
+
+    protected void setUpFormFields() {
+    };
+
     protected FormValidator constructFormValidator() {
         return new FormValidator();
     }
@@ -65,7 +71,7 @@ public abstract class AbstractEditDialog<ED extends AbstractEditDialog> extends 
     private Button constructResetButton() {
         Button button = new Button("Reset");
         button.getStyle().set("margin-right", "auto");
-        button.addClickListener(event -> setUpFormFields());
+        button.addClickListener(event -> resetFormFields());
         return button;
     }
 }

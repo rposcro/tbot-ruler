@@ -21,21 +21,19 @@ public class StencilPayloadEditDialog extends AbstractEditDialog<StencilPayloadE
 
     @Builder
     public StencilPayloadEditDialog(
-            @NonNull Boolean updateMode,
             @NonNull EditDialogSubmittedHandler<StencilPayloadEditDialog> submitHandler,
             @NonNull StencilResponse originalStencil
     ) {
-        super(updateMode, submitHandler);
+        super(true, submitHandler);
 
         this.originalStencil = originalStencil;
-        this.txtJson = new JsonEditor("Stencil Payload");
+        this.txtJson = new JsonEditor("Stencil Payload", originalStencil.getPayload());
 
-        setHeaderTitle(updateMode ? "Edit Stencil Payload" : "Create Stencil Payload");
+        setHeaderTitle("Edit Stencil Payload");
         setModal(true);
         setWidth("90%");
         setHeight("90%");
 
-        setUpFormFields();
         add(constructForm());
 
         this.setResizable(true);
@@ -47,8 +45,8 @@ public class StencilPayloadEditDialog extends AbstractEditDialog<StencilPayloadE
     }
 
     @Override
-    protected void setUpFormFields() {
-        txtJson.setJson(originalStencil.getPayload());
+    protected void resetFormFields() {
+        this.txtJson.setJson(originalStencil.getPayload());
     }
 
     @Override
