@@ -46,11 +46,26 @@ public class MeterActuator extends AbstractActuator {
     }
 
     private Measure extractMeasure(MeterReport report) {
+        MeasureQuantity quantity = recognizeQuantity(report);
+        short decimals = recognizePrecision(report, quantity);
         return Measure.builder()
-                .quantity(MeasureQuantity.Temperature)
+                .quantity(quantity)
                 .unit("\u00baC")
-                .decimals((short) (report.getPrecision() & 0xff))
+                .decimals(decimals)
                 .value(report.getMeasure())
                 .build();
+    }
+
+    private MeasureQuantity recognizeQuantity(MeterReport report) {
+        // TODO: add actual meter type recognition
+        return MeasureQuantity.Temperature;
+    }
+
+    private short recognizePrecision(MeterReport report, MeasureQuantity quantity) {
+        if (MeasureQuantity.PRECISION_ANY == quantity.getPrecision()) {
+            return quantity.getPrecision();
+        } else {
+            return (short) (report.getPrecision() & 0xff);
+        }
     }
 }
