@@ -24,14 +24,20 @@ import org.springframework.beans.factory.annotation.Autowired;
 public class ActuatorsDashboard extends VerticalLayout implements HasUrlParameter<String> {
 
     private final ActuatorActionsSupport actionsSupport;
+    private final ActuatorLifecycleActionsSupport actionsLifecycleSupport;
     private final ActuatorsModelAccessor dataSupport;
 
     private final EntityPropertiesPanel<ActuatorModel> actuatorPanel;
     private final ActuatorsGrid actuatorsGrid;
 
     @Autowired
-    public ActuatorsDashboard(ActuatorActionsSupport actionsSupport, ActuatorsModelAccessor dataSupport) {
+    public ActuatorsDashboard(
+        ActuatorActionsSupport actionsSupport,
+        ActuatorLifecycleActionsSupport lifecycleActionsSupport,
+        ActuatorsModelAccessor dataSupport)
+    {
         this.actionsSupport = actionsSupport;
+        this.actionsLifecycleSupport = lifecycleActionsSupport;
         this.dataSupport = dataSupport;
         this.actuatorsGrid = constructGrid();
         this.actuatorPanel = constructItemPanel();
@@ -94,7 +100,7 @@ public class ActuatorsDashboard extends VerticalLayout implements HasUrlParamete
                         actuatorsGrid.asSingleSelect().getValue(), this::handleUpdateActuator))
                 .deleteHandler(() -> actionsSupport.launchActuatorDelete(
                         actuatorsGrid.asSingleSelect().getValue(), this::handleDeleteActuator))
-                .properties(new String[] { "name", "reference", "actuatorUuid", "pluginName", "thingName", "description", "configuration"} )
+                .properties(new String[] { "name", "reference", "actuatorUuid", "pluginName", "thingName", "description", "configuration", "active"} )
                 .build();
         panel.getStyle().set("margin-top", "0px");
         return panel;
@@ -102,14 +108,30 @@ public class ActuatorsDashboard extends VerticalLayout implements HasUrlParamete
 
     private ActuatorsGrid constructGrid() {
         ActuatorsGrid grid = new ActuatorsGrid();
-        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.addContextMenuAction("Show Bindings", actuatorModel -> actionsSupport.launchShowBindings(actuatorModel));
         grid.addContextMenuDivider();
-        grid.addContextMenuAction("Edit", actuatorModel -> actionsSupport.launchActuatorEdit(actuatorModel, this::handleUpdateActuator));
-        grid.addContextMenuAction("Delete", actuatorModel -> actionsSupport.launchActuatorDelete(actuatorModel, this::handleDeleteActuator));
+        grid.addContextMenuAction("Edit",
+            actuatorModel -> actionsSupport.launchActuatorEdit(actuatorModel, this::handleUpdateActuator));
+        grid.addContextMenuAction("Delete",
+            actuatorModel -> actionsSupport.launchActuatorDelete(actuatorModel, this::handleDeleteActuator));
+        grid.addContextMenuDivider();
+        grid.addContextMenuAction("Activate", actuatorModel -> handleActuatorActivate(actuatorModel.getActuatorUuid()));
+        grid.addContextMenuAction("Deactivate", actuatorModel -> handleActuatorDeactivate(actuatorModel.getActuatorUuid()));
+
+        grid.setSelectionMode(Grid.SelectionMode.SINGLE);
         grid.setSelectHandler(actuatorModel -> actuatorPanel.applyToEntity(actuatorModel));
         grid.setItems(dataSupport.getAllActuatorsModels());
         return grid;
+    }
+
+    private void handleActuatorActivate(String actuatorUuid) {
+        actionsLifecycleSupport.activateActuator(actuatorUuid);
+        actuatorsGrid.setItems(dataSupport.getAllActuatorsModels());
+    }
+
+    private void handleActuatorDeactivate(String actuatorUuid) {
+        actionsLifecycleSupport.deactivateActuator(actuatorUuid);
+        actuatorsGrid.setItems(dataSupport.getAllActuatorsModels());
     }
 
     private void handleUpdateActuator(ActuatorEditDialog dialog) {

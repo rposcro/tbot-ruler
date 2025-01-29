@@ -14,14 +14,14 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RestPatchClientCommand extends AbstractRestClientCommand {
+public class RestClientPatchCommand extends AbstractRestClientCommand {
     
     private String host;
     private String port;
     private String path;
 
     @Builder
-    public RestPatchClientCommand(
+    public RestClientPatchCommand(
         @NonNull String host,
         @NonNull String port,
         @NonNull String path,

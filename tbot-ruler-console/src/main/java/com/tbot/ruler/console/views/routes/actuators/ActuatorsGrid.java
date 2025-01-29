@@ -6,6 +6,6 @@ import com.tbot.ruler.console.views.components.EntityFilterableGrid;
 public class ActuatorsGrid extends EntityFilterableGrid<ActuatorModel> {
 
     public ActuatorsGrid() {
-        super(ActuatorModel.class, new String[] {"name", "reference", "actuatorUuid", "pluginName", "thingName"});
+        super(ActuatorModel.class, new String[] {"name", "reference", "actuatorUuid", "pluginName", "thingName", "active"});
     }
 }

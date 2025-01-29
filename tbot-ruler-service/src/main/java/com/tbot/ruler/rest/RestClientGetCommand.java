@@ -12,7 +12,7 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RestGetClientCommand extends AbstractRestClientCommand {
+public class RestClientGetCommand extends AbstractRestClientCommand {
     
     private String host;
     private String port;
@@ -21,7 +21,7 @@ public class RestGetClientCommand extends AbstractRestClientCommand {
     private Map<String, String> reqParams = Collections.emptyMap();
 
     @Builder
-    public RestGetClientCommand(
+    public RestClientGetCommand(
         @NonNull String host,
         @NonNull String port,
         @NonNull String path,

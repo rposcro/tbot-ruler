@@ -7,6 +7,7 @@ import com.tbot.ruler.broker.SynchronousMessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.broker.payload.RGBWColor;
+import com.tbot.ruler.controller.exceptions.BadRequestException;
 import com.tbot.ruler.controller.subject.payload.ActuatorStateUpdateRequest;
 import com.tbot.ruler.controller.subject.ActuatorsStateController;
 import com.tbot.ruler.controller.exceptions.ResourceNotFoundException;
@@ -98,7 +99,7 @@ public class ActuatorsStateControllerTest {
     @Test
     public void failsOnUnknownPayloadType() {
         final ActuatorStateUpdateRequest request = mockMessageRequest("Fake", null);
-        assertThrows(ResourceNotFoundException.class, () -> controller.updateActuatorState("actuator-uuid", request));
+        assertThrows(BadRequestException.class, () -> controller.updateActuatorState("actuator-uuid", request));
     }
 
     private ActuatorStateUpdateRequest mockMessageRequest(String payloadType, JsonNode payload) {

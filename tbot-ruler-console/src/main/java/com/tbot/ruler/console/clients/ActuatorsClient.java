@@ -31,4 +31,12 @@ public class ActuatorsClient extends AbstractApiClient {
     public void deleteActuator(String actuatorUuid) {
         executeApiFunction(() -> actuatorsAdminApi.deleteActuator(actuatorUuid).execute());
     }
+
+    public void activateActuator(String actuatorUuid) {
+        executeApiFunction(() -> actuatorsAdminApi.activateActuator(actuatorUuid).execute());
+    }
+
+    public void deactivateActuator(String actuatorUuid) {
+        executeApiFunction(() -> actuatorsAdminApi.deactivateActuator(actuatorUuid).execute());
+    }
 }

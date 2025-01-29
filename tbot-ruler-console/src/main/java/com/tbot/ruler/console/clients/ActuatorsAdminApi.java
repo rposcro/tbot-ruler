@@ -23,9 +23,15 @@ public interface ActuatorsAdminApi {
 
     @PATCH("admin/actuators/{actuatorUuid}")
     Call<ActuatorResponse> updateActuator(
-            @Path("actuatorUuid") String actuatorUuid,
-            @Body ActuatorUpdateRequest actuatorUpdateRequest);
+        @Path("actuatorUuid") String actuatorUuid,
+        @Body ActuatorUpdateRequest actuatorUpdateRequest);
 
     @DELETE("admin/actuators/{actuatorUuid}")
     Call<ActuatorResponse> deleteActuator(@Path("actuatorUuid") String actuatorUuid);
+
+    @PATCH("admin/actuators/{actuatorUuid}/lifecycle?action=ACTIVATE")
+    Call<ActuatorResponse> activateActuator(@Path("actuatorUuid") String actuatorUuid);
+
+    @PATCH("admin/actuators/{actuatorUuid}/lifecycle?action=DEACTIVATE")
+    Call<ActuatorResponse> deactivateActuator(@Path("actuatorUuid") String actuatorUuid);
 }

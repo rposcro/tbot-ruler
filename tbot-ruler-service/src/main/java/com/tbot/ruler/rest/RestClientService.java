@@ -3,8 +3,8 @@ package com.tbot.ruler.rest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.tbot.ruler.rest.RestGetClientCommand.RestGetCommandBuilder;
-import com.tbot.ruler.rest.RestPatchClientCommand.RestPatchCommandBuilder;
+import com.tbot.ruler.rest.RestClientGetCommand.RestClientGetCommandBuilder;
+import com.tbot.ruler.rest.RestClientPatchCommand.RestClientPatchCommandBuilder;
 
 @Service
 public class RestClientService {
@@ -16,15 +16,15 @@ public class RestClientService {
     @Value("${ruler.restService.retryCount:5}")
     private int retryCount;
 
-    public RestGetCommandBuilder builderForGet() {
-        return RestGetClientCommand.builder()
+    public RestClientGetCommandBuilder builderForGet() {
+        return RestClientGetCommand.builder()
             .connectionTimeout(connectionTimeout)
             .readTimeout(readTimeout)
             .retryCount(retryCount);
     }
 
-    public RestPatchCommandBuilder builderForPatch() {
-        return RestPatchClientCommand.builder()
+    public RestClientPatchCommandBuilder builderForPatch() {
+        return RestClientPatchCommand.builder()
             .connectionTimeout(connectionTimeout)
             .readTimeout(readTimeout)
             .retryCount(retryCount);
