@@ -82,6 +82,7 @@ public class ActuatorActionsSupport extends AbstractActionsSupport {
         return handlingExceptions(() -> {
             ActuatorUpdateRequest request = ActuatorUpdateRequest.builder()
                     .name(dialog.getName())
+                    .reference(dialog.getReference())
                     .description(dialog.getDescription())
                     .configuration(dialog.getConfiguration())
                     .thingUuid(dialog.getThing().getThingUuid())

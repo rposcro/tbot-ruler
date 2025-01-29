@@ -49,6 +49,13 @@ public class ActuatorsAdminController extends AbstractController {
                 .toList());
     }
 
+    @GetMapping("/{actuatorUuid}")
+    public ResponseEntity<ActuatorResponse> getActuator(@PathVariable final String actuatorUuid) {
+        return ok(actuatorsRepository.findByUuid(actuatorUuid).stream()
+                .map(this::toResponse)
+                .toList());
+    }
+
     @PostMapping
     public ResponseEntity<ActuatorResponse> createActuator(@RequestBody ActuatorCreateRequest actuatorCreateRequest) {
         PluginEntity pluginEntity = subjectsAccessor.findPlugin(actuatorCreateRequest.getPluginUuid());
@@ -73,6 +80,7 @@ public class ActuatorsAdminController extends AbstractController {
         ActuatorEntity actuatorEntity = subjectsAccessor.findActuator(actuatorUuid);
         ThingEntity thingEntity = subjectsAccessor.findThing(actuatorUpdateRequest.getThingUuid());
         actuatorEntity.setName(actuatorUpdateRequest.getName());
+        actuatorEntity.setReference(actuatorUpdateRequest.getReference());
         actuatorEntity.setDescription(actuatorUpdateRequest.getDescription());
         actuatorEntity.setConfiguration(actuatorUpdateRequest.getConfiguration());
         actuatorEntity.setThingId(thingEntity.getThingId());
