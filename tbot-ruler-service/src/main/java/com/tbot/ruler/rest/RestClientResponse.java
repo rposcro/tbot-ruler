@@ -4,7 +4,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 
 @AllArgsConstructor
-public class RestResponse<T> {
+public class RestClientResponse<T> {
 
     private ResponseEntity<T> entity;
 

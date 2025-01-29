@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 
 @Slf4j
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class AbstractRestCommand {
+public class AbstractRestClientCommand {
 
     private int connectionTimeout;
     private int readTimeout;
@@ -28,7 +28,7 @@ public class AbstractRestCommand {
             .build();
     }
 
-    protected RestResponse executeRequest(Supplier<RestResponse> requestExecutor) {
+    protected RestClientResponse executeRequest(Supplier<RestClientResponse> requestExecutor) {
         int retries = 0;
         while (retries++ < retryCount) {
             try {

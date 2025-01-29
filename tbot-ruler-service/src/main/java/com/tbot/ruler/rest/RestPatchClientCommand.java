@@ -1,10 +1,12 @@
 package com.tbot.ruler.rest;
 
-import java.util.Collections;
 import java.util.Map;
 
 import lombok.NonNull;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -12,16 +14,14 @@ import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class RestGetCommand extends AbstractRestCommand {
+public class RestPatchClientCommand extends AbstractRestClientCommand {
     
     private String host;
     private String port;
     private String path;
 
-    private Map<String, String> reqParams = Collections.emptyMap();
-
     @Builder
-    public RestGetCommand(
+    public RestPatchClientCommand(
         @NonNull String host,
         @NonNull String port,
         @NonNull String path,
@@ -35,26 +35,29 @@ public class RestGetCommand extends AbstractRestCommand {
         this.path = path;
     }
 
-    public RestResponse<String> sendGet() {
-        return sendGet(String.class);
-    }
-
-    public <T> RestResponse<T> sendGet(Class<T> responseType) {
-        String uri = uri();
-        log.debug("Requested get for: " + uri);
+    public RestClientResponse sendPatch(Map<String, String> reqParams) {
+        String uri = uri(toHttpHeaders(reqParams));
+        log.debug("Requested patch for: " + uri);
         return executeRequest(() -> {
             RestTemplate restTmpl = newRestTemplate();
-            ResponseEntity<T> entity = restTmpl.getForEntity(uri, responseType);
-            return new RestResponse(entity);
+            ResponseEntity<String> response = restTmpl.exchange(uri, HttpMethod.PATCH, null, String.class);
+            return new RestClientResponse(response);
         });
     }
 
-    private String uri() {
+    private HttpHeaders toHttpHeaders(Map<String, String> params) {
+        HttpHeaders headers = new HttpHeaders();
+        params.forEach((key, value) -> headers.add(key, value));
+        return headers;
+    }
+
+    private String uri(MultiValueMap<String, String> reqParams) {
         return UriComponentsBuilder
                 .fromHttpUrl(host)
                 .port(port)
                 .path(path)
-                .buildAndExpand(reqParams)
+                .queryParams(reqParams)
+                .build()
                 .toUriString();
     }
 }

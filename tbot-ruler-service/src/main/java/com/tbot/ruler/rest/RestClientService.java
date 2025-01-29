@@ -3,11 +3,11 @@ package com.tbot.ruler.rest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.tbot.ruler.rest.RestGetCommand.RestGetCommandBuilder;
-import com.tbot.ruler.rest.RestPatchCommand.RestPatchCommandBuilder;
+import com.tbot.ruler.rest.RestGetClientCommand.RestGetCommandBuilder;
+import com.tbot.ruler.rest.RestPatchClientCommand.RestPatchCommandBuilder;
 
 @Service
-public class RestService {
+public class RestClientService {
 
     @Value("${ruler.restService.connectionTimeout:5000}")
     private int connectionTimeout;
@@ -17,14 +17,14 @@ public class RestService {
     private int retryCount;
 
     public RestGetCommandBuilder builderForGet() {
-        return RestGetCommand.builder()
+        return RestGetClientCommand.builder()
             .connectionTimeout(connectionTimeout)
             .readTimeout(readTimeout)
             .retryCount(retryCount);
     }
 
     public RestPatchCommandBuilder builderForPatch() {
-        return RestPatchCommand.builder()
+        return RestPatchClientCommand.builder()
             .connectionTimeout(connectionTimeout)
             .readTimeout(readTimeout)
             .retryCount(retryCount);
