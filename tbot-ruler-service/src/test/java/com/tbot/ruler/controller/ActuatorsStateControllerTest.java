@@ -9,7 +9,7 @@ import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.controller.subject.payload.ActuatorStateUpdateRequest;
 import com.tbot.ruler.controller.subject.ActuatorsStateController;
-import com.tbot.ruler.exceptions.ServiceRequestException;
+import com.tbot.ruler.controller.exceptions.ResourceNotFoundException;
 import com.tbot.ruler.service.things.ActuatorsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -98,7 +98,7 @@ public class ActuatorsStateControllerTest {
     @Test
     public void failsOnUnknownPayloadType() {
         final ActuatorStateUpdateRequest request = mockMessageRequest("Fake", null);
-        assertThrows(ServiceRequestException.class, () -> controller.updateActuatorState("actuator-uuid", request));
+        assertThrows(ResourceNotFoundException.class, () -> controller.updateActuatorState("actuator-uuid", request));
     }
 
     private ActuatorStateUpdateRequest mockMessageRequest(String payloadType, JsonNode payload) {

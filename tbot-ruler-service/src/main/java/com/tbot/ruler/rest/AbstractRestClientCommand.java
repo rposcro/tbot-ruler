@@ -1,6 +1,6 @@
 package com.tbot.ruler.rest;
 
-import com.tbot.ruler.exceptions.RestRequestException;
+import com.tbot.ruler.exceptions.RestClientRequestException;
 import java.time.Duration;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -38,6 +38,6 @@ public class AbstractRestClientCommand {
             }
         }
 
-        throw new RestRequestException("Failed to execute rest request!");
+        throw new RestClientRequestException("Failed to execute rest request!");
     }
 }

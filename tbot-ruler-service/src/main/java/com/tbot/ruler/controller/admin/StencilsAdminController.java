@@ -4,7 +4,7 @@ import com.tbot.ruler.controller.AbstractController;
 import com.tbot.ruler.controller.admin.payload.StencilCreateRequest;
 import com.tbot.ruler.controller.admin.payload.StencilResponse;
 import com.tbot.ruler.controller.admin.payload.StencilUpdateRequest;
-import com.tbot.ruler.exceptions.ServiceRequestException;
+import com.tbot.ruler.controller.exceptions.ResourceNotFoundException;
 import com.tbot.ruler.persistance.StencilsRepository;
 import com.tbot.ruler.persistance.model.StencilEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +45,7 @@ public class StencilsAdminController extends AbstractController {
     @GetMapping("/owners/{owner}/types/{type}")
     public ResponseEntity<StencilResponse> getStencil(@PathVariable("owner") String owner, @PathVariable("type") String type) {
         StencilEntity stencilEntity = stencilsRepository.findByOwnerAndType(owner, type)
-            .orElseThrow(() -> new ServiceRequestException(format("Stencil %s-%s not found!", owner, type)));
+            .orElseThrow(() -> new ResourceNotFoundException(format("Stencil %s-%s not found!", owner, type)));
         return ok(toResponse(stencilEntity));
     }
 

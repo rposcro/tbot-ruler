@@ -1,12 +1,13 @@
 package com.tbot.ruler.controller.advisor;
 
 import com.tbot.ruler.controller.advisor.payload.ErrorResponse;
+import com.tbot.ruler.controller.exceptions.ControllerException;
 import com.tbot.ruler.exceptions.LifecycleException;
 import com.tbot.ruler.exceptions.MessageException;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.exceptions.MessageUnsupportedException;
 import com.tbot.ruler.exceptions.ServiceException;
-import com.tbot.ruler.exceptions.ServiceRequestException;
+import com.tbot.ruler.controller.exceptions.ResourceNotFoundException;
 import com.tbot.ruler.exceptions.ServiceTimeoutException;
 import com.tbot.ruler.exceptions.ServiceUnavailableException;
 import lombok.extern.slf4j.Slf4j;
@@ -15,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
+
+import static java.lang.String.format;
 
 @Slf4j
 @RestControllerAdvice
@@ -105,15 +108,15 @@ public class ControllerExceptionAdvisor extends ResponseEntityExceptionHandler {
                 );
     }
 
-    @ExceptionHandler(ServiceRequestException.class)
-    public ResponseEntity<ErrorResponse> handleServiceRequestException(ServiceRequestException ex) {
-        log.warn("Bad service request!", ex);
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                .header("Content-Type", "application/json")
-                .body(ErrorResponse.builder()
-                        .message("Bad service request! " + ex.getMessage())
-                        .build()
-                );
+    @ExceptionHandler(ControllerException.class)
+    public ResponseEntity<ErrorResponse> handleControllerException(ControllerException ex) {
+        log.warn(format("Controller exception! Status: %s", ex.getHttpStatus()), ex);
+        return ResponseEntity.status(ex.getHttpStatus())
+            .header("Content-Type", "application/json")
+            .body(ErrorResponse.builder()
+                .message(format("Controller request failed! Status: %s, message: %s", ex.getHttpStatus(), ex.getMessage()))
+                .build()
+            );
     }
 
     @ExceptionHandler(Exception.class)

@@ -8,9 +8,10 @@ import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.broker.payload.Trigger;
 import com.tbot.ruler.controller.AbstractController;
+import com.tbot.ruler.controller.exceptions.BadRequestException;
 import com.tbot.ruler.controller.subject.payload.ActuatorStatePayloadType;
 import com.tbot.ruler.controller.subject.payload.ActuatorStateUpdateRequest;
-import com.tbot.ruler.exceptions.ServiceRequestException;
+import com.tbot.ruler.controller.exceptions.ResourceNotFoundException;
 import com.tbot.ruler.service.things.ActuatorsService;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
 import lombok.extern.slf4j.Slf4j;
@@ -71,7 +72,7 @@ public class ActuatorsStateController extends AbstractController {
 
     private Message toMessage(String actuatorUuid, ActuatorStateUpdateRequest stateUpdateRequest) {
         ActuatorStatePayloadType payloadType = ActuatorStatePayloadType.fromString(stateUpdateRequest.getPayloadType())
-                .orElseThrow(() -> new ServiceRequestException("Unknown payload type " + stateUpdateRequest.getPayloadType()));
+                .orElseThrow(() -> new BadRequestException("Unknown payload type %s", stateUpdateRequest.getPayloadType()));
 
         try {
             Object payload = switch (payloadType) {
@@ -86,7 +87,7 @@ public class ActuatorsStateController extends AbstractController {
                     .payload(payload)
                     .build();
         } catch(IOException e) {
-            throw new ServiceRequestException(String.format("Invalid message payload type %s for content %s", payloadType, stateUpdateRequest.getPayload()));
+            throw new ResourceNotFoundException(String.format("Invalid message payload type %s for content %s", payloadType, stateUpdateRequest.getPayload()));
         }
     }
 }
