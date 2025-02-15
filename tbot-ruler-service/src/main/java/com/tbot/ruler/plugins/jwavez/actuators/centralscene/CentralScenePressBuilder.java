@@ -1,4 +1,4 @@
-package com.tbot.ruler.plugins.jwavez.actuators.sceneactivation;
+package com.tbot.ruler.plugins.jwavez.actuators.centralscene;
 
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
@@ -11,17 +11,18 @@ import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
-public class SceneActivationBuilder extends JWaveZActuatorBuilder {
+public class CentralScenePressBuilder extends JWaveZActuatorBuilder {
 
-    private static final String REFERENCE = "scene-activation";
+    private static final String REFERENCE = "central-scene-press";
 
-    public SceneActivationBuilder(JWaveZPluginContext pluginContext) {
+    public CentralScenePressBuilder(JWaveZPluginContext pluginContext) {
         super(REFERENCE, pluginContext);
     }
 
     @Override
     public BasicSenderActuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
-        SceneActivationConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SceneActivationConfiguration.class);
+        CentralScenePressConfiguration configuration =
+            parseConfiguration(actuatorEntity.getConfiguration(), CentralScenePressConfiguration.class);
         Message toggleMessage = Message.builder()
             .senderId(actuatorEntity.getActuatorUuid())
             .payload(BinaryStateClaim.TOGGLE)
@@ -34,7 +35,7 @@ public class SceneActivationBuilder extends JWaveZActuatorBuilder {
             .messageSupplier(() -> toggleMessage)
             .build();
         pluginContext.getCommandRouteRegistry().registerListener(
-                SceneActivationCommandListener.builder()
+                CentralScenePressCommandListener.builder()
                         .actuator(actuator)
                         .sourceNodeId(configuration.getNodeId())
                         .sceneId(configuration.getSceneId())

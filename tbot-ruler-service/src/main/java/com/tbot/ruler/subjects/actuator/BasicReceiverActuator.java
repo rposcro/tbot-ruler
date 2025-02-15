@@ -13,12 +13,12 @@ import java.util.Collection;
 import java.util.Optional;
 
 @Getter
-public class BasicActuator extends AbstractSubject implements Actuator {
+public class BasicReceiverActuator extends AbstractSubject implements Actuator {
 
     private final Optional<MessageReceiver> messageReceiver;
 
     @Builder
-    public BasicActuator(
+    public BasicReceiverActuator(
         @NonNull String uuid,
         @NonNull String name,
         String description,

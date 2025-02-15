@@ -4,6 +4,7 @@ import com.rposcro.jwavez.core.commands.supported.sceneactivation.SceneActivatio
 import com.rposcro.jwavez.core.commands.types.SceneActivationCommandType;
 import com.tbot.ruler.plugins.jwavez.controller.AbstractCommandListener;
 import com.tbot.ruler.plugins.jwavez.controller.CommandFilter;
+import com.tbot.ruler.subjects.actuator.BasicSenderActuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
@@ -12,11 +13,11 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class SceneActivationCommandListener extends AbstractCommandListener<SceneActivationSet> {
 
-    private final SceneActivationActuator actuator;
+    private final BasicSenderActuator actuator;
     private final CommandFilter commandFilter;
 
     @Builder
-    public SceneActivationCommandListener(SceneActivationActuator actuator, int sourceNodeId, int sceneId) {
+    public SceneActivationCommandListener(BasicSenderActuator actuator, int sourceNodeId, int sceneId) {
         super(SceneActivationCommandType.SCENE_ACTIVATION_SET, actuator.getUuid());
         this.actuator = actuator;
         this.commandFilter = command -> command.getSourceNodeId().getId() == (byte) sourceNodeId
@@ -26,6 +27,6 @@ public class SceneActivationCommandListener extends AbstractCommandListener<Scen
     @Override
     public void handleCommand(SceneActivationSet command) {
         log.debug("Plugin Jwz: Handling scene activation set command");
-        actuator.publishMessage();
+        actuator.sendMessage();
     }
 }

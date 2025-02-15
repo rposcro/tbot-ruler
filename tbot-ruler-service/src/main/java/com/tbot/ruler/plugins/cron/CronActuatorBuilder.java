@@ -7,7 +7,7 @@ import com.tbot.ruler.jobs.Job;
 import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.subjects.actuator.BasicActuator;
+import com.tbot.ruler.subjects.actuator.BasicReceiverActuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Getter;
 
@@ -21,7 +21,7 @@ public class CronActuatorBuilder {
         CronActuatorConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), CronActuatorConfiguration.class);
         TimeZone timeZone = TimeZone.getTimeZone(configuration.getTimeZone());
 
-        return BasicActuator.builder()
+        return BasicReceiverActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())

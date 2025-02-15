@@ -10,7 +10,6 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
-import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class SwitchColorActuator extends AbstractActuator implements Actuator {
+public class SwitchColorActuator extends AbstractActuator {
 
     private final static String PERSISTENCE_KEY = "rgbw";
 

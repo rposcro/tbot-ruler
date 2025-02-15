@@ -5,7 +5,7 @@ import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.deputy.DeputyActuatorBuilder;
 import com.tbot.ruler.plugins.deputy.DeputyPluginContext;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.subjects.actuator.BasicActuator;
+import com.tbot.ruler.subjects.actuator.BasicReceiverActuator;
 
 public class HealthCheckActuatorBuilder extends DeputyActuatorBuilder {
 
@@ -16,7 +16,7 @@ public class HealthCheckActuatorBuilder extends DeputyActuatorBuilder {
     }
 
     public Actuator buildActuator(ActuatorEntity actuatorEntity, DeputyPluginContext deputyPluginContext) {
-        return BasicActuator.builder()
+        return BasicReceiverActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())
