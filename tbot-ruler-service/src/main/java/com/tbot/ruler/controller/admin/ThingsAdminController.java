@@ -49,7 +49,7 @@ public class ThingsAdminController extends AbstractController {
                 .description(thingCreateRequest.getDescription())
                 .configuration(thingCreateRequest.getConfiguration())
                 .build();
-        thingEntity = thingsRepository.save(thingEntity);
+        thingEntity = thingsManipulator.createThing(thingEntity);
         return ok(toResponse(thingEntity));
     }
 

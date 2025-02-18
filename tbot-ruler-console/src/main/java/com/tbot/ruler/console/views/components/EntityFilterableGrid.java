@@ -140,7 +140,9 @@ public class EntityFilterableGrid<T> extends Grid<T> {
 
     private void selectionChanged(SelectionEvent<Grid<T>, T> event) {
         boolean enabled = !event.getAllSelectedItems().isEmpty();
-        contextMenuItems.stream()
+        if (contextMenuItems != null) {
+            contextMenuItems.stream()
                 .forEach(item -> item.setEnabled(enabled));
+        }
     }
 }

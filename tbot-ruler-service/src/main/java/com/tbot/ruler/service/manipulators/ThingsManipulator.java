@@ -4,6 +4,7 @@ import com.tbot.ruler.exceptions.LifecycleException;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.persistance.model.ThingEntity;
+import com.tbot.ruler.service.lifecycle.ThingsLifecycleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,6 +16,15 @@ public class ThingsManipulator {
 
     @Autowired
     private ActuatorsRepository actuatorsRepository;
+
+    @Autowired
+    private ThingsLifecycleService thingsLifecycleService;
+
+    public ThingEntity createThing(ThingEntity thingEntity) {
+        thingEntity = thingsRepository.save(thingEntity);
+        thingsLifecycleService.activateThing(thingEntity);
+        return thingEntity;
+    }
 
     public void removeThing(ThingEntity thingEntity) {
         assertConsistency(thingEntity);
