@@ -4,7 +4,6 @@ import com.rposcro.jwavez.core.commands.supported.switchcolor.SwitchColorReport;
 import com.rposcro.jwavez.core.commands.types.SwitchColorCommandType;
 import com.rposcro.jwavez.core.model.ColorComponent;
 import com.tbot.ruler.broker.payload.RGBWColor;
-import com.tbot.ruler.plugins.jwavez.actuators.updatecolor.ColorMode;
 import com.tbot.ruler.plugins.jwavez.controller.AbstractCommandListener;
 import com.tbot.ruler.plugins.jwavez.controller.CommandFilter;
 import lombok.Builder;

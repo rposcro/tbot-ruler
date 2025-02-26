@@ -52,7 +52,7 @@ public class SwitchColorActuator extends AbstractActuator {
     public void acceptMessage(Message message) {
         try {
             RGBWColor payload = message.getPayloadAs(RGBWColor.class);
-            log.debug(String.format("Color switch requested: r%s g%s b%s w%s", payload.getRed(), payload.getGreen(), payload.getBlue(), payload.getWhite()));
+            log.debug(String.format("Color switch requested by actuator %s: r%s g%s b%s w%s", this.getUuid(), payload.getRed(), payload.getGreen(), payload.getBlue(), payload.getWhite()));
             ZWaveControlledCommand command = buildCommand(payload);
             commandSender.enqueueCommand(NodeId.forId(configuration.getNodeId()), command);
             actuatorState.updatePayload(payload);
@@ -73,11 +73,11 @@ public class SwitchColorActuator extends AbstractActuator {
     private ZWaveControlledCommand buildCommand(RGBWColor payload) {
         switch(colorMode) {
             case RGB:
-                return commandBuilder.v1().buildSetRGBCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) configuration.getSwitchDuration());
+                return commandBuilder.v2().buildSetRGBCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) configuration.getSwitchDuration());
             case RGBW_COLD:
-                return commandBuilder.v1().buildSetColdRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
+                return commandBuilder.v2().buildSetColdRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
             case RGBW_WARM:
-                return commandBuilder.v1().buildSetWarmRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
+                return commandBuilder.v2().buildSetWarmRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
             default:
                 throw new MessageProcessingException("Unknown ColorMode never seen before!");
         }

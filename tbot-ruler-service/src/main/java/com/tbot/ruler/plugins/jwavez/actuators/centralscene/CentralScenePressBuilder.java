@@ -1,5 +1,6 @@
 package com.tbot.ruler.plugins.jwavez.actuators.centralscene;
 
+import com.rposcro.jwavez.core.model.CentralSceneKeyAttribute;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
@@ -36,10 +37,11 @@ public class CentralScenePressBuilder extends JWaveZActuatorBuilder {
             .build();
         pluginContext.getCommandRouteRegistry().registerListener(
                 CentralScenePressCommandListener.builder()
-                        .actuator(actuator)
-                        .sourceNodeId(configuration.getNodeId())
-                        .sceneId(configuration.getSceneId())
-                        .build());
+                    .actuator(actuator)
+                    .sourceNodeId(configuration.getNodeId())
+                    .sceneId(configuration.getSceneId())
+                    .keyAttribute(CentralSceneKeyAttribute.KEY_PRESSED)
+                    .build());
         return actuator;
     }
 
