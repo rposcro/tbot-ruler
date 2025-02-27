@@ -10,20 +10,14 @@ import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
-import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
 import lombok.Builder;
-import lombok.Getter;
 import lombok.NonNull;
 
 import static com.tbot.ruler.plugins.StatesUtil.determineOnOffState;
 
-@Getter
-public class SwitchMultilevelActuator implements Actuator {
-
-    private final String uuid;
-    private final String name;
-    private final String description;
+public class SwitchMultilevelActuator extends AbstractActuator {
 
     private final byte switchDuration;
     private final NodeId nodeId;
@@ -42,9 +36,7 @@ public class SwitchMultilevelActuator implements Actuator {
             @NonNull NodeId nodeId,
             @NonNull CommandSender commandSender,
             @NonNull JwzApplicationSupport applicationSupport) {
-        this.uuid = uuid;
-        this.name = name;
-        this.description = description;
+        super(uuid, name, description);
         this.switchDuration = switchDuration;
         this.nodeId = nodeId;
         this.commandSender = commandSender;
@@ -61,18 +53,22 @@ public class SwitchMultilevelActuator implements Actuator {
 
     @Override
     public void acceptMessage(Message message) {
+        consumeMessage(message, OnOffState.class, this::consumeOnOffMessage);
+    }
+
+    void acceptCommand(SwitchMultilevelReport report) {
+        this.actuatorState.updatePayload(OnOffState.of(report.getCurrentValue() != 0));
+    }
+
+    private void consumeOnOffMessage(Message message) {
         try {
             OnOffState updatedState = determineOnOffState(message, actuatorState.getPayload());
             ZWaveControlledCommand command = updatedState.isOn() ? commandBuilder.v2().buildSetMaximumCommand(switchDuration)
-                    : commandBuilder.v2().buildSetMinimumCommand(switchDuration);
+                : commandBuilder.v2().buildSetMinimumCommand(switchDuration);
             commandSender.enqueueCommand(nodeId, command);
             actuatorState.updatePayload(updatedState);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }
-    }
-
-    public void acceptCommand(SwitchMultilevelReport report) {
-        this.actuatorState.updatePayload(OnOffState.of(report.getCurrentValue() != 0));
     }
 }

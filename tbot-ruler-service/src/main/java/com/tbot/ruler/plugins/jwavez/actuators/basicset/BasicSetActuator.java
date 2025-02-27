@@ -6,13 +6,14 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
 import com.tbot.ruler.subjects.AbstractSubject;
+import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
 @Getter
-public class BasicSetActuator extends AbstractSubject implements Actuator {
+public class BasicSetActuator extends AbstractActuator {
 
     private final MessagePublisher messagePublisher;
     private final BasicSetValueMode valueMode;

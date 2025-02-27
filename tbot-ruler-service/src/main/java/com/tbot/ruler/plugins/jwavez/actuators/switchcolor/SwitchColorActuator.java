@@ -50,6 +50,19 @@ public class SwitchColorActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
+        consumeMessage(message, RGBWColor.class, this::consumeRGBWColorMessage);
+    }
+
+    @Override
+    public ActuatorState getState() {
+        return actuatorState;
+    };
+
+    protected void setState(RGBWColor color) {
+        this.actuatorState.updatePayload(color);
+    }
+
+    private void consumeRGBWColorMessage(Message message) {
         try {
             RGBWColor payload = message.getPayloadAs(RGBWColor.class);
             log.debug(String.format("Color switch requested by actuator %s: r%s g%s b%s w%s", this.getUuid(), payload.getRed(), payload.getGreen(), payload.getBlue(), payload.getWhite()));
@@ -59,15 +72,6 @@ public class SwitchColorActuator extends AbstractActuator {
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }
-    }
-
-    @Override
-    public ActuatorState getState() {
-        return actuatorState;
-    };
-
-    public void setState(RGBWColor color) {
-        this.actuatorState.updatePayload(color);
     }
 
     private ZWaveControlledCommand buildCommand(RGBWColor payload) {

@@ -40,6 +40,10 @@ public class ThingMuteActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
+        consumeMessage(message, OnOffState.class, this::consumeOnOffMessage);
+    }
+
+    private void consumeOnOffMessage(Message message) {
         OnOffState requestedState = message.getPayloadAs(OnOffState.class);
         state.updatePayload(requestedState);
 

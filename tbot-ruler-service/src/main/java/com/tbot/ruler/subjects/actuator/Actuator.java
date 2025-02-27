@@ -24,4 +24,8 @@ public interface Actuator extends Subject, MessageReceiver, MessageSender {
                 .actuatorUuid(getUuid())
                 .build();
     };
+
+    default boolean isActive() {
+        return true;
+    }
 }

@@ -43,6 +43,10 @@ public class RestySenderActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
+        consumeMessage(message, OnOffState.class, this::consumeOnOffMessage);
+    }
+
+    private void consumeOnOffMessage(Message message) {
         OnOffState onOffState = message.getPayloadAs(OnOffState.class);
 
         if (!onOffState.isOn()) {
@@ -72,7 +76,7 @@ public class RestySenderActuator extends AbstractActuator {
         }
     }
 
-    public String renderRequestBody() {
+    private String renderRequestBody() {
         String body = restySenderConfiguration.getBody();
         body = body.replaceAll("\\{date\\}", new Date().toString());
         body = UriUtils.encodeQuery(body, "UTF-8");

@@ -3,7 +3,6 @@ package com.tbot.ruler.subjects.actuator;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.jobs.JobBundle;
-import com.tbot.ruler.subjects.AbstractSubject;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -13,7 +12,7 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 @Getter
-public class BasicSenderActuator extends AbstractSubject implements Actuator {
+public class BasicSenderActuator extends AbstractActuator {
 
     private final MessagePublisher messagePublisher;
     private final Supplier<Message> messageSupplier;

@@ -8,17 +8,16 @@ import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
-import com.tbot.ruler.subjects.AbstractSubject;
+import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-public class SwitchBinaryActuator extends AbstractSubject implements Actuator {
+public class SwitchBinaryActuator extends AbstractActuator {
 
     private final static byte SOURCE_ENDPOINT_ID = 0;
 
@@ -49,6 +48,14 @@ public class SwitchBinaryActuator extends AbstractSubject implements Actuator {
 
     @Override
     public void acceptMessage(Message message) {
+        consumeMessage(message, OnOffState.class, this::consumeOnOffMessage);
+    }
+
+    public void setState(OnOffState onOffState) {
+        state.updatePayload(onOffState);
+    }
+
+    private void consumeOnOffMessage(Message message) {
         try {
             OnOffState payload = message.getPayloadAs(OnOffState.class);
             setState(payload);
@@ -61,13 +68,5 @@ public class SwitchBinaryActuator extends AbstractSubject implements Actuator {
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }
-    }
-
-    @Override
-    public void acceptPublicationReport(MessagePublicationReport publicationReport) {
-    }
-
-    public void setState(OnOffState onOffState) {
-        state.updatePayload(onOffState);
     }
 }

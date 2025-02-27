@@ -39,14 +39,11 @@ public class SignalerActuator extends AbstractActuator {
     }
 
     @Override
-    public void acceptMessage(Message message) {
-        if (message.isPayloadAs(Trigger.class)) {
-            messagePublisher.publishMessage(signalMessage);
-        } else {
-            log.info("Actuator {} ignored message {} from {}",
-                getUuid(),
-                message.getPayload().getClass().getSimpleName(),
-                message.getSenderId());
-        }
+    public void acceptMessage(Message receivedMessage) {
+        consumeMessage(receivedMessage, Trigger.class, message -> consumeTriggerMessage(message));
+    }
+
+    private void consumeTriggerMessage(Message message) {
+        messagePublisher.publishMessage(signalMessage);
     }
 }
