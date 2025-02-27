@@ -31,11 +31,15 @@ public class SubjectStateService {
     public <T> SubjectState<T> recoverState(String subjectUuid, Class<T> payloadClass) {
         try {
             SubjectStateEntity stateEntity = subjectStatesRepository.findBySubjectUuid(subjectUuid).orElse(null);
-            T payload = objectMapper.readerFor(payloadClass).readValue(stateEntity.getPayload());
-            return SubjectState.<T>builder()
+            if (stateEntity != null) {
+                T payload = objectMapper.readerFor(payloadClass).readValue(stateEntity.getPayload());
+                return SubjectState.<T>builder()
                     .subjectUuid(subjectUuid)
                     .payload(payload)
                     .build();
+            } else {
+                return null;
+            }
         } catch(IOException e) {
             log.warn("Failed to recover state for subject {}", subjectUuid);
             return null;

@@ -29,7 +29,7 @@ public class ThingMuteActuator extends AbstractActuator {
         this.rulerThingContext = rulerThingContext;
         this.invertStates = configuration.isInvertStates();
         this.state = ActuatorState.<OnOffState>builder().actuatorUuid(uuid).build();
-        refreshState();
+        initState();
     }
 
     @Override
@@ -45,11 +45,23 @@ public class ThingMuteActuator extends AbstractActuator {
 
         boolean isMute = invertStates ^ requestedState.isOn();
         rulerThingContext.getRulerThingAgent().setOnMute(isMute);
+        rulerThingContext.getSubjectStateService().persistState(state);
         log.info("Thing {} onMute flag changed to {}", rulerThingContext.getThingUuid(), isMute);
     }
 
     private void refreshState() {
         this.state.updatePayload(
                 OnOffState.of(invertStates ^ rulerThingContext.getRulerThingAgent().isOnMute()));
+    }
+
+    private void initState() {
+        ActuatorState<OnOffState> persistedState = rulerThingContext.getSubjectStateService()
+            .recoverActuatorState(getUuid(), OnOffState.class);
+        if (persistedState != null) {
+            state.updatePayload(persistedState.getPayload());
+            rulerThingContext.getRulerThingAgent().setOnMute(invertStates ^ persistedState.getPayload().isOn());
+        } else {
+            refreshState();
+        }
     }
 }

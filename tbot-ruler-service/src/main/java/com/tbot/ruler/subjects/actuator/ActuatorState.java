@@ -7,8 +7,8 @@ import lombok.Getter;
 @Builder
 public final class ActuatorState<T> {
 
-    String actuatorUuid;
-    T payload;
+    private String actuatorUuid;
+    private T payload;
 
     public void updatePayload(T payload) {
         this.payload = payload;

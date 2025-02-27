@@ -9,7 +9,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Set;
+import static com.rposcro.jwavez.core.model.CentralSceneKeyAttribute.KEY_HELD_DOWN;
+import static com.rposcro.jwavez.core.model.CentralSceneKeyAttribute.KEY_RELEASED;
 
 @Slf4j
 @Getter
@@ -21,18 +22,19 @@ public class CentralSceneHoldCommandListener extends AbstractCommandListener<Cen
     @Builder
     public CentralSceneHoldCommandListener(CentralSceneHoldActuator actuator, int sourceNodeId, int sceneId) {
         super(CentralSceneCommandType.CENTRAL_SCENE_NOTIFICATION, actuator.getUuid());
-        Set<Byte> keyAttributes = Set.of(
-            CentralSceneKeyAttribute.KEY_HELD_DOWN.getCode(), CentralSceneKeyAttribute.KEY_RELEASED.getCode());
         this.actuator = actuator;
-        this.commandFilter = command ->
-                command.getSourceNodeId().getId() == (byte) sourceNodeId
-                && ((CentralSceneNotification) command).getSceneNumber() == (short) sceneId
-                && keyAttributes.contains(((CentralSceneNotification) command).getKeyAttributes());
+        this.commandFilter = command -> {
+            CentralSceneNotification notification = (CentralSceneNotification) command;
+            short keyAttributes = notification.getKeyAttributes();
+            return notification.getSourceNodeId().getId() == (byte) sourceNodeId
+                && notification.getSceneNumber() == (short) sceneId
+                && (keyAttributes == KEY_HELD_DOWN.getCode() || keyAttributes == KEY_RELEASED.getCode());
+        };
     }
 
     @Override
     public void handleCommand(CentralSceneNotification command) {
-        log.debug("Plugin Jwz: Handling central scene press notification command");
+        log.debug("Plugin Jwz: Handling central scene hold notification command");
         CentralSceneKeyAttribute keyAttribute = CentralSceneKeyAttribute.ofCode(
             (byte) command.getKeyAttributes());
         actuator.handleCommandKey(keyAttribute);
