@@ -2,7 +2,6 @@ package com.tbot.ruler.plugins.resty;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.ghost.GhostActuatorBuilder;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.plugin.Plugin;
@@ -11,6 +10,7 @@ import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -45,6 +45,11 @@ public class RestyPlugin extends AbstractSubject implements Plugin {
             throw new PluginException("Unknown builder reference " + reference);
         }
         builder.destroyActuator(actuator);
+    }
+
+    @Override
+    public List<String> getSupportedActuatorReferences() {
+        return actuatorsBuilders.keySet().stream().collect(Collectors.toList());
     }
 
     @Override

@@ -10,6 +10,7 @@ import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Builder;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -37,6 +38,11 @@ public class AgentPlugin extends AbstractSubject implements Plugin {
             throw new PluginException("Unknown builder reference " + reference);
         }
         builder.destroyActuator(actuator);
+    }
+
+    @Override
+    public List<String> getSupportedActuatorReferences() {
+        return buildersMap.keySet().stream().collect(Collectors.toList());
     }
 
     private Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {

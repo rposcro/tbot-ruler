@@ -7,6 +7,7 @@ import com.tbot.ruler.controller.admin.payload.PluginUpdateRequest;
 import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.service.StructureService;
+import com.tbot.ruler.service.lifecycle.PluginsLifecycleService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 
@@ -35,6 +37,8 @@ public class PluginsAdminController extends AbstractController {
 
     @Autowired
     private PluginsRepository pluginsRepository;
+    @Autowired
+    private PluginsLifecycleService pluginsLifecycleService;
 
     @GetMapping
     public ResponseEntity<List<PluginResponse>> getAllPlugins() {
@@ -81,11 +85,16 @@ public class PluginsAdminController extends AbstractController {
     }
 
     private PluginResponse toResponse(PluginEntity entity) {
+        List<String> supportedActuatorReferences = pluginsLifecycleService.getPluginById(entity.getPluginId())
+            .getSupportedActuatorReferences();
+        supportedActuatorReferences.sort(Comparator.naturalOrder());
+
         return PluginResponse.builder()
                 .pluginUuid(entity.getPluginUuid())
                 .name(entity.getName())
                 .factoryClass(entity.getFactoryClass())
                 .configuration(entity.getConfiguration())
+                .supportedActuatorReferences(supportedActuatorReferences)
                 .build();
     }
 }

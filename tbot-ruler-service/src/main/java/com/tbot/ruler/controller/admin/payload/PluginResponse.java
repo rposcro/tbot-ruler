@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
 
+import java.util.List;
+
 @Getter
 @Builder
 public class PluginResponse {
@@ -19,4 +21,7 @@ public class PluginResponse {
     private String name;
 
     private JsonNode configuration;
+
+    @NonNull
+    private List<String> supportedActuatorReferences;
 }

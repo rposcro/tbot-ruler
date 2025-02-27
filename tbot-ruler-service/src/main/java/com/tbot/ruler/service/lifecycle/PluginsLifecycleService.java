@@ -40,6 +40,10 @@ public class PluginsLifecycleService {
         return pluginsIdMap.get(id);
     }
 
+    public Plugin getPluginByUuid(String uuid) {
+        return pluginsUuidMap.get(uuid);
+    }
+
     public void activateAllPlugins() {
         plugins = new LinkedList<>();
         pluginsIdMap = new HashMap<>();

@@ -63,6 +63,11 @@ public class JWaveZPlugin extends AbstractSubject implements Plugin {
         builder.destroyActuator(actuator);
     }
 
+    @Override
+    public List<String> getSupportedActuatorReferences() {
+        return actuatorsBuilders.keySet().stream().collect(Collectors.toList());
+    }
+
     private Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         JWaveZActuatorBuilder actuatorBuilder = actuatorsBuilders.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
