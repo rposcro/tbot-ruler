@@ -3,6 +3,7 @@ package com.tbot.ruler.plugins.agent.signaler;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.Trigger;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
@@ -38,7 +39,14 @@ public class SignalerActuator extends AbstractActuator {
     }
 
     @Override
-    public void triggerAction() {
-        messagePublisher.publishMessage(signalMessage);
+    public void acceptMessage(Message message) {
+        if (message.isPayloadAs(Trigger.class)) {
+            messagePublisher.publishMessage(signalMessage);
+        } else {
+            log.info("Actuator {} ignored message {} from {}",
+                getUuid(),
+                message.getPayload().getClass().getSimpleName(),
+                message.getSenderId());
+        }
     }
 }

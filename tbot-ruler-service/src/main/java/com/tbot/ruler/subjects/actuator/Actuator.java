@@ -9,9 +9,6 @@ import org.slf4j.LoggerFactory;
 
 public interface Actuator extends Subject, MessageReceiver, MessageSender {
 
-    default void triggerAction() {
-    }
-
     default void acceptMessage(Message message) {
         LoggerFactory.getLogger(Actuator.class)
                 .info("Actuator {} ignored message from {}", getUuid(), message.getSenderId());
