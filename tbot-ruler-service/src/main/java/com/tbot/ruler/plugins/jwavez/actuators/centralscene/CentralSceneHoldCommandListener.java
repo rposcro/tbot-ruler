@@ -5,31 +5,36 @@ import com.rposcro.jwavez.core.commands.types.CentralSceneCommandType;
 import com.rposcro.jwavez.core.model.CentralSceneKeyAttribute;
 import com.tbot.ruler.plugins.jwavez.controller.AbstractCommandListener;
 import com.tbot.ruler.plugins.jwavez.controller.CommandFilter;
-import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.subjects.actuator.BasicSenderActuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Set;
+
 @Slf4j
 @Getter
-public class CentralScenePressCommandListener extends AbstractCommandListener<CentralSceneNotification> {
+public class CentralSceneHoldCommandListener extends AbstractCommandListener<CentralSceneNotification> {
 
-    private final Actuator actuator;
+    private final CentralSceneHoldActuator actuator;
     private final CommandFilter commandFilter;
 
     @Builder
-    public CentralScenePressCommandListener(BasicSenderActuator actuator, int sourceNodeId, int sceneId, CentralSceneKeyAttribute keyAttribute) {
+    public CentralSceneHoldCommandListener(CentralSceneHoldActuator actuator, int sourceNodeId, int sceneId) {
         super(CentralSceneCommandType.CENTRAL_SCENE_NOTIFICATION, actuator.getUuid());
+        Set<Byte> keyAttributes = Set.of(
+            CentralSceneKeyAttribute.KEY_HELD_DOWN.getCode(), CentralSceneKeyAttribute.KEY_RELEASED.getCode());
         this.actuator = actuator;
-        this.commandFilter = command -> command.getSourceNodeId().getId() == (byte) sourceNodeId
+        this.commandFilter = command ->
+                command.getSourceNodeId().getId() == (byte) sourceNodeId
                 && ((CentralSceneNotification) command).getSceneNumber() == (short) sceneId
-                && ((CentralSceneNotification) command).getKeyAttributes() == keyAttribute.getCode();
+                && keyAttributes.contains(((CentralSceneNotification) command).getKeyAttributes());
     }
 
     @Override
     public void handleCommand(CentralSceneNotification command) {
         log.debug("Plugin Jwz: Handling central scene press notification command");
-        actuator.triggerAction();
+        CentralSceneKeyAttribute keyAttribute = CentralSceneKeyAttribute.ofCode(
+            (byte) command.getKeyAttributes());
+        actuator.handleCommandKey(keyAttribute);
     }
 }

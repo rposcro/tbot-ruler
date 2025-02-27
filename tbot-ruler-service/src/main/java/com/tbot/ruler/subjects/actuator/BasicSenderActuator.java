@@ -32,7 +32,8 @@ public class BasicSenderActuator extends AbstractSubject implements Actuator {
         this.messageSupplier = messageSupplier;
     }
 
-    public void sendMessage() {
+    @Override
+    public void triggerAction() {
         messagePublisher.publishMessage(messageSupplier.get());
     }
 }

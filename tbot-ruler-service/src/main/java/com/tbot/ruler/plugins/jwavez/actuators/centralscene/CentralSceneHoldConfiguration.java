@@ -1,7 +1,6 @@
 package com.tbot.ruler.plugins.jwavez.actuators.centralscene;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.rposcro.jwavez.core.model.CentralSceneKeyAttribute;
 import lombok.Getter;
 
 @Getter
@@ -13,6 +12,9 @@ public class CentralSceneHoldConfiguration {
     @JsonProperty(required = true)
     private int sceneId;
 
-    @JsonProperty(defaultValue = "500")
-    private long millisecondsOfHold;
+    @JsonProperty(defaultValue = "2000")
+    private long minMillisecondsOfHold;
+
+    @JsonProperty(defaultValue = "4000")
+    private long maxMillisecondsOfHold;
 }

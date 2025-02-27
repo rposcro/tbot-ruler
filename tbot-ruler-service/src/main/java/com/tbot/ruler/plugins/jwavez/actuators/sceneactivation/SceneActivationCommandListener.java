@@ -27,6 +27,6 @@ public class SceneActivationCommandListener extends AbstractCommandListener<Scen
     @Override
     public void handleCommand(SceneActivationSet command) {
         log.debug("Plugin Jwz: Handling scene activation set command");
-        actuator.sendMessage();
+        actuator.triggerAction();
     }
 }
