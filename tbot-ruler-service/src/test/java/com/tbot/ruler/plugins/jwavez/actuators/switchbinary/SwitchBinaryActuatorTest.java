@@ -4,7 +4,7 @@ import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.BinaryStateClaim;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import org.junit.jupiter.api.Test;
@@ -54,8 +54,8 @@ public class SwitchBinaryActuatorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(BinaryStateClaim.class)
-    public void testBinaryClaimWhenStateIsUnknown(BinaryStateClaim stateClaim) {
+    @EnumSource(BinaryClaim.class)
+    public void testBinaryClaimWhenStateIsUnknown(BinaryClaim stateClaim) {
         SwitchBinaryActuator actuator = constructActuator();
         actuator.acceptMessage(Message.builder()
             .senderId("sender-id")
@@ -69,8 +69,8 @@ public class SwitchBinaryActuatorTest {
     }
 
     @ParameterizedTest
-    @EnumSource(BinaryStateClaim.class)
-    public void testBinaryClaimWhenStateIsOn(BinaryStateClaim stateClaim) {
+    @EnumSource(BinaryClaim.class)
+    public void testBinaryClaimWhenStateIsOn(BinaryClaim stateClaim) {
         SwitchBinaryActuator actuator = constructActuator();
         actuator.setState(BinaryState.ON);
         actuator.acceptMessage(Message.builder()

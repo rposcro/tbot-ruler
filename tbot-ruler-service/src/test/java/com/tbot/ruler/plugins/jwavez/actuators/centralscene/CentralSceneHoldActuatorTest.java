@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.jwavez.actuators.centralscene;
 import com.rposcro.jwavez.core.model.CentralSceneKeyAttribute;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.BinaryStateClaim;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -33,7 +33,7 @@ public class CentralSceneHoldActuatorTest {
 
         assertNotNull(messageCaptor.getValue());
         assertEquals("actuator-uuid", messageCaptor.getValue().getSenderId());
-        assertEquals(BinaryStateClaim.TOGGLE, messageCaptor.getValue().getPayload());
+        assertEquals(BinaryClaim.TOGGLE, messageCaptor.getValue().getPayload());
     }
 
     @Test

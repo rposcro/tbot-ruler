@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.jwavez.actuators.centralscene;
 import com.rposcro.jwavez.core.model.CentralSceneKeyAttribute;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.BinaryStateClaim;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import lombok.Builder;
 import lombok.Getter;
@@ -36,7 +36,7 @@ public class CentralSceneHoldActuator extends AbstractActuator {
         this.messagePublisher = messagePublisher;
         this.message = Message.builder()
             .senderId(uuid)
-            .payload(BinaryStateClaim.TOGGLE)
+            .payload(BinaryClaim.TOGGLE)
             .build();
     }
 

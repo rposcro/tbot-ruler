@@ -6,7 +6,7 @@ import com.rposcro.jwavez.core.commands.controlled.builders.switchmultilevel.Swi
 import com.rposcro.jwavez.core.commands.supported.switchmultilevel.SwitchMultilevelReport;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
-import com.tbot.ruler.broker.payload.BinaryStateClaim;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.BinaryState;
@@ -28,7 +28,7 @@ public class SwitchMultilevelActuator extends AbstractActuator {
 
     private final MessagePayloadConsumer[] messageConsumers = new MessagePayloadConsumer[] {
         new MessagePayloadConsumer(BinaryState.class, this::consumeOnOffMessage),
-        new MessagePayloadConsumer(BinaryStateClaim.class, this::consumeBinaryStateClaimMessage)
+        new MessagePayloadConsumer(BinaryClaim.class, this::consumeBinaryStateClaimMessage)
     };
 
     @Builder
@@ -75,7 +75,7 @@ public class SwitchMultilevelActuator extends AbstractActuator {
     }
 
     private void consumeBinaryStateClaimMessage(Message message) {
-        BinaryStateClaim claim = message.getPayloadAs(BinaryStateClaim.class);
+        BinaryClaim claim = message.getPayloadAs(BinaryClaim.class);
         boolean desiredState;
         if (claim.isToggle()) {
             desiredState = actuatorState.getPayload() == null || !actuatorState.getPayload().isOn();

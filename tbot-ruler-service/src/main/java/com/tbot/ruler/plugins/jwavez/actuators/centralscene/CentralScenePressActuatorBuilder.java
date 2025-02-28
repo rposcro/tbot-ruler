@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.jwavez.actuators.centralscene;
 
 import com.rposcro.jwavez.core.model.CentralSceneKeyAttribute;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.BinaryStateClaim;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
@@ -26,7 +26,7 @@ public class CentralScenePressActuatorBuilder extends JWaveZActuatorBuilder {
             parseConfiguration(actuatorEntity.getConfiguration(), CentralScenePressConfiguration.class);
         Message toggleMessage = Message.builder()
             .senderId(actuatorEntity.getActuatorUuid())
-            .payload(BinaryStateClaim.TOGGLE)
+            .payload(BinaryClaim.TOGGLE)
             .build();
         BasicSenderActuator actuator = BasicSenderActuator.builder()
             .uuid(actuatorEntity.getActuatorUuid())

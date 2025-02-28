@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.tbot.ruler.broker.SynchronousMessagePublisher;
 import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.controller.exceptions.BadRequestException;
@@ -67,8 +68,8 @@ public class ActuatorsStateControllerTest {
         verify(messagePublisher, times(1)).publishAndWaitForReport(messageCaptor.capture());
         assertEquals(request.getWidgetUuid(), messageCaptor.getValue().getSenderId());
         assertEquals(actuatorUuid, messageCaptor.getValue().getReceiverId());
-        assertTrue(messageCaptor.getValue().isPayloadAs(BinaryState.class));
-        assertTrue(messageCaptor.getValue().getPayloadAs(BinaryState.class).isOn());
+        assertTrue(messageCaptor.getValue().isPayloadAs(BinaryClaim.class));
+        assertTrue(messageCaptor.getValue().getPayloadAs(BinaryClaim.class).isSetOn());
     }
 
     @Test

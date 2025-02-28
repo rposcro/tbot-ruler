@@ -1,13 +1,10 @@
 package com.tbot.ruler.plugins.jwavez.actuators.basicset;
 
 import com.tbot.ruler.exceptions.MessageProcessingException;
-import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
-import com.tbot.ruler.broker.payload.BinaryStateClaim;
-import com.tbot.ruler.subjects.AbstractSubject;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
-import com.tbot.ruler.subjects.actuator.Actuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -43,10 +40,10 @@ public class BasicSetActuator extends AbstractActuator {
     private Object messagePayload(byte commandValue) {
         switch(valueMode) {
             case TOGGLE_VALUE:
-                return BinaryStateClaim.TOGGLE;
+                return BinaryClaim.TOGGLE;
             case ON_OFF_VALUES:
                 return (commandValue == (byte) configuration.getTurnOnValue()) ?
-                        BinaryStateClaim.SET_ON : BinaryStateClaim.SET_OFF;
+                        BinaryClaim.SET_ON : BinaryClaim.SET_OFF;
             default:
                 throw new MessageProcessingException("Unexpected implementation inconsistency!");
         }
