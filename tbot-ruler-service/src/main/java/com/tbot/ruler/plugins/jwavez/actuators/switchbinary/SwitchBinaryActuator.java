@@ -6,12 +6,12 @@ import com.rposcro.jwavez.core.commands.controlled.builders.multichannel.MultiCh
 import com.rposcro.jwavez.core.commands.controlled.builders.switchbinary.SwitchBinaryCommandBuilder;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
+import com.tbot.ruler.broker.payload.BinaryStateClaim;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.OnOffState;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
-import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +27,11 @@ public class SwitchBinaryActuator extends AbstractActuator {
     private final MultiChannelCommandBuilder multiChannelCommandBuilder;
 
     private final ActuatorState<OnOffState> state;
+
+    private final MessagePayloadConsumer[] messageConsumers = new MessagePayloadConsumer[] {
+        new MessagePayloadConsumer(OnOffState.class, this::consumeOnOffMessage),
+        new MessagePayloadConsumer(BinaryStateClaim.class, this::consumeBinaryStateClaimMessage)
+    };
 
     @Builder
     public SwitchBinaryActuator(
@@ -48,25 +53,40 @@ public class SwitchBinaryActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
-        consumeMessage(message, OnOffState.class, this::consumeOnOffMessage);
+        consumeMessage(message, this.messageConsumers);
     }
 
-    public void setState(OnOffState onOffState) {
+    void setState(OnOffState onOffState) {
         state.updatePayload(onOffState);
     }
 
     private void consumeOnOffMessage(Message message) {
-        try {
-            OnOffState payload = message.getPayloadAs(OnOffState.class);
-            setState(payload);
+        OnOffState payload = message.getPayloadAs(OnOffState.class);
+        sendCommand(payload.isOn());
+        setState(payload);
+    }
 
-            ZWaveControlledCommand command = switchBinaryCommandBuilder.v1().buildSetCommand((byte) (payload.isOn() ? 255 : 0));
+    private void consumeBinaryStateClaimMessage(Message message) {
+        BinaryStateClaim claim = message.getPayloadAs(BinaryStateClaim.class);
+        boolean desiredState;
+        if (claim.isToggle()) {
+            desiredState = state.getPayload() == null || !state.getPayload().isOn();
+        } else {
+            desiredState = claim.isSetOn();
+        }
+        sendCommand(desiredState);
+        setState(desiredState ? OnOffState.STATE_ON : OnOffState.STATE_OFF);
+    }
+
+    private void sendCommand(boolean state) {
+        try {
+            ZWaveControlledCommand command = switchBinaryCommandBuilder.v1().buildSetCommand((byte) (state ? 255 : 0));
             if (configuration.isMultiChannelOn()) {
                 command = multiChannelCommandBuilder.v3().encapsulateCommand(SOURCE_ENDPOINT_ID, (byte) configuration.getNodeEndPointId(), command);
             }
             commandSender.enqueueCommand(NodeId.forId(configuration.getNodeId()), command);
         } catch(JWaveZException e) {
-            throw new MessageProcessingException("Command send failed!", e);
+            throw new MessageProcessingException("Switch Binary Command sending failed!", e);
         }
     }
 }
