@@ -8,7 +8,7 @@ import com.rposcro.jwavez.core.commands.supported.binaryswitch.BinarySwitchRepor
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.jobs.Job;
 import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
@@ -62,7 +62,7 @@ public class UpdateSwitchBinaryActuator extends AbstractActuator {
     public void acceptCommand(BinarySwitchReport report) {
         messagePublisher.publishMessage(Message.builder()
                 .senderId(this.getUuid())
-                .payload(OnOffState.of(report.getValue() != 0))
+                .payload(BinaryState.of(report.getValue() != 0))
                 .build());
     }
 

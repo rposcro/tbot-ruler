@@ -5,7 +5,7 @@ import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -32,7 +32,7 @@ public class SwitchMultilevelActuatorTest {
         SwitchMultilevelActuator actuator = constructActuator();
         actuator.acceptMessage(Message.builder()
                 .senderId("sender-id")
-                .payload(OnOffState.STATE_ON)
+                .payload(BinaryState.ON)
                 .build());
 
         verify(commandSender, times(1)).enqueueCommand(any(NodeId.class), any(ZWaveControlledCommand.class));
@@ -42,10 +42,10 @@ public class SwitchMultilevelActuatorTest {
     @Test
     public void testOnOffWhenStateIsOn() {
         SwitchMultilevelActuator actuator = constructActuator();
-        actuator.setState(OnOffState.STATE_ON);
+        actuator.setState(BinaryState.ON);
         actuator.acceptMessage(Message.builder()
                 .senderId("sender-id")
-                .payload(OnOffState.STATE_OFF)
+                .payload(BinaryState.OFF)
                 .build());
 
         verify(commandSender, times(1)).enqueueCommand(any(NodeId.class), any(ZWaveControlledCommand.class));
@@ -71,7 +71,7 @@ public class SwitchMultilevelActuatorTest {
     @EnumSource(BinaryStateClaim.class)
     public void testBinaryClaimWhenStateIsOn(BinaryStateClaim stateClaim) {
         SwitchMultilevelActuator actuator = constructActuator();
-        actuator.setState(OnOffState.STATE_ON);
+        actuator.setState(BinaryState.ON);
         actuator.acceptMessage(Message.builder()
             .senderId("sender-id")
             .payload(stateClaim)

@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.email.sender;
 
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import lombok.Builder;
 import lombok.NonNull;
@@ -29,7 +29,7 @@ public class EmailSenderActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
-        consumeMessage(message, OnOffState.class, this::consumeMessage);
+        consumeMessage(message, BinaryState.class, this::consumeMessage);
     }
 
     private void consumeMessage(Message message) {

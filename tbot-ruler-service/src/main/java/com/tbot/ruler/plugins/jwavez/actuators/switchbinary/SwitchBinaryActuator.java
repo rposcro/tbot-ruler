@@ -9,7 +9,7 @@ import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
@@ -26,10 +26,10 @@ public class SwitchBinaryActuator extends AbstractActuator {
     private final SwitchBinaryCommandBuilder switchBinaryCommandBuilder;
     private final MultiChannelCommandBuilder multiChannelCommandBuilder;
 
-    private final ActuatorState<OnOffState> state;
+    private final ActuatorState<BinaryState> state;
 
     private final MessagePayloadConsumer[] messageConsumers = new MessagePayloadConsumer[] {
-        new MessagePayloadConsumer(OnOffState.class, this::consumeOnOffMessage),
+        new MessagePayloadConsumer(BinaryState.class, this::consumeOnOffMessage),
         new MessagePayloadConsumer(BinaryStateClaim.class, this::consumeBinaryStateClaimMessage)
     };
 
@@ -46,7 +46,7 @@ public class SwitchBinaryActuator extends AbstractActuator {
         this.commandSender = commandSender;
         this.switchBinaryCommandBuilder = applicationSupport.controlledCommandFactory().switchBinaryCommandBuilder();
         this.multiChannelCommandBuilder = applicationSupport.controlledCommandFactory().multiChannelCommandBuilder();
-        this.state = ActuatorState.<OnOffState>builder()
+        this.state = ActuatorState.<BinaryState>builder()
                 .actuatorUuid(uuid)
                 .build();
     }
@@ -56,12 +56,12 @@ public class SwitchBinaryActuator extends AbstractActuator {
         consumeMessage(message, this.messageConsumers);
     }
 
-    void setState(OnOffState onOffState) {
-        state.updatePayload(onOffState);
+    void setState(BinaryState binaryState) {
+        state.updatePayload(binaryState);
     }
 
     private void consumeOnOffMessage(Message message) {
-        OnOffState payload = message.getPayloadAs(OnOffState.class);
+        BinaryState payload = message.getPayloadAs(BinaryState.class);
         sendCommand(payload.isOn());
         setState(payload);
     }
@@ -75,7 +75,7 @@ public class SwitchBinaryActuator extends AbstractActuator {
             desiredState = claim.isSetOn();
         }
         sendCommand(desiredState);
-        setState(desiredState ? OnOffState.STATE_ON : OnOffState.STATE_OFF);
+        setState(desiredState ? BinaryState.ON : BinaryState.OFF);
     }
 
     private void sendCommand(boolean state) {

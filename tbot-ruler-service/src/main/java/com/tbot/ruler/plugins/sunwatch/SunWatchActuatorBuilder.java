@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.sunwatch;
 
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.exceptions.PluginException;
@@ -33,7 +33,7 @@ public abstract class SunWatchActuatorBuilder {
     protected Message emitterMessage(ActuatorEntity actuatorEntity, String signalValue) {
         return Message.builder()
                 .senderId(actuatorEntity.getActuatorUuid())
-                .payload(OnOffState.of(VALUE_ON.equalsIgnoreCase(signalValue)))
+                .payload(BinaryState.of(VALUE_ON.equalsIgnoreCase(signalValue)))
                 .build();
     }
 }

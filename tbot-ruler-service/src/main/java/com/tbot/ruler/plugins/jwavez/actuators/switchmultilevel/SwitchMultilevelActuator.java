@@ -9,7 +9,7 @@ import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.broker.payload.BinaryStateClaim;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
@@ -24,10 +24,10 @@ public class SwitchMultilevelActuator extends AbstractActuator {
 
     private final SwitchMultiLevelCommandBuilder commandBuilder;
 
-    private final ActuatorState<OnOffState> actuatorState;
+    private final ActuatorState<BinaryState> actuatorState;
 
     private final MessagePayloadConsumer[] messageConsumers = new MessagePayloadConsumer[] {
-        new MessagePayloadConsumer(OnOffState.class, this::consumeOnOffMessage),
+        new MessagePayloadConsumer(BinaryState.class, this::consumeOnOffMessage),
         new MessagePayloadConsumer(BinaryStateClaim.class, this::consumeBinaryStateClaimMessage)
     };
 
@@ -45,13 +45,13 @@ public class SwitchMultilevelActuator extends AbstractActuator {
         this.nodeId = nodeId;
         this.commandSender = commandSender;
         this.commandBuilder = applicationSupport.controlledCommandFactory().switchMultiLevelCommandBuilder();
-        this.actuatorState = ActuatorState.<OnOffState>builder()
+        this.actuatorState = ActuatorState.<BinaryState>builder()
                 .actuatorUuid(uuid)
                 .build();
     }
 
     @Override
-    public ActuatorState<OnOffState> getState() {
+    public ActuatorState<BinaryState> getState() {
         return actuatorState;
     };
 
@@ -60,16 +60,16 @@ public class SwitchMultilevelActuator extends AbstractActuator {
         consumeMessage(message, this.messageConsumers);
     }
 
-    void setState(OnOffState onOffState) {
-        actuatorState.updatePayload(onOffState);
+    void setState(BinaryState binaryState) {
+        actuatorState.updatePayload(binaryState);
     }
 
     void acceptCommand(SwitchMultilevelReport report) {
-        this.actuatorState.updatePayload(OnOffState.of(report.getCurrentValue() != 0));
+        this.actuatorState.updatePayload(BinaryState.of(report.getCurrentValue() != 0));
     }
 
     private void consumeOnOffMessage(Message message) {
-        OnOffState payload = message.getPayloadAs(OnOffState.class);
+        BinaryState payload = message.getPayloadAs(BinaryState.class);
         sendCommand(payload.isOn());
         setState(payload);
     }
@@ -83,7 +83,7 @@ public class SwitchMultilevelActuator extends AbstractActuator {
             desiredState = claim.isSetOn();
         }
         sendCommand(desiredState);
-        setState(desiredState ? OnOffState.STATE_ON : OnOffState.STATE_OFF);
+        setState(desiredState ? BinaryState.ON : BinaryState.OFF);
     }
 
     private void sendCommand(boolean state) {

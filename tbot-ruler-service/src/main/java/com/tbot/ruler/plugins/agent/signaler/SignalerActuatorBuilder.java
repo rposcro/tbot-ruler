@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.agent.signaler;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
@@ -36,7 +36,7 @@ public class SignalerActuatorBuilder extends AgentActuatorBuilder {
     private Object parseSignalValue(SignalerActuatorConfiguration configuration) {
         try {
             return switch (configuration.getSignalType()) {
-                case "OnOffState" -> parseValue(OnOffState.class, configuration.getSignalValue());
+                case "OnOffState" -> parseValue(BinaryState.class, configuration.getSignalValue());
                 case "RgbwColor" -> parseValue(RGBWColor.class, configuration.getSignalValue());
                 default -> throw new PluginException("Unsupported signal type " + configuration.getSignalType());
             };
@@ -45,7 +45,7 @@ public class SignalerActuatorBuilder extends AgentActuatorBuilder {
         }
     }
 
-    private OnOffState parseValue(Class<?> valueClass, JsonNode valueNode) throws IOException {
+    private BinaryState parseValue(Class<?> valueClass, JsonNode valueNode) throws IOException {
         return new ObjectMapper().readerFor(valueClass).readValue(valueNode);
     }
 }

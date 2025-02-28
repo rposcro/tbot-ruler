@@ -7,20 +7,20 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor()
-public class OnOffState {
+public class BinaryState {
 
-    public static final OnOffState STATE_ON = new OnOffState(true);
-    public static final OnOffState STATE_OFF = new OnOffState(false);
+    public static final BinaryState ON = new BinaryState(true);
+    public static final BinaryState OFF = new BinaryState(false);
 
     private boolean on;
 
     @JsonCreator
-    public static OnOffState of(@JsonProperty("on") boolean on) {
-        return on ? STATE_ON : STATE_OFF;
+    public static BinaryState of(@JsonProperty("on") boolean on) {
+        return on ? ON : OFF;
     }
 
-    public OnOffState negate() {
-        return isOn() ? STATE_OFF : STATE_ON;
+    public BinaryState negate() {
+        return isOn() ? OFF : ON;
     }
 
     @Override

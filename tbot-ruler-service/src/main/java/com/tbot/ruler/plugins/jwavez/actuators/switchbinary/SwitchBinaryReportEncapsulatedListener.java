@@ -5,7 +5,7 @@ import com.rposcro.jwavez.core.commands.JwzSupportedCommandParser;
 import com.rposcro.jwavez.core.commands.supported.binaryswitch.BinarySwitchReport;
 import com.rposcro.jwavez.core.commands.supported.multichannel.MultiChannelCommandEncapsulation;
 import com.rposcro.jwavez.core.commands.types.SwitchBinaryCommandType;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.plugins.jwavez.controller.AbstractCommandListener;
 import com.tbot.ruler.plugins.jwavez.controller.CommandFilter;
 import lombok.Builder;
@@ -38,7 +38,7 @@ public class SwitchBinaryReportEncapsulatedListener extends AbstractCommandListe
         BinarySwitchReport report = commandParser.parseCommand(
                 ImmutableBuffer.overBuffer(encapsulation.getEncapsulatedCommandPayload()),
                 encapsulation.getSourceNodeId());
-        OnOffState state = OnOffState.of(report.getValue() != 0);
+        BinaryState state = BinaryState.of(report.getValue() != 0);
         actuator.setState(state);
     }
 }

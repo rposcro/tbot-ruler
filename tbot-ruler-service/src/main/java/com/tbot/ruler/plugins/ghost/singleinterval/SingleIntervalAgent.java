@@ -1,6 +1,6 @@
 package com.tbot.ruler.plugins.ghost.singleinterval;
 
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.service.things.SubjectStateService;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
 import lombok.Builder;
@@ -10,17 +10,17 @@ import lombok.Getter;
 public class SingleIntervalAgent {
 
     private final SubjectStateService subjectStateService;
-    private final ActuatorState<OnOffState> currentState;
+    private final ActuatorState<BinaryState> currentState;
 
     @Builder
     public SingleIntervalAgent(String actuatorUuid, boolean defaultState, SubjectStateService subjectStateService) {
         this.subjectStateService = subjectStateService;
 
-        ActuatorState<OnOffState> state = subjectStateService.recoverActuatorState(actuatorUuid, OnOffState.class);
+        ActuatorState<BinaryState> state = subjectStateService.recoverActuatorState(actuatorUuid, BinaryState.class);
         if (state == null) {
-            state = ActuatorState.<OnOffState>builder()
+            state = ActuatorState.<BinaryState>builder()
                     .actuatorUuid(actuatorUuid)
-                    .payload(OnOffState.of(defaultState))
+                    .payload(BinaryState.of(defaultState))
                     .build();
 
         }
@@ -32,7 +32,7 @@ public class SingleIntervalAgent {
     }
 
     public void setActivated(boolean active) {
-        currentState.updatePayload(OnOffState.of(active));
+        currentState.updatePayload(BinaryState.of(active));
         subjectStateService.persistState(currentState);
     }
 }

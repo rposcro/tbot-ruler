@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.agent.mute;
 
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class ThingMuteActuator extends AbstractActuator {
 
-    private final ActuatorState<OnOffState> state;
+    private final ActuatorState<BinaryState> state;
     private final RulerThingContext rulerThingContext;
     private final boolean invertStates;
 
@@ -28,23 +28,23 @@ public class ThingMuteActuator extends AbstractActuator {
         super(uuid, name, description);
         this.rulerThingContext = rulerThingContext;
         this.invertStates = configuration.isInvertStates();
-        this.state = ActuatorState.<OnOffState>builder().actuatorUuid(uuid).build();
+        this.state = ActuatorState.<BinaryState>builder().actuatorUuid(uuid).build();
         initState();
     }
 
     @Override
-    public ActuatorState<OnOffState> getState() {
+    public ActuatorState<BinaryState> getState() {
         refreshState();
         return state;
     }
 
     @Override
     public void acceptMessage(Message message) {
-        consumeMessage(message, OnOffState.class, this::consumeOnOffMessage);
+        consumeMessage(message, BinaryState.class, this::consumeOnOffMessage);
     }
 
     private void consumeOnOffMessage(Message message) {
-        OnOffState requestedState = message.getPayloadAs(OnOffState.class);
+        BinaryState requestedState = message.getPayloadAs(BinaryState.class);
         state.updatePayload(requestedState);
 
         boolean isMute = invertStates ^ requestedState.isOn();
@@ -55,12 +55,12 @@ public class ThingMuteActuator extends AbstractActuator {
 
     private void refreshState() {
         this.state.updatePayload(
-                OnOffState.of(invertStates ^ rulerThingContext.getRulerThingAgent().isOnMute()));
+                BinaryState.of(invertStates ^ rulerThingContext.getRulerThingAgent().isOnMute()));
     }
 
     private void initState() {
-        ActuatorState<OnOffState> persistedState = rulerThingContext.getSubjectStateService()
-            .recoverActuatorState(getUuid(), OnOffState.class);
+        ActuatorState<BinaryState> persistedState = rulerThingContext.getSubjectStateService()
+            .recoverActuatorState(getUuid(), BinaryState.class);
         if (persistedState != null) {
             state.updatePayload(persistedState.getPayload());
             rulerThingContext.getRulerThingAgent().setOnMute(invertStates ^ persistedState.getPayload().isOn());

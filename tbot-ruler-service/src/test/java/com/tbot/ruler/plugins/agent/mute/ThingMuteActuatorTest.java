@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.agent.mute;
 
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.service.things.SubjectStateService;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
 import com.tbot.ruler.subjects.thing.RulerThingAgent;
@@ -43,7 +43,7 @@ public class ThingMuteActuatorTest {
         ThingMuteActuator actuator = constructActuator(true);
         actuator.acceptMessage(Message.builder()
                 .senderId("sender-id")
-                .payload(OnOffState.STATE_ON)
+                .payload(BinaryState.ON)
                 .build());
 
         assertTrue(actuator.getState().getPayload().isOn());
@@ -55,7 +55,7 @@ public class ThingMuteActuatorTest {
         ThingMuteActuator actuator = constructActuator(false);
         actuator.acceptMessage(Message.builder()
                 .senderId("sender-id")
-                .payload(OnOffState.STATE_OFF)
+                .payload(BinaryState.OFF)
                 .build());
 
         assertFalse(actuator.getState().getPayload().isOn());
@@ -64,10 +64,10 @@ public class ThingMuteActuatorTest {
 
     @Test
     public void testStateIsRecoveredFromStateRepository() {
-        when(stateService.recoverActuatorState(eq("actuator-uuid"), eq(OnOffState.class)))
-            .thenReturn(ActuatorState.<OnOffState>builder()
+        when(stateService.recoverActuatorState(eq("actuator-uuid"), eq(BinaryState.class)))
+            .thenReturn(ActuatorState.<BinaryState>builder()
                 .actuatorUuid("actuator-uuid")
-                .payload(OnOffState.STATE_OFF)
+                .payload(BinaryState.OFF)
                 .build());
 
         ThingMuteActuator actuator = constructActuator(true);
@@ -80,14 +80,14 @@ public class ThingMuteActuatorTest {
         ThingMuteActuator actuator = constructActuator(true);
         actuator.acceptMessage(Message.builder()
                 .senderId("sender-id")
-                .payload(OnOffState.STATE_ON)
+                .payload(BinaryState.ON)
                 .build());
 
         ArgumentCaptor<ActuatorState> stateCaptor = ArgumentCaptor.forClass(ActuatorState.class);
         verify(stateService).persistState(stateCaptor.capture());
 
         assertNotNull(stateCaptor.getValue());
-        assertTrue(((OnOffState) stateCaptor.getValue().getPayload()).isOn());
+        assertTrue(((BinaryState) stateCaptor.getValue().getPayload()).isOn());
         assertEquals("actuator-uuid", stateCaptor.getValue().getActuatorUuid());
     }
 

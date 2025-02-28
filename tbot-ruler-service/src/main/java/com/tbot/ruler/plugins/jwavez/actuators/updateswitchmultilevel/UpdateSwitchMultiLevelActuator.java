@@ -6,7 +6,7 @@ import com.rposcro.jwavez.core.commands.supported.switchmultilevel.SwitchMultile
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.jobs.Job;
 import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
@@ -56,7 +56,7 @@ public class UpdateSwitchMultiLevelActuator extends AbstractActuator {
     public void acceptCommand(SwitchMultilevelReport command) {
         messagePublisher.publishMessage(Message.builder()
                 .senderId(this.getUuid())
-                .payload(OnOffState.of(command.getCurrentValue() != 0))
+                .payload(BinaryState.of(command.getCurrentValue() != 0))
                 .build());
     }
 

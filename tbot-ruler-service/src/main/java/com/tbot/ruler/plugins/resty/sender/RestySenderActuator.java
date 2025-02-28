@@ -1,7 +1,7 @@
 package com.tbot.ruler.plugins.resty.sender;
 
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import lombok.Builder;
@@ -43,13 +43,13 @@ public class RestySenderActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
-        consumeMessage(message, OnOffState.class, this::consumeOnOffMessage);
+        consumeMessage(message, BinaryState.class, this::consumeOnOffMessage);
     }
 
     private void consumeOnOffMessage(Message message) {
-        OnOffState onOffState = message.getPayloadAs(OnOffState.class);
+        BinaryState binaryState = message.getPayloadAs(BinaryState.class);
 
-        if (!onOffState.isOn()) {
+        if (!binaryState.isOn()) {
             log.info("Received Off state from {}, ignoring it", message.getSenderId());
             return;
         }

@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.deputy.binary;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.payload.Notification;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.subjects.AbstractSubject;
 import com.tbot.ruler.subjects.actuator.Actuator;
@@ -38,8 +38,8 @@ public class BinaryActuator extends AbstractSubject implements Actuator {
     @Override
     public void acceptMessage(Message message) {
         Object payload = message.getPayload();
-        if (payload instanceof OnOffState) {
-            handleStateUpdate(((OnOffState) payload).isOn());
+        if (payload instanceof BinaryState) {
+            handleStateUpdate(((BinaryState) payload).isOn());
         } else if (payload instanceof Notification) {
             handleUpdateRequest();
         } else {
@@ -56,7 +56,7 @@ public class BinaryActuator extends AbstractSubject implements Actuator {
         expectedState = binaryChannel.requestState();
         Message message = Message.builder()
             .senderId(getUuid())
-            .payload(OnOffState.of(expectedState))
+            .payload(BinaryState.of(expectedState))
             .build();
         messagePublisher.publishMessage(message);
     }
