@@ -2,6 +2,7 @@ package com.tbot.ruler.plugins.agent.mute;
 
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.service.things.SubjectStateService;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
@@ -43,7 +44,7 @@ public class ThingMuteActuatorTest {
         ThingMuteActuator actuator = constructActuator(true);
         actuator.acceptMessage(Message.builder()
                 .senderId("sender-id")
-                .payload(BinaryState.ON)
+                .payload(BinaryClaim.SET_ON)
                 .build());
 
         assertTrue(actuator.getState().getPayload().isOn());
@@ -55,7 +56,7 @@ public class ThingMuteActuatorTest {
         ThingMuteActuator actuator = constructActuator(false);
         actuator.acceptMessage(Message.builder()
                 .senderId("sender-id")
-                .payload(BinaryState.OFF)
+                .payload(BinaryClaim.SET_OFF)
                 .build());
 
         assertFalse(actuator.getState().getPayload().isOn());
@@ -80,7 +81,7 @@ public class ThingMuteActuatorTest {
         ThingMuteActuator actuator = constructActuator(true);
         actuator.acceptMessage(Message.builder()
                 .senderId("sender-id")
-                .payload(BinaryState.ON)
+                .payload(BinaryClaim.SET_ON)
                 .build());
 
         ArgumentCaptor<ActuatorState> stateCaptor = ArgumentCaptor.forClass(ActuatorState.class);

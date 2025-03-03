@@ -1,6 +1,7 @@
 package com.tbot.ruler.plugins.agent.mute;
 
 import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
@@ -40,14 +41,15 @@ public class ThingMuteActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
-        consumeMessage(message, BinaryState.class, this::consumeOnOffMessage);
+        consumeMessage(message, BinaryClaim.class, this::consumeBinaryClaimMessage);
     }
 
-    private void consumeOnOffMessage(Message message) {
-        BinaryState requestedState = message.getPayloadAs(BinaryState.class);
-        state.updatePayload(requestedState);
+    private void consumeBinaryClaimMessage(Message message) {
+        BinaryClaim requestedClaim = message.getPayloadAs(BinaryClaim.class);
+        BinaryState desiredState = requestedClaim.resolveState(state.getPayload());
+        state.updatePayload(desiredState);
 
-        boolean isMute = invertStates ^ requestedState.isOn();
+        boolean isMute = invertStates ^ desiredState.isOn();
         rulerThingContext.getRulerThingAgent().setOnMute(isMute);
         rulerThingContext.getSubjectStateService().persistState(state);
         log.info("Thing {} onMute flag changed to {}", rulerThingContext.getThingUuid(), isMute);

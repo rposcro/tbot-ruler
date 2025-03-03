@@ -29,10 +29,10 @@ public class EmailSenderActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
-        consumeMessage(message, BinaryState.class, this::consumeMessage);
+        consumeMessage(message, BinaryState.class, this::consumeBinaryStateMessage);
     }
 
-    private void consumeMessage(Message message) {
+    private void consumeBinaryStateMessage(Message message) {
         String emailBody = renderEmailBody(message);
         SimpleMailMessage email = new SimpleMailMessage();
         email.setFrom(emailConfiguration.getEmailFrom());

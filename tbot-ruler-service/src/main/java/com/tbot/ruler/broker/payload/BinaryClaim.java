@@ -28,4 +28,14 @@ public enum BinaryClaim {
     public static BinaryClaim of(@JsonProperty("on") boolean on) {
         return on ? SET_ON : SET_OFF;
     }
+
+    public BinaryState resolveState(BinaryState currentState) {
+        if (currentState == null) {
+            return BinaryState.of(!isSetOff());
+        } else if (isToggle()) {
+            return BinaryState.of(!currentState.isOn());
+        } else {
+            return BinaryState.of(isSetOn());
+        }
+    }
 }

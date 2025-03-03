@@ -2,7 +2,7 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.BinaryState;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.jobs.Job;
 import com.tbot.ruler.plugins.ghost.DateTimeRange;
 import lombok.Builder;
@@ -57,7 +57,7 @@ public class SingleIntervalEmissionJob implements Job {
             boolean activationState = onInterval.isInRange(now);
             messagePublisher.publishMessage(Message.builder()
                     .senderId(actuatorUuid)
-                    .payload(BinaryState.of(activationState))
+                    .payload(BinaryClaim.of(activationState))
                     .build());
 
             if (now.isAfter(onInterval.getEndDateTime())) {

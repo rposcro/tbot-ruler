@@ -27,8 +27,7 @@ public class SwitchMultilevelActuator extends AbstractActuator {
     private final ActuatorState<BinaryState> actuatorState;
 
     private final MessagePayloadConsumer[] messageConsumers = new MessagePayloadConsumer[] {
-        new MessagePayloadConsumer(BinaryState.class, this::consumeOnOffMessage),
-        new MessagePayloadConsumer(BinaryClaim.class, this::consumeBinaryStateClaimMessage)
+        new MessagePayloadConsumer(BinaryClaim.class, this::consumeBinaryClaimMessage)
     };
 
     @Builder
@@ -68,22 +67,11 @@ public class SwitchMultilevelActuator extends AbstractActuator {
         this.actuatorState.updatePayload(BinaryState.of(report.getCurrentValue() != 0));
     }
 
-    private void consumeOnOffMessage(Message message) {
-        BinaryState payload = message.getPayloadAs(BinaryState.class);
-        sendCommand(payload.isOn());
-        setState(payload);
-    }
-
-    private void consumeBinaryStateClaimMessage(Message message) {
-        BinaryClaim claim = message.getPayloadAs(BinaryClaim.class);
-        boolean desiredState;
-        if (claim.isToggle()) {
-            desiredState = actuatorState.getPayload() == null || !actuatorState.getPayload().isOn();
-        } else {
-            desiredState = claim.isSetOn();
-        }
-        sendCommand(desiredState);
-        setState(desiredState ? BinaryState.ON : BinaryState.OFF);
+    private void consumeBinaryClaimMessage(Message message) {
+        BinaryClaim requestedClaim = message.getPayloadAs(BinaryClaim.class);
+        BinaryState requestedState = requestedClaim.resolveState(actuatorState.getPayload());
+        sendCommand(requestedState.isOn());
+        setState(requestedState);
     }
 
     private void sendCommand(boolean state) {

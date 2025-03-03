@@ -28,11 +28,6 @@ public class SwitchBinaryActuator extends AbstractActuator {
 
     private final ActuatorState<BinaryState> state;
 
-    private final MessagePayloadConsumer[] messageConsumers = new MessagePayloadConsumer[] {
-        new MessagePayloadConsumer(BinaryState.class, this::consumeOnOffMessage),
-        new MessagePayloadConsumer(BinaryClaim.class, this::consumeBinaryStateClaimMessage)
-    };
-
     @Builder
     public SwitchBinaryActuator(
             String uuid,
@@ -53,29 +48,18 @@ public class SwitchBinaryActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
-        consumeMessage(message, this.messageConsumers);
+        consumeMessage(message, BinaryClaim.class, this::consumeBinaryClaimMessage);
     }
 
     void setState(BinaryState binaryState) {
         state.updatePayload(binaryState);
     }
 
-    private void consumeOnOffMessage(Message message) {
-        BinaryState payload = message.getPayloadAs(BinaryState.class);
-        sendCommand(payload.isOn());
-        setState(payload);
-    }
-
-    private void consumeBinaryStateClaimMessage(Message message) {
-        BinaryClaim claim = message.getPayloadAs(BinaryClaim.class);
-        boolean desiredState;
-        if (claim.isToggle()) {
-            desiredState = state.getPayload() == null || !state.getPayload().isOn();
-        } else {
-            desiredState = claim.isSetOn();
-        }
-        sendCommand(desiredState);
-        setState(desiredState ? BinaryState.ON : BinaryState.OFF);
+    private void consumeBinaryClaimMessage(Message message) {
+        BinaryClaim requestedClaim = message.getPayloadAs(BinaryClaim.class);
+        BinaryState requestedState = requestedClaim.resolveState(state.getPayload());
+        sendCommand(requestedState.isOn());
+        setState(requestedState);
     }
 
     private void sendCommand(boolean state) {

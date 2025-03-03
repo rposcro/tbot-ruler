@@ -2,6 +2,7 @@ package com.tbot.ruler.plugins.ghost.singleinterval;
 
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.plugins.ghost.DateTimeRange;
 import com.tbot.ruler.service.things.SubjectStateService;
@@ -99,7 +100,7 @@ public class SingleIntervalEmissionJobTest {
 
         assertEquals(onIntervalBefore, emissionTask.getOnInterval());
         assertEquals(EMITTER_ID, message.getSenderId());
-        assertFalse(message.getPayloadAs(BinaryState.class).isOn());
+        assertFalse(message.getPayloadAs(BinaryClaim.class).isSetOn());
     }
 
     @Test
@@ -116,7 +117,7 @@ public class SingleIntervalEmissionJobTest {
 
         assertEquals(onIntervalBefore, emissionTask.getOnInterval());
         assertEquals(EMITTER_ID, message.getSenderId());
-        assertTrue(message.getPayloadAs(BinaryState.class).isOn());
+        assertTrue(message.getPayloadAs(BinaryClaim.class).isSetOn());
     }
 
     @Test
@@ -135,7 +136,7 @@ public class SingleIntervalEmissionJobTest {
         assertEquals(onIntervalBefore.getStartDateTime().plusDays(1), emissionTask.getOnInterval().getStartDateTime());
         assertEquals(onIntervalBefore.getEndDateTime().plusDays(1), emissionTask.getOnInterval().getEndDateTime());
         assertEquals(EMITTER_ID, message.getSenderId());
-        assertFalse(message.getPayloadAs(BinaryState.class).isOn());
+        assertFalse(message.getPayloadAs(BinaryClaim.class).isSetOn());
     }
 
     @Test

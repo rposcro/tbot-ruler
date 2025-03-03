@@ -1,6 +1,7 @@
 package com.tbot.ruler.plugins.resty.sender;
 
 import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.exceptions.MessageProcessingException;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
@@ -27,6 +28,11 @@ public class RestySenderActuator extends AbstractActuator {
     private final RestySenderConfiguration restySenderConfiguration;
     private final RestTemplate restTemplate;
 
+    private final MessagePayloadConsumer[] messageConsumers = new MessagePayloadConsumer[] {
+        new MessagePayloadConsumer(BinaryClaim.class, this::consumeBinaryClaimMessage),
+        new MessagePayloadConsumer(BinaryState.class, this::consumeBinaryStateMessage)
+    };
+
     @Builder
     public RestySenderActuator(
             @NonNull String uuid,
@@ -43,17 +49,28 @@ public class RestySenderActuator extends AbstractActuator {
 
     @Override
     public void acceptMessage(Message message) {
-        consumeMessage(message, BinaryState.class, this::consumeOnOffMessage);
+        consumeMessage(message, this.messageConsumers);
     }
 
-    private void consumeOnOffMessage(Message message) {
-        BinaryState binaryState = message.getPayloadAs(BinaryState.class);
-
-        if (!binaryState.isOn()) {
-            log.info("Received Off state from {}, ignoring it", message.getSenderId());
-            return;
+    private void consumeBinaryClaimMessage(Message message) {
+        BinaryClaim binaryClaim = message.getPayloadAs(BinaryClaim.class);
+        if (binaryClaim.isSetOn()) {
+            sendMessage();
+        } else {
+            log.info("Received {} state from {}, ignoring it", binaryClaim, message.getSenderId());
         }
+    }
 
+    private void consumeBinaryStateMessage(Message message) {
+        BinaryState binaryState = message.getPayloadAs(BinaryState.class);
+        if (binaryState.isOn()) {
+            sendMessage();
+        } else {
+            log.info("Received {} state from {}, ignoring it", binaryState, message.getSenderId());
+        }
+    }
+
+    private void sendMessage() {
         try {
             HttpHeaders headers = new HttpHeaders();
             restySenderConfiguration.getHeaders().forEach(headers::add);

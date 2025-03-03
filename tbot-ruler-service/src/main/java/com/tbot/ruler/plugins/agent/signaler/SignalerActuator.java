@@ -2,11 +2,9 @@ package com.tbot.ruler.plugins.agent.signaler;
 
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.broker.payload.Trigger;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
-import com.tbot.ruler.subjects.actuator.ActuatorState;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +15,6 @@ import lombok.extern.slf4j.Slf4j;
 @Getter
 public class SignalerActuator extends AbstractActuator {
 
-    private final ActuatorState<BinaryState> state;
     private final Message signalMessage;
     private final MessagePublisher messagePublisher;
 
@@ -31,10 +28,6 @@ public class SignalerActuator extends AbstractActuator {
         this.signalMessage = Message.builder()
                 .senderId(actuatorEntity.getActuatorUuid())
                 .payload(signalValue)
-                .build();
-        this.state = ActuatorState.<BinaryState>builder()
-                .actuatorUuid(uuid)
-                .payload(BinaryState.ON)
                 .build();
     }
 
