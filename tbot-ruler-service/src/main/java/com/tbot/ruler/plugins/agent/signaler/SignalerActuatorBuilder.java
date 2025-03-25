@@ -26,17 +26,18 @@ public class SignalerActuatorBuilder extends AgentActuatorBuilder {
     @Override
     public Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext thingContext) {
         SignalerActuatorConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SignalerActuatorConfiguration.class);
-        Object signalValue = parseSignalValue(configuration);
+        Object signalPayload = parseSignalPayload(configuration);
         return SignalerActuator.builder()
                 .actuatorEntity(actuatorEntity)
-                .signalValue(signalValue)
+                .signalPayload(signalPayload)
                 .thingContext(thingContext)
                 .build();
     }
 
-    private Object parseSignalValue(SignalerActuatorConfiguration configuration) {
+    private Object parseSignalPayload(SignalerActuatorConfiguration configuration) {
         try {
             return switch (configuration.getSignalType()) {
+                case "BinaryClaim" -> parseValue(BinaryClaim.class, configuration.getSignalValue());
                 case "OnOffState" -> parseValue(BinaryClaim.class, configuration.getSignalValue());
                 case "RgbwColor" -> parseValue(RGBWColor.class, configuration.getSignalValue());
                 default -> throw new PluginException("Unsupported signal type " + configuration.getSignalType());
@@ -46,7 +47,7 @@ public class SignalerActuatorBuilder extends AgentActuatorBuilder {
         }
     }
 
-    private BinaryState parseValue(Class<?> valueClass, JsonNode valueNode) throws IOException {
+    private Object parseValue(Class<?> valueClass, JsonNode valueNode) throws IOException {
         return new ObjectMapper().readerFor(valueClass).readValue(valueNode);
     }
 }

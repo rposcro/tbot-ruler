@@ -68,7 +68,7 @@ public class SwitchColorActuator extends AbstractActuator {
             log.debug(String.format("Color switch requested by actuator %s: r%s g%s b%s w%s", this.getUuid(), payload.getRed(), payload.getGreen(), payload.getBlue(), payload.getWhite()));
             ZWaveControlledCommand command = buildCommand(payload);
             commandSender.enqueueCommand(NodeId.forId(configuration.getNodeId()), command);
-            actuatorState.updatePayload(payload);
+            setState(payload);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Command send failed!", e);
         }

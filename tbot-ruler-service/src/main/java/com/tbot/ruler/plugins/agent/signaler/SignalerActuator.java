@@ -21,13 +21,13 @@ public class SignalerActuator extends AbstractActuator {
     @Builder
     public SignalerActuator(
             @NonNull ActuatorEntity actuatorEntity,
-            @NonNull Object signalValue,
+            @NonNull Object signalPayload,
             @NonNull RulerThingContext thingContext) {
         super(actuatorEntity.getActuatorUuid(), actuatorEntity.getName(), actuatorEntity.getDescription());
         this.messagePublisher = thingContext.getMessagePublisher();
         this.signalMessage = Message.builder()
                 .senderId(actuatorEntity.getActuatorUuid())
-                .payload(signalValue)
+                .payload(signalPayload)
                 .build();
     }
 

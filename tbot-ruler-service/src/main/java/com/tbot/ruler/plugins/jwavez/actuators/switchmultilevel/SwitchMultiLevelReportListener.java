@@ -2,6 +2,7 @@ package com.tbot.ruler.plugins.jwavez.actuators.switchmultilevel;
 
 import com.rposcro.jwavez.core.commands.supported.switchmultilevel.SwitchMultilevelReport;
 import com.rposcro.jwavez.core.commands.types.SwitchMultiLevelCommandType;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.plugins.jwavez.controller.AbstractCommandListener;
 import com.tbot.ruler.plugins.jwavez.controller.CommandFilter;
 import lombok.Builder;
@@ -27,6 +28,6 @@ public class SwitchMultiLevelReportListener extends AbstractCommandListener<Swit
     @Override
     public void handleCommand(SwitchMultilevelReport command) {
         log.debug("Plugin Jwz: Handling switch multilevel report command");
-        actuator.acceptCommand(command);
+        actuator.setState(BinaryState.of(command.getCurrentValue() != 0));
     }
 }

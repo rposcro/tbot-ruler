@@ -3,7 +3,6 @@ package com.tbot.ruler.plugins.jwavez.actuators.switchmultilevel;
 import com.rposcro.jwavez.core.JwzApplicationSupport;
 import com.rposcro.jwavez.core.commands.controlled.ZWaveControlledCommand;
 import com.rposcro.jwavez.core.commands.controlled.builders.switchmultilevel.SwitchMultiLevelCommandBuilder;
-import com.rposcro.jwavez.core.commands.supported.switchmultilevel.SwitchMultilevelReport;
 import com.rposcro.jwavez.core.exceptions.JWaveZException;
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.broker.payload.BinaryClaim;
@@ -61,10 +60,6 @@ public class SwitchMultilevelActuator extends AbstractActuator {
 
     void setState(BinaryState binaryState) {
         actuatorState.updatePayload(binaryState);
-    }
-
-    void acceptCommand(SwitchMultilevelReport report) {
-        this.actuatorState.updatePayload(BinaryState.of(report.getCurrentValue() != 0));
     }
 
     private void consumeBinaryClaimMessage(Message message) {
