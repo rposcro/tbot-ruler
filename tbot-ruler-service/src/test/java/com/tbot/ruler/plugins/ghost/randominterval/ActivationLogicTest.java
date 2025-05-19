@@ -154,4 +154,28 @@ public class ActivationLogicTest {
             return dateTime;
         }
     }
+
+    public static void main(String... args) throws Exception {
+        LocalTime enableTime = LocalTime.now();
+        System.out.println(String.format("Started at %s", LocalTime.now()));
+        RandomActuatorConfiguration configuration = RandomActuatorConfiguration.builder()
+            .enableTime(enableTime)
+            .disableTime(enableTime.plusHours(1))
+            .minActiveTime(1)
+            .maxActiveTime(5)
+            .minBreakTime(2)
+            .maxBreakTime(3)
+            .build();
+        ActivationLogic theLogic = ActivationLogic.builder()
+            .configuration(configuration)
+            .activationListener(state -> {
+                System.out.println(String.format("At %s changed to %s", LocalTime.now(), state));
+            })
+            .build();
+
+        while (true) {
+            theLogic.run();
+            Thread.sleep(5000);
+        }
+    }
 }

@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Slf4j
 @Service
@@ -21,11 +22,12 @@ public class SubjectStateService {
     @Autowired
     private ObjectMapper objectMapper;
 
-    public void persistState(ActuatorState actuatorState) {
+    public ActuatorState persistState(ActuatorState actuatorState) {
         SubjectStateEntity entity = new SubjectStateEntity();
         entity.setSubjectUuid(actuatorState.getActuatorUuid());
         entity.setPayload(objectMapper.valueToTree(actuatorState.getPayload()));
         subjectStatesRepository.save(entity);
+        return actuatorState;
     }
 
     public <T> SubjectState<T> recoverState(String subjectUuid, Class<T> payloadClass) {
@@ -46,17 +48,17 @@ public class SubjectStateService {
         }
     }
 
-    public <T> ActuatorState<T> recoverActuatorState(String subjectUuid, Class<T> payloadClass) {
+    public <T> Optional<ActuatorState<T>> recoverActuatorState(String subjectUuid, Class<T> payloadClass) {
         try {
             SubjectStateEntity stateEntity = subjectStatesRepository.findBySubjectUuid(subjectUuid).orElse(null);
             if (stateEntity != null) {
                 T payload = objectMapper.readerFor(payloadClass).readValue(stateEntity.getPayload());
-                return ActuatorState.<T>builder()
+                return Optional.of(ActuatorState.<T>builder()
                         .actuatorUuid(subjectUuid)
                         .payload(payload)
-                        .build();
+                        .build());
             } else {
-                return null;
+                return Optional.empty();
             }
         } catch(IOException e) {
             log.warn("Failed to recover state for actuator {}", subjectUuid);

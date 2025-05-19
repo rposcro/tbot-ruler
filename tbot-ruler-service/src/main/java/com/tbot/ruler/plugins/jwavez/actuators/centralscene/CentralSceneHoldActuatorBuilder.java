@@ -25,8 +25,10 @@ public class CentralSceneHoldActuatorBuilder extends JWaveZActuatorBuilder {
             .name(actuatorEntity.getName())
             .description(actuatorEntity.getDescription())
             .messagePublisher(rulerThingContext.getMessagePublisher())
+            .stateService(rulerThingContext.getSubjectStateService())
             .minMillisecondsOfHold(configuration.getMinMillisecondsOfHold())
             .maxMillisecondsOfHold(configuration.getMaxMillisecondsOfHold())
+            .mode(configuration.getMode())
             .build();
         pluginContext.getCommandRouteRegistry().registerListener(
                 CentralSceneHoldCommandListener.builder()

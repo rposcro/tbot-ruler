@@ -1,7 +1,6 @@
 package com.tbot.ruler.plugins.ghost.randominterval;
 
 import com.tbot.ruler.plugins.ghost.TimeRange;
-import com.tbot.ruler.plugins.ghost.randominterval.RandomActuatorConfiguration;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -68,6 +67,7 @@ public class ActivationLogic implements Runnable {
     private void setUpInitialState() {
         activated = false;
         nextSwitchDateTime = determineNextActivationTime();
+        log.debug("Initial state set to {}, next switch time {}", activated, nextSwitchDateTime);
     }
 
     private void alignState() {
@@ -102,12 +102,16 @@ public class ActivationLogic implements Runnable {
 
     private long drawActivationPeriod() {
         long maxLength = configuration.getMaxActiveTime() - configuration.getMinActiveTime();
-        return configuration.getMinActiveTime() + (randomTimeGenerator.nextLong() % maxLength);
+        return configuration.getMinActiveTime() + drawLong(maxLength);
     }
 
     private long drawDeactivationPeriod() {
         long maxLength = configuration.getMaxBreakTime() - configuration.getMinBreakTime();
-        return configuration.getMinBreakTime() + (randomTimeGenerator.nextLong() % maxLength);
+        return configuration.getMinBreakTime() + drawLong(maxLength);
+    }
+
+    private long drawLong(long range) {
+        return Math.abs((randomTimeGenerator.nextLong() % range));
     }
 
     private void sendOnMessage() {

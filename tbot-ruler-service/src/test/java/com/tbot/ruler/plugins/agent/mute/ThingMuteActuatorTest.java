@@ -15,6 +15,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -66,10 +68,10 @@ public class ThingMuteActuatorTest {
     @Test
     public void testStateIsRecoveredFromStateRepository() {
         when(stateService.recoverActuatorState(eq("actuator-uuid"), eq(BinaryState.class)))
-            .thenReturn(ActuatorState.<BinaryState>builder()
+            .thenReturn(Optional.of(ActuatorState.<BinaryState>builder()
                 .actuatorUuid("actuator-uuid")
                 .payload(BinaryState.OFF)
-                .build());
+                .build()));
 
         ThingMuteActuator actuator = constructActuator(true);
         assertFalse(actuator.getState().getPayload().isOn());

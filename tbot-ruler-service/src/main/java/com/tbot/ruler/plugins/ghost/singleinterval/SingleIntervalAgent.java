@@ -15,16 +15,11 @@ public class SingleIntervalAgent {
     @Builder
     public SingleIntervalAgent(String actuatorUuid, boolean defaultState, SubjectStateService subjectStateService) {
         this.subjectStateService = subjectStateService;
-
-        ActuatorState<BinaryState> state = subjectStateService.recoverActuatorState(actuatorUuid, BinaryState.class);
-        if (state == null) {
-            state = ActuatorState.<BinaryState>builder()
-                    .actuatorUuid(actuatorUuid)
-                    .payload(BinaryState.of(defaultState))
-                    .build();
-
-        }
-        this.currentState = state;
+        this.currentState = subjectStateService.recoverActuatorState(actuatorUuid, BinaryState.class)
+            .orElse(ActuatorState.<BinaryState>builder()
+                .actuatorUuid(actuatorUuid)
+                .payload(BinaryState.of(defaultState))
+                .build());
     }
 
     public boolean isActivated() {

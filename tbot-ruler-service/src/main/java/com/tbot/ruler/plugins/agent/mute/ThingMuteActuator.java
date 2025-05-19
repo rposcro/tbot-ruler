@@ -11,13 +11,16 @@ import lombok.Getter;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Optional;
+
 @Slf4j
 @Getter
 public class ThingMuteActuator extends AbstractActuator {
 
-    private final ActuatorState<BinaryState> state;
     private final RulerThingContext rulerThingContext;
     private final boolean invertStates;
+
+    private ActuatorState<BinaryState> state;
 
     @Builder
     public ThingMuteActuator(
@@ -29,13 +32,12 @@ public class ThingMuteActuator extends AbstractActuator {
         super(uuid, name, description);
         this.rulerThingContext = rulerThingContext;
         this.invertStates = configuration.isInvertStates();
-        this.state = ActuatorState.<BinaryState>builder().actuatorUuid(uuid).build();
         initState();
     }
 
     @Override
     public ActuatorState<BinaryState> getState() {
-        refreshState();
+        this.state.updatePayload(getThingAgentState());
         return state;
     }
 
@@ -55,19 +57,19 @@ public class ThingMuteActuator extends AbstractActuator {
         log.info("Thing {} onMute flag changed to {}", rulerThingContext.getThingUuid(), isMute);
     }
 
-    private void refreshState() {
-        this.state.updatePayload(
-                BinaryState.of(invertStates ^ rulerThingContext.getRulerThingAgent().isOnMute()));
+    private void initState() {
+        Optional<ActuatorState<BinaryState>> persistedState = rulerThingContext.getSubjectStateService()
+            .recoverActuatorState(getUuid(), BinaryState.class);
+
+        if (persistedState.isPresent()) {
+            this.state = persistedState.get();
+            rulerThingContext.getRulerThingAgent().setOnMute(invertStates ^ state.getPayload().isOn());
+        } else {
+            this.state = ActuatorState.of(uuid, getThingAgentState());
+        }
     }
 
-    private void initState() {
-        ActuatorState<BinaryState> persistedState = rulerThingContext.getSubjectStateService()
-            .recoverActuatorState(getUuid(), BinaryState.class);
-        if (persistedState != null) {
-            state.updatePayload(persistedState.getPayload());
-            rulerThingContext.getRulerThingAgent().setOnMute(invertStates ^ persistedState.getPayload().isOn());
-        } else {
-            refreshState();
-        }
+    private BinaryState getThingAgentState() {
+        return BinaryState.of(invertStates ^ rulerThingContext.getRulerThingAgent().isOnMute());
     }
 }

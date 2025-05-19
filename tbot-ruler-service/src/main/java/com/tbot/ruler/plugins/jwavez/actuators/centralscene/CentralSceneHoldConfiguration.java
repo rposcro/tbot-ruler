@@ -17,4 +17,7 @@ public class CentralSceneHoldConfiguration {
 
     @JsonProperty(defaultValue = "4000")
     private long maxMillisecondsOfHold;
+
+    @JsonProperty(defaultValue = "STATELESS")
+    private CentralSceneActuatorMode mode;
 }
