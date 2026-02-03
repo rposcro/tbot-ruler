@@ -73,7 +73,7 @@ public class SwitchMultilevelActuator extends AbstractActuator {
         try {
             ZWaveControlledCommand command = state ? commandBuilder.v2().buildSetMaximumCommand(switchDuration)
                 : commandBuilder.v2().buildSetMinimumCommand(switchDuration);
-            commandSender.enqueueCommand(nodeId, command);
+            commandSender.enqueuePrioritizedCommand(nodeId, command);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Switch Multilevel Command sending failed!", e);
         }

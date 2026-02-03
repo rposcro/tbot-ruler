@@ -10,7 +10,7 @@ import com.tbot.ruler.jobs.Job;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.atomic.AtomicInteger;
 
 @Slf4j
@@ -22,7 +22,7 @@ public class CommandSender implements Job {
     private SerialRequestFactory serialRequestFactory;
     private long sleepTimeOnNotActiveController;
 
-    private final LinkedBlockingQueue<SerialRequest> requestQueue;
+    private final LinkedBlockingDeque<SerialRequest> requestQueue;
     private final AtomicInteger callbackId;
 
     @Builder
@@ -30,19 +30,16 @@ public class CommandSender implements Job {
         this.serialController = serialController;
         this.serialRequestFactory = JwzSerialSupport.defaultSupport().serialRequestFactory();
         this.sleepTimeOnNotActiveController = 1000;
-        this.requestQueue = new LinkedBlockingQueue<>(100);
+        this.requestQueue = new LinkedBlockingDeque<>(100);
         this.callbackId = new AtomicInteger(1);
     }
 
     public void enqueueCommand(NodeId nodeId, ZWaveControlledCommand command) {
-        SerialRequest request = serialRequestFactory.networkTransportRequestBuilder()
-                .createSendDataRequest(nodeId, command, nextCallbackId());
+        enqueueCommand(nodeId, command, false);
+    }
 
-        if (requestQueue.remainingCapacity() < 1 || !requestQueue.offer(request)) {
-            log.warn("Request queue is full, dropped command {} for node {}", command.getClass(), nodeId.getId());
-        } else {
-            log.debug("Enqueued command request {} to node {}", command.getClass(), nodeId.getId());
-        }
+    public void enqueuePrioritizedCommand(NodeId nodeId, ZWaveControlledCommand command) {
+        enqueueCommand(nodeId, command, true);
     }
 
     @Override
@@ -50,16 +47,28 @@ public class CommandSender implements Job {
         log.info("JWaveZ Command Sender thread is running");
         waitForJwzController();
 
-        while(true) {
-            try {
-                SerialRequest request = requestQueue.take();
-                log.debug("Requested Z-Wave frame to send ...");
-                serialController.sendRequest(request);
-            } catch(SerialException e) {
-                log.error("Exception when sending Z-Wave command!", e);
-            } catch(InterruptedException e) {
-                log.error("Interrupted Z-Wave sender thread sleep!", e);
-            }
+        try {
+            SerialRequest request = requestQueue.take();
+            log.debug("Requested Z-Wave frame to send ...");
+            serialController.sendRequest(request);
+        } catch(SerialException e) {
+            log.error("Exception when sending Z-Wave command!", e);
+        } catch(InterruptedException e) {
+            log.error("Interrupted Z-Wave sender thread sleep!", e);
+        }
+    }
+
+    private void enqueueCommand(NodeId nodeId, ZWaveControlledCommand command, boolean prioritized) {
+        SerialRequest request = serialRequestFactory.networkTransportRequestBuilder()
+            .createSendDataRequest(nodeId, command, nextCallbackId());
+
+        if (requestQueue.remainingCapacity() < 1
+            || (!prioritized && !requestQueue.offer(request))
+            || (prioritized && !requestQueue.offerFirst(request))) {
+            log.warn("Request queue is full, dropped command {} for node {}", command.getClass(), nodeId.getId());
+        } else {
+            log.debug("Enqueued {} command request {} to node {}",
+                prioritized ? "prioritized" : "regular", command.getClass(), nodeId.getId());
         }
     }
 

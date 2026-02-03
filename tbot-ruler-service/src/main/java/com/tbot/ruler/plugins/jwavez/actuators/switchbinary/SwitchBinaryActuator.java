@@ -68,7 +68,7 @@ public class SwitchBinaryActuator extends AbstractActuator {
             if (configuration.isMultiChannelOn()) {
                 command = multiChannelCommandBuilder.v3().encapsulateCommand(SOURCE_ENDPOINT_ID, (byte) configuration.getNodeEndPointId(), command);
             }
-            commandSender.enqueueCommand(NodeId.forId(configuration.getNodeId()), command);
+            commandSender.enqueuePrioritizedCommand(NodeId.forId(configuration.getNodeId()), command);
         } catch(JWaveZException e) {
             throw new MessageProcessingException("Switch Binary Command sending failed!", e);
         }
