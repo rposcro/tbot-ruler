@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicLong;
 @Getter
 public class Message {
 
-    private final static AtomicLong idSequence = new AtomicLong(1);
+    private final static AtomicLong idSequence = new AtomicLong(System.currentTimeMillis());
 
     private final long id;
     private final String senderId;

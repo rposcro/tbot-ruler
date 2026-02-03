@@ -8,6 +8,7 @@ build/
 .gradle/
 *.iml
 *.bak
+/tbot-ruler-console/**/*.bundle
 
 # Local specific files
 /ignore/

@@ -4,6 +4,7 @@ import com.rposcro.jwavez.core.model.CentralSceneKeyAttribute;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.BinaryClaim;
+import com.tbot.ruler.service.things.SubjectStateService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -21,6 +22,9 @@ public class CentralSceneHoldActuatorTest {
 
     @Mock
     private MessagePublisher messagePublisher;
+
+    @Mock
+    private SubjectStateService stateService;
 
     @Test
     public void testMessageIsPublishedWhenHoldDurationIsWithinLimits() {
@@ -63,6 +67,8 @@ public class CentralSceneHoldActuatorTest {
             .minMillisecondsOfHold(minHold)
             .maxMillisecondsOfHold(maxHold)
             .messagePublisher(messagePublisher)
+            .stateService(stateService)
+            .mode(CentralSceneActuatorMode.STATELESS)
             .build();
     }
 }

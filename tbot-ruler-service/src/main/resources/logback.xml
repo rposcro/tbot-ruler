@@ -3,9 +3,13 @@
 
 	<variable name="LOGS_HOME" value="${LOGS_PATH:-./logs}" />
 
+	<conversionRule conversionWord="rmsg"
+					converterClass="com.tbot.ruler.util.logback.MessageSessionContextConverter">
+	</conversionRule>
+
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d %5p %40.40c:%4L - %m%n</pattern>
+			<pattern>%d %5p %40.40c:%4L - %rmsg%m %n</pattern>
 		</encoder>
 	</appender>
 

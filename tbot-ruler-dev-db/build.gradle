@@ -3,9 +3,6 @@ plugins {
     id 'com.palantir.docker-run' version '0.36.0'
 }
 
-project.group = tbotRulerGroup
-project.description = 'TBot Ruler Dev DB'
-
 def imageName = 'tbot-ruler-dev-db'
 
 repositories {
@@ -13,10 +10,20 @@ repositories {
     mavenCentral()
 }
 
+dockerPrepare.doLast {
+    println("Found and used docker file: " + docker.resolvedDockerfile)
+}
+
 docker {
     name "${imageName}"
+
+    buildx true
     noCache true
-    copySpec.from("sql-files").into("sql-files")
+
+    copySpec.with {
+        from("sql-files")
+        into("sql-files")
+    }
 }
 
 dockerRun {

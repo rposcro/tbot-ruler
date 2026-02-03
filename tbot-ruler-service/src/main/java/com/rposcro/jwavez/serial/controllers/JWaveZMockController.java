@@ -56,7 +56,7 @@ public class JWaveZMockController {
         return () -> {
             try {
                 while (!isTerminated.get()) {
-                    Thread.sleep(1000);
+                    Thread.sleep(30_000);
                     processPeriodicCallbacks();
                 }
             } catch(InterruptedException e) {

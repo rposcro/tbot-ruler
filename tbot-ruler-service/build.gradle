@@ -117,8 +117,9 @@ project.artifacts {
 }
 
 docker {
-    name = "${project.name}"
+    name "${project.name}"
     noCache true
+    buildx true
 
     copySpec.with {
         from("build/libs") {
