@@ -13,8 +13,9 @@ public class JobSessionContextConverter extends ClassicConverter {
 
         if (job != null) {
             StringBuilder builder = new StringBuilder()
-                .append("Job<id: ").append(job.getJobName())
-                .append("> - ");
+                .append("Job: ")
+                .append(job.getJobName())
+                .append(" - ");
             return builder.toString();
         }
 

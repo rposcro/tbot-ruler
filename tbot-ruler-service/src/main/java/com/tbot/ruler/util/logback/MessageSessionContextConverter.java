@@ -13,14 +13,14 @@ public class MessageSessionContextConverter extends ClassicConverter {
 
         if (context != null) {
             StringBuilder builder = new StringBuilder()
-                .append("Msg<id: ").append(context.getMessageId())
+                .append("Msg { id: ").append(context.getMessageId())
                 .append(", from: ").append(context.getSenderId());
 
             if (context.getReceiverId() != null) {
                 builder.append(", to: ").append(context.getReceiverId());
             }
 
-            builder.append("> - ");
+            builder.append(" } - ");
             return builder.toString();
         }
 
