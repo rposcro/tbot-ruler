@@ -104,7 +104,7 @@ public class UpdateColorActuator extends AbstractActuator {
     private Job updateRequestJob() {
         return new Job() {
             @Getter
-            private final String name = UpdateColorActuator.class.getSimpleName() + "-Job@" + UpdateColorActuator.this.getUuid();
+            private final String jobName = UpdateColorActuator.class.getSimpleName() + "@" + UpdateColorActuator.this.getUuid();
 
             @Override
             public void doJob() {

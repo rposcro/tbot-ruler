@@ -77,7 +77,7 @@ public class UpdateSwitchBinaryActuator extends AbstractActuator {
     private Job updateRequestJob() {
         return new Job() {
             @Getter
-            private final String name = UpdateSwitchBinaryActuator.class.getSimpleName() + "-Job@" + UpdateSwitchBinaryActuator.this.getUuid();
+            private final String jobName = UpdateSwitchBinaryActuator.class.getSimpleName() + "@" + UpdateSwitchBinaryActuator.this.getUuid();
 
             @Override
             public void doJob() {

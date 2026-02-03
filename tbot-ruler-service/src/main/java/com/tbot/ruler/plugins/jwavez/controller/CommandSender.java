@@ -80,4 +80,9 @@ public class CommandSender implements Job {
     private byte nextCallbackId() {
         return (byte) callbackId.accumulateAndGet(1, (current, add) -> (++current > 250 ? 1 : current));
     }
+
+    @Override
+    public String getJobName() {
+        return "JwzCommandSender";
+    }
 }

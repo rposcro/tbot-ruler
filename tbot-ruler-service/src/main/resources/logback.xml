@@ -7,9 +7,13 @@
 					converterClass="com.tbot.ruler.util.logback.MessageSessionContextConverter">
 	</conversionRule>
 
+	<conversionRule conversionWord="rjob"
+					converterClass="com.tbot.ruler.util.logback.JobSessionContextConverter">
+	</conversionRule>
+
 	<appender name="console" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
-			<pattern>%d %5p %40.40c:%4L - %rmsg%m %n</pattern>
+			<pattern>%d %5p %40.40c:%4L - %rjob%rmsg%m %n</pattern>
 		</encoder>
 	</appender>
 
@@ -21,7 +25,7 @@
 			<totalSizeCap>100MB</totalSizeCap>
 		</rollingPolicy>
 		<encoder>
-			<pattern>%d %5p %40.40c:%4L - %m%n</pattern>
+			<pattern>%d %5p %40.40c:%4L - %rmsg%m%n</pattern>
 		</encoder>
 	</appender>
 

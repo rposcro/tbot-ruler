@@ -40,7 +40,7 @@ public class JobsLifecycleService {
                 runners.add(runner);
                 jobRunnersExecutor.execute(runner);
                 log.info("Job Lifecycle: Started job {} of subject {}",
-                        jobBundle.getJob().getName(), subject.getUuid());
+                        jobBundle.getJob().getJobName(), subject.getUuid());
             }
         }
     }

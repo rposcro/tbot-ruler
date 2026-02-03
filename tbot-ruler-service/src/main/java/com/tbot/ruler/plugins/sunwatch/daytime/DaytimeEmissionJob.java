@@ -49,7 +49,7 @@ public class DaytimeEmissionJob implements Job {
     }
 
     @Override
-    public String getName() {
+    public String getJobName() {
         return jobName;
     }
 }

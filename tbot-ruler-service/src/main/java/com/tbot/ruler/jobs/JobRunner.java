@@ -30,36 +30,42 @@ public class JobRunner implements Runnable {
     @Override
     public final void run() {
         if (!isRunning.compareAndExchange(false, true)) {
-            log.info("Job Runner: {} started", this.job.getName());
+            log.info("Job Runner: {} started", this.job.getJobName());
 
             try {
                 while (shouldContinue()) {
-                    long nextDoJobTime = jobTrigger.nextDoJobTime(triggerContext);
-                    long sleepTime = nextDoJobTime - System.currentTimeMillis();
+                    try {
+                        JobSessionManager.setContext(job);
+                        long nextDoJobTime = jobTrigger.nextDoJobTime(triggerContext);
+                        long sleepTime = nextDoJobTime - System.currentTimeMillis();
 
-                    if (sleepTime > 0) {
-                        log.info("Job Runner: Next emission time for {} is {}", job.getName(), new Date(nextDoJobTime));
-                        Thread.sleep(sleepTime);
+                        if (sleepTime > 0) {
+                            log.info("Job Runner: Next emission time for {} is {}", job.getJobName(),
+                                new Date(nextDoJobTime));
+                            Thread.sleep(sleepTime);
+                        }
+
+                        job.doJob();
+                        triggerContext.setLastScheduledExecutionTime(nextDoJobTime);
+                        triggerContext.setLastCompletionTime(System.currentTimeMillis());
+                    } finally {
+                        JobSessionManager.removeContext();
                     }
-
-                    job.doJob();
-                    triggerContext.setLastScheduledExecutionTime(nextDoJobTime);
-                    triggerContext.setLastCompletionTime(System.currentTimeMillis());
                 }
             } catch(InterruptedException e) {
-                log.info("Job Runner: {} interrupted", job.getName());
+                log.info("Job Runner: {} interrupted", job.getJobName());
             }
 
             isStopping.set(false);
             isRunning.set(false);
-            log.info("Job Runner: {} stopped", job.getName());
+            log.info("Job Runner: {} stopped", job.getJobName());
         } else {
-            log.info("Job Runner: {} is already started", job.getName());
+            log.info("Job Runner: {} is already started", job.getJobName());
         }
     }
 
     public void stop() {
-        log.info("Job Runner: {} stop requested: {}", job.getName());
+        log.info("Job Runner: {} stop requested: {}", job.getJobName());
         isStopping.set(true);
         while(!isStopping.get());
     }

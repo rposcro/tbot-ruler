@@ -7,6 +7,7 @@ import com.tbot.ruler.broker.session.MessageSessionManager;
 import com.tbot.ruler.jobs.Job;
 import com.tbot.ruler.service.things.BindingsService;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,6 +22,9 @@ public class MessagePublishBroker implements Job {
     private final MessageQueueComponent messageQueue;
     private final BindingsService bindingsService;
     private final MessagePublicationManager messagePublicationManager;
+
+    @Getter
+    private final String jobName = MessagePublishBroker.class.getSimpleName();
 
     @Builder
     @Autowired

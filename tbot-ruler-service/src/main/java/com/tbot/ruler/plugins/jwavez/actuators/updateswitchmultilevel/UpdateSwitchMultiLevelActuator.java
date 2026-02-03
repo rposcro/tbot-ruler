@@ -71,7 +71,7 @@ public class UpdateSwitchMultiLevelActuator extends AbstractActuator {
     private Job updateRequestJob() {
         return new Job() {
             @Getter
-            private final String name = UpdateSwitchMultiLevelActuator.class.getSimpleName() + "-Job@" + UpdateSwitchMultiLevelActuator.this.getUuid();
+            private final String jobName = UpdateSwitchMultiLevelActuator.class.getSimpleName() + "@" + UpdateSwitchMultiLevelActuator.this.getUuid();
 
             @Override
             public void doJob() {
