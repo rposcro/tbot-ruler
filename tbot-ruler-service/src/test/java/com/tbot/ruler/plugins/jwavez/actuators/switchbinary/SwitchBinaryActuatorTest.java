@@ -35,7 +35,7 @@ public class SwitchBinaryActuatorTest {
 
         boolean expectedState = stateClaim.isToggle() ? true : stateClaim.isSetOn();
 
-        verify(commandSender, times(1)).enqueueCommand(any(NodeId.class), any(ZWaveControlledCommand.class));
+        verify(commandSender, times(1)).enqueuePrioritizedCommand(any(NodeId.class), any(ZWaveControlledCommand.class));
         assertEquals(expectedState, actuator.getState().getPayload().isOn());
     }
 
@@ -51,7 +51,7 @@ public class SwitchBinaryActuatorTest {
 
         boolean expectedState = stateClaim.isToggle() ? false : stateClaim.isSetOn();
 
-        verify(commandSender, times(1)).enqueueCommand(any(NodeId.class), any(ZWaveControlledCommand.class));
+        verify(commandSender, times(1)).enqueuePrioritizedCommand(any(NodeId.class), any(ZWaveControlledCommand.class));
         assertEquals(expectedState, actuator.getState().getPayload().isOn());
     }
 
@@ -67,7 +67,7 @@ public class SwitchBinaryActuatorTest {
 
         boolean expectedState = stateClaim.isToggle() ? true : stateClaim.isSetOn();
 
-        verify(commandSender, times(1)).enqueueCommand(any(NodeId.class), any(ZWaveControlledCommand.class));
+        verify(commandSender, times(1)).enqueuePrioritizedCommand(any(NodeId.class), any(ZWaveControlledCommand.class));
         assertEquals(expectedState, actuator.getState().getPayload().isOn());
     }
 
