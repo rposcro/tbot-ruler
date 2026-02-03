@@ -40,7 +40,7 @@ public class SunsetActuatorBuilder extends SunWatchActuatorBuilder {
     private Job emissionJob(ActuatorEntity actuatorEntity, RulerThingContext thingContext, SunEventActuatorConfiguration emitterConfiguration) {
         Message message = emitterMessage(actuatorEntity, emitterConfiguration.getSignal());
         return Job.namedJob(
-                "SunWatch-Sunset-Job@" + actuatorEntity.getActuatorUuid(),
+                "SunWatch-Sunset@" + actuatorEntity.getActuatorUuid(),
                 () -> thingContext.getMessagePublisher().publishMessage(message));
     }
 

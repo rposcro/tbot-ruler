@@ -34,7 +34,7 @@ public class CronActuatorBuilder {
     private Job emissionJob(ActuatorEntity actuatorEntity, MessagePublisher messagePublisher) {
         return new Job() {
             @Getter
-            private final String name = CronActuatorBuilder.class.getSimpleName() + "-Job@" + actuatorEntity.getActuatorUuid();
+            private final String jobName = CronActuatorBuilder.class.getSimpleName() + "@" + actuatorEntity.getActuatorUuid();
 
             @Override
             public void doJob() {
