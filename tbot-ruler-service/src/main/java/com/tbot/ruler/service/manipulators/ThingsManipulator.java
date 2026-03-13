@@ -7,6 +7,7 @@ import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.service.lifecycle.ThingsLifecycleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ThingsManipulator {
@@ -20,6 +21,7 @@ public class ThingsManipulator {
     @Autowired
     private ThingsLifecycleService thingsLifecycleService;
 
+    @Transactional
     public ThingEntity createThing(ThingEntity thingEntity) {
         thingEntity = thingsRepository.save(thingEntity);
         thingsLifecycleService.activateThing(thingEntity);

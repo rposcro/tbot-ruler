@@ -81,6 +81,19 @@ project.dependencies {
 
     implementation "org.apache.httpcomponents:httpclient:4.5.5"
     implementation "com.luckycatlabs:SunriseSunsetCalculator:1.2"
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+sourceSets {
+    main {
+        java.srcDirs = ['src/main/java']
+        resources.srcDirs = ['src/main/resources']
+    }
+    test {
+        java.srcDirs = ['src/test/java']
+        resources.srcDirs = ['src/test/resources']
+    }
 }
 
 project.tasks.withType(JavaCompile) {

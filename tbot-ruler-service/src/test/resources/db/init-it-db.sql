@@ -1,0 +1,9 @@
+CREATE SCHEMA IF NOT EXISTS ruler;
+
+CREATE USER IF NOT EXISTS rulerAdmin PASSWORD 'rulerAdminPassword';
+GRANT ALL ON SCHEMA ruler TO rulerAdmin;
+
+CREATE USER IF NOT EXISTS rulerApp PASSWORD 'rulerAppPassword';
+GRANT SELECT, INSERT, UPDATE, DELETE ON SCHEMA ruler TO rulerApp;
+
+
