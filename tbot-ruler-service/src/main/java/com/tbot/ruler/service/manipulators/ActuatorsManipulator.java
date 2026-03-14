@@ -7,6 +7,7 @@ import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.service.lifecycle.ActuatorsLifecycleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class ActuatorsManipulator {
@@ -20,12 +21,14 @@ public class ActuatorsManipulator {
     @Autowired
     private ActuatorsLifecycleService actuatorsLifecycleService;
 
+    @Transactional
     public ActuatorEntity createActuator(ActuatorEntity actuatorEntity) {
         actuatorEntity = actuatorsRepository.save(actuatorEntity);
         actuatorsLifecycleService.activateActuator(actuatorEntity);
         return actuatorEntity;
     }
 
+    @Transactional
     public ActuatorEntity updateActuator(ActuatorEntity actuatorEntity) {
         if (actuatorsLifecycleService.isActuatorActive(actuatorEntity.getActuatorUuid())) {
             actuatorsLifecycleService.deactivateActuator(actuatorEntity);

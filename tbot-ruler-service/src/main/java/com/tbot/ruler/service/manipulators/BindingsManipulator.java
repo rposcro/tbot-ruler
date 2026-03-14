@@ -6,6 +6,7 @@ import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.service.lifecycle.BindingsLifecycleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class BindingsManipulator {
@@ -16,6 +17,7 @@ public class BindingsManipulator {
     @Autowired
     private BindingsLifecycleService bindingsLifecycleService;
 
+    @Transactional
     public void addBinding(String senderUuid, String receiverUuid) {
         if (bindingsRepository.bindingExists(senderUuid, receiverUuid)) {
             throw new LifecycleException("Binding of %s to %s already exists!", senderUuid, receiverUuid);
@@ -31,6 +33,7 @@ public class BindingsManipulator {
         bindingsLifecycleService.reloadCache();
     }
 
+    @Transactional
     public void removeBinding(BindingEntity bindingEntity) {
         bindingsRepository.delete(bindingEntity);
         bindingsLifecycleService.reloadCache();

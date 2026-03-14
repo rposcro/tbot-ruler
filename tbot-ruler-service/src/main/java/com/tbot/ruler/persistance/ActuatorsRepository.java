@@ -53,6 +53,11 @@ public class ActuatorsRepository {
     }
 
     @Transactional
+    public void deleteAll() {
+        crudActuatorsRepository.deleteAll();
+    }
+
+    @Transactional
     public ActuatorEntity save(ActuatorEntity thingEntity) {
         return crudActuatorsRepository.save(thingEntity);
     }

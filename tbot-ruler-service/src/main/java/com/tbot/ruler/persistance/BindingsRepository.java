@@ -48,6 +48,10 @@ public class BindingsRepository extends AbstractRepository<BindingEntity> {
         triggerDeleted(bindingEntity);
     }
 
+    public void deleteAll() {
+        crudBindingsRepository.deleteAll();
+    }
+
     public boolean insert(BindingEntity bindingEntity) {
         if (crudBindingsRepository.save(bindingEntity) == 1) {
             triggerInserted(bindingEntity);

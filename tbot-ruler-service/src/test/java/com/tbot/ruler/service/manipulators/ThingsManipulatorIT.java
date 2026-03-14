@@ -1,36 +1,24 @@
 package com.tbot.ruler.service.manipulators;
 
-import com.fasterxml.jackson.databind.node.TextNode;
 import com.tbot.ruler.BaseIT;
 import com.tbot.ruler.exceptions.LifecycleException;
-import com.tbot.ruler.persistance.ActuatorsRepository;
-import com.tbot.ruler.persistance.ThingsRepository;
+import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.service.lifecycle.ThingsLifecycleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.boot.test.mock.mockito.SpyBean;
-
-import java.util.UUID;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
-import static org.mockito.Mockito.when;
 
 class ThingsManipulatorIT extends BaseIT {
 
     @Autowired
     private ThingsManipulator thingsManipulator;
-
-    @Autowired
-    private ThingsRepository thingsRepository;
-
-    @MockBean
-    private ActuatorsRepository actuatorsRepository;
 
     @SpyBean
     private ThingsLifecycleService thingsLifecycleService;
@@ -68,8 +56,7 @@ class ThingsManipulatorIT extends BaseIT {
 
     @Test
     void removeThing_whenNoActuators_deletesThing() {
-        ThingEntity persistedThing = thingsRepository.save(newThingEntity());
-        when(actuatorsRepository.actuatorsForThingExist(persistedThing.getThingId())).thenReturn(false);
+        ThingEntity persistedThing = insertThing();
 
         thingsManipulator.removeThing(persistedThing);
 
@@ -78,22 +65,14 @@ class ThingsManipulatorIT extends BaseIT {
 
     @Test
     void removeThing_whenActuatorsExist_throwsAndKeepsThing() {
-        ThingEntity persistedThing = thingsRepository.save(newThingEntity());
-        when(actuatorsRepository.actuatorsForThingExist(persistedThing.getThingId())).thenReturn(true);
+        PluginEntity persistedPlugin = insertPlugin();
+        ThingEntity persistedThing = insertThing();
+        insertActuator(persistedPlugin.getPluginId(), persistedThing.getThingId());
 
         assertThatThrownBy(() -> thingsManipulator.removeThing(persistedThing))
             .isInstanceOf(LifecycleException.class)
             .hasMessageContaining("Cannot remove thing");
 
         assertThat(thingsRepository.findByUuid(persistedThing.getThingUuid())).isPresent();
-    }
-
-    private ThingEntity newThingEntity() {
-        return ThingEntity.builder()
-            .thingUuid("thng-" + UUID.randomUUID())
-            .name("Thing Name")
-            .description("Some thing description")
-            .configuration(new TextNode("property"))
-            .build();
     }
 }

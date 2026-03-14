@@ -1,6 +1,5 @@
 package com.tbot.ruler.persistance;
 
-import com.tbot.ruler.persistance.jdbc.CrudActuatorsRepository;
 import com.tbot.ruler.persistance.jdbc.CrudThingsRepository;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +16,6 @@ public class ThingsRepository {
 
     @Autowired
     private CrudThingsRepository crudThingsRepository;
-
-    @Autowired
-    private CrudActuatorsRepository crudActuatorsRepository;
 
     public List<ThingEntity> findAll() {
         List<ThingEntity> entities = StreamSupport.stream(crudThingsRepository.findAll().spliterator(), false)
@@ -40,6 +36,11 @@ public class ThingsRepository {
     @Transactional
     public void delete(ThingEntity thingEntity) {
         crudThingsRepository.delete(thingEntity);
+    }
+
+    @Transactional
+    public void deleteAll() {
+        crudThingsRepository.deleteAll();
     }
 
     @Transactional
