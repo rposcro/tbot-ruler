@@ -8,6 +8,8 @@ import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.service.StructureService;
 import com.tbot.ruler.service.lifecycle.PluginsLifecycleService;
+import com.tbot.ruler.service.manipulators.PluginsManipulator;
+import com.tbot.ruler.subjects.plugin.Plugin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -20,9 +22,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
+
+import static org.springframework.http.ResponseEntity.internalServerError;
 
 @Slf4j
 @RestController
@@ -37,6 +42,10 @@ public class PluginsAdminController extends AbstractController {
 
     @Autowired
     private PluginsRepository pluginsRepository;
+
+    @Autowired
+    private PluginsManipulator pluginsManipulator;
+
     @Autowired
     private PluginsLifecycleService pluginsLifecycleService;
 
@@ -56,12 +65,18 @@ public class PluginsAdminController extends AbstractController {
 
     @PostMapping
     public ResponseEntity<PluginResponse> createPlugin(@RequestBody PluginCreateRequest pluginCreateRequest) {
-        PluginEntity pluginEntity = pluginsRepository.save(PluginEntity.builder()
+        PluginEntity pluginEntity = pluginsManipulator.createPlugin(PluginEntity.builder()
                 .pluginUuid("plgn-" + UUID.randomUUID())
                 .name(pluginCreateRequest.getName())
                 .factoryClass(pluginCreateRequest.getFactoryClass())
                 .configuration(pluginCreateRequest.getConfiguration())
                 .build());
+
+        Plugin plugin = pluginsLifecycleService.getPluginById(pluginEntity.getPluginId());
+        if (plugin == null) {
+            return internalServerError().build();
+        }
+
         return ok(toResponse(pluginEntity));
     }
 
@@ -85,8 +100,8 @@ public class PluginsAdminController extends AbstractController {
     }
 
     private PluginResponse toResponse(PluginEntity entity) {
-        List<String> supportedActuatorReferences = pluginsLifecycleService.getPluginById(entity.getPluginId())
-            .getSupportedActuatorReferences();
+        List<String> supportedActuatorReferences = new ArrayList<>(pluginsLifecycleService.getPluginById(entity.getPluginId())
+            .getSupportedActuatorReferences());
         supportedActuatorReferences.sort(Comparator.naturalOrder());
 
         return PluginResponse.builder()
