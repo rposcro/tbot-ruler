@@ -13,6 +13,6 @@ public class RestClientResponse<T> {
     }
 
     public int getStatusCode() {
-        return entity.getStatusCodeValue();
+        return entity.getStatusCode().value();
     }
 }

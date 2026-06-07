@@ -8,7 +8,7 @@ import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import lombok.Builder;
 import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -42,8 +42,8 @@ public class RestySenderActuator extends AbstractActuator {
         super(uuid, name, description);
         this.restySenderConfiguration = restySenderConfiguration;
         this.restTemplate = new RestTemplateBuilder()
-            .setConnectTimeout(Duration.ofMillis(TIMEOUT_CONNECTION))
-            .setReadTimeout(Duration.ofMillis(TIMEOUT_READ))
+            .connectTimeout(Duration.ofMillis(TIMEOUT_CONNECTION))
+            .readTimeout(Duration.ofMillis(TIMEOUT_READ))
             .build();
     }
 

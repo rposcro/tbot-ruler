@@ -34,7 +34,7 @@ public class WebhooksLifecycleService {
         return webhooksUuidMap.get(webhookUuid);
     }
 
-    public Webhook startUpWebhook(WebhookEntity webhookEntity) {
+    public void startUpWebhook(WebhookEntity webhookEntity) {
         if (webhooksUuidMap.containsKey(webhookEntity.getWebhookUuid())) {
             throw new LifecycleException("Webhook %s is already up", webhookEntity.getWebhookUuid());
         }
@@ -46,10 +46,16 @@ public class WebhooksLifecycleService {
                 .description(webhookEntity.getDescription())
                 .build();
         webhooksUuidMap.put(webhook.getUuid(), webhook);
-        return webhook;
     }
 
-    public Webhook shutDownWebhook(String webhookUuid) {
-        return webhooksUuidMap.remove(webhookUuid);
+    public void shutDownWebhook(String webhookUuid) {
+        webhooksUuidMap.remove(webhookUuid);
+    }
+
+    public void restartWebhook(String webhookUuid) {
+        WebhookEntity webhookEntity = webhooksRepository.findByUuid(webhookUuid)
+                .orElseThrow(() -> new LifecycleException("Cannot remove webhook %s, binding(s) exist(s)!", webhookUuid));
+        shutDownWebhook(webhookUuid);
+        startUpWebhook(webhookEntity);
     }
 }

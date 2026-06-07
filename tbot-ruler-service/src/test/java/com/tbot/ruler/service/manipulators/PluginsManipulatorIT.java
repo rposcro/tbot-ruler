@@ -1,7 +1,11 @@
 package com.tbot.ruler.service.manipulators;
 
-import com.tbot.ruler.BaseIT;
+import com.tbot.ruler.it.ActuatorsHelper;
+import com.tbot.ruler.it.BaseIT;
 import com.tbot.ruler.exceptions.LifecycleException;
+import com.tbot.ruler.it.PluginsHelper;
+import com.tbot.ruler.it.ThingsHelper;
+import com.tbot.ruler.persistance.PluginsRepository;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import org.junit.jupiter.api.Test;
@@ -15,9 +19,21 @@ class PluginsManipulatorIT extends BaseIT {
 	@Autowired
 	private PluginsManipulator pluginsManipulator;
 
+	@Autowired
+	private PluginsHelper pluginsHelper;
+
+	@Autowired
+	private ActuatorsHelper actuatorsHelper;
+
+	@Autowired
+	private ThingsHelper thingsHelper;
+
+	@Autowired
+	private PluginsRepository pluginsRepository;
+
 	@Test
 	void removePlugin_whenNoActuators_deletesPlugin() {
-		PluginEntity plugin = pluginsRepository.save(newPluginEntity());
+		PluginEntity plugin = pluginsHelper.insertPlugin();
 
 		pluginsManipulator.removePlugin(plugin);
 
@@ -26,9 +42,9 @@ class PluginsManipulatorIT extends BaseIT {
 
 	@Test
 	void removePlugin_whenActuatorsExist_throwsAndKeepsPlugin() {
-		PluginEntity plugin = insertPlugin();
-        ThingEntity thing = insertThing();
-        insertActuator(plugin.getPluginId(), thing.getThingId());
+		PluginEntity plugin = pluginsHelper.insertPlugin();
+        ThingEntity thing = thingsHelper.insertThing();
+        actuatorsHelper.insertActuator(plugin.getPluginId(), thing.getThingId());
 
 		assertThatThrownBy(() -> pluginsManipulator.removePlugin(plugin))
 			.isInstanceOf(LifecycleException.class)

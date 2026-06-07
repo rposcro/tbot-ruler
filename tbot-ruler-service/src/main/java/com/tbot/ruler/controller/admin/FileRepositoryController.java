@@ -30,7 +30,7 @@ public class FileRepositoryController extends AbstractController {
     @Autowired
     private JsonRepositoryService jsonRepositoryService;
 
-    @GetMapping(value = "/dump/zip", produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    @GetMapping(value = "/dump/zip", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Resource> getDumpJsonZip() {
         byte[] dumpFile = dumpJsonZipService.dumpToJsonZip();
 

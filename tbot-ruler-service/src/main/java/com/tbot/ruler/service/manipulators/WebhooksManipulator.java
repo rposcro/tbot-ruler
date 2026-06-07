@@ -20,6 +20,11 @@ public class WebhooksManipulator {
     @Autowired
     private WebhooksLifecycleService webhooksLifecycleService;
 
+    public void createWebhook(WebhookEntity webhookEntity) {
+        webhooksRepository.save(webhookEntity);
+        webhooksLifecycleService.startUpWebhook(webhookEntity);
+    }
+
     public void removeWebhook(WebhookEntity webhookEntity) {
         assertConsistency(webhookEntity.getWebhookUuid());
         webhooksLifecycleService.shutDownWebhook(webhookEntity.getWebhookUuid());

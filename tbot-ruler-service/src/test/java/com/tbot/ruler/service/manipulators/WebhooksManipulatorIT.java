@@ -1,47 +1,63 @@
 package com.tbot.ruler.service.manipulators;
 
-import com.tbot.ruler.BaseIT;
+import com.tbot.ruler.it.BaseIT;
 import com.tbot.ruler.exceptions.LifecycleException;
+import com.tbot.ruler.it.BindingsHelper;
+import com.tbot.ruler.it.WebhooksHelper;
+import com.tbot.ruler.persistance.WebhooksRepository;
 import com.tbot.ruler.persistance.model.WebhookEntity;
 import com.tbot.ruler.service.lifecycle.WebhooksLifecycleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.verify;
 
 class WebhooksManipulatorIT extends BaseIT {
 
     @Autowired
     private WebhooksManipulator webhooksManipulator;
 
-    @MockBean
+    @Autowired
     private WebhooksLifecycleService webhooksLifecycleService;
+
+    @Autowired
+    private BindingsHelper bindingsHelper;
+
+    @Autowired
+    private WebhooksHelper webhooksHelper;
+
+    @Autowired
+    private WebhooksRepository webhooksRepository;
 
     @Test
     void removeWebhook_whenNoBindings_shutsDownAndDeletesWebhook() {
-        WebhookEntity webhook = insertWebhook();
+        WebhookEntity webhookEntity = webhooksHelper.newWebhookEntity();
+        String webhookUuid = webhookEntity.getWebhookUuid();
+        webhooksManipulator.createWebhook(webhookEntity);
 
-        webhooksManipulator.removeWebhook(webhook);
+        assertThat(webhooksLifecycleService.getWebhookByUuid(webhookUuid)).isNotNull();
+        assertThat(webhooksRepository.findByUuid(webhookUuid)).isPresent();
 
-        verify(webhooksLifecycleService).shutDownWebhook(webhook.getWebhookUuid());
-        assertThat(webhooksRepository.findByUuid(webhook.getWebhookUuid())).isEmpty();
+        webhooksManipulator.removeWebhook(webhookEntity);
+
+        assertThat(webhooksLifecycleService.getWebhookByUuid(webhookUuid)).isNull();
+        assertThat(webhooksRepository.findByUuid(webhookUuid)).isEmpty();
     }
 
     @Test
     void removeWebhook_whenBindingsExist_throwsAndKeepsWebhook() {
-        WebhookEntity webhook = insertWebhook();
-        insertSenderBinding(webhook.getWebhookUuid());
+        WebhookEntity webhookEntity = webhooksHelper.newWebhookEntity();
+        String webhookUuid = webhookEntity.getWebhookUuid();
+        webhooksManipulator.createWebhook(webhookEntity);
+        bindingsHelper.insertSenderBinding(webhookUuid);
 
-        assertThatThrownBy(() -> webhooksManipulator.removeWebhook(webhook))
+        assertThatThrownBy(() -> webhooksManipulator.removeWebhook(webhookEntity))
             .isInstanceOf(LifecycleException.class)
             .hasMessageContaining("Cannot remove webhook");
 
-        verify(webhooksLifecycleService, never()).shutDownWebhook(webhook.getWebhookUuid());
-        assertThat(webhooksRepository.findByUuid(webhook.getWebhookUuid())).isPresent();
+        assertThat(webhooksLifecycleService.getWebhookByUuid(webhookUuid)).isNotNull();
+        assertThat(webhooksRepository.findByUuid(webhookUuid)).isPresent();
     }
 }
 

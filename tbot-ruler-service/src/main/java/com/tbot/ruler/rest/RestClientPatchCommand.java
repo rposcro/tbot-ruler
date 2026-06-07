@@ -3,7 +3,6 @@ package com.tbot.ruler.rest;
 import java.util.Map;
 
 import lombok.NonNull;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -35,25 +34,23 @@ public class RestClientPatchCommand extends AbstractRestClientCommand {
         this.path = path;
     }
 
-    public RestClientResponse sendPatch(Map<String, String> reqParams) {
-        String uri = uri(toHttpHeaders(reqParams));
+    public RestClientResponse<String> sendPatch(Map<String, String> reqParams) {
+        String uri = uri(toMultivalueMap(reqParams));
         log.debug("Requested patch for: " + uri);
         return executeRequest(() -> {
             RestTemplate restTmpl = newRestTemplate();
             ResponseEntity<String> response = restTmpl.exchange(uri, HttpMethod.PATCH, null, String.class);
-            return new RestClientResponse(response);
+            return new RestClientResponse<>(response);
         });
     }
 
-    private HttpHeaders toHttpHeaders(Map<String, String> params) {
-        HttpHeaders headers = new HttpHeaders();
-        params.forEach((key, value) -> headers.add(key, value));
-        return headers;
+    private MultiValueMap<String, String> toMultivalueMap(Map<String, String> params) {
+        return MultiValueMap.fromSingleValue(params);
     }
 
     private String uri(MultiValueMap<String, String> reqParams) {
-        return UriComponentsBuilder
-                .fromHttpUrl(host)
+        return UriComponentsBuilder.newInstance()
+                .host(host)
                 .port(port)
                 .path(path)
                 .queryParams(reqParams)

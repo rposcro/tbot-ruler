@@ -41,17 +41,17 @@ public class RestClientGetCommand extends AbstractRestClientCommand {
 
     public <T> RestClientResponse<T> sendGet(Class<T> responseType) {
         String uri = uri();
-        log.debug("Requested get for: " + uri);
+        log.debug("Requested get for: {}", uri);
         return executeRequest(() -> {
             RestTemplate restTmpl = newRestTemplate();
             ResponseEntity<T> entity = restTmpl.getForEntity(uri, responseType);
-            return new RestClientResponse(entity);
+            return new RestClientResponse<>(entity);
         });
     }
 
     private String uri() {
-        return UriComponentsBuilder
-                .fromHttpUrl(host)
+        return UriComponentsBuilder.newInstance()
+                .host(host)
                 .port(port)
                 .path(path)
                 .buildAndExpand(reqParams)

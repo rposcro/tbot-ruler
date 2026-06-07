@@ -5,7 +5,7 @@ import java.time.Duration;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.boot.restclient.RestTemplateBuilder;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -22,19 +22,19 @@ public class AbstractRestClientCommand {
 
     protected RestTemplate newRestTemplate() {
         return new RestTemplateBuilder()
-            .setConnectTimeout(Duration.ofMillis(connectionTimeout))
-            .setReadTimeout(Duration.ofMillis(readTimeout))
+            .connectTimeout(Duration.ofMillis(connectionTimeout))
+            .readTimeout(Duration.ofMillis(readTimeout))
             .requestFactory(HttpComponentsClientHttpRequestFactory.class)
             .build();
     }
 
-    protected RestClientResponse executeRequest(Supplier<RestClientResponse> requestExecutor) {
+    protected <T> RestClientResponse<T> executeRequest(Supplier<RestClientResponse<T>> requestExecutor) {
         int retries = 0;
         while (retries++ < retryCount) {
             try {
                 return requestExecutor.get();
             } catch(RestClientException e) {
-                log.info(String.format("Rest request failed, attempt %s of %s! %s", retries, retryCount, e.getMessage()));
+                log.info("Rest request failed, attempt {} of {}! {}", retries, retryCount, e.getMessage());
             }
         }
 

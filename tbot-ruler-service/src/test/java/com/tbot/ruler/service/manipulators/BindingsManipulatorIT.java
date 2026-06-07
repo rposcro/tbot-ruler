@@ -1,12 +1,16 @@
 package com.tbot.ruler.service.manipulators;
 
-import com.tbot.ruler.BaseIT;
+import com.tbot.ruler.it.BaseIT;
 import com.tbot.ruler.exceptions.LifecycleException;
+import com.tbot.ruler.it.BindingsHelper;
+import com.tbot.ruler.persistance.BindingsRepository;
 import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.service.lifecycle.BindingsLifecycleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import java.util.UUID;
 
@@ -19,13 +23,20 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class BindingsManipulatorIT extends BaseIT {
 
     @Autowired
     private BindingsManipulator bindingsManipulator;
 
-    @MockBean
+    @Autowired
+    private BindingsHelper bindingsHelper;
+
+    @MockitoBean
     private BindingsLifecycleService bindingsLifecycleService;
+
+    @MockitoSpyBean
+    protected BindingsRepository bindingsRepository;
 
     @Test
     void addBinding_addsBindingAndReloadsCache() {
@@ -43,7 +54,7 @@ class BindingsManipulatorIT extends BaseIT {
     void addBinding_whenAlreadyExists_throwsAndDoesNotReloadCache() {
         String senderUuid = "snd-" + UUID.randomUUID();
         String receiverUuid = "rcv-" + UUID.randomUUID();
-        insertBinding(senderUuid, receiverUuid);
+        bindingsHelper.insertBinding(senderUuid, receiverUuid);
 
         assertThatThrownBy(() -> bindingsManipulator.addBinding(senderUuid, receiverUuid))
             .isInstanceOf(LifecycleException.class)
@@ -70,7 +81,7 @@ class BindingsManipulatorIT extends BaseIT {
     void removeBinding_deletesBindingAndReloadsCache() {
         String senderUuid = "snd-" + UUID.randomUUID();
         String receiverUuid = "rcv-" + UUID.randomUUID();
-        BindingEntity binding = insertBinding(senderUuid, receiverUuid);
+        BindingEntity binding = bindingsHelper.insertBinding(senderUuid, receiverUuid);
 
         bindingsManipulator.removeBinding(binding);
 
@@ -82,7 +93,7 @@ class BindingsManipulatorIT extends BaseIT {
     void removeBinding_whenCacheReloadFails_keepsBindingInDb() {
         String senderUuid = "snd-" + UUID.randomUUID();
         String receiverUuid = "rcv-" + UUID.randomUUID();
-        BindingEntity binding = insertBinding(senderUuid, receiverUuid);
+        BindingEntity binding = bindingsHelper.insertBinding(senderUuid, receiverUuid);
         doThrow(new RuntimeException("cache reload failed")).when(bindingsLifecycleService).reloadCache();
 
         assertThatThrownBy(() -> bindingsManipulator.removeBinding(binding))

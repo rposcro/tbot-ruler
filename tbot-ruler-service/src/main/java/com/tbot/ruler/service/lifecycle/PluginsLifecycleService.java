@@ -54,7 +54,7 @@ public class PluginsLifecycleService {
         });
     }
 
-    public Plugin activatePlugin(PluginEntity pluginEntity) {
+    public void activatePlugin(PluginEntity pluginEntity) {
         Plugin plugin = pluginFactoryComponent.buildPlugin(pluginEntity);
         plugins.add(plugin);
         pluginsIdMap.put(pluginEntity.getPluginId(), plugin);
@@ -63,6 +63,5 @@ public class PluginsLifecycleService {
         if (plugin.hasJobs()) {
             jobsLifecycleService.startSubjectJobs(plugin);
         }
-        return plugin;
     }
 }

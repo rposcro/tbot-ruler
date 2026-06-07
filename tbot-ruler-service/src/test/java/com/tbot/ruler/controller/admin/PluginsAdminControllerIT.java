@@ -1,10 +1,9 @@
 package com.tbot.ruler.controller.admin;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.TextNode;
-import com.tbot.ruler.BaseIT;
+import com.tbot.ruler.it.BaseIT;
 import com.tbot.ruler.controller.admin.payload.PluginCreateRequest;
-import com.tbot.ruler.service.lifecycle.PluginsLifecycleService;
+import com.tbot.ruler.persistance.PluginsRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -27,7 +26,7 @@ class PluginsAdminControllerIT extends BaseIT {
     private ObjectMapper objectMapper;
 
     @Autowired
-    private PluginsLifecycleService pluginsLifecycleService;
+    private PluginsRepository pluginsRepository;
 
     @Test
     void createPlugin_returns200AndPersistsPlugin() throws Exception {
@@ -35,7 +34,6 @@ class PluginsAdminControllerIT extends BaseIT {
         PluginCreateRequest request = PluginCreateRequest.builder()
             .name("Cron Plugin")
             .factoryClass(FACTORY_CLASS)
-            .configuration(new TextNode("plugin-config"))
             .build();
 
         mockMvc.perform(post("/admin/plugins")
@@ -56,13 +54,12 @@ class PluginsAdminControllerIT extends BaseIT {
         PluginCreateRequest request = PluginCreateRequest.builder()
             .name("Bad Plugin")
             .factoryClass(FAKE_FACTORY_CLASS)
-            .configuration(null)
             .build();
 
         mockMvc.perform(post("/admin/plugins")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(request)))
-            .andExpect(status().isInternalServerError());
+            .andExpect(status().isBadRequest());
     }
 }
 

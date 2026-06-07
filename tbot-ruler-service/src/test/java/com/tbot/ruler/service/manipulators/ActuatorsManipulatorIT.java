@@ -1,14 +1,16 @@
 package com.tbot.ruler.service.manipulators;
 
-import com.tbot.ruler.BaseIT;
+import com.tbot.ruler.it.*;
 import com.tbot.ruler.exceptions.LifecycleException;
+import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.service.lifecycle.ActuatorsLifecycleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -17,13 +19,29 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ActuatorsManipulatorIT extends BaseIT {
 
     @Autowired
     private ActuatorsManipulator actuatorsManipulator;
 
-    @MockBean
+    @MockitoBean
     private ActuatorsLifecycleService actuatorsLifecycleService;
+
+    @Autowired
+    private BindingsHelper bindingsHelper;
+
+    @Autowired
+    private PluginsHelper pluginsHelper;
+
+    @Autowired
+    private ActuatorsHelper actuatorsHelper;
+
+    @Autowired
+    private ThingsHelper thingsHelper;
+
+    @Autowired
+    private ActuatorsRepository actuatorsRepository;
 
     @Test
     void createActuator_createsActuator() {
@@ -68,7 +86,7 @@ class ActuatorsManipulatorIT extends BaseIT {
     @Test
     void removeActuator_whenBindingsExist_throwsAndKeepsActuator() {
         ActuatorEntity persistedActuator = actuatorsRepository.save(newActuatorEntity());
-        insertSenderBinding(persistedActuator.getActuatorUuid());
+        bindingsHelper.insertSenderBinding(persistedActuator.getActuatorUuid());
 
         assertThatThrownBy(() -> actuatorsManipulator.removeActuator(persistedActuator))
             .isInstanceOf(LifecycleException.class)
@@ -89,8 +107,8 @@ class ActuatorsManipulatorIT extends BaseIT {
     }
 
     private ActuatorEntity newActuatorEntity() {
-        ThingEntity thing = thingsRepository.save(newThingEntity());
-        PluginEntity plugin = pluginsRepository.save(newPluginEntity());
-        return newActuatorEntity(plugin.getPluginId(), thing.getThingId());
+        ThingEntity thing = thingsHelper.insertThing();
+        PluginEntity plugin = pluginsHelper.insertPlugin();
+        return actuatorsHelper.newActuatorEntity(plugin.getPluginId(), thing.getThingId());
     }
 }

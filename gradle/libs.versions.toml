@@ -1,0 +1,69 @@
+[versions]
+jwavezVersion = "1.4.0"
+
+fasterXmlVersion = "2.22.0"
+fasterXmlAnnotationVersion = "2.22"
+retrofitVersion = "3.0.0"
+reflectionsVersion = "0.10.2"
+sunriseSunsetCalculatorVersion = "1.2"
+
+junitJupiterVersion = "6.1.0"
+mockitoVersion = "5.23.0"
+assertjVersion = "3.27.7"
+
+
+orgJunitLauncherVersion = "6.0.3"
+orgSlf4jVersion = "1.7.30"
+
+dbH2Version = "2.4.240"
+dbLiquibaseVersion = "5.0.3"
+
+springFrameworkVersion = "7.0.7"
+springBootVersion = "4.0.6"
+lombokPluginVersion = "8.14.2"
+
+[libraries]
+jwavezCore = { module = "com.jwavez:jwavez-core", version.ref = "jwavezVersion" }
+jwavezSerial = { module = "com.jwavez:jwavez-serial", version.ref = "jwavezVersion" }
+
+springBootStarter = { module = "org.springframework.boot:spring-boot-starter" }
+springBootStarterTomcat = { module = "org.springframework.boot:spring-boot-starter-tomcat", version.ref = "springBootVersion" }
+springBootStarterSecurity = { module = "org.springframework.boot:spring-boot-starter-security", version.ref = "springBootVersion" }
+springBootStarterMail = { module = "org.springframework.boot:spring-boot-starter-mail", version.ref = "springBootVersion" }
+springBootStarterDataJdbc = { module = "org.springframework.boot:spring-boot-starter-data-jdbc", version.ref = "springBootVersion" }
+springBootStarterLiquibase = { module = "org.springframework.boot:spring-boot-starter-liquibase", version.ref = "springBootVersion" }
+springBootStarterThymeleaf = { module = "org.springframework.boot:spring-boot-starter-thymeleaf", version.ref = "springBootVersion" }
+springBootRestClient = { module = "org.springframework.boot:spring-boot-restclient", version.ref = "springBootVersion" }
+springWebMvc = { module = "org.springframework:spring-webmvc", version.ref = "springFrameworkVersion" }
+
+fasterXmlCore = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "fasterXmlVersion" }
+fasterXmlAnnotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "fasterXmlAnnotationVersion" }
+fasterXmlDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "fasterXmlVersion" }
+fasterXmlDatatypeJdk8 = { module = "com.fasterxml.jackson.datatype:jackson-datatype-jdk8", version.ref = "fasterXmlVersion" }
+fasterXmlModuleParameterNames = { module = "com.fasterxml.jackson.module:jackson-module-parameter-names", version.ref = "fasterXmlVersion" }
+
+retrofit = { module = "com.squareup.retrofit2:retrofit", version.ref = "retrofitVersion" }
+retrofitConverterGson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofitVersion" }
+retrofitConverterJackson = { module = "com.squareup.retrofit2:converter-jackson", version.ref = "retrofitVersion" }
+reflections = { module = "org.reflections:reflections", version.ref = "reflectionsVersion" }
+sunriseSunsetCalculator = { module = "com.luckycatlabs:SunriseSunsetCalculator", version.ref = "sunriseSunsetCalculatorVersion" }
+
+dbH2 = { module = "com.h2database:h2", version.ref = "dbH2Version" }
+dbLiquibase = { module = "org.liquibase:liquibase-core", version.ref = "dbLiquibaseVersion" }
+
+junitJupiter = { module = "org.junit.jupiter:junit-jupiter", version.ref = "junitJupiterVersion" }
+mockitoCore = { module = "org.mockito:mockito-core", version.ref = "mockitoVersion" }
+mockitoJupiter = { module = "org.mockito:mockito-junit-jupiter", version.ref = "mockitoVersion" }
+assertJ = { module = "org.assertj:assertj-core", version.ref = "assertjVersion" }
+
+springBootStarterTest = { module = "org.springframework.boot:spring-boot-starter-test", version.ref = "springBootVersion" }
+springBootMvcTest = { group = "org.springframework.boot", name = "spring-boot-starter-webmvc-test", version.ref = "springBootVersion" }
+springBootTestContainers = { module = "org.springframework.boot:spring-boot-testcontainers", version.ref = "springBootVersion" }
+springTest = { module = "org.springframework:spring-test", version.ref = "springFrameworkVersion" }
+
+[plugins]
+application = { id = "application" }
+java = { id = "java" }
+mavenPublish = { id = "maven-publish" }
+springBoot = { id = "org.springframework.boot", version.ref = "springBootVersion" }
+lombok = { id = "io.freefair.lombok", version.ref = "lombokPluginVersion" }

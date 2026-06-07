@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -18,25 +17,21 @@ public class ActuatorsRepository {
     private CrudActuatorsRepository crudActuatorsRepository;
 
     public List<ActuatorEntity> findAll() {
-        List<ActuatorEntity> entities = StreamSupport.stream(crudActuatorsRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
-        return entities;
+        return StreamSupport.stream(crudActuatorsRepository.findAll().spliterator(), false)
+                .toList();
     }
 
     public Optional<ActuatorEntity> findById(long actuatorId) {
-        Optional<ActuatorEntity> actuatorEntity = crudActuatorsRepository.findById(actuatorId);
-        return actuatorEntity;
+        return crudActuatorsRepository.findById(actuatorId);
     }
 
     public Optional<ActuatorEntity> findByUuid(String actuatorUuid) {
-        Optional<ActuatorEntity> actuatorEntity = crudActuatorsRepository.findByUuid(actuatorUuid);
-        return actuatorEntity;
+        return crudActuatorsRepository.findByUuid(actuatorUuid);
     }
 
     public List<ActuatorEntity> findByThingId(long thingId) {
-        List<ActuatorEntity> entities = StreamSupport.stream(crudActuatorsRepository.findByThingId(thingId).spliterator(), false)
-                .collect(Collectors.toList());
-        return entities;
+        return StreamSupport.stream(crudActuatorsRepository.findByThingId(thingId).spliterator(), false)
+                .toList();
     }
 
     public boolean actuatorsForThingExist(long thingId) {

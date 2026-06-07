@@ -1,13 +1,18 @@
 package com.tbot.ruler.service.manipulators;
 
-import com.tbot.ruler.BaseIT;
+import com.tbot.ruler.it.ActuatorsHelper;
+import com.tbot.ruler.it.BaseIT;
 import com.tbot.ruler.exceptions.LifecycleException;
+import com.tbot.ruler.it.PluginsHelper;
+import com.tbot.ruler.it.ThingsHelper;
+import com.tbot.ruler.persistance.ThingsRepository;
 import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.service.lifecycle.ThingsLifecycleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.mock.mockito.SpyBean;
+import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -15,17 +20,30 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
 
+@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ThingsManipulatorIT extends BaseIT {
 
     @Autowired
     private ThingsManipulator thingsManipulator;
 
-    @SpyBean
+    @MockitoSpyBean
     private ThingsLifecycleService thingsLifecycleService;
+
+    @Autowired
+    private PluginsHelper pluginsHelper;
+
+    @Autowired
+    private ActuatorsHelper actuatorsHelper;
+
+    @Autowired
+    private ThingsHelper thingsHelper;
+
+    @Autowired
+    private ThingsRepository thingsRepository;
 
     @Test
     void createThing_createsThing() {
-        ThingEntity thingEntity = newThingEntity();
+        ThingEntity thingEntity = thingsHelper.newThingEntity();
 
         doCallRealMethod().when(thingsLifecycleService).activateThing(any(ThingEntity.class));
 
@@ -43,7 +61,7 @@ class ThingsManipulatorIT extends BaseIT {
 
     @Test
     void createThing_whenActivateThingThrows_doesNotPersistThing() {
-        ThingEntity thingEntity = newThingEntity();
+        ThingEntity thingEntity = thingsHelper.newThingEntity();
 
         doThrow(new RuntimeException("activation failed")).when(thingsLifecycleService).activateThing(any(ThingEntity.class));
 
@@ -56,7 +74,7 @@ class ThingsManipulatorIT extends BaseIT {
 
     @Test
     void removeThing_whenNoActuators_deletesThing() {
-        ThingEntity persistedThing = insertThing();
+        ThingEntity persistedThing = thingsHelper.insertThing();
 
         thingsManipulator.removeThing(persistedThing);
 
@@ -65,9 +83,9 @@ class ThingsManipulatorIT extends BaseIT {
 
     @Test
     void removeThing_whenActuatorsExist_throwsAndKeepsThing() {
-        PluginEntity persistedPlugin = insertPlugin();
-        ThingEntity persistedThing = insertThing();
-        insertActuator(persistedPlugin.getPluginId(), persistedThing.getThingId());
+        PluginEntity persistedPlugin = pluginsHelper.insertPlugin();
+        ThingEntity persistedThing = thingsHelper.insertThing();
+        actuatorsHelper.insertActuator(persistedPlugin.getPluginId(), persistedThing.getThingId());
 
         assertThatThrownBy(() -> thingsManipulator.removeThing(persistedThing))
             .isInstanceOf(LifecycleException.class)
