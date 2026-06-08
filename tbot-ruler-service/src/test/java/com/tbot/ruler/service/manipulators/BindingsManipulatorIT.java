@@ -8,7 +8,6 @@ import com.tbot.ruler.persistance.model.BindingEntity;
 import com.tbot.ruler.service.lifecycle.BindingsLifecycleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
@@ -23,7 +22,6 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class BindingsManipulatorIT extends BaseIT {
 
     @Autowired

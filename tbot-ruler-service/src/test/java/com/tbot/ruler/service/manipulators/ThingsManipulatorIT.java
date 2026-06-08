@@ -11,7 +11,6 @@ import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.service.lifecycle.ThingsLifecycleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoSpyBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -20,7 +19,6 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doCallRealMethod;
 import static org.mockito.Mockito.doThrow;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ThingsManipulatorIT extends BaseIT {
 
     @Autowired

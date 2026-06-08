@@ -9,7 +9,6 @@ import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.service.lifecycle.ActuatorsLifecycleService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -19,7 +18,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_CLASS)
 class ActuatorsManipulatorIT extends BaseIT {
 
     @Autowired
