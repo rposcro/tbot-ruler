@@ -6,6 +6,7 @@ import com.tbot.ruler.controller.admin.payload.ActuatorResponse;
 import com.tbot.ruler.controller.admin.payload.BindingResponse;
 import com.tbot.ruler.controller.admin.payload.WebhookResponse;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -53,7 +54,7 @@ public class BindingsCreateDialog extends Dialog {
         this.assignButton = constructAssignButton(bindHandler);
 
         setHeaderTitle("Create Binding");
-        setModal(true);
+        setModality(ModalityMode.VISUAL);
         setResizable(true);
         setDraggable(true);
         setWidth("80%");

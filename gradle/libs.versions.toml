@@ -11,16 +11,14 @@ junitJupiterVersion = "6.1.0"
 mockitoVersion = "5.23.0"
 assertjVersion = "3.27.7"
 
-
-orgJunitLauncherVersion = "6.0.3"
-orgSlf4jVersion = "1.7.30"
-
+dbMariaVersion = "3.5.8"
 dbH2Version = "2.4.240"
 dbLiquibaseVersion = "5.0.3"
 
 springFrameworkVersion = "7.0.7"
 springBootVersion = "4.0.6"
 lombokPluginVersion = "8.14.2"
+vaadinPluginVersion = "25.1.6"
 
 [libraries]
 jwavezCore = { module = "com.jwavez:jwavez-core", version.ref = "jwavezVersion" }
@@ -36,6 +34,8 @@ springBootStarterThymeleaf = { module = "org.springframework.boot:spring-boot-st
 springBootRestClient = { module = "org.springframework.boot:spring-boot-restclient", version.ref = "springBootVersion" }
 springWebMvc = { module = "org.springframework:spring-webmvc", version.ref = "springFrameworkVersion" }
 
+vaadinSpringBootStarter = { module = "com.vaadin:vaadin-spring-boot-starter", version.ref = "vaadinPluginVersion" }
+
 fasterXmlCore = { module = "com.fasterxml.jackson.core:jackson-core", version.ref = "fasterXmlVersion" }
 fasterXmlAnnotations = { module = "com.fasterxml.jackson.core:jackson-annotations", version.ref = "fasterXmlAnnotationVersion" }
 fasterXmlDatabind = { module = "com.fasterxml.jackson.core:jackson-databind", version.ref = "fasterXmlVersion" }
@@ -48,6 +48,7 @@ retrofitConverterJackson = { module = "com.squareup.retrofit2:converter-jackson"
 reflections = { module = "org.reflections:reflections", version.ref = "reflectionsVersion" }
 sunriseSunsetCalculator = { module = "com.luckycatlabs:SunriseSunsetCalculator", version.ref = "sunriseSunsetCalculatorVersion" }
 
+dbMaria = { module = "org.mariadb.jdbc:mariadb-java-client", version.ref = "dbMariaVersion" }
 dbH2 = { module = "com.h2database:h2", version.ref = "dbH2Version" }
 dbLiquibase = { module = "org.liquibase:liquibase-core", version.ref = "dbLiquibaseVersion" }
 
@@ -67,3 +68,4 @@ java = { id = "java" }
 mavenPublish = { id = "maven-publish" }
 springBoot = { id = "org.springframework.boot", version.ref = "springBootVersion" }
 lombok = { id = "io.freefair.lombok", version.ref = "lombokPluginVersion" }
+vaadin = { id = "com.vaadin", version.ref = "vaadinPluginVersion" }

@@ -8,6 +8,7 @@ import com.tbot.ruler.controller.admin.payload.ActuatorResponse;
 import com.tbot.ruler.controller.admin.payload.PluginResponse;
 import com.tbot.ruler.controller.admin.payload.ThingResponse;
 import com.vaadin.flow.component.HasValue;
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -57,7 +58,7 @@ public class ActuatorEditDialog extends AbstractEditDialog<ActuatorEditDialog> {
         this.original = original;
 
         setHeaderTitle(updateMode ? "Edit Actuator" : "Create Actuator");
-        setModal(true);
+        setModality(ModalityMode.VISUAL);
         setWidth("60%");
 
         setUpFormFields();

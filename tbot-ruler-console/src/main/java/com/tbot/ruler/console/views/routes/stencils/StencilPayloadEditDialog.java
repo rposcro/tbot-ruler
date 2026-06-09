@@ -7,6 +7,7 @@ import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandl
 import com.tbot.ruler.console.views.validation.FormValidator;
 import com.tbot.ruler.controller.admin.payload.StencilResponse;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,7 +31,7 @@ public class StencilPayloadEditDialog extends AbstractEditDialog<StencilPayloadE
         this.txtJson = new JsonEditor("Stencil Payload", originalStencil.getPayload());
 
         setHeaderTitle("Edit Stencil Payload");
-        setModal(true);
+        setModality(ModalityMode.VISUAL);
         setWidth("90%");
         setHeight("90%");
 

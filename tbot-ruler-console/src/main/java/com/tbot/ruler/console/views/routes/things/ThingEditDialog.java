@@ -6,6 +6,7 @@ import com.tbot.ruler.console.views.components.AbstractEditDialog;
 import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
 import com.tbot.ruler.console.views.validation.FormValidator;
 import com.tbot.ruler.controller.admin.payload.ThingResponse;
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextField;
@@ -41,7 +42,7 @@ public class ThingEditDialog extends AbstractEditDialog<ThingEditDialog> {
         this.original = original;
 
         setHeaderTitle(updateMode ? "Edit Thing" : "Create Thing");
-        setModal(true);
+        setModality(ModalityMode.VISUAL);
         setWidth("60%");
 
         setUpFormFields();

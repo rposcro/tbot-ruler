@@ -1,10 +1,10 @@
 pluginManagement {
     repositories {
-        gradlePluginPortal()
         mavenCentral()
+        gradlePluginPortal()
     }
 }
 
 rootProject.name = "tbot-ruler"
 
-include ("tbot-ruler-service")
+include ("tbot-ruler-service", "tbot-ruler-console")

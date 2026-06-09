@@ -8,7 +8,7 @@ import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.grid.contextmenu.GridMenuItem;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
-import com.vaadin.flow.component.html.Hr;
+
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -72,7 +72,7 @@ public class EntityFilterableGrid<T> extends Grid<T> {
     }
 
     public void addContextMenuDivider() {
-        contextMenu().add(new Hr());
+        contextMenu().addSeparator();
     }
 
     public GridListDataView<T> setItems(List<T> items) {

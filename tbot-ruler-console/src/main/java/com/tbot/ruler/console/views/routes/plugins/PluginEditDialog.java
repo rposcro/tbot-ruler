@@ -6,6 +6,7 @@ import com.tbot.ruler.console.views.components.AbstractEditDialog;
 import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandler;
 import com.tbot.ruler.console.views.validation.FormValidator;
 import com.tbot.ruler.controller.admin.payload.PluginResponse;
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -45,7 +46,7 @@ public class PluginEditDialog extends AbstractEditDialog<PluginEditDialog> {
         this.original = original;
 
         setHeaderTitle(updateMode ? "Edit Plugin" : "Create Plugin");
-        setModal(true);
+        setModality(ModalityMode.VISUAL);
         setWidth("60%");
 
         setUpFormFields();

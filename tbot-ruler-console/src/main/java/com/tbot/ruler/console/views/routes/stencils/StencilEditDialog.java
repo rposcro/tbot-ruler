@@ -5,6 +5,7 @@ import com.tbot.ruler.console.views.components.handlers.EditDialogSubmittedHandl
 import com.tbot.ruler.console.views.validation.FormValidator;
 import com.tbot.ruler.controller.admin.payload.StencilResponse;
 import com.vaadin.flow.component.Component;
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import lombok.Builder;
@@ -37,7 +38,7 @@ public class StencilEditDialog extends AbstractEditDialog<StencilEditDialog> {
         this.originalStencil = originalStencil;
 
         setHeaderTitle(updateMode ? "Edit Stencil" : "Create Stencil");
-        setModal(true);
+        setModality(ModalityMode.VISUAL);
         setWidth("60%");
 
         setUpFormFields();
