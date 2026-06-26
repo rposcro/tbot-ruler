@@ -16,7 +16,7 @@ dbH2Version = "2.4.240"
 dbLiquibaseVersion = "5.0.3"
 
 springFrameworkVersion = "7.0.7"
-springBootVersion = "4.0.6"
+springBootVersion = "4.0.7"
 lombokPluginVersion = "8.14.2"
 vaadinPluginVersion = "25.1.6"
 
