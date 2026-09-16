@@ -11,9 +11,11 @@ public class DaytimeActuatorConfiguration {
     @JsonProperty(defaultValue = "5")
     private long emissionInterval;
 
+    // In minutes
     @JsonProperty(defaultValue = "0")
     private long sunriseShift;
 
+    // In minutes
     @JsonProperty(defaultValue = "0")
     private long sunsetShift;
 
