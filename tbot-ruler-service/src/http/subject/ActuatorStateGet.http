@@ -1,5 +1,5 @@
 ### Get actuator state
 # @name = ActuatorStateGet
 
-GET http://{{host-tbot-ruler}}/actuators/actr-74401291-6954-4235-8e47-72dc4c784926/state
+GET http://{{host-tbot-ruler}}/actuators/actr-46cf18b4-55b5-4e39-8444-7b474f857ad5/state
 Content-Type: application/json

@@ -3,9 +3,11 @@ package com.tbot.ruler.broker;
 import com.tbot.ruler.broker.model.MessagePublicationReport;
 import com.tbot.ruler.broker.model.MessagePublicationReport.publicationReportBuilder;
 import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.session.MessageSessionManager;
 import com.tbot.ruler.jobs.Job;
 import com.tbot.ruler.service.things.BindingsService;
 import lombok.Builder;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -20,6 +22,9 @@ public class MessagePublishBroker implements Job {
     private final MessageQueueComponent messageQueue;
     private final BindingsService bindingsService;
     private final MessagePublicationManager messagePublicationManager;
+
+    @Getter
+    private final String jobName = MessagePublishBroker.class.getSimpleName();
 
     @Builder
     @Autowired
@@ -40,6 +45,8 @@ public class MessagePublishBroker implements Job {
             }
         } catch(RuntimeException e) {
             log.error("Message Dispatch: Interrupted by unexpected internal error", e);
+        } finally {
+            MessageSessionManager.removeContext();
         }
     }
 
@@ -56,7 +63,8 @@ public class MessagePublishBroker implements Job {
             receivers.stream()
                 .forEach(receiverId -> {
                     try {
-                        log.debug("Message Dispatch: Delivering from {} to {}", message.getSenderId(), receiverId);
+                        MessageSessionManager.setContext(message, receiverId);
+                        log.debug("Message Dispatch: Delivering ...");
                         if (deliverMessage(message, receiverId)) {
                             reportBuilder.successfulReceiver(receiverId);
                         } else {
@@ -64,7 +72,7 @@ public class MessagePublishBroker implements Job {
                         }
                     } catch(Exception e) {
                         reportBuilder.failedReceiver(receiverId);
-                        log.error("Message Dispatch: Failed to deliver from " + message.getSenderId() + " to " + receiverId, e);
+                        log.error("Message Dispatch: Failed to deliver", e);
                     }
                 });
         }
@@ -83,7 +91,7 @@ public class MessagePublishBroker implements Job {
     private boolean deliverMessage(Message message, String receiverUuid) {
         MessageReceiver messageReceiver = bindingsService.findReceiverByUuid(receiverUuid);
         if (messageReceiver == null) {
-            log.warn("Message Dispatch: No active receiver found for uuid {}", receiverUuid);
+            log.warn("Message Dispatch: No active receiver found!");
             return false;
         }
         messageReceiver.acceptMessage(message);

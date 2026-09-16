@@ -1,6 +1,8 @@
 package com.tbot.ruler.service.lifecycle;
 
+import com.tbot.ruler.exceptions.LifecycleException;
 import com.tbot.ruler.persistance.ThingsRepository;
+import com.tbot.ruler.persistance.model.ThingEntity;
 import com.tbot.ruler.subjects.thing.RulerThing;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,19 +45,26 @@ public class ThingsLifecycleService {
         return thingsUuidMap.get(uuid);
     }
 
+    public void activateThing(ThingEntity thingEntity) {
+        if (thingsUuidMap.containsKey(thingEntity.getThingUuid())) {
+            throw new LifecycleException("Things' Lifecycle: Thing already active %s %s",
+                thingEntity.getThingUuid(), thingEntity.getName());
+        }
+
+        RulerThing thing = thingFactoryComponent.buildThing(thingEntity);
+        things.add(thing);
+        thingsIdMap.put(thingEntity.getThingId(), thing);
+        thingsUuidMap.put(thingEntity.getThingUuid(), thing);
+
+        if (thing.hasJobs()) {
+            jobsLifecycleService.startSubjectJobs(thing);
+        }
+    }
+
     public void activateAllThings() {
         things = new LinkedList<>();
         thingsIdMap = new HashMap<>();
         thingsUuidMap = new HashMap<>();
-        thingsRepository.findAll().forEach(thingEntity -> {
-            RulerThing thing = thingFactoryComponent.buildThing(thingEntity);
-            things.add(thing);
-            thingsIdMap.put(thingEntity.getThingId(), thing);
-            thingsUuidMap.put(thingEntity.getThingUuid(), thing);
-
-            if (thing.hasJobs()) {
-                jobsLifecycleService.startSubjectJobs(thing);
-            }
-        });
+        thingsRepository.findAll().forEach(this::activateThing);
     }
 }

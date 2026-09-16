@@ -2,7 +2,6 @@ package com.tbot.ruler.plugins.email;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
-import com.tbot.ruler.plugins.agent.AgentActuatorBuilder;
 import com.tbot.ruler.subjects.plugin.Plugin;
 import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import com.tbot.ruler.subjects.plugin.PluginsUtil;
@@ -12,11 +11,10 @@ import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Builder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
 @Slf4j
 public class EmailPlugin extends AbstractSubject implements Plugin {
@@ -46,18 +44,22 @@ public class EmailPlugin extends AbstractSubject implements Plugin {
         builder.destroyActuator(actuator);
     }
 
+    @Override
+    public List<String> getSupportedActuatorReferences() {
+        return buildersMap.keySet().stream().collect(Collectors.toList());
+    }
+
     private Actuator buildActuator(ActuatorEntity actuatorEntity) {
         EmailActuatorBuilder actuatorBuilder = buildersMap.get(actuatorEntity.getReference());
         if (actuatorBuilder == null) {
             log.error("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
             throw new PluginException("Unknown actuator reference " + actuatorEntity.getReference() + ", skipping this entity");
         }
-        EmailSenderConfiguration senderConfiguration = parseConfiguration(
-                rulerPluginContext.getPluginConfiguration(), EmailSenderConfiguration.class);
-
+        EmailPluginConfiguration emailPluginConfiguration = rulerPluginContext.getPluginConfigurationDeserializer()
+            .parseConfiguration(rulerPluginContext.getPluginConfiguration(), EmailPluginConfiguration.class);
         return actuatorBuilder.buildActuator(
                 actuatorEntity,
                 rulerPluginContext,
-                senderConfiguration);
+                emailPluginConfiguration);
     }
 }

@@ -4,6 +4,7 @@ import com.tbot.ruler.controller.AbstractController;
 import com.tbot.ruler.controller.admin.payload.ActuatorResponse;
 import com.tbot.ruler.controller.admin.payload.ActuatorCreateRequest;
 import com.tbot.ruler.controller.admin.payload.ActuatorUpdateRequest;
+import com.tbot.ruler.controller.admin.payload.LifecycleAction;
 import com.tbot.ruler.persistance.ActuatorsRepository;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.persistance.model.PluginEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -49,6 +51,12 @@ public class ActuatorsAdminController extends AbstractController {
                 .toList());
     }
 
+    @GetMapping("/{actuatorUuid}")
+    public ResponseEntity<ActuatorResponse> getActuator(@PathVariable final String actuatorUuid) {
+        return ok(toResponse(subjectsAccessor.findActuator(actuatorUuid)));
+
+    }
+
     @PostMapping
     public ResponseEntity<ActuatorResponse> createActuator(@RequestBody ActuatorCreateRequest actuatorCreateRequest) {
         PluginEntity pluginEntity = subjectsAccessor.findPlugin(actuatorCreateRequest.getPluginUuid());
@@ -73,6 +81,7 @@ public class ActuatorsAdminController extends AbstractController {
         ActuatorEntity actuatorEntity = subjectsAccessor.findActuator(actuatorUuid);
         ThingEntity thingEntity = subjectsAccessor.findThing(actuatorUpdateRequest.getThingUuid());
         actuatorEntity.setName(actuatorUpdateRequest.getName());
+        actuatorEntity.setReference(actuatorUpdateRequest.getReference());
         actuatorEntity.setDescription(actuatorUpdateRequest.getDescription());
         actuatorEntity.setConfiguration(actuatorUpdateRequest.getConfiguration());
         actuatorEntity.setThingId(thingEntity.getThingId());
@@ -84,6 +93,19 @@ public class ActuatorsAdminController extends AbstractController {
     public ResponseEntity<ActuatorResponse> deleteActuator(@PathVariable String actuatorUuid) {
         ActuatorEntity actuatorEntity = subjectsAccessor.findActuator(actuatorUuid);
         actuatorsManipulator.removeActuator(actuatorEntity);
+        return ok(toResponse(actuatorEntity));
+    }
+
+    @PatchMapping("/{actuatorUuid}/lifecycle")
+    public ResponseEntity<ActuatorResponse> executeLifecycleAction(
+        @PathVariable String actuatorUuid,
+        @RequestParam(value = "action") LifecycleAction action) {
+        ActuatorEntity actuatorEntity = subjectsAccessor.findActuator(actuatorUuid);
+        if (action == LifecycleAction.ACTIVATE && !actuatorsLifecycleService.isActuatorActive(actuatorUuid)) {
+            actuatorsLifecycleService.activateActuator(actuatorEntity);
+        } else if (action == LifecycleAction.DEACTIVATE && actuatorsLifecycleService.isActuatorActive(actuatorUuid)) {
+            actuatorsLifecycleService.deactivateActuator(actuatorEntity);
+        }
         return ok(toResponse(actuatorEntity));
     }
 

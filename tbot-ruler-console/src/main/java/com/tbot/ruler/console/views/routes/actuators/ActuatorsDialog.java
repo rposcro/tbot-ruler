@@ -4,6 +4,7 @@ import com.tbot.ruler.console.accessors.model.ActuatorModel;
 import com.tbot.ruler.console.accessors.model.BindingModel;
 import com.tbot.ruler.console.views.components.EntityGrid;
 import com.tbot.ruler.console.views.routes.webhooks.WebhooksDashboard;
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.dialog.Dialog;
 import com.vaadin.flow.component.grid.Grid;
@@ -29,7 +30,7 @@ public class ActuatorsDialog extends Dialog {
         this.actuatorsGrid = constructActuatorsGrid();
 
         setHeaderTitle(title);
-        setModal(true);
+        setModality(ModalityMode.VISUAL);
         setWidth("60%");
         setHeight("60%");
 

@@ -6,18 +6,21 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
+import com.vaadin.flow.component.grid.contextmenu.GridMenuItem;
 import com.vaadin.flow.component.grid.dataview.GridListDataView;
-import com.vaadin.flow.component.html.Hr;
+
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 import com.vaadin.flow.component.textfield.TextFieldVariant;
+import com.vaadin.flow.data.selection.SelectionEvent;
 import com.vaadin.flow.data.value.ValueChangeMode;
 import com.vaadin.flow.function.ValueProvider;
 import lombok.Builder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -31,6 +34,7 @@ public class EntityFilterableGrid<T> extends Grid<T> {
 
     private GridListDataView<T> dataView;
     private GridContextMenu<T> contextMenu;
+    private List<GridMenuItem<?>> contextMenuItems;
 
     @Builder
     public EntityFilterableGrid(Class<?> beanType, String[] properties) {
@@ -54,6 +58,8 @@ public class EntityFilterableGrid<T> extends Grid<T> {
                     filterValue -> gridFilter.setFilterValue(property, filterValue),
                     false);
         });
+
+        addSelectionListener(e -> this.selectionChanged(e));
     }
 
     public void setSelectHandler(Consumer<T> selectHandler) {
@@ -61,11 +67,12 @@ public class EntityFilterableGrid<T> extends Grid<T> {
     }
 
     public void addContextMenuAction(String name, Consumer<T> actionHandler) {
-        contextMenu().addItem(name, event -> event.getItem().ifPresent(actionHandler::accept));
+        GridMenuItem<?> menuItem = contextMenu().addItem(name, event -> event.getItem().ifPresent(actionHandler::accept));
+        contextMenuItems.add(menuItem);
     }
 
     public void addContextMenuDivider() {
-        contextMenu().add(new Hr());
+        contextMenu().addSeparator();
     }
 
     public GridListDataView<T> setItems(List<T> items) {
@@ -80,6 +87,7 @@ public class EntityFilterableGrid<T> extends Grid<T> {
             contextMenu.addGridContextMenuOpenedListener(event -> {
                 event.getItem().ifPresent(this::select);
             });
+            contextMenuItems = new ArrayList<>();
         }
         return contextMenu;
     }
@@ -128,5 +136,13 @@ public class EntityFilterableGrid<T> extends Grid<T> {
 
     private void filterChanged() {
         dataView.refreshAll();
+    }
+
+    private void selectionChanged(SelectionEvent<Grid<T>, T> event) {
+        boolean enabled = !event.getAllSelectedItems().isEmpty();
+        if (contextMenuItems != null) {
+            contextMenuItems.stream()
+                .forEach(item -> item.setEnabled(enabled));
+        }
     }
 }

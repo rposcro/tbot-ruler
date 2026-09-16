@@ -1,5 +1,6 @@
 package com.tbot.ruler.console.views.components;
 
+import com.vaadin.flow.component.ModalityMode;
 import com.vaadin.flow.component.dialog.Dialog;
 import lombok.Getter;
 import lombok.Setter;
@@ -11,7 +12,7 @@ public class PromptDialog<T> extends Dialog {
     private T promptedObject;
 
     public PromptDialog() {
-        setModal(true);
+        setModality(ModalityMode.VISUAL);
         setDraggable(true);
         setResizable(false);
         setWidth("auto");

@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.context.event.ApplicationEnvironmentPreparedEvent;
 import org.springframework.context.ApplicationListener;
 import org.springframework.core.env.ConfigurableEnvironment;
+import org.springframework.core.env.MapPropertySource;
 
 @Slf4j
 public class RulerApplicationListener implements ApplicationListener<ApplicationEnvironmentPreparedEvent> {
@@ -11,16 +12,16 @@ public class RulerApplicationListener implements ApplicationListener<Application
     @Override
     public void onApplicationEvent(ApplicationEnvironmentPreparedEvent event) {
         ConfigurableEnvironment environment = event.getEnvironment();
-        logProperty(environment, "spring.config.location");
-        logProperty(environment, "spring.config.name");
-        logProperty(environment, "spring.thymeleaf.prefix");
-        logProperty(environment, "spring.thymeleaf.suffix");
-        logProperty(environment, "spring.thymeleaf.mode");
-        logProperty(environment, "spring.thymeleaf.servlet.content-type");
-        logProperty(environment, "ruler.jsonRepository.path");
+        environment.getSystemProperties().forEach((key, value) -> log.debug("{}: {}", key, value));
+        environment.getPropertySources().stream()
+            .filter(ps -> ps instanceof MapPropertySource)
+            .map(ps -> ((MapPropertySource) ps))
+            .forEach(this::logPropertySource);
     }
 
-    private static void logProperty(ConfigurableEnvironment environment, String propertyName) {
-        log.info("{}: {}", propertyName, environment.getProperty(propertyName));
+    private void logPropertySource(MapPropertySource source) {
+        StringBuffer logLine = new StringBuffer("Properties from " + source.getName() + ":");
+        source.getSource().forEach((key, value) -> logLine.append("\t" + key + ":" + value + "\n"));
+        log.debug(logLine.toString());
     }
 }

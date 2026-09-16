@@ -6,7 +6,7 @@ import com.vaadin.flow.component.grid.GridVariant;
 import com.vaadin.flow.component.grid.HeaderRow;
 import com.vaadin.flow.component.grid.contextmenu.GridContextMenu;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.html.Hr;
+
 import com.vaadin.flow.component.html.NativeLabel;
 import com.vaadin.flow.function.ValueProvider;
 
@@ -53,7 +53,7 @@ public class EntityGrid<T> extends Grid<T> {
     }
 
     public void addContextMenuDivider() {
-        contextMenu().add(new Hr());
+        contextMenu().addSeparator();
     }
 
     private GridContextMenu<T> contextMenu() {

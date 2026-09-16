@@ -55,7 +55,7 @@ public class ActuatorsLifecycleService {
         actuatorsRepository.findAll().forEach(actuatorEntity -> {
             try {
                 activateActuator(actuatorEntity);
-            } catch(PluginException e) {
+            } catch(Exception e) {
                 log.error("Actuators' Lifecycle: Failed to start up actuator " + actuatorEntity.getActuatorUuid(), e);
             }
         });

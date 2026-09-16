@@ -40,4 +40,12 @@ public class ActuatorsAccessor {
     public void deleteActuator(String actuatorUuid) {
         actuatorsClient.deleteActuator(actuatorUuid);
     }
+
+    public void activateActuator(String actuatorUuid) {
+        actuatorsClient.activateActuator(actuatorUuid);
+    }
+
+    public void deactivateActuator(String actuatorUuid) {
+        actuatorsClient.deactivateActuator(actuatorUuid);
+    }
 }

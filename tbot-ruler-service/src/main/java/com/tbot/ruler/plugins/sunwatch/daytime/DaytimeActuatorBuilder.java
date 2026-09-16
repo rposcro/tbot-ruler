@@ -6,7 +6,7 @@ import com.tbot.ruler.plugins.sunwatch.SunWatchActuatorBuilder;
 import com.tbot.ruler.plugins.sunwatch.SunCalculator;
 import com.tbot.ruler.plugins.sunwatch.SunLocale;
 import com.tbot.ruler.subjects.actuator.Actuator;
-import com.tbot.ruler.subjects.actuator.BasicActuator;
+import com.tbot.ruler.subjects.actuator.BasicReceiverActuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
@@ -26,7 +26,7 @@ public class DaytimeActuatorBuilder extends SunWatchActuatorBuilder {
         DaytimeEmissionJobTrigger emissionJobTrigger = emissionJobTrigger(actuatorConfiguration, sunCalculator);
         DaytimeEmissionJob emissionJob = emissionJob(actuatorEntity, thingContext, sunCalculator, actuatorConfiguration);
 
-        return BasicActuator.builder()
+        return BasicReceiverActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
                 .description(actuatorEntity.getDescription())

@@ -7,4 +7,4 @@ rm -f /var/lock/LCK..jwavez*
 
 # And now go on with the service
 echo starting tbot ruler service
-java -Duser.timezone=Europe/Warsaw -jar tbot-ruler-service.jar
+exec java -Duser.timezone=Europe/Warsaw -jar tbot-ruler-service.jar

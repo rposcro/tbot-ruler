@@ -15,7 +15,16 @@ import lombok.Setter;
 public class CronActuatorConfiguration {
 
     @JsonProperty(required = true)
-    private String schedulePattern;
+    private String switchOnSchedule;
+
+    @JsonProperty(required = true)
+    private String switchOffSchedule;
+
+    @JsonProperty(defaultValue = "off")
+    private String defaultState;
+
+    @JsonProperty(defaultValue = "5")
+    private long emissionInterval;
 
     @JsonProperty(required = true)
     private String timeZone;

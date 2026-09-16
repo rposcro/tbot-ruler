@@ -7,7 +7,10 @@ public interface FieldValidator<T extends Component> {
     static final String HIGHLIGHT_COLOR = "#ff8080";
 
     T getComponent();
+
     String getMessage();
+
     boolean checkRule();
+
     void highlight(boolean on);
 }

@@ -2,6 +2,7 @@ package com.tbot.ruler.console.views.validation;
 
 import com.tbot.ruler.console.exceptions.ViewRenderException;
 import com.tbot.ruler.console.utils.FormUtils;
+import com.tbot.ruler.console.views.components.JsonEditor;
 import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.component.textfield.TextArea;
 import com.vaadin.flow.component.textfield.TextFieldBase;
@@ -59,6 +60,22 @@ public class FormValidator {
                 .rule(() -> {
                     try {
                         FormUtils.asJsonNode(formField.getValue());
+                        return true;
+                    } catch(ViewRenderException e) {
+                        return false;
+                    }
+                })
+                .build());
+        return this;
+    }
+
+    public FormValidator validJson(JsonEditor formField) {
+        fieldValidators.add(CustomFieldValidator.builder()
+                .component(formField)
+                .message(formField.getLabel() + " must be a valid json")
+                .rule(() -> {
+                    try {
+                        FormUtils.asJsonNode(formField.getJsonString());
                         return true;
                     } catch(ViewRenderException e) {
                         return false;

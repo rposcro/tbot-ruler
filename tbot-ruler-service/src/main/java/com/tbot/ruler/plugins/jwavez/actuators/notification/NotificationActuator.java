@@ -3,7 +3,7 @@ package com.tbot.ruler.plugins.jwavez.actuators.notification;
 import com.rposcro.jwavez.core.commands.supported.notification.NotificationReport;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import lombok.Builder;
 import lombok.Getter;
@@ -34,12 +34,12 @@ public class NotificationActuator extends AbstractActuator {
 
     public void acceptNotification(NotificationReport notificationReport) {
         int event = notificationReport.getNotificationEvent();
-        OnOffState payload;
+        BinaryClaim payload;
 
         if (isOnEvent(event)) {
-            payload = OnOffState.STATE_ON;
+            payload = BinaryClaim.SET_ON;
         } else if (isOffEvent(event)) {
-            payload = OnOffState.STATE_OFF;
+            payload = BinaryClaim.SET_OFF;
         } else {
             log.info("Unsupported notification event {}. Skipped.", event);
             return;

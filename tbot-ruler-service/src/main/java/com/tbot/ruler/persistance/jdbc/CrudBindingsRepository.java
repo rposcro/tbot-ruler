@@ -32,6 +32,10 @@ public interface CrudBindingsRepository extends Repository<BindingEntity, Void> 
     void delete(BindingEntity entity);
 
     @Modifying
+    @Query("DELETE FROM bindings")
+    void deleteAll();
+
+    @Modifying
     @Query("INSERT INTO bindings (sender_uuid, receiver_uuid) VALUES (:#{#entity.senderUuid}, :#{#entity.receiverUuid})")
     int save(BindingEntity entity);
 }

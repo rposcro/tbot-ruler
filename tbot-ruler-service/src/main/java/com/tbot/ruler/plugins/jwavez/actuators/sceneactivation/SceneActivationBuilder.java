@@ -1,9 +1,12 @@
 package com.tbot.ruler.plugins.jwavez.actuators.sceneactivation;
 
+import com.tbot.ruler.broker.model.Message;
+import com.tbot.ruler.broker.payload.BinaryClaim;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
 import com.tbot.ruler.plugins.jwavez.JWaveZActuatorBuilder;
 import com.tbot.ruler.plugins.jwavez.JWaveZPluginContext;
 import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.actuator.BasicSenderActuator;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 
 import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
@@ -17,17 +20,19 @@ public class SceneActivationBuilder extends JWaveZActuatorBuilder {
     }
 
     @Override
-    public SceneActivationActuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
+    public BasicSenderActuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext) {
         SceneActivationConfiguration configuration = parseConfiguration(actuatorEntity.getConfiguration(), SceneActivationConfiguration.class);
-        SceneActivationActuator actuator = SceneActivationActuator.builder()
+        Message toggleMessage = Message.builder()
+            .senderId(actuatorEntity.getActuatorUuid())
+            .payload(BinaryClaim.TOGGLE)
+            .build();
+        BasicSenderActuator actuator = BasicSenderActuator.builder()
             .uuid(actuatorEntity.getActuatorUuid())
             .name(actuatorEntity.getName())
             .description(actuatorEntity.getDescription())
             .messagePublisher(rulerThingContext.getMessagePublisher())
-            .sceneId((byte) configuration.getSceneId())
-            .sourceNodeId((byte) configuration.getNodeId())
-            .build()
-            .init();
+            .messageSupplier(() -> toggleMessage)
+            .build();
         pluginContext.getCommandRouteRegistry().registerListener(
                 SceneActivationCommandListener.builder()
                         .actuator(actuator)

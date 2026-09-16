@@ -1,30 +1,39 @@
 package com.tbot.ruler.service.lifecycle;
 
+import com.tbot.ruler.exceptions.LifecycleException;
 import com.tbot.ruler.persistance.model.PluginEntity;
+import com.tbot.ruler.service.plugins.PluginConfigurationDeserializer;
 import com.tbot.ruler.subjects.plugin.PluginFactory;
 import com.tbot.ruler.subjects.plugin.Plugin;
 import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import static java.lang.String.format;
 
 @Slf4j
 @Component
 public class PluginFactoryComponent {
 
+    @Autowired
+    private PluginConfigurationDeserializer pluginConfigurationDeserializer;
+
     public Plugin buildPlugin(PluginEntity pluginEntity) {
         try {
             RulerPluginContext context = RulerPluginContext.builder()
-                    .pluginUuid(pluginEntity.getPluginUuid())
-                    .pluginName(pluginEntity.getName())
-                    .pluginConfiguration(pluginEntity.getConfiguration())
-                    .build();
+                .pluginUuid(pluginEntity.getPluginUuid())
+                .pluginName(pluginEntity.getName())
+                .pluginConfiguration(pluginEntity.getConfiguration())
+                .pluginConfigurationDeserializer(pluginConfigurationDeserializer)
+                .build();
             PluginFactory factory = instantiateFactory(pluginEntity);
             Plugin plugin = factory.producePlugin(context);
             log.info("Built plugin {}", plugin.getUuid());
             return plugin;
         } catch(ReflectiveOperationException e) {
             log.error("Failed to complete plugin builder of " + pluginEntity.getPluginUuid(), e);
-            return null;
+            throw new LifecycleException(format("Failed to complete plugin builder of %s!", pluginEntity.getName()));
         }
     }
 

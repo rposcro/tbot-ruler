@@ -2,16 +2,14 @@ package com.tbot.ruler.plugins.email.sender;
 
 import com.tbot.ruler.exceptions.PluginException;
 import com.tbot.ruler.persistance.model.ActuatorEntity;
+import com.tbot.ruler.plugins.email.EmailPluginConfiguration;
 import com.tbot.ruler.subjects.plugin.RulerPluginContext;
 import com.tbot.ruler.plugins.email.EmailActuatorBuilder;
-import com.tbot.ruler.plugins.email.EmailSenderConfiguration;
 import com.tbot.ruler.subjects.actuator.Actuator;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 
 import java.util.Properties;
-
-import static com.tbot.ruler.subjects.plugin.PluginsUtil.parseConfiguration;
 
 public class EmailSenderActuatorBuilder extends EmailActuatorBuilder {
 
@@ -21,11 +19,13 @@ public class EmailSenderActuatorBuilder extends EmailActuatorBuilder {
 
     @Override
     public Actuator buildActuator(
-            ActuatorEntity actuatorEntity,
-            RulerPluginContext rulerPluginContext,
-            EmailSenderConfiguration emailSenderConfiguration) throws PluginException {
-        EmailConfiguration emailConfiguration = parseConfiguration(actuatorEntity.getConfiguration(), EmailConfiguration.class);
-        JavaMailSender emailSender = buildEmailSender(emailSenderConfiguration);
+        ActuatorEntity actuatorEntity,
+        RulerPluginContext rulerPluginContext,
+        EmailPluginConfiguration emailPluginConfiguration) throws PluginException
+    {
+        EmailConfiguration emailConfiguration = rulerPluginContext.getPluginConfigurationDeserializer()
+            .parseConfiguration(actuatorEntity.getConfiguration(), EmailConfiguration.class);
+        JavaMailSender emailSender = buildEmailSender(emailPluginConfiguration);
         return EmailSenderActuator.builder()
                 .uuid(actuatorEntity.getActuatorUuid())
                 .name(actuatorEntity.getName())
@@ -35,7 +35,7 @@ public class EmailSenderActuatorBuilder extends EmailActuatorBuilder {
                 .build();
     }
 
-    private JavaMailSender buildEmailSender(EmailSenderConfiguration configuration) {
+    private JavaMailSender buildEmailSender(EmailPluginConfiguration configuration) {
         JavaMailSenderImpl mailSender = new JavaMailSenderImpl();
         mailSender.setHost(configuration.getMailSenderHost());
         mailSender.setPort(configuration.getMailSenderPort());

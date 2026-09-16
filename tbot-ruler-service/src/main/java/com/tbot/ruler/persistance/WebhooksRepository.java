@@ -8,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
@@ -18,19 +17,16 @@ public class WebhooksRepository extends AbstractRepository<WebhookEntity> {
     private CrudWebhooksRepository crudWebhooksRepository;
 
     public List<WebhookEntity> findAll() {
-        List<WebhookEntity> entities = StreamSupport.stream(crudWebhooksRepository.findAll().spliterator(), false)
-                .collect(Collectors.toList());
-        return entities;
+        return StreamSupport.stream(crudWebhooksRepository.findAll().spliterator(), false)
+                .toList();
     }
 
     public Optional<WebhookEntity> findById(long webhookId) {
-        Optional<WebhookEntity> entity = crudWebhooksRepository.findById(webhookId);
-        return entity;
+        return crudWebhooksRepository.findById(webhookId);
     }
 
     public Optional<WebhookEntity> findByUuid(String webhookUuid) {
-        Optional<WebhookEntity> entity = crudWebhooksRepository.findByUuid(webhookUuid);
-        return entity;
+        return crudWebhooksRepository.findByUuid(webhookUuid);
     }
 
     @Transactional

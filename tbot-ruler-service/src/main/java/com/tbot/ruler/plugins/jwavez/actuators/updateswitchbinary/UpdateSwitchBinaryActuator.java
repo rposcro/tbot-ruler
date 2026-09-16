@@ -8,12 +8,11 @@ import com.rposcro.jwavez.core.commands.supported.binaryswitch.BinarySwitchRepor
 import com.rposcro.jwavez.core.model.NodeId;
 import com.tbot.ruler.broker.MessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.jobs.Job;
 import com.tbot.ruler.jobs.JobBundle;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
-import com.tbot.ruler.subjects.AbstractSubject;
-import com.tbot.ruler.subjects.actuator.Actuator;
+import com.tbot.ruler.subjects.actuator.AbstractActuator;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NonNull;
@@ -24,7 +23,7 @@ import java.util.Collections;
 
 @Slf4j
 @Getter
-public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actuator {
+public class UpdateSwitchBinaryActuator extends AbstractActuator {
 
     private final static int MIN_POLL_INTERVAL = 120;
 
@@ -63,7 +62,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
     public void acceptCommand(BinarySwitchReport report) {
         messagePublisher.publishMessage(Message.builder()
                 .senderId(this.getUuid())
-                .payload(OnOffState.of(report.getValue() != 0))
+                .payload(BinaryState.of(report.getValue() != 0))
                 .build());
     }
 
@@ -78,7 +77,7 @@ public class UpdateSwitchBinaryActuator extends AbstractSubject implements Actua
     private Job updateRequestJob() {
         return new Job() {
             @Getter
-            private final String name = UpdateSwitchBinaryActuator.class.getSimpleName() + "-Job@" + UpdateSwitchBinaryActuator.this.getUuid();
+            private final String jobName = UpdateSwitchBinaryActuator.class.getSimpleName() + "@" + UpdateSwitchBinaryActuator.this.getUuid();
 
             @Override
             public void doJob() {

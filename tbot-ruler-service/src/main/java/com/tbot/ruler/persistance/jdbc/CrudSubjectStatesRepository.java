@@ -26,7 +26,7 @@ public interface CrudSubjectStatesRepository extends Repository<SubjectStateEnti
     int insert(String subjectUuid, JsonNode payload);
 
     @Modifying
-    @Query("UPDATE subject_states SET payload = :#{#entity.payload) WHERE subject_uuid = :#{#entity.subjectUuid}")
+    @Query("UPDATE subject_states SET payload = :#{#entity.payload} WHERE subject_uuid = :#{#entity.subjectUuid}")
     int update(SubjectStateEntity entity);
 
     @Modifying

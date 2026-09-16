@@ -1,4 +1,4 @@
-FROM --platform=linux/amd64 amazoncorretto:17-alpine
+FROM --platform=linux/amd64 amazoncorretto:21-alpine
 
 WORKDIR /data
 WORKDIR /logs

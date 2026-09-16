@@ -34,7 +34,7 @@ public class DaytimeEmissionJob implements Job {
         this.sunCalculator = sunCalculator;
         this.messagePublisher = messagePublisher;
         this.actuatorUuid = actuatorUuid;
-        this.jobName = "SunWatch-Daytime-Job@" + actuatorUuid;
+        this.jobName = "SunWatch-Daytime@" + actuatorUuid;
         this.emissionLock = new Semaphore(1);
     }
 
@@ -49,7 +49,7 @@ public class DaytimeEmissionJob implements Job {
     }
 
     @Override
-    public String getName() {
+    public String getJobName() {
         return jobName;
     }
 }

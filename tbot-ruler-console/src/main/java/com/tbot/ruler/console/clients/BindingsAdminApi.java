@@ -5,7 +5,6 @@ import com.tbot.ruler.controller.admin.payload.BindingDeleteRequest;
 import com.tbot.ruler.controller.admin.payload.BindingResponse;
 import retrofit2.Call;
 import retrofit2.http.Body;
-import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.POST;
@@ -25,8 +24,8 @@ public interface BindingsAdminApi {
     Call<List<BindingResponse>> getReceiverBindings(@Path("receiverUuid") String receiverUuid);
 
     @POST("admin/bindings")
-    Call<BindingResponse> createThing(@Body BindingCreateRequest request);
+    Call<BindingResponse> createBinding(@Body BindingCreateRequest request);
 
     @HTTP(method = "DELETE", path = "admin/bindings", hasBody = true)
-    Call<BindingResponse> deleteThing(@Body BindingDeleteRequest request);
+    Call<BindingResponse> deleteBinding(@Body BindingDeleteRequest request);
 }

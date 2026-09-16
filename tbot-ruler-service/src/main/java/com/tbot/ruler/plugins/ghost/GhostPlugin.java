@@ -12,6 +12,7 @@ import com.tbot.ruler.subjects.thing.RulerThingContext;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -51,6 +52,11 @@ public class GhostPlugin extends AbstractSubject implements Plugin {
             throw new PluginException("Unknown builder reference " + reference);
         }
         builder.destroyActuator(actuator);
+    }
+
+    @Override
+    public List<String> getSupportedActuatorReferences() {
+        return ACTUATORS_BUILDERS.keySet().stream().collect(Collectors.toList());
     }
 
     private Actuator buildActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext, GhostPluginContext ghostPluginContext) {

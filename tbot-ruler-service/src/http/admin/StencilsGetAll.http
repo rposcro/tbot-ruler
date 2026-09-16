@@ -1,0 +1,5 @@
+### Get all stencils in DB
+# @name = StencilsGetAll
+
+GET http://{{host-tbot-ruler}}/admin/stencils
+Content-Type: application/json

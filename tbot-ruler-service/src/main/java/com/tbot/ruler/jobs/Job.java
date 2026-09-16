@@ -4,7 +4,7 @@ public interface Job {
 
     void doJob() throws InterruptedException;
 
-    default String getName() {
+    default String getJobName() {
         return this.toString();
     }
 
@@ -16,7 +16,7 @@ public interface Job {
             }
 
             @Override
-            public String getName() {
+            public String getJobName() {
                 return name;
             }
         };

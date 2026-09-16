@@ -6,6 +6,8 @@ import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.Subject;
 import com.tbot.ruler.subjects.thing.RulerThingContext;
 
+import java.util.List;
+
 public interface Plugin extends Subject {
 
     Actuator startUpActuator(ActuatorEntity actuatorEntity, RulerThingContext rulerThingContext);
@@ -13,4 +15,6 @@ public interface Plugin extends Subject {
     default void stopActuator(Actuator actuator, String reference) {
         throw new PluginException("Function not implemented for plugin " + this.getName());
     }
+
+    List<String> getSupportedActuatorReferences();
 }

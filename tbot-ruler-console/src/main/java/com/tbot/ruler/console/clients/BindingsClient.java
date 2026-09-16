@@ -29,7 +29,7 @@ public class BindingsClient extends AbstractApiClient {
     }
 
     public void createBinding(String senderUuid, String receiverUuid) {
-        executeApiFunction(() -> bindingsAdminApi.createThing(BindingCreateRequest.builder()
+        executeApiFunction(() -> bindingsAdminApi.createBinding(BindingCreateRequest.builder()
                         .senderUuid(senderUuid)
                         .receiverUuid(receiverUuid)
                         .build())
@@ -37,7 +37,7 @@ public class BindingsClient extends AbstractApiClient {
     }
 
     public void deleteBinding(String senderUuid, String receiverUuid) {
-        executeApiFunction(() -> bindingsAdminApi.deleteThing(BindingDeleteRequest.builder()
+        executeApiFunction(() -> bindingsAdminApi.deleteBinding(BindingDeleteRequest.builder()
                         .senderUuid(senderUuid)
                         .receiverUuid(receiverUuid)
                         .build())

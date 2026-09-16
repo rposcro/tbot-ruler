@@ -18,9 +18,9 @@ public abstract class EmailActuatorBuilder {
     }
 
     public abstract Actuator buildActuator(
-            ActuatorEntity actuatorEntity,
-            RulerPluginContext rulerPluginContext,
-            EmailSenderConfiguration emailSenderConfiguration) throws PluginException;
+        ActuatorEntity actuatorEntity,
+        RulerPluginContext rulerPluginContext,
+        EmailPluginConfiguration emailPluginConfiguration) throws PluginException;
 
     public void destroyActuator(Actuator actuator) {
         log.info("No custom destroy action implemented for actuator builder {}", getClass().getName());

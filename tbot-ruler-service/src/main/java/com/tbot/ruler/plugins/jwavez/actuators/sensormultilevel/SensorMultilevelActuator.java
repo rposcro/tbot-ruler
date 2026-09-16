@@ -33,8 +33,9 @@ public class SensorMultilevelActuator extends AbstractActuator {
     }
 
     public void acceptCommand(SensorMultilevelReport report) {
-        log.debug("Received multilevel report from {} for {}", report.getSourceNodeId(), getUuid());
+        log.debug("Jwz Plugin: Received multilevel report from {} for {}", report.getSourceNodeId(), getUuid());
         Measure measure = extractMeasure(report);
+        log.debug("Jwz Plugin: Measure is {}", measure);
         messagePublisher.publishMessage(Message.builder()
                 .senderId(getUuid())
                 .payload(measure)

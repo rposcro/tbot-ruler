@@ -1,4 +1,0 @@
-plugins {
-//    id 'tbot-ruler.java-conventions'
-    id 'groovy-gradle-plugin'
-}

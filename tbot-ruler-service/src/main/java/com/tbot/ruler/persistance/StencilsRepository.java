@@ -31,6 +31,11 @@ public class StencilsRepository {
     }
 
     @Transactional
+    public void delete(StencilEntity stencilEntity) {
+        crudStencilsRepository.delete(stencilEntity);
+    }
+
+    @Transactional
     public StencilEntity save(StencilEntity stencilEntity) {
         return crudStencilsRepository.save(stencilEntity);
     }

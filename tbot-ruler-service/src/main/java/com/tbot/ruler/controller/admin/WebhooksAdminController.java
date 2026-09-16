@@ -6,6 +6,7 @@ import com.tbot.ruler.controller.admin.payload.WebhookResponse;
 import com.tbot.ruler.controller.admin.payload.WebhookUpdateRequest;
 import com.tbot.ruler.persistance.WebhooksRepository;
 import com.tbot.ruler.persistance.model.WebhookEntity;
+import com.tbot.ruler.service.lifecycle.WebhooksLifecycleService;
 import com.tbot.ruler.service.manipulators.WebhooksManipulator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,6 +37,9 @@ public class WebhooksAdminController extends AbstractController {
     @Autowired
     private WebhooksManipulator webhooksManipulator;
 
+    @Autowired
+    private WebhooksLifecycleService webhooksLifecycleService;
+
     @GetMapping("/owners")
     public ResponseEntity<List<String>> getFactories() {
         return ok(List.of("tbot-panel"));
@@ -54,7 +58,7 @@ public class WebhooksAdminController extends AbstractController {
                 .owner(webhookCreateRequest.getOwner())
                 .description(webhookCreateRequest.getDescription())
                 .build();
-        webhookEntity = webhooksRepository.save(webhookEntity);
+        webhooksManipulator.createWebhook(webhookEntity);
         return ok(toResponse(webhookEntity));
     }
 
@@ -66,6 +70,7 @@ public class WebhooksAdminController extends AbstractController {
         webhookEntity.setName(webhookUpdateRequest.getName());
         webhookEntity.setDescription(webhookUpdateRequest.getDescription());
         webhookEntity = webhooksRepository.save(webhookEntity);
+        webhooksLifecycleService.restartWebhook(webhookUuid);
         return ok(toResponse(webhookEntity));
     }
 

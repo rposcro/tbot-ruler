@@ -10,7 +10,6 @@ import com.tbot.ruler.broker.model.Message;
 import com.tbot.ruler.broker.payload.RGBWColor;
 import com.tbot.ruler.plugins.jwavez.controller.CommandSender;
 import com.tbot.ruler.subjects.actuator.AbstractActuator;
-import com.tbot.ruler.subjects.actuator.Actuator;
 import com.tbot.ruler.subjects.actuator.ActuatorState;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,7 +18,7 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Getter
-public class SwitchColorActuator extends AbstractActuator implements Actuator {
+public class SwitchColorActuator extends AbstractActuator {
 
     private final static String PERSISTENCE_KEY = "rgbw";
 
@@ -51,15 +50,7 @@ public class SwitchColorActuator extends AbstractActuator implements Actuator {
 
     @Override
     public void acceptMessage(Message message) {
-        try {
-            RGBWColor payload = message.getPayloadAs(RGBWColor.class);
-            log.debug(String.format("Color switch requested: r%s g%s b%s w%s", payload.getRed(), payload.getGreen(), payload.getBlue(), payload.getWhite()));
-            ZWaveControlledCommand command = buildCommand(payload);
-            commandSender.enqueueCommand(NodeId.forId(configuration.getNodeId()), command);
-            actuatorState.updatePayload(payload);
-        } catch(JWaveZException e) {
-            throw new MessageProcessingException("Command send failed!", e);
-        }
+        consumeMessage(message, RGBWColor.class, this::consumeRGBWColorMessage);
     }
 
     @Override
@@ -67,18 +58,30 @@ public class SwitchColorActuator extends AbstractActuator implements Actuator {
         return actuatorState;
     };
 
-    public void setState(RGBWColor color) {
+    protected void setState(RGBWColor color) {
         this.actuatorState.updatePayload(color);
+    }
+
+    private void consumeRGBWColorMessage(Message message) {
+        try {
+            RGBWColor payload = message.getPayloadAs(RGBWColor.class);
+            log.debug(String.format("Color switch requested by actuator %s: r%s g%s b%s w%s", this.getUuid(), payload.getRed(), payload.getGreen(), payload.getBlue(), payload.getWhite()));
+            ZWaveControlledCommand command = buildCommand(payload);
+            commandSender.enqueueCommand(NodeId.forId(configuration.getNodeId()), command);
+            setState(payload);
+        } catch(JWaveZException e) {
+            throw new MessageProcessingException("Command send failed!", e);
+        }
     }
 
     private ZWaveControlledCommand buildCommand(RGBWColor payload) {
         switch(colorMode) {
             case RGB:
-                return commandBuilder.v1().buildSetRGBCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) configuration.getSwitchDuration());
+                return commandBuilder.v2().buildSetRGBCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) configuration.getSwitchDuration());
             case RGBW_COLD:
-                return commandBuilder.v1().buildSetColdRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
+                return commandBuilder.v2().buildSetColdRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
             case RGBW_WARM:
-                return commandBuilder.v1().buildSetWarmRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
+                return commandBuilder.v2().buildSetWarmRGBWCommand((byte) payload.getRed(), (byte) payload.getGreen(), (byte) payload.getBlue(), (byte) payload.getWhite(), (byte) configuration.getSwitchDuration());
             default:
                 throw new MessageProcessingException("Unknown ColorMode never seen before!");
         }

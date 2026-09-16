@@ -5,11 +5,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.TextNode;
 import com.tbot.ruler.broker.SynchronousMessagePublisher;
 import com.tbot.ruler.broker.model.Message;
-import com.tbot.ruler.broker.payload.OnOffState;
+import com.tbot.ruler.broker.payload.BinaryClaim;
+import com.tbot.ruler.broker.payload.BinaryState;
 import com.tbot.ruler.broker.payload.RGBWColor;
+import com.tbot.ruler.controller.exceptions.BadRequestException;
 import com.tbot.ruler.controller.subject.payload.ActuatorStateUpdateRequest;
 import com.tbot.ruler.controller.subject.ActuatorsStateController;
-import com.tbot.ruler.exceptions.ServiceRequestException;
 import com.tbot.ruler.service.things.ActuatorsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -67,8 +68,8 @@ public class ActuatorsStateControllerTest {
         verify(messagePublisher, times(1)).publishAndWaitForReport(messageCaptor.capture());
         assertEquals(request.getWidgetUuid(), messageCaptor.getValue().getSenderId());
         assertEquals(actuatorUuid, messageCaptor.getValue().getReceiverId());
-        assertTrue(messageCaptor.getValue().isPayloadAs(OnOffState.class));
-        assertTrue(messageCaptor.getValue().getPayloadAs(OnOffState.class).isOn());
+        assertTrue(messageCaptor.getValue().isPayloadAs(BinaryClaim.class));
+        assertTrue(messageCaptor.getValue().getPayloadAs(BinaryClaim.class).isSetOn());
     }
 
     @Test
@@ -98,7 +99,7 @@ public class ActuatorsStateControllerTest {
     @Test
     public void failsOnUnknownPayloadType() {
         final ActuatorStateUpdateRequest request = mockMessageRequest("Fake", null);
-        assertThrows(ServiceRequestException.class, () -> controller.updateActuatorState("actuator-uuid", request));
+        assertThrows(BadRequestException.class, () -> controller.updateActuatorState("actuator-uuid", request));
     }
 
     private ActuatorStateUpdateRequest mockMessageRequest(String payloadType, JsonNode payload) {

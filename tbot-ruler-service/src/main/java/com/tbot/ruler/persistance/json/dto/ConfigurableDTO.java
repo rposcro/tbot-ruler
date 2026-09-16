@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.tbot.ruler.util.ParseUtil;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -21,13 +22,14 @@ public abstract class ConfigurableDTO {
     private JsonNode configuration;
 
     @JsonIgnore
-    private Map<String, String> configurationMap = Collections.emptyMap();;
+    @Builder.Default
+    private Map<String, String> configurationMap = Collections.emptyMap();
 
     @JsonProperty
     public void setConfiguration(JsonNode configuration) {
         this.configuration = configuration;
         this.configurationMap = new HashMap<>();
-        Iterable<String> namesIterable = () -> configuration.fieldNames();
+        Iterable<String> namesIterable = configuration::fieldNames;
         StreamSupport.stream(namesIterable.spliterator(), false)
                 .forEach(fieldName -> configurationMap.put(fieldName, configuration.get(fieldName).asText()));
     }

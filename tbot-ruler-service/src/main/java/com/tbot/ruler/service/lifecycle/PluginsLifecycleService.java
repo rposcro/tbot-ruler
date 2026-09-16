@@ -1,6 +1,7 @@
 package com.tbot.ruler.service.lifecycle;
 
 import com.tbot.ruler.persistance.PluginsRepository;
+import com.tbot.ruler.persistance.model.PluginEntity;
 import com.tbot.ruler.subjects.plugin.Plugin;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,21 +41,27 @@ public class PluginsLifecycleService {
         return pluginsIdMap.get(id);
     }
 
+    public Plugin getPluginByUuid(String uuid) {
+        return pluginsUuidMap.get(uuid);
+    }
+
     public void activateAllPlugins() {
         plugins = new LinkedList<>();
         pluginsIdMap = new HashMap<>();
         pluginsUuidMap = new HashMap<>();
-        pluginsRepository.findAll().forEach(pluginEntity -> {
-            Plugin plugin = pluginFactoryComponent.buildPlugin(pluginEntity);
-            if (plugin != null) {
-                plugins.add(plugin);
-                pluginsIdMap.put(pluginEntity.getPluginId(), plugin);
-                pluginsUuidMap.put(pluginEntity.getPluginUuid(), plugin);
-
-                if (plugin.hasJobs()) {
-                    jobsLifecycleService.startSubjectJobs(plugin);
-                }
-            }
+        pluginsRepository.findAll().forEach( entity -> {
+            activatePlugin(entity);
         });
+    }
+
+    public void activatePlugin(PluginEntity pluginEntity) {
+        Plugin plugin = pluginFactoryComponent.buildPlugin(pluginEntity);
+        plugins.add(plugin);
+        pluginsIdMap.put(pluginEntity.getPluginId(), plugin);
+        pluginsUuidMap.put(pluginEntity.getPluginUuid(), plugin);
+
+        if (plugin.hasJobs()) {
+            jobsLifecycleService.startSubjectJobs(plugin);
+        }
     }
 }

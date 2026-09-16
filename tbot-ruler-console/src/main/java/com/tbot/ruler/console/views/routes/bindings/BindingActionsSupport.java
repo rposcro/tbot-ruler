@@ -32,16 +32,12 @@ public class BindingActionsSupport extends AbstractActionsSupport {
     @Autowired
     private BindingsModelAccessor bindingsModelAccessor;
 
-    public void launchBindingCreate(
-            DialogActionHandler<BindingsCreateDialog> bindHandler,
-            DialogActionHandler<BindingsCreateDialog> finishHandler)
-    {
+    public void launchBindingCreate(DialogActionHandler<BindingsCreateDialog> bindHandler) {
         BindingsCreateDialog.builder()
                 .webhooks(webhooksAccessor.getAllWebhooks())
                 .actuators(actuatorsAccessor.getAllActuators())
                 .existingBindings(bindingsAccessor.getAllBindings())
                 .bindHandler(bindHandler)
-                .finishHandler(finishHandler)
                 .build()
                 .open();
     }
